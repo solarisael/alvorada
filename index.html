@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Alvor's Rest</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script type="module" src="./assets/js/scripts.js"></script>
+  </head>
+
+  <body
+    hx-boost
+    hx-preserve
+    class="flex min-h-screen flex-wrap gap-1 bg-ctp-crust p-2 text-ctp-text"
+  >
+    <nav
+      class="sticky top-2 bottom-2 max-h-[98.5vh] min-h-full w-64 border-2 border-ctp-lavender-400/50 bg-ctp-mantle"
+    >
+      <div
+        id="nav-user-bar"
+        class="flex border-b border-ctp-lavender-400/50 bg-ctp-base px-3 py-2"
+      >
+        <div
+          id="icon-user"
+          class="relative flex h-16 w-16 items-center justify-center overflow-hidden mix-blend-hard-light"
+        >
+          <div
+            class="z-20 flex h-[90%] w-[90%] items-center justify-center overflow-hidden rounded-full border-2 border-yellow-200/20 opacity-85"
+          >
+            <img
+              src="./assets/img/alvor-curr.jpg"
+              alt=""
+              srcset=""
+              class="object-fit h-full w-full"
+            />
+          </div>
+
+          <div
+            class="absolute z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full"
+          >
+            <div
+              class="absolute z-10 flex h-full w-full items-center justify-center"
+            ></div>
+
+            <img
+              src="./assets/img/gold_light.gif"
+              alt=""
+              srcset=""
+              class="object-fit absolute z-0"
+            />
+          </div>
+        </div>
+
+        <div class="flex grow px-2">
+          <div
+            class="prose flex grow flex-col justify-center prose-ctp prose-headings:leading-2 prose-p:leading-1 prose-lead:font-normal"
+          >
+            <h3>Alvor</h3>
+            <p>sadness</p>
+          </div>
+          <div class="flex"></div>
+        </div>
+
+        <div class="prose flex items-center justify-center prose-ctp">
+          <a href="/logout">Go out</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex min-h-[200vh] grow flex-col gap-1">
+      <div
+        id="content"
+        class="flex grow flex-col border-2 border-ctp-lavender-400/50 px-4 py-2"
+      >
+        <div id="breadcrumbers_xd">test/test/test</div>
+
+        <div id="inner">
+          <a href="#" hx-post="/templates/test.html" hx-swap="morph">shalom3</a>
+        </div>
+
+        <div id="content-footer"></div>
+      </div>
+
+      <footer
+        id="footer"
+        class="flex h-20 items-center justify-center border-2 border-ctp-lavender-400/50"
+      >
+        <a class="text-center leading-4" href=""
+          >Made with pure hatred <br />
+          You should all die</a
+        >
+      </footer>
+    </main>
+  </body>
+</html>

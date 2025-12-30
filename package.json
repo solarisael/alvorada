@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@catppuccin/tailwindcss": "^1.0.0",
+    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/typography": "^0.5.19",
+    "htmx": "^0.0.2",
+    "htmx.org": "^2.0.8",
+    "idiomorph": "^0.7.4",
+    "prettier": "3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "smol-toml": "^1.6.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "vite": "^7.3.0"
+  }
+}
