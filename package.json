@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/tailwind": "^6.0.2",
     "@catppuccin/tailwindcss": "^1.0.0",
+    "@splidejs/splide": "^4.1.4",
     "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",

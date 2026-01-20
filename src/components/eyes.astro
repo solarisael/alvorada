@@ -1,0 +1,150 @@
+<style>
+  @import "@splidejs/splide/css/core";
+  @import "@splidejs/splide/css";
+  
+  @reference "tailwindcss";
+  @reference "@catppuccin/tailwindcss/mocha.css";
+
+  #eyes {
+    @apply relative flex w-full items-center justify-center;
+
+    > .splide {
+      @apply w-full;
+      @apply h-36;
+      @apply flex items-center justify-center;
+    }
+
+    button > svg {
+      @apply h-6 w-6;
+    }
+
+    .splide__sr {
+      @apply hidden;
+    }
+
+    button > svg > path {
+      fill: white;
+    }
+
+    .splide__arrows {
+      @apply absolute z-10 flex w-full justify-between;
+
+      > button:nth-child(1) {
+        @apply relative -left-0.5;
+      }
+
+      > button:nth-child(2) {
+        @apply relative -right-0.5;
+      }
+    }
+
+    .splide__arrow--prev {
+      transform: rotate(180deg);
+    }
+  }
+
+  #lenses {
+    @apply border-ctp-lavender-50 absolute flex h-26 w-26 border-2 rounded-full z-10;
+    /* mix-blend-mode: color; */
+    box-shadow: 0 0 24px 24px var(--color-ctp-base) inset;
+  }
+
+  .splide__slide {
+    @apply flex items-center justify-center;
+    @apply h-24 w-24 rounded-full;
+  }
+
+  .splide__slide img {
+    display: flex;
+    object-fit: cover;
+
+    @apply h-24 w-24 rounded-full;
+
+    transform: scale(0.75);
+    transition: 0.16s cubic-bezier(0.39, 0.575, 0.565, 1);
+    filter: saturate(0.33) opacity(0.25);
+  }
+
+  .splide__slide.is-active > img {
+    transform: scale(1);
+    transition: 0.24s cubic-bezier(0.39, 0.575, 0.565, 1);
+    filter: saturate(1.5) opacity(1);
+  }
+</style>
+
+<div id="eyes">
+  <div id="lenses"></div>
+
+  <div
+    class="splide overflow-hidden"
+    role="group"
+    aria-label="Splide Basic HTML Example"
+  >
+    <div class="splide__track">
+      <ul class="splide__list">
+        <li class="splide__slide">
+          <img src="/images/eyes/cinza.jpg" alt="" />
+        </li>
+        <li class="splide__slide">
+          <img src="/images/eyes/suul.jpg" alt="" />
+        </li>
+        <li class="splide__slide">
+          <img src="/images/eyes/alvorada.jpg" alt="" />
+        </li>
+      </ul>
+
+      <ul
+        class="splide__pagination splide__pagination--ltr"
+        role="tablist"
+        aria-label="Select a slide to show"
+      >
+        <li role="presentation">
+          <button
+            class="splide__pagination__page is-active"
+            type="button"
+            role="tab"
+            aria-controls="splide01-slide01"
+            aria-label="Go to slide 1"
+            aria-selected="true"
+          >
+          </button>
+        </li>
+        <li role="presentation">
+          <button
+            class="splide__pagination__page"
+            type="button"
+            role="tab"
+            aria-controls="splide01-slide02"
+            aria-label="Go to slide 2"
+            tabindex="-1"
+          >
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  import Splide from "@splidejs/splide";
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var splide = new Splide(".splide", {
+      type: "loop",
+      perPage: 3,
+      clones: 3,
+      focus: "center",
+      padding: "2rem",
+      easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+      speed: 240,
+      drag: "free",
+      snap: true,
+      trimSpace: true,
+      fade: true,
+      gap: "1rem",
+      pagination: false,
+      omitEnd: true,
+    });
+    splide.mount();
+  });
+</script>

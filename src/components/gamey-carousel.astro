@@ -6,81 +6,123 @@
       @apply object-cover;
       @apply w-full;
     }
+
+    > div > div {
+      &.active {
+        @apply scale-125;
+      }
+    }
+  }
+
+  #lenses {
+    @apply absolute z-10 cursor-none;
+    @apply scale-150;
+    @apply rounded-full;
+    pointer-events: none;
   }
 </style>
 
 <div
   id="eyes"
-  class="w-full flex max-w-full overflow-hidden items-center relative h-24 px-4"
+  data-current="0"
+  data-items="0"
+  data-offset="1"
+  class="w-12 h-24 flex max-w-full items-center justify-center relative mx-8"
 >
   <button
-    class="absolute left-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    class="absolute -left-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
     >‹</button
   >
 
-  <div class="flex flex-nowrap justify-center items-center absolute">
+  <div class="flex flex-nowrap items-center absolute gap-4 h-12">
     <!-- slides start -->
-    <div class="w-full shrink-0">
+    <div class="w-full shrink-0 rounded-full overflow-hidden">
       <img src="/images/sol-curr.jpg" alt="" />
     </div>
-    <div class="w-full shrink-0">
+    <div class="w-full shrink-0 rounded-full overflow-hidden">
       <img src="/images/sol-curr.jpg" alt="" />
     </div>
-    <div class="w-full shrink-0">
+    <div class="w-full shrink-0 rounded-full overflow-hidden">
       <img src="/images/sol-curr.jpg" alt="" />
     </div>
     <!-- slides end -->
   </div>
 
+  <div id="lenses" class="h-12 w-12 border-2 border-ctp-blue-50"></div>
+
   <button
-    class="absolute right-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    class="absolute -right-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
     >›</button
   >
 </div>
 
 <script is:inline>
-  // run when DOM is ready
-  document.addEventListener("DOMContentLoaded", () => {
-    const carousel = eyes
-    const inner = eyes.querySelector("div")
-    const slides = Array.from(inner.children)
-    const nextBtn = eyes.querySelector("button:nth-of-type(1)")
-    const prevBtn = eyes.querySelector("button:nth-of-type(2)")
+  // document.addEventListener("DOMContentLoaded", () => {
+  //   const carousel = eyes;
+  //   const inner = eyes.querySelector("div");
+  //   const slides = Array.from(inner.children);
+  //   const previous_eye = eyes.querySelector("button:nth-child(1)");
+  //   const next_eye = eyes.querySelector("button:nth-child(4)");
+  //   const gap = parseInt(getComputedStyle(inner).gap);
+  //   eyes.dataset.current = 1;
+  //   eyes.dataset.offset = 1;
+  //   eyes.dataset.items = slides.length;
 
-    /* ────── Clone the last and first slide for the infinite trick ──────────────────── */
-    const firstClone = slides[0].cloneNode(true)
-    const lastClone = slides[slides.length - 1].cloneNode(true)
+  //   /* ────── Clone the last and first slide for the infinite trick ──────────────────── */
+  //   const clone_the_first = slides[0].cloneNode(true);
+  //   const clone_the_last = slides[slides.length - 1].cloneNode(true);
 
-    inner.appendChild(firstClone) // after last
-    inner.prepend(lastClone) // before first
+  //   inner.appendChild(clone_the_first); // after last
+  //   inner.prepend(clone_the_last); // before first
+  //   inner.style.transition = ".4s ease-in-out";
 
-    /* ────── Current slide index (the one that’s actually visible) ──────────────────── */
-    let currentIdx = -1 // 0‑based – refers to the *original* slides only
+  //   function remove_scale() {
+  //     slides[eyes.dataset.current - 1].classList.remove(`active`);
+  //   }
+  //   /* ────── Helper: update transform according to idx ──────────────────────────────────────── */
+  //   function shift() {
+  //     const offset = -eyes.dataset.current * 100; // +1 because of the prepended clone
+  //     inner.style.transform = `translateX(calc(${offset}% - ${gap * eyes.dataset.current}px))`;
+  //     slides[eyes.dataset.current - 1].classList.add(`active`);
+  //   }
+  //   shift(); // initial positioning
 
-    /* ────── Helper: update transform according to idx ──────────────────────────────────────── */
-    function shift() {
-      const offset = -(currentIdx + 1) * 100 // +1 because of the prepended clone
-      inner.style.transform = `translateX(${offset}%)`
-    }
-    shift() // initial positioning
+  //   /* ────── Navigation handlers ──────────────────────────────────────────── */
+  //   next_eye.addEventListener("click", () => {
+  //     remove_scale();
 
-    /* ────── Navigation handlers ──────────────────────────────────────────── */
-    nextBtn.addEventListener("click", () => {
-      currentIdx = (currentIdx % slides.length) + 1
-      shift()
-    })
+  //     eyes.dataset.current = parseInt(
+  //       (eyes.dataset.current % eyes.dataset.items) +
+  //         parseInt(eyes.dataset.offset),
+  //     );
 
-    prevBtn.addEventListener("click", () => {
-      currentIdx = (currentIdx % slides.length) - 1
-      shift()
-    })
+  //     if (eyes.dataset.current == eyes.dataset.offset) {
+  //       inner.style.transition = "none";
 
-    /* ────── Autoplay (optional) ──────────────────────────────────────────── */
-    // let autoplayTimer = setInterval(() => nextBtn.click(), 3000) // every 3s/
+  //       setTimeout(() => {
+  //         inner.style.transition = ".4s ease-in-out";
+  //       }, 100);
+  //     }
 
-    // carousel.addEventListener("mouseenter", () => clearInterval(autoplayTimer)) // pause on hover
-    carousel.addEventListener("mouseleave", () => {
-      // autoplayTimer = setInterval(() => nextBtn.click(), 3000)
-    })
-  })
+  //     shift();
+  //   });
+
+  //   previous_eye.addEventListener("click", () => {
+  //     remove_scale();
+
+  //     eyes.dataset.current--;
+
+  //     if (eyes.dataset.current < eyes.dataset.offset) {
+  //       eyes.dataset.current = eyes.dataset.items;
+
+  //       inner.style.transition = "none";
+
+  //       setTimeout(() => {
+  //         inner.style.transition = ".4s ease-in-out";
+  //       }, 100);
+  //     }
+
+  //     shift();
+  //   });
+  // });
 </script>

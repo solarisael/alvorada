@@ -1,6 +1,6 @@
 ---
-import { Image } from "astro:assets"
-import "../styles/base.css"
+import { Image } from "astro:assets";
+import "../styles/base.css";
 ---
 
 <!doctype html>
@@ -17,11 +17,11 @@ import "../styles/base.css"
 
   <body
     hx-boost
-    class="grt-fluid flex min-h-screen flex-col flex-wrap gap-1 bg-ctp-crust p-4 ctp-text md:flex-row md:p-2"
+    class="grt-fluid grid grid-rows-4 grid-cols-12 min-h-screen flex-col flex-wrap gap-1 bg-ctp-crust p-4 ctp-text md:flex-row md:p-2"
   >
     <nav
       id="desktop-nav"
-      class="sticky top-2 bottom-2 hidden max-h-[98.5vh] min-h-full w-64 flex-col border-2 border-ctp-lavender-400/50 bg-ctp-mantle md:flex"
+      class="sticky top-2 bottom-2 hidden max-h-[98.5vh] min-h-full col-span-2 row-span-4 flex-col border-2 border-ctp-lavender-400/50 bg-ctp-mantle md:flex"
     >
       <div
         id="nav-user-bar"
@@ -124,7 +124,7 @@ import "../styles/base.css"
       </div>
     </nav>
 
-    <main class="flex min-h-[200vh] grow flex-col gap-1">
+    <main class="col-span-10 row-span-4 flex grow flex-col gap-1">
       <div
         id="content"
         class="flex grow flex-col border-2 border-ctp-lavender-400/50 px-4 py-2"
