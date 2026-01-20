@@ -1,0 +1,86 @@
+<style>
+  @reference "tailwindcss";
+
+  #eyes {
+    img {
+      @apply object-cover;
+      @apply w-full;
+    }
+  }
+</style>
+
+<div
+  id="eyes"
+  class="w-full flex max-w-full overflow-hidden items-center relative h-24 px-4"
+>
+  <button
+    class="absolute left-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    >‹</button
+  >
+
+  <div class="flex flex-nowrap justify-center items-center absolute">
+    <!-- slides start -->
+    <div class="w-full shrink-0">
+      <img src="/images/sol-curr.jpg" alt="" />
+    </div>
+    <div class="w-full shrink-0">
+      <img src="/images/sol-curr.jpg" alt="" />
+    </div>
+    <div class="w-full shrink-0">
+      <img src="/images/sol-curr.jpg" alt="" />
+    </div>
+    <!-- slides end -->
+  </div>
+
+  <button
+    class="absolute right-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    >›</button
+  >
+</div>
+
+<script is:inline>
+  // run when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    const carousel = eyes
+    const inner = eyes.querySelector("div")
+    const slides = Array.from(inner.children)
+    const nextBtn = eyes.querySelector("button:nth-of-type(1)")
+    const prevBtn = eyes.querySelector("button:nth-of-type(2)")
+
+    /* ────── Clone the last and first slide for the infinite trick ──────────────────── */
+    const firstClone = slides[0].cloneNode(true)
+    const lastClone = slides[slides.length - 1].cloneNode(true)
+
+    inner.appendChild(firstClone) // after last
+    inner.prepend(lastClone) // before first
+
+    /* ────── Current slide index (the one that’s actually visible) ──────────────────── */
+    let currentIdx = -1 // 0‑based – refers to the *original* slides only
+
+    /* ────── Helper: update transform according to idx ──────────────────────────────────────── */
+    function shift() {
+      const offset = -(currentIdx + 1) * 100 // +1 because of the prepended clone
+      inner.style.transform = `translateX(${offset}%)`
+    }
+    shift() // initial positioning
+
+    /* ────── Navigation handlers ──────────────────────────────────────────── */
+    nextBtn.addEventListener("click", () => {
+      currentIdx = (currentIdx % slides.length) + 1
+      shift()
+    })
+
+    prevBtn.addEventListener("click", () => {
+      currentIdx = (currentIdx % slides.length) - 1
+      shift()
+    })
+
+    /* ────── Autoplay (optional) ──────────────────────────────────────────── */
+    // let autoplayTimer = setInterval(() => nextBtn.click(), 3000) // every 3s/
+
+    // carousel.addEventListener("mouseenter", () => clearInterval(autoplayTimer)) // pause on hover
+    carousel.addEventListener("mouseleave", () => {
+      // autoplayTimer = setInterval(() => nextBtn.click(), 3000)
+    })
+  })
+</script>

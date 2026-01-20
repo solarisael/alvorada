@@ -1,17 +1,31 @@
 {
+  "name": "alvorada",
+  "version": "0.1.0",
+  "description": "alvorada − a new beginning, a new dawn",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize"
+  },
   "dependencies": {
+    "@astrojs/tailwind": "^6.0.2",
     "@catppuccin/tailwindcss": "^1.0.0",
     "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
-    "htmx": "^0.0.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.11",
     "htmx.org": "^2.0.8",
     "idiomorph": "^0.7.4",
-    "prettier": "3.7.4",
+    "npm": "^11.7.0",
+    "prettier": "^3.8.0",
+    "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "smol-toml": "^1.6.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "vite": "^7.3.0"
+    "vite": "^7.3.1"
   }
 }

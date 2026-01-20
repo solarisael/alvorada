@@ -15,7 +15,7 @@ const SWATCHES = [
   "#ffe2b4",
   "#d7fbff",
   "#ffe0ff",
-];
+]
 
 const PALETTES = {
   "qud-emerald": { fg: "#d8f2e1", accent: "#37e5a3", bg: "#0b0f10" },
@@ -28,7 +28,7 @@ const PALETTES = {
   blood: { fg: "#ffe2e2", accent: "#ff3d3d", bg: "#120606" },
   void: { fg: "#d6d6ff", accent: "#9b5de5", bg: "#07060e" },
   custom: null,
-};
+}
 
 const LETTER_PALETTES = {
   qudCycle: [
@@ -105,7 +105,7 @@ const LETTER_PALETTES = {
       "#ffe0ff",
     ],
   ],
-};
+}
 
 const EFFECTS = [
   { id: "fx-neon", label: "Neon" },
@@ -128,4 +128,4 @@ const EFFECTS = [
   { id: "fx-tight", label: "Tight" },
   { id: "crt", label: "CRT Overlay (container)", target: "shell" },
   { id: "fx-perletter", label: "Per-letter Colors" }, // NEW
-];
+]

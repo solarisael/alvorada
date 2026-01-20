@@ -1,0 +1,146 @@
+---
+import { Image } from "astro:assets"
+import "../styles/base.css"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Sol's Rest</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <script src="/js/scripts.js" type="module"></script>
+  </head>
+
+  <body
+    hx-boost
+    class="grt-fluid flex min-h-screen flex-col flex-wrap gap-1 bg-ctp-crust p-4 ctp-text md:flex-row md:p-2"
+  >
+    <nav
+      id="desktop-nav"
+      class="sticky top-2 bottom-2 hidden max-h-[98.5vh] min-h-full w-64 flex-col border-2 border-ctp-lavender-400/50 bg-ctp-mantle md:flex"
+    >
+      <div
+        id="nav-user-bar"
+        class="flex h-auto min-h-24 items-center justify-start border-b border-ctp-lavender-400/50 px-3 py-2"
+      >
+        <a
+          id="icon-user"
+          href="/"
+          class="relative flex h-16 w-16 min-w-16 items-center justify-center overflow-hidden"
+        >
+          <div
+            class="z-20 flex h-[90%] w-[90%] items-center justify-center overflow-hidden rounded-full opacity-85"
+          >
+            <img
+              src="/images/sol-curr.jpg"
+              alt=""
+              srcset=""
+              class="object-fit h-full w-full"
+            />
+          </div>
+
+          <div
+            class="absolute z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border border-yellow-500/30"
+          >
+            <div
+              class="absolute z-10 flex h-full w-full items-center justify-center"
+            >
+            </div>
+
+            <img
+              src="/images/gold_light.gif"
+              alt=""
+              srcset=""
+              class="object-fit absolute z-0"
+            />
+          </div>
+        </a>
+
+        <div class="flex h-full grow items-start justify-start px-2">
+          <div class="flex h-full shrink grow flex-col justify-center">
+            <h4>Sol's Rest</h4>
+            <p class="">
+              <small>Did we ever care?</small>
+            </p>
+          </div>
+          <div class="flex"></div>
+        </div>
+      </div>
+
+      <div id="folders" class="flex grow flex-col"></div>
+    </nav>
+
+    <nav
+      id="mobile-nav"
+      class="fixed bottom-0 left-0 flex h-20 w-full border-t-2 border-ctp-crust bg-ctp-crust px-2 shadow-2xl shadow-ctp-base md:hidden"
+    >
+      <div
+        class="flex grow items-center justify-between border-0 border-ctp-lavender-400/50 px-4"
+      >
+        <a href="/nigredo" class="text-nigredo neon-filter">nigredo</a>
+        <a href="/albedo" class="text-albedo neon-filter">albedo</a>
+
+        <div class="relative flex h-full w-24 items-center justify-center">
+          <a
+            id="icon-user-mobile"
+            href="/"
+            class="relative mx-4 flex h-24 w-24 min-w-24 items-center justify-center"
+          >
+            <div
+              class="z-20 flex h-[90%] w-[90%] items-center justify-center overflow-hidden rounded-full opacity-85"
+            >
+              <img
+                src="/images/sol-curr.jpg"
+                alt=""
+                srcset=""
+                class="object-fit h-full w-full"
+              />
+            </div>
+
+            <div
+              class="absolute z-10 flex h-full w-full items-center justify-center rounded-full border border-yellow-500/30"
+            >
+              <div
+                class="absolute z-10 flex h-full w-full items-center justify-center rounded-full"
+              >
+              </div>
+
+              <img
+                src="/images/gold_light.gif"
+                alt=""
+                srcset=""
+                class="object-fit absolute z-0 rounded-full"
+              />
+            </div>
+          </a>
+        </div>
+
+        <a href="/citrinitas" class="text-citrinitas neon-filter">citrinitas</a>
+        <a href="/rubedo" class="text-rubedo neon-filter">rubedo</a>
+      </div>
+    </nav>
+
+    <main class="flex min-h-[200vh] grow flex-col gap-1">
+      <div
+        id="content"
+        class="flex grow flex-col border-2 border-ctp-lavender-400/50 px-4 py-2"
+      >
+        <slot />
+      </div>
+
+      <footer
+        id="footer"
+        class="mb-30 flex h-20 items-center justify-center border-2 border-ctp-lavender-400/50 md:mb-0"
+      >
+        <a class="text-center" href=""
+          >Made with pure hatred <br />
+          You should all die</a
+        >
+      </footer>
+    </main>
+  </body>
+</html>

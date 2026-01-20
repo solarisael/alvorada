@@ -1,0 +1,136 @@
+/* ────────────────────────────────────────────────────────────────────── */
+/*   1️⃣ Imports & Global Variables                                  */
+/* ────────────────────────────────────────────────────────────────────── */
+
+@use "sass:map"; /* for map-functions */
+
+/* basic font size limits */
+$base-min: 1rem;
+$base-max: 1.1rem;
+
+/* line-height “scales” – one map holding min / max values          */
+$lh-scale: (
+  min: 1,
+  max: 1.2,
+);
+
+/* heading scales – key = selector, value = font-size multiplier      */
+$heading-scales: (
+  h1: 2,
+  h2: 1.75,
+  h3: 1.5,
+  h4: 1.25,
+  h5: 0.875,
+  h6: 0.75,
+  small: 0.75,
+  p: 1,
+  a: 1,
+  li: 1,
+  blockquote: 1,
+  dt: 1,
+  dd: 1,
+  th: 1,
+  td: 1,
+);
+
+/* viewport limits – used by the fluid functions                       */
+$min-vw: 768px;
+$max-vw: 1680px;
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   2️⃣ Functions & Mixins                                          */
+/* ────────────────────────────────────────────────────────────────────── */
+
+/* fluid size – clamp( min, calc-based value, max )                     */
+@function fluid-size($min, $max) {
+  @return clamp(
+    $min,
+    calc(
+      $min + ($max - $min) * ((100vw - #{$min-vw}) / (#{$max-vw} - #{$min-vw}))
+    ),
+    $max
+  );
+}
+
+/* simple wrappers – keep the original public names                       */
+@mixin fluid-font($min, $max) {
+  font-size: fluid-size($min, $max);
+}
+
+@mixin fluid-line-height($min, $max, $scale-min, $scale-max) {
+  line-height: clamp(
+    $min * $scale-min,
+    calc(
+      (
+          $min + ($max - $min) *
+            ((100vw - #{$min-vw}) / (#{$max-vw} - #{$min-vw}))
+        ) *
+        $scale-min
+    ),
+    $max * $scale-max
+  );
+}
+
+@mixin fluid-typography(
+  $min,
+  $max,
+  $scale-lh-min: map.get($lh-scale, min),
+  $scale-lh-max: map.get($lh-scale, max)
+) {
+  @include fluid-font($min, $max);
+  @include fluid-line-height($min, $max, $scale-lh-min, $scale-lh-max);
+}
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   3️⃣ Fallback for old browsers                                 */
+/* ────────────────────────────────────────────────────────────────────── */
+
+@supports not (font-size: clamp(0, 1rem, 2rem)) {
+  *,
+  html {
+    @include fluid-font($base-min, $base-max); // only the minimum size
+    line-height: calc(map.get($lh-scale, min) * $base-min); // keep LH in sync
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   4️⃣ Global fluid typography – base font size                    */
+/* ────────────────────────────────────────────────────────────────────── */
+
+:where(*, :root) {
+  @include fluid-typography($base-min, $base-max);
+}
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   5️⃣ Headings – one loop instead of six blocks                   */
+/* ────────────────────────────────────────────────────────────────────── */
+
+@each $sel, $scale in $heading-scales {
+  #{$sel} {
+    @include fluid-typography(
+      $base-min * $scale,
+      $base-max * $scale
+        /* line-height scales use the defaults ($lh-scale) – no need to pass them */
+    );
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   6️⃣ Paragraph / list / blockquote etc.                          */
+/* ────────────────────────────────────────────────────────────────────── */
+
+/* The global rule above already applies fluid typography to everything,   */
+/* so a separate block for p, li, … is no longer necessary (unless     */
+/* you want specific overrides).                                            */
+
+/* ────────────────────────────────────────────────────────────────────── */
+/*   7️⃣ Optional examples (commented out)                          */
+/* ────────────────────────────────────────────────────────────────────── */
+
+/*
+a{
+  font-size: calc(100% + .2rem);
+}
+
+a:hover::after{ content: calc(100vw - #{$min-vw}); }
+*/

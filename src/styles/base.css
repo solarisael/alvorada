@@ -1,37 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @import "@catppuccin/tailwindcss/mocha.css";
-
-@font-face {
-  font-family: "Atkinson Hyperlegible Next";
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  src: url("../fonts/AtkinsonHyperlegibleNext-VariableFont_wght.ttf")
-    format("truetype");
-}
-@font-face {
-  font-family: "Atkinson Hyperlegible Next";
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-  src: url("../fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf");
-}
-
-@font-face {
-  font-family: "Atkinson Hyperlegible Mono";
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  src: url("../fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf");
-}
-@font-face {
-  font-family: "Atkinson Hyperlegible Mono";
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-  src: url("../fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf");
-}
+@import "./typography.css";
 
 @theme {
   --default-font-family:
@@ -41,48 +11,142 @@
   --default-mono-font-family: "Atkinson Hyperlegible Mono", monospace;
 
   --sun-inset: 0 0px 24px 16px rgba(0, 0, 0, 1);
+
+  --color-albedo: oklch(98.5% 0.002 247.839);
+  --color-nigredo: oklch(55.1% 0.027 264.364);
+  --color-citrinitas: oklch(79.5% 0.184 86.047);
+  --color-rubedo: oklch(63.7% 0.237 25.331);
 }
 
-@utility prose-ctp {
-  --tw-prose-body: var(--color-ctp-subtext0);
-  --tw-prose-headings: var(--color-ctp-text);
-  --tw-prose-lead: var(--color-ctp-subtext1);
-  --tw-prose-links: var(--color-ctp-lavender-800);
-  --tw-prose-bold: var(--color-ctp-lavender-900);
-  --tw-prose-counters: var(--color-ctp-lavender-600);
+@utility neon-filter {
+  --neon-color: transparent;
+  --neon-filter: saturate(1) opacity(1)
+    drop-shadow(0px 0px 1px var(--neon-color));
 
-  --tw-prose-bullets: var(--color-ctp-lavender-400);
-  --tw-prose-hr: var(--color-ctp-lavender-300);
-  --tw-prose-quotes: var(--color-ctp-lavender-900);
-  --tw-prose-quote-borders: var(--color-ctp-lavender-300);
-  --tw-prose-captions: var(--color-ctp-lavender-700);
-  --tw-prose-code: var(--color-ctp-lavender-900);
-  --tw-prose-pre-code: var(--color-ctp-lavender-100);
-  --tw-prose-pre-bg: var(--color-ctp-lavender-900);
-  --tw-prose-th-borders: var(--color-ctp-lavender-300);
-  --tw-prose-td-borders: var(--color-ctp-lavender-200);
-  --tw-prose-invert-body: var(--color-ctp-lavender-200);
-  --tw-prose-invert-headings: var(--color-white);
-  --tw-prose-invert-lead: var(--color-ctp-lavender-300);
-  --tw-prose-invert-links: var(--color-white);
-  --tw-prose-invert-bold: var(--color-white);
-  --tw-prose-invert-counters: var(--color-ctp-lavender-400);
-  --tw-prose-invert-bullets: var(--color-ctp-lavender-600);
-  --tw-prose-invert-hr: var(--color-ctp-lavender-700);
-  --tw-prose-invert-quotes: var(--color-ctp-lavender-100);
-  --tw-prose-invert-quote-borders: var(--color-ctp-lavender-700);
-  --tw-prose-invert-captions: var(--color-ctp-lavender-400);
-  --tw-prose-invert-code: var(--color-white);
-  --tw-prose-invert-pre-code: var(--color-ctp-lavender-300);
-  --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
-  --tw-prose-invert-th-borders: var(--color-ctp-lavender-600);
-  --tw-prose-invert-td-borders: var(--color-ctp-lavender-700);
+  filter: var(--neon-filter);
+
+  &::before {
+    --neon-filter-before: saturate(1.5) opacity(0.5)
+      drop-shadow(0px 0px 5px var(--neon-color));
+
+    filter: var(--neon-filter-before);
+  }
+
+  &::after {
+    --neon-filter-after: saturate(2) opacity(0.25)
+      drop-shadow(0px 0px 10px var(--neon-color));
+
+    filter: var(--neon-filter-after);
+  }
 }
 
-#nav-user-bar {
-  #icon-user > div:nth-child(2) {
-    > div {
-      background: radial-gradient(transparent 50%, rgba(0, 0, 0, 0.25));
+@utility ctp-text {
+  --ctp-text-theme-headings: var(--color-ctp-text);
+  --ctp-text-theme-body: var(--color-ctp-subtext0);
+  --ctp-text-theme-lead: var(--color-ctp-subtext1);
+  --ctp-text-theme-links: var(--color-ctp-lavender-800);
+  --ctp-text-theme-bold: var(--color-ctp-lavender-900);
+  --ctp-text-theme-counters: var(--color-ctp-lavender-600);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--ctp-text-theme-headings);
+  }
+
+  p,
+  span,
+  li,
+  a,
+  small {
+    color: var(--ctp-text-theme-body);
+  }
+
+  small {
+    color: var(--ctp-text-theme-bold);
+  }
+}
+
+.content-grid,
+container {
+  display: grid;
+  grid-template-columns:
+    [grid-start] minmax(0, 0.12fr) [content-start] 1fr
+    [content-end] minmax(0, 0.12fr) [grid-end];
+  width: 100%;
+
+  & > *:not(.breakout) {
+    grid-column: content;
+  }
+
+  & > .breakout {
+    grid-column: grid;
+  }
+}
+
+#icon-user > div:nth-child(2) {
+  > div {
+    background: radial-gradient(transparent 50%, rgba(0, 0, 0, 0.25));
+  }
+}
+
+#icon-user-mobile > div:nth-child(2) {
+  > div {
+    background: radial-gradient(transparent 50%, rgba(0, 0, 0, 0.25));
+  }
+}
+
+#mobile-nav {
+  --tw-shadow: 0 -20px 50px -12px var(--tw-shadow-color, #00000040);
+
+  > div > a {
+    @apply flex items-center justify-center;
+    @apply relative;
+
+    &::before,
+    &::after {
+      content: "";
+
+      @apply absolute;
+    }
+
+    &[href="/nigredo"] {
+      --neon-color: var(--color-nigredo);
+
+      &::before,
+      &::after {
+        content: "nigredo";
+      }
+    }
+
+    &[href="/albedo"] {
+      --neon-color: var(--color-albedo);
+
+      &::before,
+      &::after {
+        content: "albedo";
+      }
+    }
+
+    &[href="/citrinitas"] {
+      --neon-color: var(--color-citrinitas);
+
+      &::before,
+      &::after {
+        content: "citrinitas";
+      }
+    }
+
+    &[href="/rubedo"] {
+      --neon-color: var(--color-rubedo);
+
+      &::before,
+      &::after {
+        content: "rubedo";
+      }
     }
   }
 }
@@ -96,7 +160,7 @@ the-fog {
 
   > layer {
     @apply absolute;
-    @apply shadow-2xl shadow-ctp-red-400/50;
+    @apply shadow-ctp-red-400/50 shadow-2xl;
     @apply rounded-xl;
 
     height: 100%;
@@ -166,7 +230,7 @@ the-fog {
         }
 
         &[href="/nigredo"] {
-          @apply text-gray-800;
+          @apply text-gray-500;
           @apply text-shadow-gray-50/50;
 
           text-shadow: 0px 0px 1px var(--tw-text-shadow-color, #00000026);
@@ -203,7 +267,7 @@ nav#main-nav {
     @apply flex grow flex-col items-start justify-start;
     @apply gap-10;
     @apply h-full;
-    @apply rounded-lg border-2 border-solid border-ctp-red-500/90;
+    @apply border-ctp-red-500/90 rounded-lg border-2 border-solid;
     @apply px-5 py-4;
 
     @apply bg-ctp-base;
@@ -234,7 +298,7 @@ nav#main-nav {
       @apply h-12;
       @apply w-auto;
       @apply object-cover;
-      @apply rounded-full border-3 border-solid border-ctp-red-500/90;
+      @apply border-ctp-red-500/90 rounded-full border-3 border-solid;
 
       z-index: 2;
     }
@@ -304,7 +368,7 @@ nav#main-nav {
       @apply relative;
       @apply flex;
       @apply grow;
-      @apply rounded-tr-md rounded-bl-md border border-solid border-ctp-red-500/90;
+      @apply border-ctp-red-500/90 rounded-tr-md rounded-bl-md border border-solid;
       @apply pt-2 pb-2.5 pl-4;
       @apply transition-all duration-100;
 
@@ -347,7 +411,7 @@ nav#main-nav {
 
           @apply -top-2 -left-7;
 
-          @apply border-l border-solid border-ctp-red-500/80;
+          @apply border-ctp-red-500/80 border-l border-solid;
         }
 
         &::before {
@@ -360,7 +424,7 @@ nav#main-nav {
           @apply bottom-1.5;
 
           @apply w-6;
-          @apply border-0 border-b border-ctp-red-500/80;
+          @apply border-ctp-red-500/80 border-0 border-b;
         }
 
         &:nth-last-child(1) {
