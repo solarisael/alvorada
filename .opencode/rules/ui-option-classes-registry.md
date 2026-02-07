@@ -19,4 +19,4 @@ Required per option set:
 - Quick switch snippet
 
 Do not spread class-option documentation across multiple files unless explicitly
-requested by the human.
+requested by you.

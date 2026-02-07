@@ -36,7 +36,7 @@ simpler approaches are proven insufficient.
 - State confidence level and what evidence supports it.
 - If multiple valid paths exist, present tradeoffs and a recommended default.
 - If uncertain about the best solution, present clear implementation options for
-  the human to choose from, and mark one recommended option first.
+  you to choose from, and mark one recommended option first.
 - If a user-provided approach works and does not violate repo constraints,
   prefer it.
 
