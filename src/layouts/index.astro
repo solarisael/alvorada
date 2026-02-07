@@ -19,12 +19,13 @@ import Navbar from "../components/navbar.astro";
     <script src="/js/scripts.js" type="module"></script>
   </head>
   <body
-    class="page-transition-breath-subtle"
+    class="page-transition-breath-noticeable"
     hx-boost="true"
-    hx-ext="idiomorph,head-support,preload,sse"
+    hx-ext="morph,head-support,preload,sse"
     hx-target="#content"
     hx-select="#content"
-    hx-swap="outerHTML transition:true"
+    hx-select-oob="#content"
+    hx-swap="morph swap:240ms settle:240ms"
     hx-push-url="true"
   >
     <Navbar />

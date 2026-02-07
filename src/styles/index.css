@@ -30,16 +30,23 @@
   backdrop-filter: blur(5px);
 }
 
-body.page-transition-breath-subtle {
+.page-transition-breath-subtle {
   --page_fade_out_ms: 160ms;
   --page_fade_gap_ms: 60ms;
   --page_fade_in_ms: 220ms;
 }
 
-body.page-transition-breath-noticeable {
-  --page_fade_out_ms: 170ms;
-  --page_fade_gap_ms: 105ms;
-  --page_fade_in_ms: 230ms;
+.page-transition-breath-noticeable {
+  --page_fade_out_ms: 240ms;
+  --page_fade_gap_ms: 20ms;
+  --page_fade_in_ms: 180ms;
+}
+
+#content.htmx-request {
+  animation-duration: calc(
+    var(--page_fade_out_ms) + var(--page_fade_gap_ms) + var(--page_fade_in_ms)
+  );
+  animation-timing-function: linear;
 }
 
 ::view-transition-group(page_content) {
@@ -49,10 +56,25 @@ body.page-transition-breath-noticeable {
   animation-timing-function: linear;
 }
 
+#content.htmx-swapping {
+  animation-name: page_content_fade_out;
+  animation-duration: var(--page_fade_out_ms);
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  animation-fill-mode: both;
+}
+
 ::view-transition-old(page_content) {
   animation-name: page_content_fade_out;
   animation-duration: var(--page_fade_out_ms);
   animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  animation-fill-mode: both;
+}
+
+#content.htmx-added {
+  animation-name: page_content_fade_in;
+  animation-duration: var(--page_fade_in_ms);
+  animation-delay: var(--page_fade_gap_ms);
+  animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   animation-fill-mode: both;
 }
 

@@ -15,8 +15,6 @@ import "../styles/components/nav.css";
         data-phase="nigredo"
         href="/nigredo"
         hx-get="/nigredo"
-        hx-target="#content"
-        hx-swap="outerHTML transition:true"
         hx-push-url="true">nigredo</a
       >
       <a
@@ -25,8 +23,6 @@ import "../styles/components/nav.css";
         data-phase="albedo"
         href="/albedo"
         hx-get="/albedo"
-        hx-target="#content"
-        hx-swap="outerHTML transition:true"
         hx-push-url="true">albedo</a
       >
     </div>
@@ -54,8 +50,6 @@ import "../styles/components/nav.css";
         data-phase="citrinitas"
         href="/citrinitas"
         hx-get="/citrinitas"
-        hx-target="#content"
-        hx-swap="outerHTML transition:true"
         hx-push-url="true">citrinitas</a
       >
       <a
@@ -64,8 +58,6 @@ import "../styles/components/nav.css";
         data-phase="rubedo"
         href="/rubedo"
         hx-get="/rubedo"
-        hx-target="#content"
-        hx-swap="outerHTML transition:true"
         hx-push-url="true">rubedo</a
       >
       <a
@@ -74,8 +66,6 @@ import "../styles/components/nav.css";
         data-phase="codex"
         href="/codex"
         hx-get="/codex"
-        hx-target="#content"
-        hx-swap="outerHTML transition:true"
         hx-push-url="true">codex</a
       >
     </div>
@@ -95,6 +85,7 @@ import "../styles/components/nav.css";
   const NAV_SCROLL_THROTTLE_MS = 16;
   const NAV_REVEAL_TOP_OFFSET_PX = 96;
   const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
+  let last_applied_pathname = null;
 
   /**
    * @param {string} pathname_value
@@ -128,14 +119,24 @@ import "../styles/components/nav.css";
     queuer_preparator();
   };
 
-  const apply_route_active_state = () => {
+  /**
+   * @param {string | null} [pathname_override=null]
+   */
+  const apply_route_active_state = (pathname_override = null) => {
     const nav_node = document.querySelector("#desktop-nav");
 
     if (!(nav_node instanceof HTMLElement)) {
       return;
     }
 
-    const current_pathname = normalize_pathname(window.location.pathname);
+    const current_pathname = normalize_pathname(
+      pathname_override ?? window.location.pathname,
+    );
+
+    if (last_applied_pathname === current_pathname) {
+      return;
+    }
+
     const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
       nav_node.querySelectorAll("[data-nav-pill]")
     );
@@ -181,10 +182,38 @@ import "../styles/components/nav.css";
 
     if (is_home_active) {
       home_node.setAttribute("aria-current", "page");
+      last_applied_pathname = current_pathname;
       return;
     }
 
     home_node.removeAttribute("aria-current");
+    last_applied_pathname = current_pathname;
+  };
+
+  /**
+   * @param {Event} event
+   */
+  const derive_request_pathname = (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const detail_any = /** @type {any} */ (htmx_event.detail);
+    const raw_request_path =
+      detail_any?.pathInfo?.finalRequestPath ??
+      detail_any?.requestConfig?.path ??
+      detail_any?.path;
+
+    if (typeof raw_request_path === "string") {
+      return normalize_pathname(
+        new URL(raw_request_path, window.location.origin).pathname,
+      );
+    }
+
+    const trigger_node = detail_any?.elt;
+
+    if (trigger_node instanceof HTMLAnchorElement) {
+      return normalize_pathname(new URL(trigger_node.href).pathname);
+    }
+
+    return null;
   };
 
   /**
@@ -367,6 +396,44 @@ import "../styles/components/nav.css";
   init_navbar_visibility();
   apply_route_active_state();
 
+  if (!window_any.__navbar_htmx_before_request_bound) {
+    document.body?.addEventListener("htmx:beforeRequest", (event) => {
+      const request_pathname = derive_request_pathname(event);
+
+      if (!request_pathname) {
+        return;
+      }
+
+      const current_pathname = normalize_pathname(window.location.pathname);
+
+      if (request_pathname === current_pathname) {
+        return;
+      }
+
+      apply_route_active_state(request_pathname);
+    });
+
+    window_any.__navbar_htmx_before_request_bound = true;
+  }
+
+  if (!window_any.__navbar_htmx_after_swap_bound) {
+    document.body?.addEventListener("htmx:afterSwap", (event) => {
+      const htmx_event = /** @type {CustomEvent} */ (event);
+      const swap_target = htmx_event.detail?.target;
+
+      if (
+        !(swap_target instanceof HTMLElement) ||
+        swap_target.id !== "content"
+      ) {
+        return;
+      }
+
+      apply_route_active_state();
+    });
+
+    window_any.__navbar_htmx_after_swap_bound = true;
+  }
+
   if (!window_any.__navbar_route_listener_bound) {
     window.addEventListener("popstate", () => {
       apply_route_active_state();
@@ -380,7 +447,6 @@ import "../styles/components/nav.css";
       const htmx_event = /** @type {CustomEvent} */ (event);
       const load_root = htmx_event.detail?.elt ?? document;
       init_navbar_effects(load_root);
-      apply_route_active_state();
     });
 
     window_any.__navbar_htmx_listener_bound = true;
