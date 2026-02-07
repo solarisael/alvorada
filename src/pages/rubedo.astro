@@ -1,0 +1,31 @@
+---
+import IndexLayout from "../layouts/index.astro";
+
+const sample_book_slugs = ["book-of-ashes", "book-of-light", "book-of-return"];
+---
+
+<IndexLayout>
+  <section aria-label="Rubedo scaffold">
+    <article>
+      <header>
+        <p>~/ rubedo</p>
+        <h1>Rubedo</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold page for <code>/rubedo</code>. Choose a sample child book
+          page to test nested route behavior.
+        </p>
+
+        {
+          sample_book_slugs.map((book_slug) => (
+            <p>
+              <a href={`/rubedo/${book_slug}`}>Open book: {book_slug}</a>
+            </p>
+          ))
+        }
+      </div>
+    </article>
+  </section>
+</IndexLayout>

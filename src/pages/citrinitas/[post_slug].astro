@@ -1,0 +1,32 @@
+---
+import IndexLayout from "../../layouts/index.astro";
+
+export const getStaticPaths = () => {
+  return [
+    { params: { post_slug: "sun-archive" } },
+    { params: { post_slug: "golden-fragments" } },
+    { params: { post_slug: "glass-garden" } },
+  ];
+};
+
+const post_slug = Astro.params.post_slug ?? "unknown-post";
+---
+
+<IndexLayout>
+  <section aria-label="Citrinitas post scaffold">
+    <article>
+      <header>
+        <p>~/ citrinitas / {post_slug}</p>
+        <h1>Citrinitas Post</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold child page for <code>/citrinitas/{post_slug}</code>. Use this
+          to verify nested breadcrumbs and HTMX transitions.
+        </p>
+        <p><a href="/citrinitas">Back to Citrinitas index</a></p>
+      </div>
+    </article>
+  </section>
+</IndexLayout>

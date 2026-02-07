@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import "../styles/base.css";
 import "../styles/index.css";
 
+import Breadcrumbers from "../components/breadcrumbers.astro";
 import Navbar from "../components/navbar.astro";
 ---
 
@@ -15,17 +16,26 @@ import Navbar from "../components/navbar.astro";
     <title>Sol's Rest</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <script type="module">
-      import "../scripts/htmx_bootstrap.js";
-    </script>
     <script src="/js/scripts.js" type="module"></script>
   </head>
-  <Navbar />
-  <body hx-boost="true" hx-ext="idiomorph,head-support,preload,sse">
+  <body
+    hx-boost="true"
+    hx-ext="idiomorph,head-support,preload,sse"
+    hx-target="#content"
+    hx-select="#content"
+    hx-swap="outerHTML transition:true"
+    hx-push-url="true"
+  >
+    <Navbar />
     <container>
       <main id="page-main">
         <div id="content">
-          <slot />
+          <div id="main_reading_shell">
+            <div id="main_reading_container">
+              <Breadcrumbers />
+              <slot />
+            </div>
+          </div>
         </div>
 
         <footer id="footer">

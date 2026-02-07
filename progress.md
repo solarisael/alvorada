@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-06 23:58
+- Updated_utc: 2026-02-07 00:12
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -21,13 +21,13 @@
 - [ ] Implement floating fixed navbar:
   - [x] desktop variant pinned at top (magical glass + neon, center Eyes placeholder)
   - [ ] mobile variant pinned at bottom
-- [ ] Ship core sections/pages:
+- [x] Ship core sections/pages:
   - `Home / Nigredo` (introduction)
   - `Blog / Albedo` (personal writing, daily entries)
   - `Collections / Citrinitas` (highlights, image galleries)
   - `Book / Rubedo` (book projects, chapter entries)
   - `Wiki / Codex` (characters, world-building)
-- [ ] Define baseline content structure for each section (listing + detail pages).
+- [x] Define baseline content structure for each section (listing + detail pages).
 - [ ] Ensure responsive behavior and navigation consistency across desktop/mobile.
 - [ ] Apply baseline accessibility (semantic structure, keyboard-safe navigation).
 
@@ -81,8 +81,9 @@
 
 ## Phase 1 Sprint Checklist (1-2 Weeks)
 
-- [ ] Define MVP page map and IA:
-  - routes `/`, `/albedo`, `/citrinitas`, `/rubedo`, `/codex`
+- [x] Define MVP page map and IA:
+  - routes `/`, `/nigredo`, `/albedo`, `/citrinitas`, `/rubedo`, `/codex`
+  - dynamic routes `/albedo/[post_slug]`, `/citrinitas/[post_slug]`, `/rubedo/[book_slug]`, `/codex/[...entry_path]`
   - required content blocks per page
 - [ ] Build global navigation shell:
   - floating desktop top navbar
@@ -92,12 +93,16 @@
   - base layout
   - section/container spacing system
   - shared typography/content-width rules
-- [ ] Ship pages:
+- [x] Ship pages:
   - Nigredo (home)
   - Albedo (blog index MVP)
+  - Albedo post page (child)
   - Citrinitas (collections index MVP)
+  - Citrinitas post page (child)
   - Rubedo (book/chapter index MVP)
+  - Rubedo book page (child)
   - Codex (wiki index MVP)
+  - Codex entry page (variable-depth child)
 - [ ] Add baseline content model/frontmatter for entries.
 - [ ] QA responsiveness + accessibility pass.
 - [ ] Validate with:
@@ -108,9 +113,9 @@
 
 - State: in_progress
 - Branch: master
-- Head: 890a1e3
-- Scope_in: desktop navbar interaction refinements, performance optimization, and agent-rule documentation updates
-- Scope_out: mobile navbar redesign and Home/Nigredo container implementation
+- Head: 63fdff0
+- Scope_in: route scaffolding for all core/dynamic pages, breadcrumb URL theming, navbar behavior and HTMX navigation reliability
+- Scope_out: final page content authoring and full mobile-nav UX polish
 
 ## Commands
 
@@ -145,11 +150,30 @@
 - [x] Added debounced navbar pointer interaction (`16ms`) via shared performance module and smooth return-to-center motion for cursor glow - Files: `src/components/navbar.astro`, `public/js/modules/performance.js`, `src/styles/components/nav.css`
 - [x] Documented required interaction-performance policy (throttle/debounce + exceptions) for future agents - Files: `AGENTS.md`
 - [x] Scaffolded Home/Nigredo reading container inside `main` with centered layout and clamp-based sizing (`min 340px`, `max 66vw`) - Files: `src/pages/index.astro`, `src/styles/index.css`
+- [x] Moved navbar HTMX defaults from script into direct HTML attributes and removed `apply_htmx_defaults` script flow - Files: `src/components/navbar.astro`
+- [x] Reworked navbar `pointerleave` behavior to use debounced, JS-driven 420ms recenter animation with coherent pill-glow decay - Files: `src/components/navbar.astro`
+- [x] Clarified agent rule to avoid script-applied HTMX defaults except explicit edge cases - Files: `AGENTS.md`
+- [x] Replaced JS-calculated navbar recenter animation with CSS transition recenter controlled by pointer-state class toggles - Files: `src/components/navbar.astro`, `src/styles/components/nav.css`
+- [x] Added explicit AGENTS guidance to prefer CSS/native animation over JS per-frame calculations when feasible - Files: `AGENTS.md`
+- [x] Added strict site aesthetic rule doc (glass + nuanced neon + mystical/alchemical direction; Catppuccin Mocha marked temporary) - Files: `.opencode/rules/styling.md`
+- [x] Added strict typography rule doc (fluid, semantic, reading-first, CSS/Tailwind utility approach) - Files: `.opencode/rules/typography.md`
+- [x] Implemented shared main reading shell inside persistent `#content` target - Files: `src/layouts/index.astro`, `src/styles/base.css`, `src/styles/index.css`
+- [x] Migrated typography from SCSS artifacts to source-of-truth CSS with 10px min base and 768-1440 fluid interpolation - Files: `src/styles/typography.css`, `src/styles/typography.scss`, `src/styles/typography.css.map`
+- [x] Scoped global typography defaults to reading surface (`#main_reading_container`) using semantic element selectors and rhythm spacing - Files: `src/styles/typography.css`
+- [x] Updated Home/Nigredo scaffold to rely on shared container and scoped typography defaults - Files: `src/pages/index.astro`, `src/styles/index.css`
+- [x] Added breathing room below fixed navbar and implemented hide-on-down/show-on-up navbar visibility with focus-safe reveal - Files: `src/styles/index.css`, `src/styles/components/nav.css`, `src/components/navbar.astro`
+- [x] Moved breadcrumbs into shared reading container, generated URL-hierarchy breadcrumbs, and applied phase-aware accent styling with muted parents - Files: `src/layouts/index.astro`, `src/components/breadcrumbers.astro`, `src/styles/components/breadcrumbs.css`
+- [x] Scaffolded core pages and dynamic child routes with deterministic `getStaticPaths()` for static builds - Files: `src/pages/nigredo.astro`, `src/pages/albedo.astro`, `src/pages/citrinitas.astro`, `src/pages/rubedo.astro`, `src/pages/codex.astro`, `src/pages/albedo/[post_slug].astro`, `src/pages/citrinitas/[post_slug].astro`, `src/pages/rubedo/[book_slug].astro`, `src/pages/codex/[...entry_path].astro`
+- [x] Added codex category routes (`/codex/characters`, `/codex/factions`, `/codex/places`, `/codex/relics`) and category/back links for traversal testing - Files: `src/pages/codex.astro`, `src/pages/codex/[...entry_path].astro`
+- [x] Added codex to desktop/mobile navigation visual systems and breadcrumb phase accents - Files: `src/components/navbar.astro`, `src/styles/components/nav.css`, `src/styles/components/mobile-nav.css`, `src/components/breadcrumbers.astro`
+- [x] Stabilized partial navigation by using global client entry import strategy and container replacement swap mode - Files: `public/js/scripts.js`, `src/layouts/index.astro`, `src/components/navbar.astro`
+- [x] Added generalized integration/debugging rule to prioritize least-invasive fixes and evidence-first diagnosis - Files: `.opencode/rules/integration-debugging.md`
 
 ## Next
 
-1. [ ] Expand Home/Nigredo scaffold into final content sections (intro, thematic overview, CTA/navigation cues)
-2. [ ] Tune reading rhythm and vertical spacing for long-form comfort on desktop/mobile
+1. [ ] Replace scaffold placeholders with first-pass real content blocks for core pages.
+2. [ ] Add active-link visual state rules for desktop/mobile navigation.
+3. [ ] Run mobile navigation QA pass and adjust spacing/overlap behavior.
 
 ## Blockers
 
@@ -157,9 +181,10 @@
 
 ## Validation
 
-- Build: pass (`bun run build`) - 2026-02-06 23:58
-- Format: pass for latest touched files (`src/pages/index.astro`, `src/styles/index.css`, `progress.md`) - 2026-02-06 23:58
-- Tests: not_run (no test suite in project) - 2026-02-06 23:58
+- Build: pass (`bun run build`) - 2026-02-07 00:09
+- Format: pass for latest touched files (`.opencode/rules/typography.md`, `src/layouts/index.astro`, `src/styles/base.css`, `src/styles/index.css`, `src/styles/typography.css`, `src/pages/index.astro`, `progress.md`) - 2026-02-07 02:26
+- Format_repo: fail (`bunx prettier --check .`) due to pre-existing unrelated files (17 files)
+- Tests: not_run (no test suite in project) - 2026-02-07 02:30
 
 ## Decisions
 
@@ -171,11 +196,25 @@
 - 2026-02-06 23:45 - Add debounced pointer handling and eased cursor return-to-center motion - Why: keep interactions smooth while reducing high-frequency handler cost
 - 2026-02-06 23:50 - Require performance guards (`throttle`/`debounce`) for repeatable interactions in `AGENTS.md` with explicit opt-out rules - Why: establish consistent performance baseline for future sessions
 - 2026-02-06 23:57 - Start Home/Nigredo scaffolding with centered, readable container and clamp-based width constraints - Why: establish content surface for next session's page composition
+- 2026-02-06 22:34 - Remove navbar script-applied HTMX defaults and declare `hx-*` attributes directly in nav-pill markup - Why: align with preferred HTMX pattern and reduce hidden behavior
+- 2026-02-06 22:36 - Replace immediate `pointerleave` reset with debounced 420ms JS recenter easing - Why: fix overly fast return-to-center feel not governed by CSS transition timing
+- 2026-02-06 22:38 - Codify "HTML-first HTMX configuration" in `AGENTS.md` with rare edge-case exception - Why: enforce consistent, inspectable HTMX usage across sessions
+- 2026-02-06 22:47 - Shift navbar recenter to CSS-driven transition with pointer-state class toggles instead of JS interpolation - Why: keep behavior simpler, explicit, and free of animation-frame calculations
+- 2026-02-06 22:55 - Add AGENTS policy to prefer CSS/native animation over JS per-frame calculations when possible - Why: reduce complexity and runtime animation overhead
+- 2026-02-07 02:20 - Add strict styling rule with mystical/alchemical direction and Catppuccin-as-temporary guidance - Why: lock aesthetic consistency while preserving future palette flexibility
+- 2026-02-07 02:24 - Migrate typography to CSS-native source with 10px base and 768-1440 fluid interpolation - Why: simplify styling pipeline and align with Tailwind/CSS utility workflow
+- 2026-02-07 02:29 - Scope global typography defaults to `#main_reading_container` only - Why: avoid UI side effects while removing per-component content typography setup
+- 2026-02-07 23:57 - Add codex route to desktop navbar and codex character sibling route (`sol` <-> `luna`) - Why: broaden navigation-path testing across nested routes
+- 2026-02-08 00:04 - Add generic codex category routes and links - Why: validate intermediate hierarchy levels, not only leaf entries
+- 2026-02-08 00:08 - Prefer simple global client import strategy and container-replacement swap mode for reliable partial navigation - Why: reduce integration complexity and avoid duplicate container artifacts
+- 2026-02-08 00:12 - Add generalized integration/debugging rule focused on evidence-first, least-invasive fixes - Why: prevent over-engineered diagnostics and improve iteration quality
 
 ## Handoff
 
 - Summary:
-  - Desktop navbar was refined to use subtle border-led glow interactions, single-target button proximity, and prefix-specific hover glow behavior.
-  - Center icon glow now uses an orbiting comet-like arc with elastic timing; legacy background glow image layer was removed.
-  - Navbar pointer effects now use shared debounce utilities with smooth return-to-center motion, `AGENTS.md` now mandates performance guards for repeatable interactions, and Home/Nigredo container scaffolding is in place.
-- First_action_next_session: expand Home/Nigredo scaffold into concrete content sections and finalize spacing rhythm.
+  - All planned core routes and dynamic child routes are scaffolded and buildable, including codex category and variable-depth entry pages.
+  - Breadcrumbs are layout-owned, URL-driven, HTMX-safe, and phase-accented with reduced emphasis for ancestor segments.
+  - Desktop navbar includes codex and uses hide-on-down/show-on-up behavior; mobile styling now includes codex label/accent parity.
+  - Partial navigation behavior was stabilized via the existing global client entry approach and container-replacement swap mode.
+  - Added a generalized integration/debugging rule to enforce evidence-first, least-invasive changes.
+- First_action_next_session: replace scaffold copy with initial real content and tune active-link states/QA for mobile navigation.

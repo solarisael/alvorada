@@ -1,0 +1,86 @@
+---
+import IndexLayout from "../../layouts/index.astro";
+
+export const getStaticPaths = () => {
+  return [
+    { params: { entry_path: "characters" } },
+    { params: { entry_path: "characters/sol" } },
+    { params: { entry_path: "characters/luna" } },
+    { params: { entry_path: "factions" } },
+    { params: { entry_path: "factions/order-of-dawn" } },
+    { params: { entry_path: "places" } },
+    { params: { entry_path: "places/astral-garden" } },
+    { params: { entry_path: "relics" } },
+    { params: { entry_path: "relics/first-lantern" } },
+  ];
+};
+
+const entry_path_raw = Astro.params.entry_path;
+const entry_path = Array.isArray(entry_path_raw)
+  ? entry_path_raw.join("/")
+  : (entry_path_raw ?? "unknown-entry");
+const entry_segments = entry_path.split("/");
+const entry_category = entry_segments[0] ?? "";
+const is_category_page = entry_segments.length === 1;
+const category_index_href = is_category_page
+  ? null
+  : `/codex/${entry_category}`;
+const sibling_entry_href =
+  entry_path === "characters/sol"
+    ? "/codex/characters/luna"
+    : entry_path === "characters/luna"
+      ? "/codex/characters/sol"
+      : null;
+const sibling_entry_label =
+  entry_path === "characters/sol"
+    ? "luna"
+    : entry_path === "characters/luna"
+      ? "sol"
+      : "";
+---
+
+<IndexLayout>
+  <section aria-label="Codex entry scaffold">
+    <article>
+      <header>
+        <p>~/ codex / {entry_path}</p>
+        <h1>Codex Entry</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold child page for <code>/codex/{entry_path}</code>. This
+          catch-all route is intended for highly variable codex entry
+          structures.
+        </p>
+        {
+          is_category_page && (
+            <p>
+              This is a category-level codex page for{" "}
+              <code>{entry_category}</code>.
+            </p>
+          )
+        }
+        {
+          sibling_entry_href && (
+            <p>
+              <a href={sibling_entry_href}>
+                Open sibling character: {sibling_entry_label}
+              </a>
+            </p>
+          )
+        }
+        {
+          category_index_href && (
+            <p>
+              <a href={category_index_href}>
+                Back to category: {entry_category}
+              </a>
+            </p>
+          )
+        }
+        <p><a href="/codex">Back to Codex index</a></p>
+      </div>
+    </article>
+  </section>
+</IndexLayout>

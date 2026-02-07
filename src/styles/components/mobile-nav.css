@@ -47,5 +47,14 @@
         content: "rubedo";
       }
     }
+
+    &[href="/codex"] {
+      --neon-color: var(--color-ctp-lavender);
+
+      &::before,
+      &::after {
+        content: "codex";
+      }
+    }
   }
 }

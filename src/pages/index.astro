@@ -1,13 +1,10 @@
 ---
-import Breadcrumbers from "../components/breadcrumbers.astro";
 import IndexLayout from "../layouts/index.astro";
 ---
 
 <IndexLayout>
   <section id="nigredo-home-scaffold" aria-label="Home scaffold">
-    <Breadcrumbers />
-
-    <article id="nigredo-reading-container">
+    <article id="nigredo-reading-article">
       <header id="nigredo-reading-header">
         <p id="nigredo-kicker">~/ nigredo</p>
         <h1 id="nigredo-title">Home</h1>
@@ -15,10 +12,14 @@ import IndexLayout from "../layouts/index.astro";
 
       <div id="nigredo-reading-body">
         <p>
-          This container marks the start of the Home/Nigredo reading surface.
-          The next session can now focus on content blocks, narrative rhythm,
-          and page-level composition.
+          Scaffold page for <code>/</code>. Use this page to test navbar states,
+          breadcrumb updates, and HTMX transition behavior.
         </p>
+        <p><a href="/nigredo">Go to Nigredo page</a></p>
+        <p><a href="/albedo">Go to Albedo page</a></p>
+        <p><a href="/citrinitas">Go to Citrinitas page</a></p>
+        <p><a href="/rubedo">Go to Rubedo page</a></p>
+        <p><a href="/codex">Go to Codex page</a></p>
       </div>
     </article>
   </section>

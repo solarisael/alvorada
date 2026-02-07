@@ -2,106 +2,77 @@
 @import "./utils.css";
 @reference "@catppuccin/tailwindcss/mocha.css";
 
-#nav-user-bar {
-  @apply relative flex;
-  @apply items-center justify-around;
-  @apply h-auto min-w-200;
-  @apply gap-4 px-6 py-2;
-  @apply border-ctp-base rounded-full border;
-  @apply bg-ctp-mantle;
-}
-
-#nav-user-bar > div > a {
-  @apply neon-filter;
-}
-
-#middle-guy {
-  @apply w-16;
-}
-
-#icon-user {
-  @apply absolute flex;
-  @apply items-center justify-center;
-  @apply h-17 w-17 min-w-17;
-}
-
-#icon-user-core {
-  @apply neon-filter neon-filter-strong neon-filter-pulsate;
-  @apply z-20 flex;
-  @apply items-center justify-center;
-  @apply h-[85%] w-[85%];
-  @apply overflow-hidden;
-  @apply rounded-full;
-  @apply opacity-65;
-}
-
-#icon-user-photo {
-  object-fit: cover;
-  @apply h-full w-full;
-}
-
-#icon-user-shell {
-  @apply absolute z-10;
-  @apply flex;
-  @apply items-center justify-center;
-  @apply h-full w-full;
-  @apply overflow-hidden;
-  @apply rounded-full;
-}
-
-#icon-user-shell-inner {
-  @apply absolute z-10;
-  @apply flex;
-  @apply items-center justify-center;
-  @apply h-full w-full;
-}
-
-#icon-user-glow {
-  object-fit: cover;
-  @apply absolute z-0;
-}
-
 #page-main {
-  @apply hidden;
-  @apply grow;
-  @apply flex-col;
-  @apply gap-1;
+  @apply flex grow flex-col;
+  @apply gap-2;
+  @apply pt-24 md:pt-28;
 }
 
 #content {
-  @apply flex flex-col;
-  @apply grow;
-  @apply px-4 py-2;
-  @apply border-ctp-lavender-400/50 border-2;
+  @apply flex grow flex-col;
+  @apply px-2 py-2 md:px-3 md:py-2;
+  @apply border-2;
+
+  border-color: color-mix(in oklch, var(--color-ctp-lavender) 30%, transparent);
+  background:
+    radial-gradient(
+      120% 90% at 50% 0%,
+      color-mix(in oklch, var(--color-ctp-lavender) 8%, transparent),
+      transparent 72%
+    ),
+    linear-gradient(
+      165deg,
+      color-mix(in oklch, var(--color-ctp-mantle) 42%, transparent),
+      color-mix(in oklch, var(--color-ctp-crust) 32%, transparent)
+    );
+  backdrop-filter: blur(5px);
+}
+
+#main_reading_shell {
+  @apply flex w-full grow;
+  @apply justify-center;
+  @apply py-4 md:py-6;
+}
+
+#main_reading_container {
+  @apply w-full;
+  @apply rounded-2xl border;
+  @apply px-5 py-6 md:px-8 md:py-8;
+
+  inline-size: clamp(340px, 58vw, 66vw);
+  border-color: color-mix(in oklch, var(--color-ctp-lavender) 36%, transparent);
+  background:
+    radial-gradient(
+      180% 120% at 50% 0%,
+      color-mix(in oklch, var(--color-citrinitas) 9%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in oklch, var(--color-ctp-mantle) 56%, transparent),
+      color-mix(in oklch, var(--color-ctp-base) 38%, transparent)
+    );
+  box-shadow:
+    0 20px 44px -34px rgb(0 0 0 / 0.9),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(9px);
 }
 
 #nigredo-home-scaffold {
   @apply flex w-full grow flex-col;
-  @apply gap-6;
+  @apply gap-6 md:gap-8;
 }
 
-#nigredo-reading-container {
-  @apply mx-auto w-full;
-  @apply rounded-2xl border;
-  @apply px-6 py-7 md:px-8 md:py-9;
-
-  inline-size: clamp(340px, 58vw, 66vw);
-  border-color: color-mix(in oklch, var(--color-ctp-lavender) 36%, transparent);
-  background-color: color-mix(
-    in oklch,
-    var(--color-ctp-mantle) 56%,
-    transparent
-  );
+#nigredo-reading-article {
+  @apply flex flex-col;
 }
 
 #nigredo-reading-header {
   @apply mb-5 flex flex-col;
-  @apply gap-1;
+  @apply gap-2;
 }
 
 #nigredo-kicker {
-  @apply text-sm;
-
   color: color-mix(
     in oklch,
     var(--color-nigredo) 65%,
@@ -110,21 +81,28 @@
 }
 
 #nigredo-title {
-  @apply text-3xl font-semibold md:text-4xl;
+  @apply font-semibold;
 }
 
 #nigredo-reading-body {
-  @apply text-base leading-8 md:text-lg;
+  @apply flex flex-col;
+  @apply gap-4;
 }
 
 #footer {
-  @apply flex;
-  @apply items-center justify-center;
-  @apply h-20;
+  @apply flex h-20 items-center justify-center;
   @apply mb-30 md:mb-0;
-  @apply border-ctp-lavender-400/50 border-2;
+  @apply border-2;
+
+  border-color: color-mix(in oklch, var(--color-ctp-lavender) 30%, transparent);
 }
 
 #footer a {
   @apply text-center;
+}
+
+@media (max-width: 768px) {
+  #main_reading_container {
+    inline-size: min(100%, 680px);
+  }
 }

@@ -1,0 +1,49 @@
+---
+import IndexLayout from "../layouts/index.astro";
+
+const sample_entry_paths = [
+  "characters/sol",
+  "characters/luna",
+  "factions/order-of-dawn",
+  "places/astral-garden",
+  "relics/first-lantern",
+];
+
+const sample_category_paths = ["characters", "factions", "places", "relics"];
+---
+
+<IndexLayout>
+  <section aria-label="Codex scaffold">
+    <article>
+      <header>
+        <p>~/ codex</p>
+        <h1>Codex</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold page for <code>/codex</code>. Choose a sample entry path to
+          test variable-depth codex routing.
+        </p>
+
+        {
+          sample_category_paths.map((category_path) => (
+            <p>
+              <a href={`/codex/${category_path}`}>
+                Open category: {category_path}
+              </a>
+            </p>
+          ))
+        }
+
+        {
+          sample_entry_paths.map((entry_path) => (
+            <p>
+              <a href={`/codex/${entry_path}`}>Open entry: {entry_path}</a>
+            </p>
+          ))
+        }
+      </div>
+    </article>
+  </section>
+</IndexLayout>

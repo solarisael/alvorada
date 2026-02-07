@@ -1,13 +1,224 @@
-@supports not (font-size: clamp(0, 1rem, 2rem)) {
-  *,
-  html {
-    font-size: clamp(11px, 11px + 3px * (100vw - 768px) / (1440px - 768px), 14px);
-    line-height: 11px;
-  }
-}
-:where(*, :root) {
-  font-size: clamp(11px, 11px + 3px * (100vw - 768px) / (1440px - 768px), 14px);
-  line-height: clamp(11px, (11px + 3px * (100vw - 768px) / (1440px - 768px)) * 1, 16.8px);
+:root {
+  --type_min_viewport: 768;
+  --type_max_viewport: 1440;
+  --type_viewport_range: calc(
+    var(--type_max_viewport) - var(--type_min_viewport)
+  );
+  --type_fluid_progress: clamp(
+    0,
+    calc(
+      (100vw - (var(--type_min_viewport) * 1px)) /
+        (var(--type_viewport_range) * 1px)
+    ),
+    1
+  );
+
+  --font_size_min: 10;
+  --font_size_max: 12;
+
+  --font_size_body: clamp(
+    calc(var(--font_size_min) * 1px),
+    calc(
+      (var(--font_size_min) * 1px) +
+        (
+          (var(--font_size_max) - var(--font_size_min)) *
+            var(--type_fluid_progress) * 1px
+        )
+    ),
+    calc(var(--font_size_max) * 1px)
+  );
+
+  --line_height_body: clamp(
+    1.45,
+    calc(1.45 + (0.2 * var(--type_fluid_progress))),
+    1.65
+  );
+
+  --font_size_step_n2: clamp(
+    8px,
+    calc(8px + (1px * var(--type_fluid_progress))),
+    9px
+  );
+  --font_size_step_n1: clamp(
+    9px,
+    calc(9px + (1px * var(--type_fluid_progress))),
+    10px
+  );
+  --font_size_step_0: var(--font_size_body);
+  --font_size_step_1: clamp(
+    12px,
+    calc(12px + (2px * var(--type_fluid_progress))),
+    14px
+  );
+  --font_size_step_2: clamp(
+    14px,
+    calc(14px + (4px * var(--type_fluid_progress))),
+    18px
+  );
+  --font_size_step_3: clamp(
+    18px,
+    calc(18px + (6px * var(--type_fluid_progress))),
+    24px
+  );
+  --font_size_step_4: clamp(
+    24px,
+    calc(24px + (8px * var(--type_fluid_progress))),
+    32px
+  );
+  --font_size_step_5: clamp(
+    30px,
+    calc(30px + (10px * var(--type_fluid_progress))),
+    40px
+  );
+
+  --line_height_tight: 1.2;
+  --line_height_heading: 1.24;
+  --line_height_relaxed: 1.7;
 }
 
-/*# sourceMappingURL=typography.css.map */
+html {
+  font-size: var(--font_size_body);
+  line-height: var(--line_height_body);
+}
+
+body {
+  font-size: var(--font_size_step_0);
+  line-height: var(--line_height_body);
+}
+
+#main_reading_container {
+  font-size: var(--font_size_step_0);
+  line-height: var(--line_height_body);
+}
+
+#main_reading_container :where(h1),
+.text_step_5 {
+  font-size: var(--font_size_step_5);
+  line-height: var(--line_height_tight);
+}
+
+#main_reading_container :where(h2),
+.text_step_4 {
+  font-size: var(--font_size_step_4);
+  line-height: var(--line_height_heading);
+}
+
+#main_reading_container :where(h3),
+.text_step_3 {
+  font-size: var(--font_size_step_3);
+  line-height: var(--line_height_heading);
+}
+
+#main_reading_container :where(h4),
+.text_step_2 {
+  font-size: var(--font_size_step_2);
+  line-height: var(--line_height_heading);
+}
+
+#main_reading_container :where(h5),
+.text_step_1 {
+  font-size: var(--font_size_step_1);
+  line-height: 1.35;
+}
+
+#main_reading_container :where(h6),
+.text_step_0,
+#main_reading_container :where(p, li, dt, dd, th, td, a, blockquote) {
+  font-size: var(--font_size_step_0);
+  line-height: var(--line_height_body);
+}
+
+#main_reading_container :where(small),
+.text_step_n1 {
+  font-size: var(--font_size_step_n1);
+  line-height: 1.4;
+}
+
+#main_reading_container :where(p + p) {
+  margin-top: 1em;
+}
+
+#main_reading_container :where(ul, ol, blockquote, pre, table, dl) {
+  margin-top: 1.1em;
+}
+
+#main_reading_container :where(h1, h2, h3, h4, h5, h6) {
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.text_step_n2 {
+  font-size: var(--font_size_step_n2);
+  line-height: 1.35;
+}
+
+.text_body {
+  font-size: var(--font_size_step_0);
+  line-height: var(--line_height_body);
+}
+
+.text_lead {
+  font-size: var(--font_size_step_1);
+  line-height: var(--line_height_relaxed);
+}
+
+.text_kicker {
+  font-size: var(--font_size_step_n1);
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.text_caption {
+  font-size: var(--font_size_step_n2);
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+}
+
+@utility text_body {
+  font-size: var(--font_size_step_0);
+  line-height: var(--line_height_body);
+}
+
+@utility text_lead {
+  font-size: var(--font_size_step_1);
+  line-height: var(--line_height_relaxed);
+}
+
+@utility text_kicker {
+  font-size: var(--font_size_step_n1);
+  line-height: 1.45;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@utility text_caption {
+  font-size: var(--font_size_step_n2);
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+}
+
+@utility text_step_1 {
+  font-size: var(--font_size_step_1);
+  line-height: 1.35;
+}
+
+@utility text_step_2 {
+  font-size: var(--font_size_step_2);
+  line-height: var(--line_height_heading);
+}
+
+@utility text_step_3 {
+  font-size: var(--font_size_step_3);
+  line-height: var(--line_height_heading);
+}
+
+@utility text_step_4 {
+  font-size: var(--font_size_step_4);
+  line-height: var(--line_height_heading);
+}
+
+@utility text_step_5 {
+  font-size: var(--font_size_step_5);
+  line-height: var(--line_height_tight);
+}

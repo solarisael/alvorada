@@ -51,9 +51,9 @@ body {
 }
 
 main {
-  @apply hidden grow flex-col gap-1;
+  @apply flex grow flex-col gap-1;
 }
 
 #content {
-  @apply border-ctp-lavender-400/50 flex grow flex-col border-2 px-4 py-2;
+  @apply flex grow flex-col;
 }

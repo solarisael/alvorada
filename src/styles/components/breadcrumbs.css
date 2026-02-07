@@ -2,74 +2,82 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #breadcrumbers_xd {
-  @apply flex;
+  --crumb_theme_color: var(--color-nigredo);
+  --crumb_parent_color: color-mix(
+    in oklch,
+    var(--color-ctp-subtext0) 75%,
+    var(--crumb_theme_color)
+  );
 
-  ul {
-    @apply flex items-center justify-between gap-1;
-    @apply grow-0;
-    @apply relative;
+  @apply relative z-10 flex;
+  @apply mb-3 md:mb-4;
 
-    > li {
-      @apply flex items-center justify-center;
+  ol {
+    @apply flex items-center;
+    @apply gap-1.5 md:gap-2;
+    @apply min-w-0;
+  }
 
-      &:not(:nth-last-child(1)) {
-        @apply flex items-center justify-center;
+  li {
+    @apply flex items-center;
+    @apply min-w-0;
+  }
 
-        > a::after {
-          content: "\\\\";
+  li:not(:last-child)::after {
+    content: "/";
 
-          @apply flex items-center justify-center;
-          @apply ml-1;
-          @apply text-gray-500;
-        }
-      }
+    @apply ml-1.5 md:ml-2;
+    @apply text-xs md:text-sm;
 
-      a {
-        @apply flex items-center justify-center;
+    color: color-mix(in oklch, var(--crumb_parent_color) 70%, transparent);
+    opacity: 0.72;
+  }
 
-        filter: opacity(0.75);
+  a {
+    @apply inline-flex items-center;
+    @apply text-xs md:text-sm;
+    @apply lowercase;
+    @apply rounded px-1.5 py-0.5;
+    @apply transition;
 
-        &[href="/"] {
-          @apply text-gray-500;
-        }
+    color: var(--crumb_parent_color);
+    opacity: 0.64;
+    filter: saturate(0.7);
+    text-shadow: 0 0 0 transparent;
+    transition-property: opacity, filter, color, text-shadow, background-color;
+    transition-duration: 240ms;
+    transition-timing-function: ease;
+  }
 
-        &[href="/albedo"] {
-          @apply text-gray-50;
-        }
+  li.is-parent a:hover,
+  li.is-parent a:focus-visible {
+    @apply outline-none;
 
-        &[href="/citrinitas"] {
-          @apply text-yellow-500;
+    opacity: 0.88;
+    filter: saturate(0.9);
+    color: color-mix(
+      in oklch,
+      var(--crumb_theme_color) 35%,
+      var(--color-ctp-text)
+    );
+    background-color: color-mix(
+      in oklch,
+      var(--crumb_theme_color) 10%,
+      transparent
+    );
+  }
 
-          &::after {
-            @apply text-yellow-500;
-          }
-        }
+  li.is-current a {
+    color: var(--crumb_theme_color);
+    opacity: 1;
+    filter: saturate(1.06);
+    text-shadow: 0 0 14px
+      color-mix(in oklch, var(--crumb_theme_color) 30%, transparent);
+  }
+}
 
-        &[href="/rubedo"] {
-          @apply text-red-500;
-        }
-
-        &[href="/nigredo"] {
-          @apply text-gray-500;
-          @apply text-shadow-gray-50/50;
-
-          text-shadow: 0px 0px 1px var(--tw-text-shadow-color, #00000026);
-
-          &::after {
-            @apply text-gray-800;
-          }
-        }
-
-        &[href$="gallery"] {
-          @apply text-yellow-800;
-        }
-      }
-
-      &:nth-last-child(1) {
-        a {
-          filter: opacity(1);
-        }
-      }
-    }
+@media (prefers-reduced-motion: reduce) {
+  #breadcrumbers_xd a {
+    transition: none;
   }
 }

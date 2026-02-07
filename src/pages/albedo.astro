@@ -1,0 +1,35 @@
+---
+import IndexLayout from "../layouts/index.astro";
+
+const sample_post_slugs = [
+  "first-lantern",
+  "midnight-notes",
+  "ritual-of-clarity",
+];
+---
+
+<IndexLayout>
+  <section aria-label="Albedo scaffold">
+    <article>
+      <header>
+        <p>~/ albedo</p>
+        <h1>Albedo</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold page for <code>/albedo</code>. Choose a sample child post to
+          test nested breadcrumb hierarchy.
+        </p>
+
+        {
+          sample_post_slugs.map((post_slug) => (
+            <p>
+              <a href={`/albedo/${post_slug}`}>Open post: {post_slug}</a>
+            </p>
+          ))
+        }
+      </div>
+    </article>
+  </section>
+</IndexLayout>

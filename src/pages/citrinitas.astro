@@ -1,0 +1,31 @@
+---
+import IndexLayout from "../layouts/index.astro";
+
+const sample_post_slugs = ["sun-archive", "golden-fragments", "glass-garden"];
+---
+
+<IndexLayout>
+  <section aria-label="Citrinitas scaffold">
+    <article>
+      <header>
+        <p>~/ citrinitas</p>
+        <h1>Citrinitas</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold page for <code>/citrinitas</code>. Choose a sample child post
+          to validate transition and breadcrumb depth.
+        </p>
+
+        {
+          sample_post_slugs.map((post_slug) => (
+            <p>
+              <a href={`/citrinitas/${post_slug}`}>Open post: {post_slug}</a>
+            </p>
+          ))
+        }
+      </div>
+    </article>
+  </section>
+</IndexLayout>

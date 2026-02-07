@@ -21,6 +21,27 @@ Follow these instructions unless a human explicitly says otherwise.
   - `tailwind.config.js`
   - `.prettierrc`
 
+## Current Route Map
+
+- Core pages:
+  - `/`
+  - `/nigredo`
+  - `/albedo`
+  - `/citrinitas`
+  - `/rubedo`
+  - `/codex`
+- Dynamic scaffold pages:
+  - `/albedo/[post_slug]`
+  - `/citrinitas/[post_slug]`
+  - `/rubedo/[book_slug]`
+  - `/codex/[...entry_path]`
+
+### Dynamic route policy
+
+- Until a full content system is implemented, dynamic page files must provide deterministic `getStaticPaths()` entries so static builds succeed.
+- Keep route params in snake_case (`post_slug`, `book_slug`, `entry_path`).
+- URL hierarchy is the source of truth for breadcrumbs and page-theme accent behavior.
+
 ---
 
 ## Tooling and Commands
@@ -88,7 +109,7 @@ Use these patterns:
 
 ## Repo-Specific Rules (from local agent rules)
 
-The repo contains `.opencode/rules/project.md` and `.opencode/rules/separate-apply-rules-by-category.md`.
+The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, and `.opencode/rules/integration-debugging.md`.
 Honor them when generating code.
 
 ### Required
@@ -148,6 +169,7 @@ Honor them when generating code.
 
 ### Interaction performance (required)
 
+- Prefer CSS/native browser transitions and keyframes for visual animations when they can achieve the behavior cleanly; avoid JS-driven per-frame animation calculations in those cases.
 - For constant/repeatable UI interactions that include movement (e.g. `pointermove`, `scroll`, `resize`, drag, rapid input, repeated hover effects), use `throttle` from `public/js/modules/performance.js`.
 - For constant/repeatable UI interactions that include buttons or less frequent events (e.g. `click`, `mouseleave`, `mouseout`, `mouseenter`), use debounce from `public/js/modules/performance.js`.
 - Before using them, initialize queue state with `queuer_preparator()` once per page lifecycle (guarded to avoid repeated initialization).
@@ -183,6 +205,8 @@ Honor them when generating code.
 - Keep reusable non-DOM logic in JS modules.
 - Keep styling in `src/styles/**` (or component-local style blocks when justified).
 - Prefer HTMX for server-driven fragment interactions.
+- Define HTMX behavior directly in HTML attributes (`hx-*`) by default; do not apply HTMX defaults via scripts.
+- Only use script-driven HTMX attribute/config setup for rare edge cases that cannot be expressed cleanly in markup.
 - Keep `href` fallback when using HTMX attributes on links/buttons.
 - Default HTMX navigation swaps to `#content`; allow edge-case overrides via `data-hx-target`, `data-hx-swap`, and `data-hx-select`.
 - Re-initialize component-level interactive scripts after HTMX updates (e.g., `htmx:load`).

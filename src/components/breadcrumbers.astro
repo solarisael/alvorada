@@ -1,13 +1,69 @@
-<div id="breadcrumbers_xd">
-  <ul>
-    <li>
-      <a href="/home">test</a>
-    </li>
-    <li>
-      <a href="/citrinitas">test</a>
-    </li>
-    <li>
-      <a href="/sun-gallery">test</a>
-    </li>
-  </ul>
-</div>
+---
+import "../styles/components/breadcrumbs.css";
+
+const phase_color_by_name = {
+  nigredo: "var(--color-nigredo)",
+  albedo: "var(--color-albedo)",
+  citrinitas: "var(--color-citrinitas)",
+  rubedo: "var(--color-rubedo)",
+  codex: "var(--color-ctp-lavender)",
+};
+
+const pathname_raw = Astro.url.pathname;
+const pathname = pathname_raw.replace(/\/+$/, "") || "/";
+const path_segments = pathname === "/" ? [] : pathname.slice(1).split("/");
+
+const active_phase =
+  path_segments[0] in phase_color_by_name ? path_segments[0] : "nigredo";
+
+/**
+ * @param {string} segment
+ */
+const segment_to_label = (segment) => {
+  const decoded_segment = decodeURIComponent(segment);
+
+  return decoded_segment.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+};
+
+const crumb_items = [{ href: "/", label: "home" }];
+
+let current_path = "";
+
+path_segments.forEach((segment) => {
+  current_path += `/${segment}`;
+
+  crumb_items.push({
+    href: current_path,
+    label: segment_to_label(segment),
+  });
+});
+
+const current_crumb_href = crumb_items.at(-1)?.href ?? "/";
+const active_theme_color = phase_color_by_name[active_phase];
+---
+
+<nav
+  id="breadcrumbers_xd"
+  aria-label="Breadcrumb"
+  data-phase={active_phase}
+  style={`--crumb_theme_color: ${active_theme_color};`}
+>
+  <ol>
+    {
+      crumb_items.map((crumb_item) => {
+        const is_current = crumb_item.href === current_crumb_href;
+
+        return (
+          <li class={is_current ? "is-current" : "is-parent"}>
+            <a
+              href={crumb_item.href}
+              aria-current={is_current ? "page" : undefined}
+            >
+              {crumb_item.label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ol>
+</nav>

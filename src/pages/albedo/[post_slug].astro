@@ -1,0 +1,32 @@
+---
+import IndexLayout from "../../layouts/index.astro";
+
+export const getStaticPaths = () => {
+  return [
+    { params: { post_slug: "first-lantern" } },
+    { params: { post_slug: "midnight-notes" } },
+    { params: { post_slug: "ritual-of-clarity" } },
+  ];
+};
+
+const post_slug = Astro.params.post_slug ?? "unknown-post";
+---
+
+<IndexLayout>
+  <section aria-label="Albedo post scaffold">
+    <article>
+      <header>
+        <p>~/ albedo / {post_slug}</p>
+        <h1>Albedo Post</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold child page for <code>/albedo/{post_slug}</code>. Use this to
+          verify nested breadcrumbs and HTMX transition behavior.
+        </p>
+        <p><a href="/albedo">Back to Albedo index</a></p>
+      </div>
+    </article>
+  </section>
+</IndexLayout>

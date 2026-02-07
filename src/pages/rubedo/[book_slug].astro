@@ -1,0 +1,32 @@
+---
+import IndexLayout from "../../layouts/index.astro";
+
+export const getStaticPaths = () => {
+  return [
+    { params: { book_slug: "book-of-ashes" } },
+    { params: { book_slug: "book-of-light" } },
+    { params: { book_slug: "book-of-return" } },
+  ];
+};
+
+const book_slug = Astro.params.book_slug ?? "unknown-book";
+---
+
+<IndexLayout>
+  <section aria-label="Rubedo book scaffold">
+    <article>
+      <header>
+        <p>~/ rubedo / {book_slug}</p>
+        <h1>Rubedo Book</h1>
+      </header>
+
+      <div>
+        <p>
+          Scaffold child page for <code>/rubedo/{book_slug}</code>. Use this to
+          validate nested breadcrumbs and swap transitions.
+        </p>
+        <p><a href="/rubedo">Back to Rubedo index</a></p>
+      </div>
+    </article>
+  </section>
+</IndexLayout>

@@ -2,14 +2,28 @@
 import "../styles/components/nav.css";
 ---
 
-<nav id="desktop-nav" class="navbar-preset-soft" aria-label="Primary">
+<nav id="desktop-nav" class="navbar-preset-rich" aria-label="Primary">
   <div id="nav-user-bar" class="nav-rail" data-nav-rail>
     <div class="nav-links" aria-label="Left navigation group">
-      <a class="nav-pill" data-nav-pill data-phase="nigredo" href="/nigredo"
-        >nigredo</a
+      <a
+        class="nav-pill"
+        data-nav-pill
+        data-phase="nigredo"
+        href="/nigredo"
+        hx-get="/nigredo"
+        hx-target="#content"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true">nigredo</a
       >
-      <a class="nav-pill" data-nav-pill data-phase="albedo" href="/albedo"
-        >albedo</a
+      <a
+        class="nav-pill"
+        data-nav-pill
+        data-phase="albedo"
+        href="/albedo"
+        hx-get="/albedo"
+        hx-target="#content"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true">albedo</a
       >
     </div>
 
@@ -34,20 +48,49 @@ import "../styles/components/nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="citrinitas"
-        href="/citrinitas">citrinitas</a
+        href="/citrinitas"
+        hx-get="/citrinitas"
+        hx-target="#content"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true">citrinitas</a
       >
-      <a class="nav-pill" data-nav-pill data-phase="rubedo" href="/rubedo"
-        >rubedo</a
+      <a
+        class="nav-pill"
+        data-nav-pill
+        data-phase="rubedo"
+        href="/rubedo"
+        hx-get="/rubedo"
+        hx-target="#content"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true">rubedo</a
+      >
+      <a
+        class="nav-pill"
+        data-nav-pill
+        data-phase="codex"
+        href="/codex"
+        hx-get="/codex"
+        hx-target="#content"
+        hx-swap="outerHTML transition:true"
+        hx-push-url="true">codex</a
       >
     </div>
   </div>
 </nav>
 
 <script is:inline type="module">
-  import { throttle, queuer_preparator } from "/js/modules/performance.js";
+  import {
+    debounce,
+    throttle,
+    queuer_preparator,
+  } from "/js/modules/performance.js";
 
   const window_any = /** @type {any} */ (window);
   const POINTER_MOVE_DEBOUNCE_MS = 16;
+  const POINTER_LEAVE_DEBOUNCE_MS = 16;
+  const NAV_SCROLL_THROTTLE_MS = 16;
+  const NAV_REVEAL_TOP_OFFSET_PX = 96;
+  const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
 
   const ensure_action_queuer = () => {
     if (window_any.action_queuer) {
@@ -105,34 +148,6 @@ import "../styles/components/nav.css";
   };
 
   /**
-   * @param {HTMLElement} pill_node
-   */
-  const apply_htmx_defaults = (pill_node) => {
-    const href = pill_node.getAttribute("href");
-    const override_target = pill_node.dataset.hxTarget;
-    const override_swap = pill_node.dataset.hxSwap;
-    const override_select = pill_node.dataset.hxSelect;
-
-    if (href && !pill_node.getAttribute("hx-get")) {
-      pill_node.setAttribute("hx-get", href);
-    }
-
-    pill_node.setAttribute("hx-target", override_target ?? "#content");
-    pill_node.setAttribute(
-      "hx-swap",
-      override_swap ?? "innerHTML transition:true",
-    );
-
-    if (!pill_node.getAttribute("hx-push-url")) {
-      pill_node.setAttribute("hx-push-url", "true");
-    }
-
-    if (override_select) {
-      pill_node.setAttribute("hx-select", override_select);
-    }
-  };
-
-  /**
    * @param {Document | Element} [root_node=document]
    */
   const init_navbar_effects = (root_node = document) => {
@@ -157,22 +172,26 @@ import "../styles/components/nav.css";
         return;
       }
 
-      pill_nodes.forEach((pill_node) => {
-        apply_htmx_defaults(pill_node);
-      });
-
       const move_debounce_name = `nav_rail_move_${Math.random().toString(36).slice(2)}`;
+      const leave_debounce_name = `nav_rail_leave_${Math.random().toString(36).slice(2)}`;
+      let is_pointer_inside = false;
 
       const apply_pointer_effects = (client_x, client_y) => {
         const rail_box = nav_rail.getBoundingClientRect();
         const cursor_x = client_x - rail_box.left;
         const cursor_y = client_y - rail_box.top;
 
+        nav_rail.classList.add("is-pointer-active");
         nav_rail.style.setProperty("--cursor_x", `${cursor_x}px`);
         nav_rail.style.setProperty("--cursor_y", `${cursor_y}px`);
 
         update_pill_glow(pill_nodes, client_x, client_y);
       };
+
+      nav_rail.addEventListener("pointerenter", () => {
+        is_pointer_inside = true;
+        nav_rail.classList.add("is-pointer-active");
+      });
 
       nav_rail.addEventListener("pointermove", (event) => {
         const pointer_event = /** @type {PointerEvent} */ (event);
@@ -186,19 +205,79 @@ import "../styles/components/nav.css";
       });
 
       nav_rail.addEventListener("pointerleave", () => {
-        nav_rail.style.setProperty("--cursor_x", "50%");
-        nav_rail.style.setProperty("--cursor_y", "50%");
+        is_pointer_inside = false;
 
-        reset_pill_glow(pill_nodes);
+        debounce(
+          () => {
+            if (is_pointer_inside) {
+              return;
+            }
+
+            nav_rail.classList.remove("is-pointer-active");
+            nav_rail.style.setProperty("--cursor_x", "50%");
+            nav_rail.style.setProperty("--cursor_y", "50%");
+            reset_pill_glow(pill_nodes);
+          },
+          POINTER_LEAVE_DEBOUNCE_MS,
+          leave_debounce_name,
+        );
       });
     });
+  };
 
-    if (window_any.htmx) {
-      window_any.htmx.process(root_node);
+  const init_navbar_visibility = () => {
+    if (window_any.__navbar_visibility_listener_bound) {
+      return;
     }
+
+    const nav_node = document.querySelector("#desktop-nav");
+
+    if (!(nav_node instanceof HTMLElement)) {
+      return;
+    }
+
+    ensure_action_queuer();
+
+    let last_scroll_y = window.scrollY;
+    const scroll_throttle_name = `nav_scroll_${Math.random().toString(36).slice(2)}`;
+
+    const update_nav_visibility = () => {
+      const current_scroll_y = window.scrollY;
+
+      if (current_scroll_y <= NAV_REVEAL_TOP_OFFSET_PX) {
+        nav_node.classList.remove("is-nav-hidden");
+        last_scroll_y = current_scroll_y;
+        return;
+      }
+
+      const scroll_delta = current_scroll_y - last_scroll_y;
+
+      if (Math.abs(scroll_delta) < NAV_SCROLL_DELTA_THRESHOLD_PX) {
+        return;
+      }
+
+      const should_hide_nav = scroll_delta > 0;
+      nav_node.classList.toggle("is-nav-hidden", should_hide_nav);
+      last_scroll_y = current_scroll_y;
+    };
+
+    nav_node.addEventListener("focusin", () => {
+      nav_node.classList.remove("is-nav-hidden");
+    });
+
+    window.addEventListener("scroll", () => {
+      throttle(
+        update_nav_visibility,
+        NAV_SCROLL_THROTTLE_MS,
+        scroll_throttle_name,
+      );
+    });
+
+    window_any.__navbar_visibility_listener_bound = true;
   };
 
   init_navbar_effects();
+  init_navbar_visibility();
 
   if (!window_any.__navbar_htmx_listener_bound) {
     document.body?.addEventListener("htmx:load", (event) => {
