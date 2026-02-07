@@ -45,6 +45,10 @@
   --pill_text: color-mix(in oklch, var(--color-ctp-text) 88%, white);
   --pill_glow_scale: 1;
   --pill_transition: 260ms;
+  --pill_active_tint_mix: 88%;
+  --pill_active_tint_target: white;
+  --pill_active_border_mix: 32%;
+  --pill_active_glow_strength: 0.22;
 
   --center_shell_border: color-mix(
     in oklch,
@@ -98,6 +102,31 @@
   --rail_glass_blur: 20px;
   --rail_light_opacity: 0.26;
   --pill_glow_scale: 1.25;
+}
+
+#desktop-nav.route-active-tone-subtle {
+  --pill_active_tint_mix: 94%;
+  --pill_active_tint_target: color-mix(
+    in oklch,
+    var(--color-ctp-surface1) 72%,
+    var(--neon_color)
+  );
+  --pill_active_border_mix: 26%;
+  --pill_active_glow_strength: 0.18;
+}
+
+#desktop-nav.route-active-tone-medium {
+  --pill_active_tint_mix: 86%;
+  --pill_active_tint_target: color-mix(in oklch, white 45%, var(--neon_color));
+  --pill_active_border_mix: 36%;
+  --pill_active_glow_strength: 0.24;
+}
+
+#desktop-nav.route-active-tone-strong {
+  --pill_active_tint_mix: 78%;
+  --pill_active_tint_target: color-mix(in oklch, white 32%, var(--neon_color));
+  --pill_active_border_mix: 44%;
+  --pill_active_glow_strength: 0.3;
 }
 
 #nav-user-bar {
@@ -167,7 +196,9 @@
 }
 
 .nav-pill {
-  --pill_glow: 0;
+  --pill_pointer_glow: 0;
+  --pill_active_glow: 0;
+  --pill_effective_glow: max(var(--pill_pointer_glow), var(--pill_active_glow));
   --neon_color: color-mix(in oklch, var(--color-ctp-lavender) 45%, transparent);
 
   @apply relative;
@@ -184,7 +215,7 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.16),
     0 8px 20px -18px rgb(0 0 0 / 0.9),
-    0 0 calc(16px * var(--pill_glow) * var(--pill_glow_scale))
+    0 0 calc(16px * var(--pill_effective_glow) * var(--pill_glow_scale))
       color-mix(in oklch, var(--neon_color) 58%, transparent);
   transition:
     transform var(--pill_transition) ease,
@@ -212,8 +243,32 @@
   @apply border;
 
   border-color: color-mix(in oklch, var(--neon_color) 76%, transparent);
-  opacity: calc(var(--pill_glow) * 0.68);
+  opacity: calc(var(--pill_effective_glow) * 0.68);
   transition: opacity var(--pill_transition) ease;
+}
+
+.nav-pill.is-route-active {
+  --pill_active_glow: var(--pill_active_glow_strength);
+
+  border-color: color-mix(
+    in oklch,
+    var(--neon_color) var(--pill_active_border_mix),
+    var(--pill_border)
+  );
+  background-color: color-mix(
+    in oklch,
+    var(--pill_background) var(--pill_active_tint_mix),
+    var(--pill_active_tint_target)
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 9px 22px -20px rgb(0 0 0 / 0.95),
+    0 0 calc(18px * var(--pill_glow_scale))
+      color-mix(in oklch, var(--neon_color) 48%, transparent);
+}
+
+.nav-pill.is-route-active::before {
+  color: color-mix(in oklch, var(--neon_color) 46%, var(--color-ctp-overlay0));
 }
 
 .nav-pill:hover,
@@ -226,7 +281,8 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.2),
     0 10px 24px -20px rgb(0 0 0 / 0.95),
-    0 0 calc(22px * (0.14 + var(--pill_glow)) * var(--pill_glow_scale))
+    0 0
+      calc(22px * (0.14 + var(--pill_effective_glow)) * var(--pill_glow_scale))
       color-mix(in oklch, var(--neon_color) 68%, transparent);
 }
 
@@ -294,6 +350,10 @@
   filter: drop-shadow(
     0 0 8px color-mix(in oklch, var(--color-citrinitas) 62%, transparent)
   );
+}
+
+#icon-user.is-route-active::before {
+  opacity: 0.46;
 }
 
 #icon-user:hover::before,

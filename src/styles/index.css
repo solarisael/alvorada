@@ -13,6 +13,8 @@
   @apply px-2 py-2 md:px-3 md:py-2;
   @apply border-2;
 
+  view-transition-name: page_content;
+
   border-color: color-mix(in oklch, var(--color-ctp-lavender) 30%, transparent);
   background:
     radial-gradient(
@@ -26,6 +28,60 @@
       color-mix(in oklch, var(--color-ctp-crust) 32%, transparent)
     );
   backdrop-filter: blur(5px);
+}
+
+body.page-transition-breath-subtle {
+  --page_fade_out_ms: 160ms;
+  --page_fade_gap_ms: 60ms;
+  --page_fade_in_ms: 220ms;
+}
+
+body.page-transition-breath-noticeable {
+  --page_fade_out_ms: 170ms;
+  --page_fade_gap_ms: 105ms;
+  --page_fade_in_ms: 230ms;
+}
+
+::view-transition-group(page_content) {
+  animation-duration: calc(
+    var(--page_fade_out_ms) + var(--page_fade_gap_ms) + var(--page_fade_in_ms)
+  );
+  animation-timing-function: linear;
+}
+
+::view-transition-old(page_content) {
+  animation-name: page_content_fade_out;
+  animation-duration: var(--page_fade_out_ms);
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  animation-fill-mode: both;
+}
+
+::view-transition-new(page_content) {
+  animation-name: page_content_fade_in;
+  animation-duration: var(--page_fade_in_ms);
+  animation-delay: calc(var(--page_fade_out_ms) + var(--page_fade_gap_ms));
+  animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes page_content_fade_out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page_content_fade_in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 #main_reading_shell {
@@ -104,5 +160,14 @@
 @media (max-width: 768px) {
   #main_reading_container {
     inline-size: min(100%, 680px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(page_content),
+  ::view-transition-old(page_content),
+  ::view-transition-new(page_content) {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
   }
 }

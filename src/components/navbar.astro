@@ -2,7 +2,11 @@
 import "../styles/components/nav.css";
 ---
 
-<nav id="desktop-nav" class="navbar-preset-rich" aria-label="Primary">
+<nav
+  id="desktop-nav"
+  class="navbar-preset-rich route-active-tone-medium"
+  aria-label="Primary"
+>
   <div id="nav-user-bar" class="nav-rail" data-nav-rail>
     <div class="nav-links" aria-label="Left navigation group">
       <a
@@ -92,6 +96,30 @@ import "../styles/components/nav.css";
   const NAV_REVEAL_TOP_OFFSET_PX = 96;
   const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
 
+  /**
+   * @param {string} pathname_value
+   */
+  const normalize_pathname = (pathname_value) => {
+    const trimmed_pathname = pathname_value.replace(/\/+$/, "");
+
+    return trimmed_pathname || "/";
+  };
+
+  /**
+   * @param {string} current_pathname
+   * @param {string} target_pathname
+   */
+  const is_section_path_active = (current_pathname, target_pathname) => {
+    if (target_pathname === "/") {
+      return current_pathname === "/";
+    }
+
+    return (
+      current_pathname === target_pathname ||
+      current_pathname.startsWith(`${target_pathname}/`)
+    );
+  };
+
   const ensure_action_queuer = () => {
     if (window_any.action_queuer) {
       return;
@@ -100,12 +128,71 @@ import "../styles/components/nav.css";
     queuer_preparator();
   };
 
+  const apply_route_active_state = () => {
+    const nav_node = document.querySelector("#desktop-nav");
+
+    if (!(nav_node instanceof HTMLElement)) {
+      return;
+    }
+
+    const current_pathname = normalize_pathname(window.location.pathname);
+    const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+      nav_node.querySelectorAll("[data-nav-pill]")
+    );
+
+    pill_nodes.forEach((pill_node) => {
+      if (!(pill_node instanceof HTMLAnchorElement)) {
+        return;
+      }
+
+      const href_value = pill_node.getAttribute("href");
+
+      if (!href_value) {
+        return;
+      }
+
+      const target_pathname = normalize_pathname(
+        new URL(href_value, window.location.origin).pathname,
+      );
+      const is_exact_match = current_pathname === target_pathname;
+      const is_active = is_section_path_active(
+        current_pathname,
+        target_pathname,
+      );
+
+      pill_node.classList.toggle("is-route-active", is_active);
+
+      if (is_exact_match) {
+        pill_node.setAttribute("aria-current", "page");
+        return;
+      }
+
+      pill_node.removeAttribute("aria-current");
+    });
+
+    const home_node = nav_node.querySelector("#icon-user");
+
+    if (!(home_node instanceof HTMLAnchorElement)) {
+      return;
+    }
+
+    const is_home_active = current_pathname === "/";
+    home_node.classList.toggle("is-route-active", is_home_active);
+
+    if (is_home_active) {
+      home_node.setAttribute("aria-current", "page");
+      return;
+    }
+
+    home_node.removeAttribute("aria-current");
+  };
+
   /**
    * @param {NodeListOf<HTMLElement>} pill_nodes
    */
   const reset_pill_glow = (pill_nodes) => {
     pill_nodes.forEach((pill_node) => {
-      pill_node.style.setProperty("--pill_glow", "0");
+      pill_node.style.setProperty("--pill_pointer_glow", "0");
     });
   };
 
@@ -137,13 +224,13 @@ import "../styles/components/nav.css";
       const is_nearest = pill_node === nearest_pill;
 
       if (!is_nearest || nearest_distance > glow_radius) {
-        pill_node.style.setProperty("--pill_glow", "0");
+        pill_node.style.setProperty("--pill_pointer_glow", "0");
         return;
       }
 
       const proximity = Math.max(0, 1 - nearest_distance / glow_radius);
       const glow_power = proximity.toFixed(3);
-      pill_node.style.setProperty("--pill_glow", glow_power);
+      pill_node.style.setProperty("--pill_pointer_glow", glow_power);
     });
   };
 
@@ -278,12 +365,22 @@ import "../styles/components/nav.css";
 
   init_navbar_effects();
   init_navbar_visibility();
+  apply_route_active_state();
+
+  if (!window_any.__navbar_route_listener_bound) {
+    window.addEventListener("popstate", () => {
+      apply_route_active_state();
+    });
+
+    window_any.__navbar_route_listener_bound = true;
+  }
 
   if (!window_any.__navbar_htmx_listener_bound) {
     document.body?.addEventListener("htmx:load", (event) => {
       const htmx_event = /** @type {CustomEvent} */ (event);
       const load_root = htmx_event.detail?.elt ?? document;
       init_navbar_effects(load_root);
+      apply_route_active_state();
     });
 
     window_any.__navbar_htmx_listener_bound = true;

@@ -12,8 +12,10 @@ completed work.
   committing.
 - The commit message should follow repository style and include any phrase the
   human explicitly requests.
-- Before creating the commit, the agent should ask the human whether they want
-  to append any extra text to the end of the commit message.
-- If extra text is provided, append it at the end of the commit message and
-  separate it from the main message using `//`.
+- If the human has a standing preference to skip commit-confirmation questions,
+  create the handoff commit directly without asking additional permission.
+- If the human has a standing preference for commits after major completed
+  changes, the agent should create a commit at each major checkpoint.
+- If the human provides extra text for commit messages, append it at the end of
+  the commit message and separate it from the main message using `//`.
 - Do not push unless the human explicitly asks.

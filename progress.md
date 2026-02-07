@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-08 00:36
+- Updated_utc: 2026-02-08 00:52
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -114,8 +114,8 @@
 - State: in_progress
 - Branch: master
 - Head: 63fdff0
-- Scope_in: route scaffolding for all core/dynamic pages, breadcrumb URL theming, navbar behavior and HTMX navigation reliability
-- Scope_out: final page content authoring and full mobile-nav UX polish
+- Scope_in: desktop navbar active-link state system, route-aware visual presets, and page-transition timing presets with registry tracking
+- Scope_out: full mobile navigation implementation and Github Pages deployment workflow
 
 ## Commands
 
@@ -170,12 +170,15 @@
 - [x] Added generalized integration/debugging rule to prioritize least-invasive fixes and evidence-first diagnosis - Files: `.opencode/rules/integration-debugging.md`
 - [x] Added explicit session-handoff commit rule and linked it in AGENTS guidance - Files: `.opencode/rules/session-handoff-commit.md`, `AGENTS.md`
 - [x] Extended session-handoff commit rule to request optional user-provided commit-message tail separated with `//` - Files: `.opencode/rules/session-handoff-commit.md`
+- [x] Added route-aware desktop navbar active states for section parents/children and home icon, with exact-match `aria-current` handling - Files: `src/components/navbar.astro`, `src/styles/components/nav.css`
+- [x] Added switchable active-link tone presets and switchable page-transition breath presets - Files: `src/components/navbar.astro`, `src/layouts/index.astro`, `src/styles/components/nav.css`, `src/styles/index.css`
+- [x] Added central UI option class registry and enforcement rule for future option sets - Files: `ui_option_classes.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`
 
 ## Next
 
-1. [ ] Replace scaffold placeholders with first-pass real content blocks for core pages.
-2. [ ] Add active-link visual state rules for desktop/mobile navigation.
-3. [ ] Run mobile navigation QA pass and adjust spacing/overlap behavior.
+1. [ ] Implement mobile navigation behavior/polish and verify parity with desktop active-state logic.
+2. [ ] Add Github Pages deployment workflow and validate static deployment output.
+3. [ ] Run mobile navigation QA pass and fix spacing/overlap behavior.
 
 ## Blockers
 
@@ -187,6 +190,8 @@
 - Format: pass for latest touched files (`.opencode/rules/typography.md`, `src/layouts/index.astro`, `src/styles/base.css`, `src/styles/index.css`, `src/styles/typography.css`, `src/pages/index.astro`, `progress.md`) - 2026-02-07 02:26
 - Format_repo: fail (`bunx prettier --check .`) due to pre-existing unrelated files (17 files)
 - Tests: not_run (no test suite in project) - 2026-02-07 02:30
+- Build: pass (`bun run build`) - 2026-02-08 00:48
+- Format: pass for latest touched files (`src/layouts/index.astro`, `src/styles/index.css`, `ui_option_classes.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`, `progress.md`) - 2026-02-08 00:52
 
 ## Decisions
 
@@ -212,6 +217,8 @@
 - 2026-02-08 00:12 - Add generalized integration/debugging rule focused on evidence-first, least-invasive fixes - Why: prevent over-engineered diagnostics and improve iteration quality
 - 2026-02-08 00:28 - Add session-handoff commit permission rule and uncertainty-option communication requirement - Why: make handoff workflow explicit and improve decision collaboration under uncertainty
 - 2026-02-08 00:36 - Require optional user-supplied commit-message suffix prompt at handoff (using `//` separator) - Why: preserve user voice in handoff commits with consistent formatting
+- 2026-02-08 00:52 - Add route-aware desktop navbar active states with switchable tone and transition-breath presets - Why: reduce link-state ambiguity and make visual tuning fast without code rewrites
+- 2026-02-08 00:52 - Create central optional-class registry and enforcement rule - Why: keep variant classes discoverable across sessions and avoid drift
 
 ## Handoff
 
@@ -219,6 +226,6 @@
   - All planned core routes and dynamic child routes are scaffolded and buildable, including codex category and variable-depth entry pages.
   - Breadcrumbs are layout-owned, URL-driven, HTMX-safe, and phase-accented with reduced emphasis for ancestor segments.
   - Desktop navbar includes codex and uses hide-on-down/show-on-up behavior; mobile styling now includes codex label/accent parity.
-  - Partial navigation behavior was stabilized via the existing global client entry approach and container-replacement swap mode.
-  - Added a generalized integration/debugging rule to enforce evidence-first, least-invasive changes.
-- First_action_next_session: replace scaffold copy with initial real content and tune active-link states/QA for mobile navigation.
+  - Desktop navbar now includes route-aware active states, switchable active-tone presets, and switchable page-transition breath presets.
+  - Added a central UI option class registry (`ui_option_classes.md`) plus enforcement rule for future option sets.
+- First_action_next_session: implement mobile navigation refinements first, then set up Github Pages deployment.

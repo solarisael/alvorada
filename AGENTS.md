@@ -109,8 +109,10 @@ Use these patterns:
 
 ## Repo-Specific Rules (from local agent rules)
 
-The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, and `.opencode/rules/session-handoff-commit.md`.
+The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, and `.opencode/rules/ui-option-classes-registry.md`.
 Honor them when generating code.
+
+- `separate-apply-rules-by-category.md` is CSS-specific guidance; only consult it when editing CSS with `@apply` blocks.
 
 ### Required
 
