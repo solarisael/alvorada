@@ -16,6 +16,6 @@ completed work.
   create the handoff commit directly without asking additional permission.
 - If you have a standing preference for commits after major completed
   changes, the agent should create a commit at each major checkpoint.
-- If you provide extra text for commit messages, append it at the end of
-  the commit message and separate it from the main message using `//`.
+- Follow `.opencode/rules/commit-message-tail-required.md` for commit-message
+  tail handling.
 - Do not push unless you explicitly ask.

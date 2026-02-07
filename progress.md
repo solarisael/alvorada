@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-08 00:52
+- Updated_utc: 2026-02-08 01:06
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -113,7 +113,7 @@
 
 - State: in_progress
 - Branch: master
-- Head: 63fdff0
+- Head: 854874c
 - Scope_in: desktop navbar active-link state system, route-aware visual presets, and page-transition timing presets with registry tracking
 - Scope_out: full mobile navigation implementation and Github Pages deployment workflow
 
@@ -173,6 +173,9 @@
 - [x] Added route-aware desktop navbar active states for section parents/children and home icon, with exact-match `aria-current` handling - Files: `src/components/navbar.astro`, `src/styles/components/nav.css`
 - [x] Added switchable active-link tone presets and switchable page-transition breath presets - Files: `src/components/navbar.astro`, `src/layouts/index.astro`, `src/styles/components/nav.css`, `src/styles/index.css`
 - [x] Added central UI option class registry and enforcement rule for future option sets - Files: `ui_option_classes.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`
+- [x] Added user-addressing rule to refer to Sol by name in user-facing responses - Files: `.opencode/rules/addressing.md`, `AGENTS.md`
+- [x] Added required commit-message-tail check rule for every commit - Files: `.opencode/rules/commit-message-tail-required.md`, `.opencode/rules/session-handoff-commit.md`, `AGENTS.md`
+- [x] Included `src/scripts/htmx_bootstrap.js` deletion in tracked history and relaxed user-facing rule wording (`you`/`Sol`) - Files: `src/scripts/htmx_bootstrap.js`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/integration-debugging.md`
 
 ## Next
 
@@ -192,6 +195,8 @@
 - Tests: not_run (no test suite in project) - 2026-02-07 02:30
 - Build: pass (`bun run build`) - 2026-02-08 00:48
 - Format: pass for latest touched files (`src/layouts/index.astro`, `src/styles/index.css`, `ui_option_classes.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`, `progress.md`) - 2026-02-08 00:52
+- Build: pass (`bun run build`) - 2026-02-08 00:59
+- Format: pass for latest touched files (`.opencode/rules/addressing.md`, `.opencode/rules/commit-message-tail-required.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`, `progress.md`) - 2026-02-08 01:06
 
 ## Decisions
 
@@ -219,6 +224,8 @@
 - 2026-02-08 00:36 - Require optional user-supplied commit-message suffix prompt at handoff (using `//` separator) - Why: preserve user voice in handoff commits with consistent formatting
 - 2026-02-08 00:52 - Add route-aware desktop navbar active states with switchable tone and transition-breath presets - Why: reduce link-state ambiguity and make visual tuning fast without code rewrites
 - 2026-02-08 00:52 - Create central optional-class registry and enforcement rule - Why: keep variant classes discoverable across sessions and avoid drift
+- 2026-02-08 01:02 - Add explicit Sol-addressing and per-commit tail-check rules - Why: align agent tone and commit workflow with user preference
+- 2026-02-08 01:06 - Align AGENTS phrasing with Sol naming and lock tail-check visibility in root guidance - Why: keep session handoffs and commit flow unambiguous for future agents
 
 ## Handoff
 

@@ -3,7 +3,7 @@
 ## Purpose
 
 This document is for coding agents working in this repository (`alvorada`).
-Follow these instructions unless a human explicitly says otherwise.
+Follow these instructions unless Sol explicitly says otherwise.
 
 ## Project Snapshot
 
@@ -109,10 +109,11 @@ Use these patterns:
 
 ## Repo-Specific Rules (from local agent rules)
 
-The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, and `.opencode/rules/ui-option-classes-registry.md`.
+The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/addressing.md`, and `.opencode/rules/commit-message-tail-required.md`.
 Honor them when generating code.
 
 - `separate-apply-rules-by-category.md` is CSS-specific guidance; only consult it when editing CSS with `@apply` blocks.
+- `commit-message-tail-required.md` requires asking Sol for an optional commit-message tail before each commit unless Sol explicitly skips it for that commit.
 
 ### Required
 
