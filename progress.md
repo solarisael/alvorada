@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-07 00:12
+- Updated_utc: 2026-02-08 00:28
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -168,6 +168,7 @@
 - [x] Added codex to desktop/mobile navigation visual systems and breadcrumb phase accents - Files: `src/components/navbar.astro`, `src/styles/components/nav.css`, `src/styles/components/mobile-nav.css`, `src/components/breadcrumbers.astro`
 - [x] Stabilized partial navigation by using global client entry import strategy and container replacement swap mode - Files: `public/js/scripts.js`, `src/layouts/index.astro`, `src/components/navbar.astro`
 - [x] Added generalized integration/debugging rule to prioritize least-invasive fixes and evidence-first diagnosis - Files: `.opencode/rules/integration-debugging.md`
+- [x] Added explicit session-handoff commit rule and linked it in AGENTS guidance - Files: `.opencode/rules/session-handoff-commit.md`, `AGENTS.md`
 
 ## Next
 
@@ -208,6 +209,7 @@
 - 2026-02-08 00:04 - Add generic codex category routes and links - Why: validate intermediate hierarchy levels, not only leaf entries
 - 2026-02-08 00:08 - Prefer simple global client import strategy and container-replacement swap mode for reliable partial navigation - Why: reduce integration complexity and avoid duplicate container artifacts
 - 2026-02-08 00:12 - Add generalized integration/debugging rule focused on evidence-first, least-invasive fixes - Why: prevent over-engineered diagnostics and improve iteration quality
+- 2026-02-08 00:28 - Add session-handoff commit permission rule and uncertainty-option communication requirement - Why: make handoff workflow explicit and improve decision collaboration under uncertainty
 
 ## Handoff
 

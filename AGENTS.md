@@ -109,7 +109,7 @@ Use these patterns:
 
 ## Repo-Specific Rules (from local agent rules)
 
-The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, and `.opencode/rules/integration-debugging.md`.
+The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, and `.opencode/rules/session-handoff-commit.md`.
 Honor them when generating code.
 
 ### Required
