@@ -4,6 +4,7 @@ import "../styles/base.css";
 import "../styles/index.css";
 
 import Breadcrumbers from "../components/breadcrumbers.astro";
+import MobileNavbar from "../components/mobile_navbar.astro";
 import Navbar from "../components/navbar.astro";
 ---
 
@@ -29,6 +30,7 @@ import Navbar from "../components/navbar.astro";
     hx-push-url="true"
   >
     <Navbar />
+    <MobileNavbar />
     <container>
       <main id="page-main">
         <div id="content">

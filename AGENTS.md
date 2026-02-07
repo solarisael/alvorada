@@ -68,7 +68,7 @@ Follow these instructions unless Sol explicitly says otherwise.
 
 ## Formatting (Prettier)
 
-No dedicated script exists in `package.json`; use Bun + Prettier directly:
+Use Bun + Prettier directly:
 
 - Check formatting:
   - `bunx prettier --check .`
@@ -76,6 +76,13 @@ No dedicated script exists in `package.json`; use Bun + Prettier directly:
   - `bunx prettier --write .`
 - Format a specific file:
   - `bunx prettier --write src/pages/index.astro`
+
+## CSS tunables helpers
+
+- Check that component-local tunables are exposed in the top variable block:
+  - `bun run css:tunables:check`
+- Auto-add missing top declarations for component-local tunables:
+  - `bun run css:tunables:sync`
 
 ## Linting
 
@@ -109,11 +116,12 @@ Use these patterns:
 
 ## Repo-Specific Rules (from local agent rules)
 
-The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/addressing.md`, and `.opencode/rules/commit-message-tail-required.md`.
+The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/addressing.md`, `.opencode/rules/commit-message-tail-required.md`, and `.opencode/rules/expose-css-tunables.md`.
 Honor them when generating code.
 
 - `separate-apply-rules-by-category.md` is CSS-specific guidance; only consult it when editing CSS with `@apply` blocks.
 - `commit-message-tail-required.md` requires asking Sol for an optional commit-message tail before each commit unless Sol explicitly skips it for that commit.
+- `expose-css-tunables.md` describes how to keep component CSS custom properties easy to tune from the top of each file.
 
 ### Required
 

@@ -180,6 +180,10 @@
 }
 
 @media (max-width: 768px) {
+  #page-main {
+    @apply pb-22;
+  }
+
   #main_reading_container {
     inline-size: min(100%, 680px);
   }

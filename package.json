@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize"
+    "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize",
+    "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color",
+    "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color"
   },
   "dependencies": {
     "@astrojs/tailwind": "^6.0.2",

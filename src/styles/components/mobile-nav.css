@@ -1,60 +1,438 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+/* Quick Tune Variables (edit here first) */
 #mobile-nav {
-  --tw-shadow: 0 -20px 50px -12px var(--tw-shadow-color, #00000040);
+  /* Center home geometry */
+  --mobile_home_size: 4.15rem;
+  --mobile_home_lift: 1.15rem;
+  --mobile_home_slot_half: calc(var(--mobile_home_size) * 0.5 + 0.45rem);
 
-  > div > a {
-    @apply flex items-center justify-center;
+  /* Dock shell */
+  --mobile_dock_border_mix: 32%;
+  --mobile_dock_base_mix: 86%;
+  --mobile_dock_mantle_mix: 94%;
+  --mobile_dock_shadow: 0 -14px 28px -24px rgb(0 0 0 / 0.92);
+  --mobile_dock_blur: 10px;
+
+  /* Link sizing */
+  --mobile_side_divider_mix: 14%;
+  --mobile_link_min_height: 4.75rem;
+  --mobile_link_icon_size: 1.5rem;
+  --mobile_link_icon_right_size: 1.25rem;
+  --mobile_link_label_size: 10px;
+  --mobile_link_label_right_size: 9px;
+  --mobile_link_label_tracking: 0.12em;
+
+  /* Link motion and baseline color */
+  --mobile_link_color_mix: 86%;
+  --mobile_link_transition_fast: 180ms;
+  --mobile_link_transition_slow: 220ms;
+  --mobile_link_topline_opacity_mix: 86%;
+  --mobile_link_topline_height: 2px;
+
+  /* Active neon stack */
+  --mobile_active_color_mix: 78%;
+  --mobile_active_bg_mix: 16%;
+  --mobile_active_border_mix: 18%;
+  --mobile_active_inner_edge_mix: 26%;
+  --mobile_active_outer_glow_mix: 70%;
+  --mobile_active_outer_glow_strong_mix: 78%;
+  --mobile_active_icon_glow_mix: 66%;
+  --mobile_active_label_mix: 72%;
+  --mobile_active_label_glow_mix: 56%;
+  --mobile_active_topline_glow_mix: 64%;
+
+  /* Home neon stack */
+  --mobile_home_color_mix: 90%;
+  --mobile_home_ring_mix: 34%;
+  --mobile_home_core_border_mix: 22%;
+  --mobile_home_core_bg_mix: 90%;
+  --mobile_home_shell_glow_mix: 65%;
+  --mobile_home_shell_active_ring_mix: 32%;
+  --mobile_home_shell_active_glow_mix: 82%;
+  --mobile_home_shell_active_glow_strong_mix: 86%;
+  --mobile_home_core_active_border_mix: 44%;
+
+  @apply hidden;
+}
+
+@media (max-width: 768px) {
+  #mobile-nav {
+    @apply fixed inset-x-0 bottom-0 z-50 block;
+    @apply border-t;
+    @apply overflow-visible;
+
+    border-color: color-mix(
+      in oklch,
+      var(--color-ctp-lavender) var(--mobile_dock_border_mix),
+      transparent
+    );
+    background: linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--color-ctp-base) var(--mobile_dock_base_mix),
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--color-ctp-mantle) var(--mobile_dock_mantle_mix),
+        transparent
+      )
+    );
+    box-shadow: var(--mobile_dock_shadow);
+    backdrop-filter: blur(var(--mobile_dock_blur));
+  }
+
+  #mobile-nav-shell {
+    @apply relative flex;
+    @apply justify-between;
+    @apply w-full;
+
+    min-height: var(--mobile_link_min_height);
+  }
+
+  .mobile-nav-side {
+    @apply grid;
+
+    min-height: var(--mobile_link_min_height);
+  }
+
+  .mobile-nav-left {
+    @apply border-r;
+
+    width: calc(50% - var(--mobile_home_slot_half));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-color: color-mix(
+      in oklch,
+      var(--color-ctp-lavender) var(--mobile_side_divider_mix),
+      transparent
+    );
+  }
+
+  .mobile-nav-right {
+    @apply border-l;
+    @apply ml-auto;
+
+    width: calc(50% - var(--mobile_home_slot_half));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-color: color-mix(
+      in oklch,
+      var(--color-ctp-lavender) var(--mobile_side_divider_mix),
+      transparent
+    );
+  }
+
+  .mobile-nav-link {
+    --mobile_neon_color: color-mix(
+      in oklch,
+      var(--color-ctp-lavender) 54%,
+      transparent
+    );
+
     @apply relative;
+    @apply flex flex-col items-center justify-center;
+    @apply gap-0.5;
+    @apply px-0.5 py-2;
 
-    &::before,
-    &::after {
-      content: "";
+    min-height: var(--mobile_link_min_height);
+    color: color-mix(
+      in oklch,
+      var(--color-ctp-subtext0) var(--mobile_link_color_mix),
+      white
+    );
+    transition:
+      color var(--mobile_link_transition_fast) ease,
+      background-color var(--mobile_link_transition_fast) ease,
+      box-shadow var(--mobile_link_transition_slow) ease;
+  }
 
-      @apply absolute;
-    }
+  .mobile-nav-link::before {
+    content: "";
 
-    &[href="/nigredo"] {
-      --neon-color: var(--color-nigredo);
+    @apply pointer-events-none absolute inset-x-0 top-0;
 
-      &::before,
-      &::after {
-        content: "nigredo";
-      }
-    }
+    height: var(--mobile_link_topline_height);
+    background-color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) var(--mobile_link_topline_opacity_mix),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity var(--mobile_link_transition_fast) ease;
+  }
 
-    &[href="/albedo"] {
-      --neon-color: var(--color-albedo);
+  .mobile-nav-icon {
+    @apply inline-flex items-center justify-center;
 
-      &::before,
-      &::after {
-        content: "albedo";
-      }
-    }
+    width: var(--mobile_link_icon_size);
+    height: var(--mobile_link_icon_size);
+  }
 
-    &[href="/citrinitas"] {
-      --neon-color: var(--color-citrinitas);
+  .mobile-nav-icon svg {
+    @apply h-full w-full;
+  }
 
-      &::before,
-      &::after {
-        content: "citrinitas";
-      }
-    }
+  .mobile-nav-label {
+    @apply font-medium;
+    @apply lowercase;
 
-    &[href="/rubedo"] {
-      --neon-color: var(--color-rubedo);
+    font-size: var(--mobile_link_label_size);
+    letter-spacing: var(--mobile_link_label_tracking);
+    transition:
+      color var(--mobile_link_transition_fast) ease,
+      text-shadow var(--mobile_link_transition_slow) ease;
+  }
 
-      &::before,
-      &::after {
-        content: "rubedo";
-      }
-    }
+  .mobile-nav-link[data-phase="nigredo"] {
+    --mobile_neon_color: var(--color-nigredo);
+  }
 
-    &[href="/codex"] {
-      --neon-color: var(--color-ctp-lavender);
+  .mobile-nav-link[data-phase="albedo"] {
+    --mobile_neon_color: var(--color-albedo);
+  }
 
-      &::before,
-      &::after {
-        content: "codex";
-      }
-    }
+  .mobile-nav-link[data-phase="citrinitas"] {
+    --mobile_neon_color: var(--color-citrinitas);
+  }
+
+  .mobile-nav-link[data-phase="rubedo"] {
+    --mobile_neon_color: var(--color-rubedo);
+  }
+
+  .mobile-nav-link[data-phase="codex"] {
+    --mobile_neon_color: var(--color-ctp-lavender);
+  }
+
+  .mobile-nav-link.is-home-link {
+    --mobile_neon_color: color-mix(
+      in oklch,
+      var(--color-citrinitas) 74%,
+      var(--color-ctp-lavender)
+    );
+
+    @apply absolute z-20;
+    @apply gap-1;
+
+    left: 50%;
+    bottom: 0;
+    min-height: auto;
+    width: var(--mobile_home_size);
+    padding: 0;
+    transform: translate3d(-50%, calc(var(--mobile_home_lift) * -1), 0);
+    color: color-mix(
+      in oklch,
+      var(--color-ctp-text) var(--mobile_home_color_mix),
+      white
+    );
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .mobile-nav-link.is-home-link::before {
+    @apply hidden;
+  }
+
+  .mobile-nav-right .mobile-nav-icon {
+    width: var(--mobile_link_icon_right_size);
+    height: var(--mobile_link_icon_right_size);
+  }
+
+  .mobile-nav-right .mobile-nav-label {
+    font-size: var(--mobile_link_label_right_size);
+  }
+
+  .mobile-home-avatar {
+    @apply relative inline-flex items-center justify-center;
+
+    width: calc(var(--mobile_home_size) * 0.72);
+    height: calc(var(--mobile_home_size) * 0.72);
+    border-radius: 9999px;
+  }
+
+  .mobile-home-avatar-shell {
+    @apply absolute inset-0 rounded-full;
+
+    border: 1px solid
+      color-mix(
+        in oklch,
+        var(--mobile_neon_color) var(--mobile_home_ring_mix),
+        transparent
+      );
+    background: radial-gradient(
+      circle at 48% 24%,
+      rgb(255 255 255 / 0.18),
+      transparent 62%
+    );
+    box-shadow:
+      0 0 9px -4px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_home_shell_glow_mix),
+          transparent
+        ),
+      inset 0 1px 0 rgb(255 255 255 / 0.16);
+  }
+
+  .mobile-home-avatar-core {
+    @apply relative z-10 overflow-hidden rounded-full;
+
+    width: calc(var(--mobile_home_size) * 0.61);
+    height: calc(var(--mobile_home_size) * 0.61);
+    border: 1px solid
+      color-mix(
+        in oklch,
+        var(--mobile_neon_color) var(--mobile_home_core_border_mix),
+        transparent
+      );
+    background-color: color-mix(
+      in oklch,
+      var(--color-ctp-crust) var(--mobile_home_core_bg_mix),
+      transparent
+    );
+  }
+
+  .mobile-home-avatar-core img {
+    @apply h-full w-full;
+
+    object-fit: cover;
+  }
+
+  .mobile-nav-link.is-route-active {
+    color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) var(--mobile_active_color_mix),
+      white
+    );
+    background-color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) var(--mobile_active_bg_mix),
+      transparent
+    );
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.12),
+      inset 0 -1px 0
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_active_inner_edge_mix),
+          transparent
+        ),
+      0 0 0 1px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_active_border_mix),
+          transparent
+        ),
+      0 0 22px -11px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_active_outer_glow_mix),
+          transparent
+        ),
+      0 0 42px -20px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_active_outer_glow_strong_mix),
+          transparent
+        );
+  }
+
+  .mobile-nav-link.is-route-active::before {
+    opacity: 1;
+    box-shadow: 0 0 12px
+      color-mix(
+        in oklch,
+        var(--mobile_neon_color) var(--mobile_active_topline_glow_mix),
+        transparent
+      );
+  }
+
+  .mobile-nav-link.is-route-active .mobile-nav-icon {
+    filter: drop-shadow(
+      0 0 8px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_active_icon_glow_mix),
+          transparent
+        )
+    );
+  }
+
+  .mobile-nav-link.is-route-active .mobile-nav-label {
+    color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) var(--mobile_active_label_mix),
+      white
+    );
+    text-shadow: 0 0 10px
+      color-mix(
+        in oklch,
+        var(--mobile_neon_color) var(--mobile_active_label_glow_mix),
+        transparent
+      );
+  }
+
+  .mobile-nav-link.is-home-link.is-route-active .mobile-home-avatar-shell {
+    box-shadow:
+      0 0 0 1px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_home_shell_active_ring_mix),
+          transparent
+        ),
+      0 0 14px -6px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color) var(--mobile_home_shell_active_glow_mix),
+          transparent
+        ),
+      0 0 28px -14px
+        color-mix(
+          in oklch,
+          var(--mobile_neon_color)
+            var(--mobile_home_shell_active_glow_strong_mix),
+          transparent
+        ),
+      inset 0 1px 0 rgb(255 255 255 / 0.2);
+  }
+
+  .mobile-nav-link.is-home-link.is-route-active .mobile-home-avatar-core {
+    border-color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) var(--mobile_home_core_active_border_mix),
+      transparent
+    );
+  }
+
+  .mobile-nav-link.is-home-link:focus-visible {
+    background-color: transparent;
+  }
+
+  .mobile-nav-link:focus-visible {
+    @apply outline-none;
+
+    background-color: color-mix(
+      in oklch,
+      var(--mobile_neon_color) 9%,
+      transparent
+    );
+  }
+}
+
+@media (min-width: 769px) {
+  #mobile-nav {
+    @apply hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-nav-link {
+    transition: none;
+  }
+
+  .mobile-nav-link::before {
+    transition: none;
   }
 }

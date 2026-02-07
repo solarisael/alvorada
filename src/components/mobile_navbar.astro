@@ -1,0 +1,321 @@
+---
+import "../styles/components/mobile-nav.css";
+---
+
+<nav id="mobile-nav" aria-label="Mobile navigation">
+  <div id="mobile-nav-shell">
+    <div class="mobile-nav-side mobile-nav-left">
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
+        data-phase="nigredo"
+        href="/nigredo"
+        hx-get="/nigredo"
+        hx-push-url="true"
+        aria-label="Nigredo"
+      >
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M9 3h6" stroke-linecap="round"></path>
+            <path
+              d="M10 3v4l-4.8 7.1a5.6 5.6 0 0 0 4.6 8.9h4.4a5.6 5.6 0 0 0 4.6-8.9L14 7V3"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+            <path d="M7.7 17.2h8.6" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span class="mobile-nav-label">nig</span>
+      </a>
+
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
+        data-phase="albedo"
+        href="/albedo"
+        hx-get="/albedo"
+        hx-push-url="true"
+        aria-label="Albedo"
+      >
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M12 4 4.5 18h15L12 4Z" stroke-linejoin="round"></path>
+            <path d="M12 8v6" stroke-linecap="round"></path>
+            <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"
+            ></circle>
+          </svg>
+        </span>
+        <span class="mobile-nav-label">alb</span>
+      </a>
+    </div>
+
+    <a
+      class="mobile-nav-link is-home-link"
+      data-mobile-home
+      href="/"
+      hx-get="/"
+      hx-push-url="true"
+      aria-label="Home"
+    >
+      <span class="mobile-home-avatar" aria-hidden="true">
+        <span class="mobile-home-avatar-shell"></span>
+        <span class="mobile-home-avatar-core">
+          <img src="/images/sol-curr.jpg" alt="" />
+        </span>
+      </span>
+      <span class="mobile-nav-label">home</span>
+    </a>
+
+    <div class="mobile-nav-side mobile-nav-right">
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
+        data-phase="citrinitas"
+        href="/citrinitas"
+        hx-get="/citrinitas"
+        hx-push-url="true"
+        aria-label="Citrinitas"
+      >
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <circle cx="12" cy="12" r="3.2"></circle>
+            <path
+              d="M12 2.8V6M12 18v3.2M2.8 12H6M18 12h3.2M5.3 5.3l2.2 2.2M16.5 16.5l2.2 2.2M18.7 5.3l-2.2 2.2M7.5 16.5l-2.2 2.2"
+              stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span class="mobile-nav-label">cit</span>
+      </a>
+
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
+        data-phase="rubedo"
+        href="/rubedo"
+        hx-get="/rubedo"
+        hx-push-url="true"
+        aria-label="Rubedo"
+      >
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              d="M12 3.2c2.7 3.5 5 5.6 5 8.8a5 5 0 1 1-10 0c0-2.8 1.7-4.6 3.2-6.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+            <path
+              d="M12 10.2c1.2 1.3 2.2 2.2 2.2 3.6a2.2 2.2 0 0 1-4.4 0c0-1.2.8-2 1.5-2.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span class="mobile-nav-label">rub</span>
+      </a>
+
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
+        data-phase="codex"
+        href="/codex"
+        hx-get="/codex"
+        hx-push-url="true"
+        aria-label="Codex"
+      >
+        <span class="mobile-nav-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <circle cx="12" cy="12" r="2.8"></circle>
+            <path
+              d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"
+              stroke-linecap="round"></path>
+            <circle cx="12" cy="12" r="6.1" stroke-dasharray="2 1.5"></circle>
+          </svg>
+        </span>
+        <span class="mobile-nav-label">cdx</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script is:inline type="module">
+  const window_any = /** @type {any} */ (window);
+  let last_applied_pathname = null;
+
+  /**
+   * @param {string} pathname_value
+   */
+  const normalize_pathname = (pathname_value) => {
+    const trimmed_pathname = pathname_value.replace(/\/+$/, "");
+
+    return trimmed_pathname || "/";
+  };
+
+  /**
+   * @param {string} current_pathname
+   * @param {string} target_pathname
+   */
+  const is_section_path_active = (current_pathname, target_pathname) => {
+    if (target_pathname === "/") {
+      return current_pathname === "/";
+    }
+
+    return (
+      current_pathname === target_pathname ||
+      current_pathname.startsWith(`${target_pathname}/`)
+    );
+  };
+
+  /**
+   * @param {Event} event
+   */
+  const derive_request_pathname = (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const detail_any = /** @type {any} */ (htmx_event.detail);
+    const raw_request_path =
+      detail_any?.pathInfo?.finalRequestPath ??
+      detail_any?.requestConfig?.path ??
+      detail_any?.path;
+
+    if (typeof raw_request_path === "string") {
+      return normalize_pathname(
+        new URL(raw_request_path, window.location.origin).pathname,
+      );
+    }
+
+    const trigger_node = detail_any?.elt;
+
+    if (trigger_node instanceof HTMLAnchorElement) {
+      return normalize_pathname(new URL(trigger_node.href).pathname);
+    }
+
+    return null;
+  };
+
+  /**
+   * @param {string | null} [pathname_override=null]
+   */
+  const apply_mobile_route_active_state = (pathname_override = null) => {
+    const nav_node = document.querySelector("#mobile-nav");
+
+    if (!(nav_node instanceof HTMLElement)) {
+      return;
+    }
+
+    const current_pathname = normalize_pathname(
+      pathname_override ?? window.location.pathname,
+    );
+
+    if (last_applied_pathname === current_pathname) {
+      return;
+    }
+
+    const pill_nodes = /** @type {NodeListOf<HTMLAnchorElement>} */ (
+      nav_node.querySelectorAll("[data-mobile-nav-pill]")
+    );
+
+    pill_nodes.forEach((pill_node) => {
+      const target_pathname = normalize_pathname(
+        new URL(pill_node.href, window.location.origin).pathname,
+      );
+      const is_exact_match = current_pathname === target_pathname;
+      const is_active = is_section_path_active(
+        current_pathname,
+        target_pathname,
+      );
+
+      pill_node.classList.toggle("is-route-active", is_active);
+
+      if (is_exact_match) {
+        pill_node.setAttribute("aria-current", "page");
+        return;
+      }
+
+      pill_node.removeAttribute("aria-current");
+    });
+
+    const home_node = nav_node.querySelector("[data-mobile-home]");
+
+    if (home_node instanceof HTMLAnchorElement) {
+      const is_home_active = current_pathname === "/";
+      home_node.classList.toggle("is-route-active", is_home_active);
+
+      if (is_home_active) {
+        home_node.setAttribute("aria-current", "page");
+      } else {
+        home_node.removeAttribute("aria-current");
+      }
+    }
+
+    last_applied_pathname = current_pathname;
+  };
+
+  apply_mobile_route_active_state();
+
+  if (!window_any.__mobile_nav_route_listener_bound) {
+    window.addEventListener("popstate", () => {
+      apply_mobile_route_active_state();
+    });
+
+    window_any.__mobile_nav_route_listener_bound = true;
+  }
+
+  if (!window_any.__mobile_nav_before_request_bound) {
+    document.body?.addEventListener("htmx:beforeRequest", (event) => {
+      const request_pathname = derive_request_pathname(event);
+
+      if (!request_pathname) {
+        return;
+      }
+
+      const current_pathname = normalize_pathname(window.location.pathname);
+
+      if (request_pathname === current_pathname) {
+        return;
+      }
+
+      apply_mobile_route_active_state(request_pathname);
+    });
+
+    window_any.__mobile_nav_before_request_bound = true;
+  }
+
+  if (!window_any.__mobile_nav_after_swap_bound) {
+    document.body?.addEventListener("htmx:afterSwap", (event) => {
+      const htmx_event = /** @type {CustomEvent} */ (event);
+      const swap_target = htmx_event.detail?.target;
+
+      if (
+        !(swap_target instanceof HTMLElement) ||
+        swap_target.id !== "content"
+      ) {
+        return;
+      }
+
+      apply_mobile_route_active_state();
+    });
+
+    window_any.__mobile_nav_after_swap_bound = true;
+  }
+</script>

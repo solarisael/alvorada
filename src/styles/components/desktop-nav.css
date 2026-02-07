@@ -413,20 +413,7 @@
 
 @media (max-width: 768px) {
   #desktop-nav {
-    @apply px-1;
-  }
-
-  #nav-user-bar {
-    @apply h-16 px-3 py-1.5;
-  }
-
-  #middle-guy {
-    @apply w-16;
-  }
-
-  #icon-user {
-    --center_ring_size: 4.25rem;
-    --center_core_size: 5rem;
+    @apply hidden;
   }
 }
 

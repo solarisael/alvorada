@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-08 01:06
+- Updated_utc: 2026-02-08 02:41
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -20,7 +20,7 @@
 
 - [ ] Implement floating fixed navbar:
   - [x] desktop variant pinned at top (magical glass + neon, center Eyes placeholder)
-  - [ ] mobile variant pinned at bottom
+  - [x] mobile variant pinned at bottom
 - [x] Ship core sections/pages:
   - `Home / Nigredo` (introduction)
   - `Blog / Albedo` (personal writing, daily entries)
@@ -85,7 +85,7 @@
   - routes `/`, `/nigredo`, `/albedo`, `/citrinitas`, `/rubedo`, `/codex`
   - dynamic routes `/albedo/[post_slug]`, `/citrinitas/[post_slug]`, `/rubedo/[book_slug]`, `/codex/[...entry_path]`
   - required content blocks per page
-- [ ] Build global navigation shell:
+- [x] Build global navigation shell:
   - floating desktop top navbar
   - floating mobile bottom navbar
   - active-link states and no overlap on small screens
@@ -113,9 +113,9 @@
 
 - State: in_progress
 - Branch: master
-- Head: 854874c
-- Scope_in: desktop navbar active-link state system, route-aware visual presets, and page-transition timing presets with registry tracking
-- Scope_out: full mobile navigation implementation and Github Pages deployment workflow
+- Head: e9a3380
+- Scope_in: HTMX transition stabilization, route-state timing sync (navbar/breadcrumbs), full mobile nav implementation, nav stylesheet split, and CSS tunables automation
+- Scope_out: Github Pages deployment workflow and broader accessibility QA beyond nav shell
 
 ## Commands
 
@@ -176,12 +176,17 @@
 - [x] Added user-addressing rule to refer to Sol by name in user-facing responses - Files: `.opencode/rules/addressing.md`, `AGENTS.md`
 - [x] Added required commit-message-tail check rule for every commit - Files: `.opencode/rules/commit-message-tail-required.md`, `.opencode/rules/session-handoff-commit.md`, `AGENTS.md`
 - [x] Included `src/scripts/htmx_bootstrap.js` deletion in tracked history and relaxed user-facing rule wording (`you`/`Sol`) - Files: `src/scripts/htmx_bootstrap.js`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/integration-debugging.md`
+- [x] Fixed HTMX transition stack: activated `morph` extension correctly, aligned swap/settle timing, and removed script-driven HTMX timing config - Files: `src/layouts/index.astro`, `src/components/navbar.astro`, `src/styles/index.css`, `public/js/scripts.js`
+- [x] Mitigated delayed route UI updates by syncing navbar/breadcrumb states on `htmx:beforeRequest` and `htmx:afterSwap`, plus no-op pathname fast paths - Files: `src/components/navbar.astro`, `src/components/breadcrumbers.astro`
+- [x] Implemented dedicated mobile navigation component with bottom dock, icon+short-label links, centered floating home avatar, and route-aware active states - Files: `src/components/mobile_navbar.astro`, `src/layouts/index.astro`, `src/styles/components/mobile-nav.css`, `src/styles/index.css`
+- [x] Split nav styles into desktop/mobile files and updated imports for independent iteration - Files: `src/styles/components/desktop-nav.css`, `src/styles/components/mobile-nav.css`, `src/components/navbar.astro`, `src/components/mobile_navbar.astro`
+- [x] Added CSS tunables workflow: top-of-file quick-tune variables, exposure rule, checker/sync script, Bun commands, and CI workflow - Files: `src/styles/components/mobile-nav.css`, `.opencode/rules/expose-css-tunables.md`, `scripts/css_tunables.js`, `package.json`, `.github/workflows/css-tunables-check.yml`, `AGENTS.md`
 
 ## Next
 
-1. [ ] Implement mobile navigation behavior/polish and verify parity with desktop active-state logic.
-2. [ ] Add Github Pages deployment workflow and validate static deployment output.
-3. [ ] Run mobile navigation QA pass and fix spacing/overlap behavior.
+1. [ ] Run fresh-eye QA on mobile nav spacing/glow/center-home behavior and collect tuning feedback.
+2. [ ] Commit current uncommitted nav split + tunables automation changes after review.
+3. [ ] Add Github Pages deployment workflow and validate static deployment output.
 
 ## Blockers
 
@@ -197,6 +202,9 @@
 - Format: pass for latest touched files (`src/layouts/index.astro`, `src/styles/index.css`, `ui_option_classes.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`, `progress.md`) - 2026-02-08 00:52
 - Build: pass (`bun run build`) - 2026-02-08 00:59
 - Format: pass for latest touched files (`.opencode/rules/addressing.md`, `.opencode/rules/commit-message-tail-required.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `AGENTS.md`, `progress.md`) - 2026-02-08 01:06
+- Build: pass (`bun run build`) - 2026-02-08 02:40
+- Format: pass for latest touched files (`AGENTS.md`, `package.json`, `.opencode/rules/expose-css-tunables.md`, `scripts/css_tunables.js`, `src/components/navbar.astro`, `src/components/mobile_navbar.astro`, `src/styles/components/desktop-nav.css`, `src/styles/components/mobile-nav.css`, `.github/workflows/css-tunables-check.yml`) - 2026-02-08 02:40
+- CSS_tunables_check: pass (`bun run css:tunables:check`) - 2026-02-08 02:40
 
 ## Decisions
 
@@ -226,13 +234,18 @@
 - 2026-02-08 00:52 - Create central optional-class registry and enforcement rule - Why: keep variant classes discoverable across sessions and avoid drift
 - 2026-02-08 01:02 - Add explicit Sol-addressing and per-commit tail-check rules - Why: align agent tone and commit workflow with user preference
 - 2026-02-08 01:06 - Align AGENTS phrasing with Sol naming and lock tail-check visibility in root guidance - Why: keep session handoffs and commit flow unambiguous for future agents
+- 2026-02-08 01:28 - Move HTMX swap timing from scripts to HTML `hx-swap` modifiers and resolve nested `#content` artifacts - Why: comply with HTML-first HTMX policy and stabilize transitions
+- 2026-02-08 01:47 - Shift route-active sync from `htmx:load` to `htmx:beforeRequest` + `htmx:afterSwap` with fast-path guards - Why: prevent delayed active-state updates during transition settle windows
+- 2026-02-08 02:25 - Rebuild mobile nav into a true `2 / 1 / 3` split with centered floating home avatar - Why: preserve exact visual centering while keeping compact right-side links
+- 2026-02-08 02:40 - Split nav styles by platform and add tunables automation/check workflow - Why: improve maintainability and make visual tuning faster for future sessions
 
 ## Handoff
 
 - Summary:
   - All planned core routes and dynamic child routes are scaffolded and buildable, including codex category and variable-depth entry pages.
   - Breadcrumbs are layout-owned, URL-driven, HTMX-safe, and phase-accented with reduced emphasis for ancestor segments.
-  - Desktop navbar includes codex and uses hide-on-down/show-on-up behavior; mobile styling now includes codex label/accent parity.
-  - Desktop navbar now includes route-aware active states, switchable active-tone presets, and switchable page-transition breath presets.
-  - Added a central UI option class registry (`ui_option_classes.md`) plus enforcement rule for future option sets.
-- First_action_next_session: implement mobile navigation refinements first, then set up Github Pages deployment.
+  - HTMX transitions now use correct `morph` extension wiring with HTML-defined timing, and route-state updates happen before/after swaps instead of after settle.
+  - Mobile nav is fully implemented as a separate component with bottom docking, icon+short-label links, layered neon active states, and centered floating home avatar using the same image as desktop.
+  - Nav styles are split into `desktop-nav.css` and `mobile-nav.css`; mobile tunables are exposed at the top of file for fast iteration.
+  - Added CSS tunables automation (`bun run css:tunables:check` / `sync`) plus CI gate and matching agent rule.
+- First_action_next_session: review mobile nav with fresh eyes, tune top-level mobile variables, then decide whether to commit current working changes.
