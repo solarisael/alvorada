@@ -1,0 +1,3 @@
+#footer {
+  @apply border-ctp-lavender-400/50 mb-30 flex h-20 items-center justify-center border-2 md:mb-0;
+}

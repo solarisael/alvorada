@@ -1,0 +1,32 @@
+@reference "tailwindcss";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+the-fog {
+  @apply absolute;
+  @apply top-0 left-0;
+  @apply h-full w-full;
+
+  z-index: -1;
+
+  > layer {
+    @apply absolute;
+    @apply shadow-ctp-red-400/50 shadow-2xl;
+    @apply rounded-xl;
+
+    height: 100%;
+    width: 100%;
+
+    &:nth-child(1) {
+      --tw-shadow: 0px 0px 15px 1px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+      filter: saturate(0.5) opacity(1);
+    }
+    &:nth-child(2) {
+      --tw-shadow: 0px 0px 55px 1px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+      filter: saturate(1.5) opacity(0.5);
+    }
+    &:nth-child(3) {
+      --tw-shadow: 0px 0px 100px 1px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+      filter: saturate(2) opacity(0.25);
+    }
+  }
+}

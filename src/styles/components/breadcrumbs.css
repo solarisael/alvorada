@@ -1,0 +1,75 @@
+@reference "tailwindcss";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+#breadcrumbers_xd {
+  @apply flex;
+
+  ul {
+    @apply flex items-center justify-between gap-1;
+    @apply grow-0;
+    @apply relative;
+
+    > li {
+      @apply flex items-center justify-center;
+
+      &:not(:nth-last-child(1)) {
+        @apply flex items-center justify-center;
+
+        > a::after {
+          content: "\\\\";
+
+          @apply flex items-center justify-center;
+          @apply ml-1;
+          @apply text-gray-500;
+        }
+      }
+
+      a {
+        @apply flex items-center justify-center;
+
+        filter: opacity(0.75);
+
+        &[href="/"] {
+          @apply text-gray-500;
+        }
+
+        &[href="/albedo"] {
+          @apply text-gray-50;
+        }
+
+        &[href="/citrinitas"] {
+          @apply text-yellow-500;
+
+          &::after {
+            @apply text-yellow-500;
+          }
+        }
+
+        &[href="/rubedo"] {
+          @apply text-red-500;
+        }
+
+        &[href="/nigredo"] {
+          @apply text-gray-500;
+          @apply text-shadow-gray-50/50;
+
+          text-shadow: 0px 0px 1px var(--tw-text-shadow-color, #00000026);
+
+          &::after {
+            @apply text-gray-800;
+          }
+        }
+
+        &[href$="gallery"] {
+          @apply text-yellow-800;
+        }
+      }
+
+      &:nth-last-child(1) {
+        a {
+          filter: opacity(1);
+        }
+      }
+    }
+  }
+}

@@ -1,17 +1,25 @@
 ---
-// import Eyes from "../components/gamey-carousel.astro";
 import Breadcrumbers from "../components/breadcrumbers.astro";
-import Eyes from "../components/eyes.astro";
 import IndexLayout from "../layouts/index.astro";
 ---
 
 <IndexLayout>
-  <Eyes />
-  <Breadcrumbers />
-  
-  <div id="inner">
-    <a href="#" hx-post="/templates/test.html" hx-swap="morph">shalom3</a>
-  </div>
+  <section id="nigredo-home-scaffold" aria-label="Home scaffold">
+    <Breadcrumbers />
 
-  <div id="content-footer"></div>
+    <article id="nigredo-reading-container">
+      <header id="nigredo-reading-header">
+        <p id="nigredo-kicker">~/ nigredo</p>
+        <h1 id="nigredo-title">Home</h1>
+      </header>
+
+      <div id="nigredo-reading-body">
+        <p>
+          This container marks the start of the Home/Nigredo reading surface.
+          The next session can now focus on content blocks, narrative rhythm,
+          and page-level composition.
+        </p>
+      </div>
+    </article>
+  </section>
 </IndexLayout>

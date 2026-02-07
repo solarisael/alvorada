@@ -1,20 +1,13 @@
-/* ────────────────────────────────────────────────────────────────────── */
-/*   1️⃣ Imports & Global Variables                                  */
-/* ────────────────────────────────────────────────────────────────────── */
+@use "sass:map";
 
-@use "sass:map"; /* for map-functions */
+$base-min: 11px;
+$base-max: 14px;
 
-/* basic font size limits */
-$base-min: 1rem;
-$base-max: 1.1rem;
-
-/* line-height “scales” – one map holding min / max values          */
 $lh-scale: (
   min: 1,
   max: 1.2,
 );
 
-/* heading scales – key = selector, value = font-size multiplier      */
 $heading-scales: (
   h1: 2,
   h2: 1.75,
@@ -33,15 +26,9 @@ $heading-scales: (
   td: 1,
 );
 
-/* viewport limits – used by the fluid functions                       */
 $min-vw: 768px;
-$max-vw: 1680px;
+$max-vw: 1440px;
 
-/* ────────────────────────────────────────────────────────────────────── */
-/*   2️⃣ Functions & Mixins                                          */
-/* ────────────────────────────────────────────────────────────────────── */
-
-/* fluid size – clamp( min, calc-based value, max )                     */
 @function fluid-size($min, $max) {
   @return clamp(
     $min,
@@ -52,7 +39,6 @@ $max-vw: 1680px;
   );
 }
 
-/* simple wrappers – keep the original public names                       */
 @mixin fluid-font($min, $max) {
   font-size: fluid-size($min, $max);
 }
@@ -81,10 +67,6 @@ $max-vw: 1680px;
   @include fluid-line-height($min, $max, $scale-lh-min, $scale-lh-max);
 }
 
-/* ────────────────────────────────────────────────────────────────────── */
-/*   3️⃣ Fallback for old browsers                                 */
-/* ────────────────────────────────────────────────────────────────────── */
-
 @supports not (font-size: clamp(0, 1rem, 2rem)) {
   *,
   html {
@@ -93,44 +75,6 @@ $max-vw: 1680px;
   }
 }
 
-/* ────────────────────────────────────────────────────────────────────── */
-/*   4️⃣ Global fluid typography – base font size                    */
-/* ────────────────────────────────────────────────────────────────────── */
-
 :where(*, :root) {
   @include fluid-typography($base-min, $base-max);
 }
-
-/* ────────────────────────────────────────────────────────────────────── */
-/*   5️⃣ Headings – one loop instead of six blocks                   */
-/* ────────────────────────────────────────────────────────────────────── */
-
-@each $sel, $scale in $heading-scales {
-  #{$sel} {
-    @include fluid-typography(
-      $base-min * $scale,
-      $base-max * $scale
-        /* line-height scales use the defaults ($lh-scale) – no need to pass them */
-    );
-  }
-}
-
-/* ────────────────────────────────────────────────────────────────────── */
-/*   6️⃣ Paragraph / list / blockquote etc.                          */
-/* ────────────────────────────────────────────────────────────────────── */
-
-/* The global rule above already applies fluid typography to everything,   */
-/* so a separate block for p, li, … is no longer necessary (unless     */
-/* you want specific overrides).                                            */
-
-/* ────────────────────────────────────────────────────────────────────── */
-/*   7️⃣ Optional examples (commented out)                          */
-/* ────────────────────────────────────────────────────────────────────── */
-
-/*
-a{
-  font-size: calc(100% + .2rem);
-}
-
-a:hover::after{ content: calc(100vw - #{$min-vw}); }
-*/

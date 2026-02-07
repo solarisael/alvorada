@@ -1,0 +1,212 @@
+---
+import "../styles/components/nav.css";
+---
+
+<nav id="desktop-nav" class="navbar-preset-soft" aria-label="Primary">
+  <div id="nav-user-bar" class="nav-rail" data-nav-rail>
+    <div class="nav-links" aria-label="Left navigation group">
+      <a class="nav-pill" data-nav-pill data-phase="nigredo" href="/nigredo"
+        >nigredo</a
+      >
+      <a class="nav-pill" data-nav-pill data-phase="albedo" href="/albedo"
+        >albedo</a
+      >
+    </div>
+
+    <div id="middle-guy" aria-hidden="true"></div>
+
+    <a id="icon-user" href="/" aria-label="Home">
+      <div id="icon-user-shell" aria-hidden="true">
+        <div id="icon-user-shell-inner"></div>
+      </div>
+
+      <div id="icon-user-core">
+        <img
+          id="icon-user-photo"
+          src="/images/sol-curr.jpg"
+          alt="Sol logo placeholder"
+        />
+      </div>
+    </a>
+
+    <div class="nav-links" aria-label="Right navigation group">
+      <a
+        class="nav-pill"
+        data-nav-pill
+        data-phase="citrinitas"
+        href="/citrinitas">citrinitas</a
+      >
+      <a class="nav-pill" data-nav-pill data-phase="rubedo" href="/rubedo"
+        >rubedo</a
+      >
+    </div>
+  </div>
+</nav>
+
+<script is:inline type="module">
+  import { throttle, queuer_preparator } from "/js/modules/performance.js";
+
+  const window_any = /** @type {any} */ (window);
+  const POINTER_MOVE_DEBOUNCE_MS = 16;
+
+  const ensure_action_queuer = () => {
+    if (window_any.action_queuer) {
+      return;
+    }
+
+    queuer_preparator();
+  };
+
+  /**
+   * @param {NodeListOf<HTMLElement>} pill_nodes
+   */
+  const reset_pill_glow = (pill_nodes) => {
+    pill_nodes.forEach((pill_node) => {
+      pill_node.style.setProperty("--pill_glow", "0");
+    });
+  };
+
+  /**
+   * @param {NodeListOf<HTMLElement>} pill_nodes
+   * @param {number} pointer_x
+   * @param {number} pointer_y
+   */
+  const update_pill_glow = (pill_nodes, pointer_x, pointer_y) => {
+    const glow_radius = 180;
+    let nearest_pill = null;
+    let nearest_distance = Number.POSITIVE_INFINITY;
+
+    pill_nodes.forEach((pill_node) => {
+      const pill_box = pill_node.getBoundingClientRect();
+      const center_x = pill_box.left + pill_box.width / 2;
+      const center_y = pill_box.top + pill_box.height / 2;
+      const delta_x = pointer_x - center_x;
+      const delta_y = pointer_y - center_y;
+      const distance = Math.hypot(delta_x, delta_y);
+
+      if (distance < nearest_distance) {
+        nearest_distance = distance;
+        nearest_pill = pill_node;
+      }
+    });
+
+    pill_nodes.forEach((pill_node) => {
+      const is_nearest = pill_node === nearest_pill;
+
+      if (!is_nearest || nearest_distance > glow_radius) {
+        pill_node.style.setProperty("--pill_glow", "0");
+        return;
+      }
+
+      const proximity = Math.max(0, 1 - nearest_distance / glow_radius);
+      const glow_power = proximity.toFixed(3);
+      pill_node.style.setProperty("--pill_glow", glow_power);
+    });
+  };
+
+  /**
+   * @param {HTMLElement} pill_node
+   */
+  const apply_htmx_defaults = (pill_node) => {
+    const href = pill_node.getAttribute("href");
+    const override_target = pill_node.dataset.hxTarget;
+    const override_swap = pill_node.dataset.hxSwap;
+    const override_select = pill_node.dataset.hxSelect;
+
+    if (href && !pill_node.getAttribute("hx-get")) {
+      pill_node.setAttribute("hx-get", href);
+    }
+
+    pill_node.setAttribute("hx-target", override_target ?? "#content");
+    pill_node.setAttribute(
+      "hx-swap",
+      override_swap ?? "innerHTML transition:true",
+    );
+
+    if (!pill_node.getAttribute("hx-push-url")) {
+      pill_node.setAttribute("hx-push-url", "true");
+    }
+
+    if (override_select) {
+      pill_node.setAttribute("hx-select", override_select);
+    }
+  };
+
+  /**
+   * @param {Document | Element} [root_node=document]
+   */
+  const init_navbar_effects = (root_node = document) => {
+    ensure_action_queuer();
+
+    const nav_rails = /** @type {NodeListOf<HTMLElement>} */ (
+      root_node.querySelectorAll("[data-nav-rail]")
+    );
+
+    nav_rails.forEach((nav_rail) => {
+      if (nav_rail.dataset.navInit === "true") {
+        return;
+      }
+
+      nav_rail.dataset.navInit = "true";
+
+      const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+        nav_rail.querySelectorAll("[data-nav-pill]")
+      );
+
+      if (!pill_nodes.length) {
+        return;
+      }
+
+      pill_nodes.forEach((pill_node) => {
+        apply_htmx_defaults(pill_node);
+      });
+
+      const move_debounce_name = `nav_rail_move_${Math.random().toString(36).slice(2)}`;
+
+      const apply_pointer_effects = (client_x, client_y) => {
+        const rail_box = nav_rail.getBoundingClientRect();
+        const cursor_x = client_x - rail_box.left;
+        const cursor_y = client_y - rail_box.top;
+
+        nav_rail.style.setProperty("--cursor_x", `${cursor_x}px`);
+        nav_rail.style.setProperty("--cursor_y", `${cursor_y}px`);
+
+        update_pill_glow(pill_nodes, client_x, client_y);
+      };
+
+      nav_rail.addEventListener("pointermove", (event) => {
+        const pointer_event = /** @type {PointerEvent} */ (event);
+
+        throttle(
+          apply_pointer_effects,
+          POINTER_MOVE_DEBOUNCE_MS,
+          move_debounce_name,
+          [pointer_event.clientX, pointer_event.clientY],
+        );
+      });
+
+      nav_rail.addEventListener("pointerleave", () => {
+        nav_rail.style.setProperty("--cursor_x", "50%");
+        nav_rail.style.setProperty("--cursor_y", "50%");
+
+        reset_pill_glow(pill_nodes);
+      });
+    });
+
+    if (window_any.htmx) {
+      window_any.htmx.process(root_node);
+    }
+  };
+
+  init_navbar_effects();
+
+  if (!window_any.__navbar_htmx_listener_bound) {
+    document.body?.addEventListener("htmx:load", (event) => {
+      const htmx_event = /** @type {CustomEvent} */ (event);
+      const load_root = htmx_event.detail?.elt ?? document;
+      init_navbar_effects(load_root);
+    });
+
+    window_any.__navbar_htmx_listener_bound = true;
+  }
+</script>

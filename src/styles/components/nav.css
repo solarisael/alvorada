@@ -1,0 +1,360 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+@property --cursor_x {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --cursor_y {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+#desktop-nav {
+  --cursor_x: 50%;
+  --cursor_y: 50%;
+
+  --rail_background: color-mix(
+    in oklch,
+    var(--color-ctp-mantle) 78%,
+    transparent
+  );
+  --rail_border: color-mix(
+    in oklch,
+    var(--color-ctp-lavender) 42%,
+    transparent
+  );
+  --rail_shadow: 0 18px 45px -26px rgb(0 0 0 / 0.82);
+  --rail_glass_blur: 10px;
+  --rail_light_opacity: 0.16;
+
+  --pill_background: color-mix(
+    in oklch,
+    var(--color-ctp-base) 62%,
+    transparent
+  );
+  --pill_border: color-mix(
+    in oklch,
+    var(--color-ctp-lavender) 24%,
+    transparent
+  );
+  --pill_text: color-mix(in oklch, var(--color-ctp-text) 88%, white);
+  --pill_glow_scale: 1;
+  --pill_transition: 260ms;
+
+  --center_shell_border: color-mix(
+    in oklch,
+    var(--color-citrinitas) 68%,
+    transparent
+  );
+  --center_shell_glow: color-mix(
+    in oklch,
+    var(--color-citrinitas) 50%,
+    transparent
+  );
+  --center_core_background: color-mix(
+    in oklch,
+    var(--color-ctp-crust) 70%,
+    transparent
+  );
+  --center_ring_size: 5.3rem;
+  --center_core_size: 4.2rem;
+
+  @apply pointer-events-none fixed top-4 z-50;
+  @apply flex w-full justify-center;
+  @apply px-2;
+}
+
+#desktop-nav.navbar-preset-soft {
+  --rail_glass_blur: 10px;
+  --rail_light_opacity: 0.14;
+  --pill_glow_scale: 0.85;
+}
+
+#desktop-nav.navbar-preset-rich {
+  --rail_glass_blur: 14px;
+  --rail_light_opacity: 0.22;
+  --pill_glow_scale: 1.25;
+}
+
+#nav-user-bar {
+  @apply pointer-events-auto relative;
+  @apply flex items-center justify-between;
+  @apply h-18 w-full max-w-230;
+  @apply rounded-full px-4 py-2 md:px-6 md:py-2;
+  @apply border;
+
+  border-color: var(--rail_border);
+  background: linear-gradient(
+    140deg,
+    color-mix(in oklch, var(--rail_background) 85%, white) 0%,
+    color-mix(in oklch, var(--rail_background) 72%, transparent) 42%,
+    color-mix(in oklch, var(--rail_background) 92%, black) 100%
+  );
+  box-shadow: var(--rail_shadow);
+  backdrop-filter: blur(var(--rail_glass_blur));
+  transition:
+    --cursor_x 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    --cursor_y 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+#nav-user-bar::before {
+  content: "";
+
+  @apply pointer-events-none absolute rounded-full;
+
+  inset: -1px;
+  padding: 1px;
+
+  background: radial-gradient(
+    230px circle at var(--cursor_x) var(--cursor_y),
+    color-mix(in oklch, var(--color-citrinitas) 48%, transparent)
+      calc(var(--rail_light_opacity) * 100%),
+    transparent 68%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.72;
+}
+
+.nav-links {
+  @apply relative z-30 flex items-center;
+  @apply gap-2 md:gap-3;
+  @apply min-w-0;
+}
+
+#middle-guy {
+  @apply w-20;
+}
+
+.nav-pill {
+  --pill_glow: 0;
+  --neon_color: color-mix(in oklch, var(--color-ctp-lavender) 45%, transparent);
+
+  @apply relative;
+  @apply inline-flex items-center justify-center;
+  @apply rounded-full px-4 py-2;
+  @apply text-sm md:text-base;
+  @apply border;
+
+  border-color: var(--pill_border);
+  color: var(--pill_text);
+  background-color: var(--pill_background);
+  --neon-color: var(--neon_color);
+
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 8px 20px -18px rgb(0 0 0 / 0.9),
+    0 0 calc(16px * var(--pill_glow) * var(--pill_glow_scale))
+      color-mix(in oklch, var(--neon_color) 58%, transparent);
+  transition:
+    transform var(--pill_transition) ease,
+    box-shadow var(--pill_transition) ease,
+    border-color var(--pill_transition) ease,
+    background-color var(--pill_transition) ease;
+}
+
+.nav-pill::before {
+  content: "~/";
+
+  @apply mr-1;
+  @apply text-xs;
+
+  color: color-mix(in oklch, var(--color-ctp-overlay0) 88%, transparent);
+  transition:
+    color var(--pill_transition) ease,
+    text-shadow var(--pill_transition) ease;
+}
+
+.nav-pill::after {
+  content: "";
+
+  @apply pointer-events-none absolute inset-0 rounded-full;
+  @apply border;
+
+  border-color: color-mix(in oklch, var(--neon_color) 76%, transparent);
+  opacity: calc(var(--pill_glow) * 0.68);
+  transition: opacity var(--pill_transition) ease;
+}
+
+.nav-pill:hover,
+.nav-pill:focus-visible {
+  @apply outline-none;
+
+  transform: translateY(-1px);
+  border-color: color-mix(in oklch, var(--neon_color) 42%, var(--pill_border));
+  background-color: var(--pill_background);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 10px 24px -20px rgb(0 0 0 / 0.95),
+    0 0 calc(22px * (0.14 + var(--pill_glow)) * var(--pill_glow_scale))
+      color-mix(in oklch, var(--neon_color) 68%, transparent);
+}
+
+.nav-pill:hover::before,
+.nav-pill:focus-visible::before {
+  color: color-mix(in oklch, var(--neon_color) 58%, var(--color-ctp-overlay0));
+  text-shadow:
+    0 0 8px color-mix(in oklch, var(--neon_color) 58%, transparent),
+    0 0 14px color-mix(in oklch, var(--neon_color) 40%, transparent);
+}
+
+.nav-pill[data-phase="nigredo"] {
+  --neon_color: var(--color-nigredo);
+}
+
+.nav-pill[data-phase="albedo"] {
+  --neon_color: var(--color-albedo);
+}
+
+.nav-pill[data-phase="citrinitas"] {
+  --neon_color: var(--color-citrinitas);
+}
+
+.nav-pill[data-phase="rubedo"] {
+  --neon_color: var(--color-rubedo);
+}
+
+#icon-user {
+  @apply absolute left-1/2 z-40;
+  @apply inline-flex items-center justify-center;
+  @apply rounded-full;
+
+  width: var(--center_ring_size);
+  height: var(--center_ring_size);
+  transform: translate3d(-50%, 0, 0);
+}
+
+#icon-user::before {
+  content: "";
+
+  @apply pointer-events-none absolute rounded-full;
+
+  inset: -2px;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 306deg,
+    color-mix(in oklch, var(--color-citrinitas) 22%, transparent) 321deg,
+    color-mix(in oklch, var(--color-citrinitas) 88%, transparent) 334deg,
+    color-mix(in oklch, var(--color-citrinitas) 44%, transparent) 342deg,
+    transparent 350deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  filter: drop-shadow(
+    0 0 8px color-mix(in oklch, var(--color-citrinitas) 62%, transparent)
+  );
+}
+
+#icon-user:hover::before,
+#icon-user:focus-visible::before {
+  opacity: 0.72;
+  animation: icon_orbit_glow 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+#icon-user-shell {
+  @apply absolute inset-0 overflow-hidden rounded-full;
+  @apply border;
+
+  border-color: var(--center_shell_border);
+  background: radial-gradient(
+    circle at 48% 30%,
+    rgb(255 255 255 / 0.14),
+    transparent 58%
+  );
+  box-shadow:
+    0 0 26px -8px var(--center_shell_glow),
+    inset 0 0 12px rgb(255 255 255 / 0.08);
+}
+
+#icon-user-shell-inner {
+  @apply absolute inset-0 rounded-full;
+
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--center_shell_glow) 42%, transparent) 0%,
+    transparent 72%
+  );
+}
+
+#icon-user-core {
+  @apply relative z-20 overflow-hidden rounded-full;
+  @apply border;
+
+  width: var(--center_core_size);
+  height: var(--center_core_size);
+  border-color: color-mix(
+    in oklch,
+    var(--center_shell_border) 42%,
+    transparent
+  );
+  background-color: var(--center_core_background);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.04),
+    0 0 20px -10px
+      color-mix(in oklch, var(--center_shell_glow) 55%, transparent);
+}
+
+#icon-user-photo {
+  @apply h-full w-full;
+
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  #desktop-nav {
+    @apply px-1;
+  }
+
+  #nav-user-bar {
+    @apply h-16 px-3 py-1.5;
+  }
+
+  #middle-guy {
+    @apply w-16;
+  }
+
+  #icon-user {
+    --center_ring_size: 4.25rem;
+    --center_core_size: 3.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-pill {
+    transition: none;
+  }
+
+  #nav-user-bar::before {
+    opacity: 0.6;
+  }
+
+  #icon-user:hover::before,
+  #icon-user:focus-visible::before {
+    animation: none;
+  }
+}
+
+@keyframes icon_orbit_glow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
