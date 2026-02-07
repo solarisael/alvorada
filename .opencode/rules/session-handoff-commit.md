@@ -12,4 +12,8 @@ completed work.
   committing.
 - The commit message should follow repository style and include any phrase the
   human explicitly requests.
+- Before creating the commit, the agent should ask the human whether they want
+  to append any extra text to the end of the commit message.
+- If extra text is provided, append it at the end of the commit message and
+  separate it from the main message using `//`.
 - Do not push unless the human explicitly asks.

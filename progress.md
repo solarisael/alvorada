@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-08 00:28
+- Updated_utc: 2026-02-08 00:36
 - Updated_by: agent (opencode)
 
 ## Goal
@@ -169,6 +169,7 @@
 - [x] Stabilized partial navigation by using global client entry import strategy and container replacement swap mode - Files: `public/js/scripts.js`, `src/layouts/index.astro`, `src/components/navbar.astro`
 - [x] Added generalized integration/debugging rule to prioritize least-invasive fixes and evidence-first diagnosis - Files: `.opencode/rules/integration-debugging.md`
 - [x] Added explicit session-handoff commit rule and linked it in AGENTS guidance - Files: `.opencode/rules/session-handoff-commit.md`, `AGENTS.md`
+- [x] Extended session-handoff commit rule to request optional user-provided commit-message tail separated with `//` - Files: `.opencode/rules/session-handoff-commit.md`
 
 ## Next
 
@@ -210,6 +211,7 @@
 - 2026-02-08 00:08 - Prefer simple global client import strategy and container-replacement swap mode for reliable partial navigation - Why: reduce integration complexity and avoid duplicate container artifacts
 - 2026-02-08 00:12 - Add generalized integration/debugging rule focused on evidence-first, least-invasive fixes - Why: prevent over-engineered diagnostics and improve iteration quality
 - 2026-02-08 00:28 - Add session-handoff commit permission rule and uncertainty-option communication requirement - Why: make handoff workflow explicit and improve decision collaboration under uncertainty
+- 2026-02-08 00:36 - Require optional user-supplied commit-message suffix prompt at handoff (using `//` separator) - Why: preserve user voice in handoff commits with consistent formatting
 
 ## Handoff
 
