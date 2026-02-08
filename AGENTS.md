@@ -84,13 +84,15 @@ If mode is missing at session start, ask once and recommend `co-pilot`.
 
 At session start:
 
-1. Read `progress.md` active scope + `mode_for_next_session`.
-2. If mode is missing, ask one mode question first.
-3. Ask three alignment prompts:
+1. Read `progress.md` active scope and all `*_next_session` handoff fields.
+2. If any required send-off field is missing or invalid, ask only for missing field(s) first, regardless of the user's first prompt.
+3. Confirm mode (`next_session`/`mode_for_next_session`). If missing, ask one mode question and recommend `co-pilot`.
+4. Ask three alignment prompts:
    - most important outcome today
    - priority axis (speed vs polish vs architecture)
    - edit breadth (targeted patch vs broad refactor)
-4. Reflect a short 3-step plan before deeper execution.
+5. Reflect a short 3-step plan before deeper execution.
+6. After kickoff alignment is captured, reset handoff fields in `progress.md` to pending placeholders for the next send-off, keeping only enduring metadata.
 
 ## Validation Baseline
 
@@ -103,3 +105,26 @@ At session start:
 - Keep `progress.md` concise and current.
 - Move long history to `progress.archive.md`.
 - Update this file when architecture/commands/rule index changes.
+
+## Send-Off Prompt Template
+
+At session end, ask Sol to fill these fields manually for the next session:
+
+- `next_session`: `brainstorm` | `co-pilot` | `sprint` | `handoff`
+- `primary_outcome`: one clear sentence
+- `priority`: `speed` | `polish` | `architecture`
+- `edit_breadth`: `targeted` | `focused` | `broad`
+- `first_task`: the highest-probability first action
+- `commit_intent`: `no_commit` | `after_review` | `handoff`
+- `notes`: optional context
+
+If any required field is missing at next session start, ask only for the missing field(s), then continue with kickoff prompts.
+
+Required fields to validate at next session start:
+
+- `next_session`
+- `primary_outcome`
+- `priority`
+- `edit_breadth`
+- `first_task`
+- `commit_intent`
