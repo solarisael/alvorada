@@ -11,8 +11,8 @@ This is a personal website built with Astro, with these specifications:
 - Layouts in `/src/layouts`
 - Pages in `/src/pages`
 - Layouts and Pages Styles in `/src/styles`
-- Vanilla JS in `/src/scripts`
-- Blog pages in `/src/blog`
+- Shared browser JS in `/public/js`
+- Optional component-local scripts can live inside related `.astro` files
 
 ## Important Rules
 

@@ -2,7 +2,7 @@
 name: Styling Direction
 globs: "src/**/*.{astro,css,js}"
 description: Enforce the visual language and layout rhythm for the reading-focused high-fantasy sci-fi interface.
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Styling Direction

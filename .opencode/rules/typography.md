@@ -2,7 +2,7 @@
 name: Typography Rules
 globs: "src/**/*.{astro,css,js}"
 description: Enforce fluid, reading-first typography using Tailwind-friendly CSS utilities and semantic text scales.
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Typography Rules

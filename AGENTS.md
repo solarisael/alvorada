@@ -2,261 +2,104 @@
 
 ## Purpose
 
-This document is for coding agents working in this repository (`alvorada`).
-Follow these instructions unless Sol explicitly says otherwise.
+Operational index for coding agents in `alvorada`.
+Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
+
+## Rule Precedence
+
+1. System/developer/user instructions override repo docs.
+2. For repo-local policy, `.opencode/rules/*.md` is source of truth.
+3. `AGENTS.md` is workflow/index guidance and must not duplicate long rule text.
 
 ## Project Snapshot
 
 - Stack: Astro 5 + Tailwind CSS 4 + vanilla JavaScript.
-- Package manager/runtime: Bun.
-- Primary source dirs:
-  - `src/pages` (Astro pages)
-  - `src/layouts` (Astro layouts)
-  - `src/components` (Astro components)
-  - `src/styles` (global/component CSS)
-  - `public/js` (browser JS loaded directly)
-- Config files:
-  - `package.json`
-  - `astro.config.mjs`
-  - `tailwind.config.js`
-  - `.prettierrc`
+- Runtime/package manager: Bun.
+- Primary dirs: `src/pages`, `src/layouts`, `src/components`, `src/styles`, `public/js`
 
-## Current Route Map
+## Routes (current)
 
-- Core pages:
-  - `/`
-  - `/nigredo`
-  - `/albedo`
-  - `/citrinitas`
-  - `/rubedo`
-  - `/codex`
-- Dynamic scaffold pages:
-  - `/albedo/[post_slug]`
-  - `/citrinitas/[post_slug]`
-  - `/rubedo/[book_slug]`
-  - `/codex/[...entry_path]`
+- Core: `/`, `/nigredo`, `/albedo`, `/citrinitas`, `/rubedo`, `/codex`
+- Dynamic: `/albedo/[post_slug]`, `/citrinitas/[post_slug]`, `/rubedo/[book_slug]`, `/codex/[...entry_path]`
+- Dynamic policy: deterministic `getStaticPaths()` until content system is complete; snake_case params only; URL hierarchy drives breadcrumbs/phase accents.
 
-### Dynamic route policy
+## Commands
 
-- Until a full content system is implemented, dynamic page files must provide deterministic `getStaticPaths()` entries so static builds succeed.
-- Keep route params in snake_case (`post_slug`, `book_slug`, `entry_path`).
-- URL hierarchy is the source of truth for breadcrumbs and page-theme accent behavior.
+- Install `bun install`
+- Dev `bun run dev`
+- Build `bun run build`
+- Preview `bun run preview`
+- Format check `bunx prettier --check .`
+- Format write `bunx prettier --write .`
+- Tunables check `bun run css:tunables:check`
+- Tunables sync `bun run css:tunables:sync`
 
----
+## Non-Negotiables
 
-## Tooling and Commands
-
-## Prerequisites
-
-- Bun installed (preferred and required by project rules).
-
-## Install deps
-
-- `bun install`
-
-## Run dev server
-
-- `bun run dev`
-
-## Build
-
-- `bun run build`
-
-## Preview production build
-
-- `bun run preview`
-
-## Formatting (Prettier)
-
-Use Bun + Prettier directly:
-
-- Check formatting:
-  - `bunx prettier --check .`
-- Apply formatting:
-  - `bunx prettier --write .`
-- Format a specific file:
-  - `bunx prettier --write src/pages/index.astro`
-
-## CSS tunables helpers
-
-- Check that component-local tunables are exposed in the top variable block:
-  - `bun run css:tunables:check`
-- Auto-add missing top declarations for component-local tunables:
-  - `bun run css:tunables:sync`
-
-## Linting
-
-- There is currently **no ESLint (or other lint) config** in this repository.
-- Treat formatting + Astro build as current quality gates.
-- If adding linting, propose it first and keep config minimal.
-
-## Tests
-
-- There is currently **no test script** and no existing `*.test.*` / `*.spec.*` files.
-- If/when tests are added, use Bun test runner.
-
-### Single test execution (important)
-
-Use these patterns:
-
-- Run one test file:
-  - `bun test path/to/file.test.js`
-- Run one test by name pattern:
-  - `bun test path/to/file.test.js -t "test name substring"`
-- Run tests in watch mode for one file:
-  - `bun test path/to/file.test.js --watch`
-
-### Current test policy
-
-- For now, validate changes with:
-  - `bun run build`
-  - `bunx prettier --check .`
-
----
-
-## Repo-Specific Rules (from local agent rules)
-
-The repo contains `.opencode/rules/project.md`, `.opencode/rules/separate-apply-rules-by-category.md`, `.opencode/rules/integration-debugging.md`, `.opencode/rules/session-handoff-commit.md`, `.opencode/rules/ui-option-classes-registry.md`, `.opencode/rules/addressing.md`, `.opencode/rules/commit-message-tail-required.md`, and `.opencode/rules/expose-css-tunables.md`.
-Honor them when generating code.
-
-- `separate-apply-rules-by-category.md` is CSS-specific guidance; only consult it when editing CSS with `@apply` blocks.
-- `commit-message-tail-required.md` requires asking Sol for an optional commit-message tail before each commit unless Sol explicitly skips it for that commit.
-- `expose-css-tunables.md` describes how to keep component CSS custom properties easy to tune from the top of each file.
-
-### Required
-
-- Use **Bun**, not npm/yarn, for install/run/add.
-- Ask before adding new dependencies.
-- Load frontend packages from local project dependencies/bundled modules; do not source runtime packages from CDN/script links unless a human explicitly requests it.
+- Use Bun only.
+- Ask before adding dependencies.
 - Prefer functional style; avoid classes/OOP.
-- Use snake_case naming for **all** identifiers.
-- Keep HTML clean; put styling in CSS files using `@apply` instead of long inline utility-class markup.
-- In CSS `@apply`, group utilities by category for readability:
-  - layout
-  - sizing
-  - spacing
-  - borders/background
-  - typography
-  - effects/transitions
+- Prefer snake_case for new identifiers.
+- Keep styling in CSS with `@apply` over long inline class strings.
+- Prefer HTMX behavior in markup (`hx-*`) rather than script defaults.
+- Prefer CSS/native transitions over JS per-frame animation when feasible.
 
-### Note on legacy code
+## Rule Index
 
-- Existing files contain mixed naming/style (including camelCase).
-- For edits, follow local file style unless doing a deliberate cleanup.
-- For new files/modules, follow the rules above.
+- `.opencode/rules/project.md`
+- `.opencode/rules/styling.md`
+- `.opencode/rules/typography.md`
+- `.opencode/rules/separate-apply-rules-by-category.md`
+- `.opencode/rules/expose-css-tunables.md`
+- `.opencode/rules/integration-debugging.md`
+- `.opencode/rules/ui-option-classes-registry.md`
+- `.opencode/rules/session-handoff-commit.md`
+- `.opencode/rules/commit-message-tail-required.md`
+- `.opencode/rules/addressing.md`
 
----
+## Rule Loading Matrix
 
-## Code Style Guidelines
+- Always relevant:
+  - `project.md`, `commit-message-tail-required.md`, `addressing.md`
+- UI/visual implementation:
+  - `styling.md`, `typography.md`
+  - `expose-css-tunables.md` when editing component CSS variables
+  - `ui-option-classes-registry.md` when adding/changing switchable class sets
+- CSS `@apply` editing: `separate-apply-rules-by-category.md`
+- Debugging/integration: `integration-debugging.md`
+- Session-end handoff/commit flow: `session-handoff-commit.md`, `commit-message-tail-required.md`
 
-## Formatting baseline (from `.prettierrc`)
+## Session Modes
 
-- Trailing commas: `all`
-- Tab width: `2`
-- Semicolons: `true`
-- Quotes: double quotes (`singleQuote: false`)
-- Plugins:
-  - `prettier-plugin-astro`
-  - `prettier-plugin-tailwindcss`
+Mode must be selected at send-off for the next session:
 
-## Imports
+- `brainstorm`: idea-heavy collaboration, options/tradeoffs first, minimal code changes.
+- `co-pilot`: conversational implementation with frequent checkpoints.
+- `sprint`: fastest path, fewer interruptions, infer sensible defaults.
+- `handoff`: wrap-up only, progress update, commit protocol prep.
 
-- Keep imports at top of Astro frontmatter / JS module.
-- Order imports:
-  1. platform/external packages
-  2. internal absolute/relative modules
-  3. style imports
-- Prefer explicit relative paths; avoid deep, unclear path chains when possible.
-- Remove unused imports.
+If mode is missing at session start, ask once and recommend `co-pilot`.
 
-## JavaScript/Type usage
+## Conversational Kickoff Protocol
 
-- Codebase is JS-first (no TS config currently).
-- Do not introduce TypeScript unless requested.
-- Prefer small pure functions over class-based abstractions.
-- Favor `const`; use `let` only when mutation is required.
-- Keep functions focused and composable.
-- Avoid global mutation unless required by browser integration.
+At session start:
 
-### Interaction performance (required)
+1. Read `progress.md` active scope + `mode_for_next_session`.
+2. If mode is missing, ask one mode question first.
+3. Ask three alignment prompts:
+   - most important outcome today
+   - priority axis (speed vs polish vs architecture)
+   - edit breadth (targeted patch vs broad refactor)
+4. Reflect a short 3-step plan before deeper execution.
 
-- Prefer CSS/native browser transitions and keyframes for visual animations when they can achieve the behavior cleanly; avoid JS-driven per-frame animation calculations in those cases.
-- For constant/repeatable UI interactions that include movement (e.g. `pointermove`, `scroll`, `resize`, drag, rapid input, repeated hover effects), use `throttle` from `public/js/modules/performance.js`.
-- For constant/repeatable UI interactions that include buttons or less frequent events (e.g. `click`, `mouseleave`, `mouseout`, `mouseenter`), use debounce from `public/js/modules/performance.js`.
-- Before using them, initialize queue state with `queuer_preparator()` once per page lifecycle (guarded to avoid repeated initialization).
-- Timing is context-dependent; choose an interval appropriate to the interaction:
-  - around `16ms` for pointer-driven visual updates when near-frame responsiveness is needed (throttle),
-  - higher values for heavier or non-visual handlers (debounce).
-- Agents may skip throttling/debouncing only when:
-  - the human explicitly requests no throttle/debounce for that task, or
-  - the interaction is demonstrably low-frequency and performance-neutral.
-- If skipping, state the reason briefly in the change summary.
+## Validation Baseline
 
-## Naming
+- Required: `bun run build`
+- Required: `bunx prettier --check .` (or touched-file formatting if repo has known unrelated formatting drift)
+- If tests are added later: run focused `bun test` for touched area.
 
-- Prefer `snake_case` for new variables/functions/files (project rule).
-- Keep names descriptive and domain-based.
-- Constants: `SCREAMING_SNAKE_CASE` for true constants.
-- DOM ids/classes should remain meaningful and stable.
+## Docs Hygiene
 
-## Error handling and resilience
-
-- Use guard clauses early (e.g., if required DOM nodes are missing, return safely).
-- In browser UI code:
-  - fail soft (warn and continue when possible)
-  - avoid hard crashes for non-critical features
-- Wrap async browser APIs (`clipboard`, etc.) with `try/catch` and provide fallback UX.
-- Validate external inputs and event-driven values before use.
-
-## Astro + UI patterns
-
-- Keep page/layout structure in `.astro`.
-- For component-scoped interactivity, place script logic directly inside the related `.astro` component.
-- Use `public/js/**` only for truly global/shared browser behavior used across multiple pages/components.
-- Keep reusable non-DOM logic in JS modules.
-- Keep styling in `src/styles/**` (or component-local style blocks when justified).
-- Prefer HTMX for server-driven fragment interactions.
-- Define HTMX behavior directly in HTML attributes (`hx-*`) by default; do not apply HTMX defaults via scripts.
-- Only use script-driven HTMX attribute/config setup for rare edge cases that cannot be expressed cleanly in markup.
-- Keep `href` fallback when using HTMX attributes on links/buttons.
-- Default HTMX navigation swaps to `#content`; allow edge-case overrides via `data-hx-target`, `data-hx-swap`, and `data-hx-select`.
-- Re-initialize component-level interactive scripts after HTMX updates (e.g., `htmx:load`).
-- Project HTMX extensions in use: `idiomorph`, `head-support`, `preload`, `sse`.
-- Prefer accessibility basics:
-  - semantic elements
-  - labels/aria where needed
-  - keyboard-safe interactions
-
-## CSS/Tailwind patterns
-
-- Prefer CSS files with `@apply` utilities over crowded HTML class strings.
-- Organize long `@apply` blocks into multiple grouped lines.
-- Reuse theme variables and existing utility patterns before adding new ones.
-- Keep animations intentional; avoid gratuitous effects on core UX paths.
-
-## Comments and docs
-
-- Add comments only for non-obvious intent.
-- Do not restate obvious code behavior.
-- Keep README/AGENTS updated when commands or architecture change.
-
----
-
-## Agent Workflow Checklist (recommended)
-
-1. Read relevant files first; preserve existing style in touched files.
-2. Implement minimal, targeted changes.
-3. Run format check/fix (`bunx prettier ...`).
-4. Run `bun run build` to catch integration issues.
-5. If tests exist for changed area, run focused single-file test(s).
-6. Summarize changes and any follow-up risks clearly.
-
----
-
-## Cursor/Copilot Rule Files
-
-- `.cursor/rules/`: not found
-- `.cursorrules`: not found
-- `.github/copilot-instructions.md`: not found
-
-If these are added later, update this file and treat them as first-class agent instructions.
+- Keep `progress.md` concise and current.
+- Move long history to `progress.archive.md`.
+- Update this file when architecture/commands/rule index changes.

@@ -2,7 +2,7 @@
 name: UI Option Classes Registry
 globs: "src/**/*.{astro,css,js},ui_option_classes.md"
 description: Keep switchable UI class options tracked in one central registry file.
-alwaysApply: true
+alwaysApply: false
 ---
 
 # UI Option Classes Registry Rule
