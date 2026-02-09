@@ -27,7 +27,7 @@
   --site_fx_lift_mult: 1;
 }
 
-:root[data-site-theme="ritual"] {
+:root[data-site-theme="minimal_astral"] {
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
   --site_style_shell_mix: 44%;
@@ -38,7 +38,55 @@
   --site_style_deco_opacity: 0.2;
 }
 
-:root[data-site-theme="vibrant"] {
+:root[data-site-theme="gilded_arcane"] {
+  --site_style_accent: var(--ui_accent);
+  --site_style_accent_alt: var(--ui_accent_2);
+  --site_style_shell_mix: 54%;
+  --site_style_border_mix: 48%;
+  --site_style_halo_mix: 32%;
+  --site_style_edge_mix: 36%;
+  --site_style_noise_opacity: 0.16;
+  --site_style_deco_opacity: 0.34;
+  --gilded_ornament_opacity: 0.88;
+  --gilded_ornament_scale: 1;
+  --gilded_ornament_glow: 0.72;
+  --gilded_border_inner_mix: 48%;
+  --gilded_border_outer_mix: 74%;
+  --gilded_sigil_opacity: 0.62;
+  --gilded_corner_tl_size: clamp(8rem, 16vw, 9.5rem);
+  --gilded_corner_tr_size: clamp(8.8rem, 18vw, 11rem);
+  --gilded_corner_bl_size: clamp(8.6rem, 17vw, 10.2rem);
+  --gilded_corner_br_size: clamp(7.4rem, 15vw, 8.6rem);
+  --gilded_sigil_primary_size: clamp(2.4rem, 5vw, 2.9rem);
+  --gilded_sigil_secondary_size: clamp(2.1rem, 4.6vw, 2.6rem);
+  --gilded_center_top_asset_line: url("/ornaments/gilded/frame_line_top.svg");
+  --gilded_center_top_asset_compass: url("/ornaments/gilded/frame_compass_8pt_top_curved.svg");
+  --gilded_center_top_asset_eye: url("/ornaments/gilded/frame_eye_top.svg");
+  --gilded_center_bottom_asset_line: url("/ornaments/gilded/frame_line_bottom.svg");
+  --gilded_center_bottom_asset_compass: url("/ornaments/gilded/frame_compass_8pt_bottom_curved.svg");
+  --gilded_center_bottom_asset_eye: url("/ornaments/gilded/frame_eye_bottom.svg");
+  --gilded_center_top_span: 72%;
+  --gilded_center_bottom_span: 54%;
+  --gilded_stripe_step: 1.5rem;
+  --gilded_stripe_line: 0.08rem;
+}
+
+:root[data-site-theme="gilded_arcane"][data-site-fx="subtle"] {
+  --gilded_ornament_glow: 0.42;
+  --gilded_ornament_opacity: 0.74;
+}
+
+:root[data-site-theme="gilded_arcane"][data-site-fx="balanced"] {
+  --gilded_ornament_glow: 0.72;
+  --gilded_ornament_opacity: 0.88;
+}
+
+:root[data-site-theme="gilded_arcane"][data-site-fx="bold"] {
+  --gilded_ornament_glow: 1.06;
+  --gilded_ornament_opacity: 1;
+}
+
+:root[data-site-theme="cosmic_overlay"] {
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
   --site_style_shell_mix: 58%;
@@ -49,26 +97,48 @@
   --site_style_deco_opacity: 0.32;
 }
 
-:root[data-site-theme="arcane"] {
+:root[data-site-theme="witchy_ornate"] {
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 64%;
-  --site_style_border_mix: 58%;
-  --site_style_halo_mix: 35%;
-  --site_style_edge_mix: 42%;
-  --site_style_noise_opacity: 0.24;
-  --site_style_deco_opacity: 0.36;
+  --site_style_shell_mix: 62%;
+  --site_style_border_mix: 56%;
+  --site_style_halo_mix: 34%;
+  --site_style_edge_mix: 40%;
+  --site_style_noise_opacity: 0.22;
+  --site_style_deco_opacity: 0.38;
 }
 
-:root[data-site-theme="verdigris"] {
+:root[data-site-theme="graveyard_gothic"] {
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 56%;
-  --site_style_border_mix: 50%;
-  --site_style_halo_mix: 28%;
+  --site_style_shell_mix: 40%;
+  --site_style_border_mix: 28%;
+  --site_style_halo_mix: 10%;
+  --site_style_edge_mix: 14%;
+  --site_style_noise_opacity: 0.08;
+  --site_style_deco_opacity: 0.14;
+}
+
+:root[data-site-theme="pixel_relic"] {
+  --site_style_accent: var(--ui_accent);
+  --site_style_accent_alt: var(--ui_accent_2);
+  --site_style_shell_mix: 52%;
+  --site_style_border_mix: 44%;
+  --site_style_halo_mix: 22%;
+  --site_style_edge_mix: 30%;
+  --site_style_noise_opacity: 0.14;
+  --site_style_deco_opacity: 0.22;
+}
+
+:root[data-site-theme="grimdark_tarot"] {
+  --site_style_accent: var(--ui_accent);
+  --site_style_accent_alt: var(--ui_accent_2);
+  --site_style_shell_mix: 58%;
+  --site_style_border_mix: 52%;
+  --site_style_halo_mix: 30%;
   --site_style_edge_mix: 34%;
-  --site_style_noise_opacity: 0.18;
-  --site_style_deco_opacity: 0.3;
+  --site_style_noise_opacity: 0.16;
+  --site_style_deco_opacity: 0.32;
 }
 
 :root[data-site-shell="subtle"] {
@@ -196,7 +266,7 @@
   opacity: var(--site_style_deco_opacity);
 }
 
-:root[data-site-theme="ritual"] #content::after {
+:root[data-site-theme="minimal_astral"] #content::after {
   background:
     radial-gradient(
       110% 140% at 50% -8%,
@@ -215,7 +285,87 @@
     );
 }
 
-:root[data-site-theme="vibrant"] #content::after {
+:root[data-site-theme="gilded_arcane"] #content::after {
+  opacity: calc(
+    var(--site_style_deco_opacity) * var(--gilded_ornament_opacity)
+  );
+  background:
+    url("/ornaments/gilded/frame_corner_tl.svg") top left /
+      calc(var(--gilded_corner_tl_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_corner_tl_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    url("/ornaments/gilded/frame_corner_tr.svg") top right /
+      calc(var(--gilded_corner_tr_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_corner_tr_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    url("/ornaments/gilded/frame_corner_bl.svg") bottom left /
+      calc(var(--gilded_corner_bl_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_corner_bl_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    url("/ornaments/gilded/frame_corner_br.svg") bottom right /
+      calc(var(--gilded_corner_br_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_corner_br_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    var(--gilded_center_top_asset_line) 50% 0 /
+      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    var(--gilded_center_top_asset_compass) 50% 0 /
+      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    var(--gilded_center_top_asset_eye) 50% 0 /
+      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    var(--gilded_center_bottom_asset_line) 50% 100% /
+      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    var(--gilded_center_bottom_asset_compass) 50% 100% /
+      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    var(--gilded_center_bottom_asset_eye) 50% 100% /
+      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
+      no-repeat,
+    url("/ornaments/gilded/sigil_moon_star.svg") 14% 36% /
+      calc(var(--gilded_sigil_primary_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_sigil_primary_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    url("/ornaments/gilded/sigil_eye.svg") 86% 68% /
+      calc(var(--gilded_sigil_secondary_size) * var(--gilded_ornament_scale))
+      calc(var(--gilded_sigil_secondary_size) * var(--gilded_ornament_scale))
+      no-repeat,
+    radial-gradient(
+      110% 140% at 50% -8%,
+      color-mix(in oklch, var(--site_style_accent) 28%, transparent),
+      transparent 58%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 var(--gilded_stripe_step),
+      color-mix(in oklch, var(--site_style_accent) 14%, transparent)
+        calc(var(--gilded_stripe_step) + 0.01rem)
+        calc(var(--gilded_stripe_step) + var(--gilded_stripe_line))
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 85%,
+      color-mix(in oklch, var(--site_style_accent_alt) 24%, transparent) 100%
+    ),
+    radial-gradient(
+      120% 100% at 12% 42%,
+      color-mix(in oklch, var(--site_style_accent) 20%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      120% 100% at 88% 70%,
+      color-mix(in oklch, var(--site_style_accent_alt) 18%, transparent),
+      transparent 64%
+    );
+  filter: saturate(1.08)
+    drop-shadow(
+      0 0 10px rgb(218 170 96 / calc(var(--gilded_ornament_glow) * 0.44))
+    );
+}
+
+:root[data-site-theme="cosmic_overlay"] #content::after {
   background:
     radial-gradient(
       120% 120% at 100% 0%,
@@ -235,7 +385,7 @@
     );
 }
 
-:root[data-site-theme="arcane"] #content::after {
+:root[data-site-theme="witchy_ornate"] #content::after {
   background:
     radial-gradient(
       160% 130% at 50% -18%,
@@ -256,7 +406,21 @@
     );
 }
 
-:root[data-site-theme="verdigris"] #content::after {
+:root[data-site-theme="graveyard_gothic"] #content::after {
+  background:
+    radial-gradient(
+      140% 120% at 50% -20%,
+      color-mix(in oklch, var(--site_style_accent) 18%, transparent),
+      transparent 66%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 42px,
+      color-mix(in oklch, var(--site_style_accent) 8%, transparent) 43px 44px
+    );
+}
+
+:root[data-site-theme="pixel_relic"] #content::after {
   background:
     radial-gradient(
       140% 120% at 20% 0%,
@@ -273,6 +437,21 @@
       180deg,
       color-mix(in oklch, var(--site_style_accent) 14%, transparent),
       transparent 62%
+    );
+}
+
+:root[data-site-theme="grimdark_tarot"] #content::after {
+  background:
+    radial-gradient(
+      130% 120% at 50% 0%,
+      color-mix(in oklch, var(--site_style_accent) 30%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      165deg,
+      transparent 0 24%,
+      color-mix(in oklch, var(--site_style_accent_alt) 16%, transparent) 34% 44%,
+      transparent 58% 100%
     );
 }
 
@@ -410,7 +589,7 @@
   --home_gate_ring_opacity: 0.22;
 
   /* motion */
-  --home_gate_hover_lift: -3px;
+  --home_gate_hover_lift: -1.2%;
   --home_gate_transition_ms: 260ms;
 
   @apply flex w-full grow flex-col;
@@ -535,8 +714,8 @@
 }
 
 .phase_card_link::after {
-  inset: 12px;
-  border-radius: calc(var(--home_gate_card_radius) - 8px);
+  inset: clamp(0.55rem, 1.8%, 0.75rem);
+  border-radius: calc(var(--home_gate_card_radius) - 0.5rem);
   border: 1px solid
     color-mix(
       in oklch,
@@ -607,7 +786,7 @@
       var(--phase_color, var(--site_style_accent_alt)) 76%,
       white
     );
-  outline-offset: 2px;
+  outline-offset: 0.125rem;
 }
 
 .phase_card_nigredo {
@@ -626,7 +805,7 @@
   --phase_color: var(--color-rubedo);
 }
 
-:root[data-site-theme="ritual"] {
+:root[data-site-theme="minimal_astral"] {
   --home_gate_surface_mix: 44%;
   --home_gate_border_mix: 34%;
   --home_gate_halo_mix: 22%;
@@ -635,7 +814,123 @@
   --home_gate_ring_opacity: 0.3;
 }
 
-:root[data-site-theme="vibrant"] {
+:root[data-site-theme="gilded_arcane"] {
+  --home_gate_surface_mix: 56%;
+  --home_gate_border_mix: 48%;
+  --home_gate_halo_mix: 34%;
+  --home_gate_blur: 2.6px;
+  --home_gate_text_mix: 88%;
+  --home_gate_star_opacity: 0.18;
+  --home_gate_ring_opacity: 0.34;
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_link {
+  --phase_ornament_corner_tl: url("/ornaments/gilded/card_corner_a.svg");
+  --phase_ornament_corner_tr: url("/ornaments/gilded/card_corner_b.svg");
+  --phase_ornament_corner_bl: url("/ornaments/gilded/card_corner_c.svg");
+  --phase_ornament_corner_br: url("/ornaments/gilded/card_corner_d.svg");
+  --phase_ornament_sigil: url("/ornaments/gilded/sigil_eye.svg");
+  --phase_ornament_inset: clamp(0.35rem, 1.2%, 0.55rem);
+  --phase_ornament_tl_size: clamp(2.4rem, 8vw, 2.75rem);
+  --phase_ornament_tr_size: clamp(2.6rem, 8.5vw, 3rem);
+  --phase_ornament_bl_size: clamp(2.2rem, 7.4vw, 2.5rem);
+  --phase_ornament_br_size: clamp(2.5rem, 8.2vw, 2.9rem);
+  --phase_ornament_sigil_size: clamp(1.35rem, 4.4vw, 1.75rem);
+  --phase_ornament_sigil_offset: 4%;
+  --phase_ornament_side_inline: clamp(0.75rem, 2.2vw, 1rem);
+  --phase_ornament_side_block: 76%;
+
+  box-shadow:
+    0 22px 36px -24px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.12)),
+    0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) var(--gilded_border_outer_mix),
+        transparent
+      ),
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) var(--gilded_border_inner_mix),
+        transparent
+      ),
+    inset 0 1px 0 color-mix(in oklch, white 22%, transparent);
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_link::after {
+  inset: var(--phase_ornament_inset);
+  border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
+  border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
+  background:
+    var(--phase_ornament_corner_tl) top left / var(--phase_ornament_tl_size)
+      var(--phase_ornament_tl_size) no-repeat,
+    var(--phase_ornament_corner_tr) top right / var(--phase_ornament_tr_size)
+      var(--phase_ornament_tr_size) no-repeat,
+    var(--phase_ornament_corner_bl) bottom left / var(--phase_ornament_bl_size)
+      var(--phase_ornament_bl_size) no-repeat,
+    var(--phase_ornament_corner_br) bottom right / var(--phase_ornament_br_size)
+      var(--phase_ornament_br_size) no-repeat,
+    url("/ornaments/gilded/card_center_top.svg") 50% 0 / 84% auto no-repeat,
+    var(--phase_ornament_sigil) 50%
+      calc(100% - var(--phase_ornament_sigil_offset)) /
+      var(--phase_ornament_sigil_size) var(--phase_ornament_sigil_size)
+      no-repeat,
+    url("/ornaments/gilded/card_side_flourish.svg") 0 50% /
+      var(--phase_ornament_side_inline) var(--phase_ornament_side_block)
+      no-repeat,
+    url("/ornaments/gilded/card_side_flourish.svg") 100% 50% /
+      var(--phase_ornament_side_inline) var(--phase_ornament_side_block)
+      no-repeat;
+  opacity: calc(
+    var(--home_gate_ring_opacity) * 1.34 * var(--gilded_sigil_opacity)
+  );
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_link::before {
+  background:
+    radial-gradient(
+      circle at 24% 26%,
+      color-mix(in oklch, white 64%, transparent) 0 0.6px,
+      transparent 0.74px
+    ),
+    radial-gradient(
+      circle at 76% 62%,
+      color-mix(in oklch, white 52%, transparent) 0 0.7px,
+      transparent 0.82px
+    ),
+    radial-gradient(
+      140% 120% at 70% -20%,
+      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      120% 100% at 20% 90%,
+      color-mix(in oklch, var(--site_style_accent_alt) 16%, transparent),
+      transparent 72%
+    );
+  opacity: calc(var(--home_gate_star_opacity) * 1.25);
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_nigredo {
+  --phase_ornament_sigil: url("/ornaments/gilded/sigil_eye.svg");
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_albedo {
+  --phase_ornament_sigil: url("/ornaments/gilded/sigil_moon_star.svg");
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_citrinitas {
+  --phase_ornament_corner_tl: url("/ornaments/gilded/card_corner_b.svg");
+  --phase_ornament_corner_tr: url("/ornaments/gilded/card_corner_a.svg");
+  --phase_ornament_sigil: url("/ornaments/gilded/sigil_moon_star.svg");
+}
+
+:root[data-site-theme="gilded_arcane"] .phase_card_rubedo {
+  --phase_ornament_corner_bl: url("/ornaments/gilded/card_corner_d.svg");
+  --phase_ornament_corner_br: url("/ornaments/gilded/card_corner_c.svg");
+}
+
+:root[data-site-theme="cosmic_overlay"] {
   --home_gate_surface_mix: 62%;
   --home_gate_border_mix: 50%;
   --home_gate_halo_mix: 40%;
@@ -644,7 +939,7 @@
   --home_gate_star_opacity: 0.2;
 }
 
-:root[data-site-theme="arcane"] {
+:root[data-site-theme="witchy_ornate"] {
   --home_gate_surface_mix: 74%;
   --home_gate_border_mix: 58%;
   --home_gate_halo_mix: 48%;
@@ -653,7 +948,17 @@
   --home_gate_ring_opacity: 0.36;
 }
 
-:root[data-site-theme="verdigris"] {
+:root[data-site-theme="graveyard_gothic"] {
+  --home_gate_surface_mix: 40%;
+  --home_gate_border_mix: 30%;
+  --home_gate_halo_mix: 14%;
+  --home_gate_blur: 1.2px;
+  --home_gate_text_mix: 82%;
+  --home_gate_star_opacity: 0.1;
+  --home_gate_ring_opacity: 0.24;
+}
+
+:root[data-site-theme="pixel_relic"] {
   --home_gate_surface_mix: 66%;
   --home_gate_border_mix: 54%;
   --home_gate_halo_mix: 36%;
@@ -663,20 +968,30 @@
   --home_gate_ring_opacity: 0.34;
 }
 
+:root[data-site-theme="grimdark_tarot"] {
+  --home_gate_surface_mix: 58%;
+  --home_gate_border_mix: 48%;
+  --home_gate_halo_mix: 30%;
+  --home_gate_blur: 2.4px;
+  --home_gate_text_mix: 86%;
+  --home_gate_star_opacity: 0.16;
+  --home_gate_ring_opacity: 0.32;
+}
+
 :root[data-site-fx="subtle"] {
-  --home_gate_hover_lift: -1px;
+  --home_gate_hover_lift: -0.6%;
   --home_gate_transition_ms: calc(180ms * var(--site_fx_motion_mult));
   --home_gate_shadow_strength: 0.46;
 }
 
 :root[data-site-fx="balanced"] {
-  --home_gate_hover_lift: -3px;
+  --home_gate_hover_lift: -1.2%;
   --home_gate_transition_ms: calc(260ms * var(--site_fx_motion_mult));
   --home_gate_shadow_strength: 0.6;
 }
 
 :root[data-site-fx="bold"] {
-  --home_gate_hover_lift: -5px;
+  --home_gate_hover_lift: -1.8%;
   --home_gate_transition_ms: calc(320ms * var(--site_fx_motion_mult));
   --home_gate_shadow_strength: 0.74;
 }

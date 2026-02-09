@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "test": "bun test",
     "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize",
+    "css:size:audit": "bun scripts/css_size_audit.js check --scope=priority-a",
     "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color",
     "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color"
   },

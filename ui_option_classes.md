@@ -12,6 +12,7 @@ When new optional class variants are introduced, add them here in the same chang
 - 2026-02-08: Migrated `home_theme_*` to `site_theme_*` and `home_fx_*` to `site_fx_*` for global naming.
 - 2026-02-08: Added `site_shell_*` option set for shell intensity control.
 - 2026-02-08: Added `verdigris` to `data-site-theme` options.
+- 2026-02-09: Replaced 4 theme options with 7 inspiration-aligned themes and dual alias naming.
 
 ## Navbar Preset
 
@@ -71,19 +72,22 @@ For each new option set, document:
 
 ## Site Theme
 
-- Purpose: controls global site visual language (ritual/vibrant/arcane).
+- Purpose: controls global site visual language aligned to inspiration families with dual alias names.
 - Apply on: `html` via `data-site-theme` and globally via style switcher cookies.
-- Default: `ritual`.
+- Default: `minimal_astral`.
 - Options:
-  - `ritual`
-  - `vibrant`
-  - `arcane`
-  - `verdigris`
+  - `minimal_astral` (`astrology_themed`) - clean celestial linework
+  - `gilded_arcane` (`golden_mystical_tarot`) - ornate black-gold tarot
+  - `cosmic_overlay` (`cosmic_themed`) - orbital cosmic layouts
+  - `witchy_ornate` (`wicca_ornamentation`) - decorative occult motifs
+  - `graveyard_gothic` (`gothic_dark_girl`) - dark feminine collage
+  - `pixel_relic` (`relic_gothic`) - retro relic HUD
+  - `grimdark_tarot` (`grimdark_tarot`) - moody narrative tarot
 
 Quick switch:
 
 ```html
-<html data-site-theme="ritual"></html>
+<html data-site-theme="minimal_astral"></html>
 ```
 
 ## Site Effects Intensity

@@ -23,7 +23,30 @@
   - `sol_meaning`:
   - `implementation_impact`:
 - Current session aliases:
-  - none recorded yet
+  - `term`: Kintsu
+    `sol_meaning`: assistant's name in this collaboration
+    `implementation_impact`: use "Kintsu" when self-identifying to Sol in user-facing replies
+  - `term`: `golden_mystical_tarot` <-> `gilded_arcane`
+    `sol_meaning`: ornate black-gold tarot framing language
+    `implementation_impact`: map both names to the `gilded_arcane` site theme key
+  - `term`: `astrology_themed` <-> `minimal_astral`
+    `sol_meaning`: clean celestial symbol linework
+    `implementation_impact`: map both names to the `minimal_astral` site theme key
+  - `term`: `cosmic_themed` <-> `cosmic_overlay`
+    `sol_meaning`: orbital geometric cosmic layouts
+    `implementation_impact`: map both names to the `cosmic_overlay` site theme key
+  - `term`: `wicca_ornamentation` <-> `witchy_ornate`
+    `sol_meaning`: decorative occult motif treatment
+    `implementation_impact`: map both names to the `witchy_ornate` site theme key
+  - `term`: `gothic_dark_girl` <-> `graveyard_gothic`
+    `sol_meaning`: dark feminine gothic collage aesthetics
+    `implementation_impact`: map both names to the `graveyard_gothic` site theme key
+  - `term`: `relic_gothic` <-> `pixel_relic`
+    `sol_meaning`: retro relic HUD look
+    `implementation_impact`: map both names to the `pixel_relic` site theme key
+  - `term`: `grimdark_tarot` <-> `grimdark_tarot`
+    `sol_meaning`: moody narrative tarot panel style
+    `implementation_impact`: preserve as shared theme key/name across both vocabularies
 
 ## Active Scope
 

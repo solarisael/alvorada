@@ -5,10 +5,12 @@
 #style_switcher {
   /* Quick Tune Variables (edit here first) */
   /* geometry */
-  --style_switcher_radius: 14px;
-  --style_switcher_min_width: 164px;
-  --style_switcher_bottom: 1.1rem;
-  --style_switcher_right: 1rem;
+  --style_switcher_radius: 0.875rem;
+  --style_switcher_panel_inline: min(20rem, calc(100vw - 3rem));
+  --style_switcher_tab_inline: clamp(2.1rem, 3.2vw, 2.5rem);
+  --style_switcher_tab_block: clamp(10rem, 24vh, 14rem);
+  --style_switcher_bottom: 1rem;
+  --style_switcher_right: 0;
 
   /* colors */
   --style_switcher_surface_mix: 78%;
@@ -21,15 +23,18 @@
   --style_switcher_shadow: 0 18px 30px -22px rgb(0 0 0 / 0.9);
 
   @apply fixed z-40;
-  @apply flex flex-col;
+  @apply flex items-start;
   @apply gap-2;
-  @apply px-3 py-3;
-  @apply border;
+  @apply px-0 py-0;
+  @apply border-y border-l;
 
   right: var(--style_switcher_right);
   bottom: var(--style_switcher_bottom);
-  min-width: var(--style_switcher_min_width);
-  border-radius: var(--style_switcher_radius);
+  inline-size: calc(
+    var(--style_switcher_panel_inline) + var(--style_switcher_tab_inline)
+  );
+  max-inline-size: calc(100vw - 0.5rem);
+  border-radius: var(--style_switcher_radius) 0 0 var(--style_switcher_radius);
   border-color: color-mix(
     in oklch,
     var(--site_style_accent) var(--style_switcher_border_mix),
@@ -56,6 +61,44 @@
     0 0 calc(14px * var(--site_fx_glow_mult, 1))
       color-mix(in oklch, var(--site_style_accent) 26%, transparent);
   backdrop-filter: blur(var(--style_switcher_blur));
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#style_switcher_toggle {
+  @apply flex;
+  @apply items-center justify-center;
+  @apply h-full min-h-full;
+  @apply border-r;
+  @apply px-6 py-3;
+  @apply lowercase;
+
+  inline-size: var(--style_switcher_tab_inline);
+  block-size: var(--style_switcher_tab_block);
+  text-orientation: mixed;
+  letter-spacing: 0.06em;
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 86%,
+    var(--ui_text_secondary)
+  );
+  border-color: color-mix(in oklch, var(--site_style_accent) 22%, transparent);
+  cursor: pointer;
+}
+
+#style_switcher_panel {
+  @apply flex flex-col;
+  @apply gap-2;
+  @apply px-3 py-3;
+
+  inline-size: var(--style_switcher_panel_inline);
+}
+
+#style_switcher[data-style-collapsed="true"] {
+  transform: translateX(var(--style_switcher_panel_inline));
+}
+
+#style_switcher[data-style-collapsed="true"] #style_switcher_panel {
+  visibility: hidden;
 }
 
 #style_switcher_title {
@@ -110,11 +153,10 @@
 
 @media (max-width: 768px) {
   #style_switcher {
-    --style_switcher_bottom: 5.8rem;
-    --style_switcher_right: 0.55rem;
-    --style_switcher_min_width: 148px;
-
-    @apply px-2.5 py-2.5;
+    --style_switcher_bottom: 5.6rem;
+    --style_switcher_panel_inline: min(17rem, calc(100vw - 2.4rem));
+    --style_switcher_tab_inline: clamp(1.8rem, 6vw, 2.2rem);
+    --style_switcher_tab_block: clamp(8.5rem, 18vh, 11.2rem);
   }
 }
 

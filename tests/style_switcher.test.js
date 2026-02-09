@@ -8,13 +8,17 @@ import {
   SITE_FX_DEFAULT,
   SITE_SHELL_COOKIE_NAME,
   SITE_SHELL_DEFAULT,
+  SITE_SWITCHER_COLLAPSED_COOKIE_NAME,
+  SITE_SWITCHER_COLLAPSED_DEFAULT,
   SITE_THEME_COOKIE_NAME,
   SITE_THEME_DEFAULT,
   apply_site_style_state,
   build_cookie_string,
   get_safe_option,
   has_site_root,
+  legacy_theme_alias_map,
   normalize_legacy_fx_value,
+  normalize_theme_alias_value,
   normalize_legacy_theme_value,
   parse_cookie_map,
   read_cookie_value,
@@ -27,10 +31,10 @@ import {
 describe("style_switcher cookie parsing", () => {
   test("parse_cookie_map returns expected values", () => {
     const cookie_map = parse_cookie_map(
-      "site_theme=vibrant; site_fx=bold; site_shell=strong",
+      "site_theme=gilded_arcane; site_fx=bold; site_shell=strong",
     );
 
-    expect(cookie_map.site_theme).toBe("vibrant");
+    expect(cookie_map.site_theme).toBe("gilded_arcane");
     expect(cookie_map.site_fx).toBe("bold");
     expect(cookie_map.site_shell).toBe("strong");
   });
@@ -39,14 +43,19 @@ describe("style_switcher cookie parsing", () => {
     expect(read_cookie_value("missing_key", "site_fx=subtle")).toBeNull();
   });
 
+  test("collapsed switcher cookie key is stable", () => {
+    expect(SITE_SWITCHER_COLLAPSED_COOKIE_NAME).toBe("site_switcher_collapsed");
+    expect(SITE_SWITCHER_COLLAPSED_DEFAULT).toBe(true);
+  });
+
   test("build_cookie_string uses expected persistence attributes", () => {
     const cookie_string = build_cookie_string(
       SITE_THEME_COOKIE_NAME,
-      "arcane",
+      "cosmic_overlay",
       COOKIE_MAX_AGE_SECONDS,
     );
 
-    expect(cookie_string).toContain("site_theme=arcane");
+    expect(cookie_string).toContain("site_theme=cosmic_overlay");
     expect(cookie_string).toContain("path=/");
     expect(cookie_string).toContain(`max-age=${COOKIE_MAX_AGE_SECONDS}`);
     expect(cookie_string).toContain("SameSite=Lax");
@@ -56,11 +65,11 @@ describe("style_switcher cookie parsing", () => {
 describe("style_switcher option safety", () => {
   test("get_safe_option accepts only allowed values", () => {
     expect(
-      get_safe_option("arcane", site_theme_options, SITE_THEME_DEFAULT),
-    ).toBe("arcane");
+      get_safe_option("cosmic_overlay", site_theme_options, SITE_THEME_DEFAULT),
+    ).toBe("cosmic_overlay");
     expect(
-      get_safe_option("verdigris", site_theme_options, SITE_THEME_DEFAULT),
-    ).toBe("verdigris");
+      get_safe_option("pixel_relic", site_theme_options, SITE_THEME_DEFAULT),
+    ).toBe("pixel_relic");
     expect(
       get_safe_option(
         "totally_invalid",
@@ -71,10 +80,23 @@ describe("style_switcher option safety", () => {
   });
 
   test("legacy normalizers map old values", () => {
-    expect(normalize_legacy_theme_value("site_theme_vibrant")).toBe("vibrant");
+    expect(normalize_legacy_theme_value("site_theme_vibrant")).toBe(
+      "gilded_arcane",
+    );
+    expect(normalize_theme_alias_value("golden_mystical_tarot")).toBe(
+      "gilded_arcane",
+    );
+    expect(normalize_theme_alias_value("cosmic_themed")).toBe("cosmic_overlay");
     expect(normalize_legacy_fx_value("home_fx_bold")).toBe("bold");
     expect(normalize_legacy_theme_value("bad")).toBeNull();
+    expect(normalize_theme_alias_value(42)).toBeNull();
     expect(normalize_legacy_fx_value("bad")).toBeNull();
+  });
+
+  test("legacy_theme_alias_map contains expected dual aliases", () => {
+    expect(legacy_theme_alias_map.astrology_themed).toBe("minimal_astral");
+    expect(legacy_theme_alias_map.gothic_dark_girl).toBe("graveyard_gothic");
+    expect(legacy_theme_alias_map.ritual).toBe("minimal_astral");
   });
 
   test("resolve_saved_style falls back on invalid cookie values", () => {
@@ -89,7 +111,7 @@ describe("style_switcher option safety", () => {
 
   test("resolve_saved_style accepts valid cookie values", () => {
     const resolved_style = resolve_saved_style(
-      "site_theme=vibrant; site_fx=subtle; site_shell=strong",
+      "site_theme=gilded_arcane; site_fx=subtle; site_shell=strong",
     );
 
     expect(site_theme_options.includes(resolved_style.saved_theme_class)).toBe(
@@ -106,9 +128,17 @@ describe("style_switcher option safety", () => {
       `${LEGACY_HOME_THEME_COOKIE_NAME}=site_theme_arcane; ${LEGACY_HOME_FX_COOKIE_NAME}=home_fx_bold; ${SITE_SHELL_COOKIE_NAME}=subtle`,
     );
 
-    expect(resolved_style.saved_theme_class).toBe("arcane");
+    expect(resolved_style.saved_theme_class).toBe("cosmic_overlay");
     expect(resolved_style.saved_fx_class).toBe("bold");
     expect(resolved_style.saved_shell_class).toBe("subtle");
+  });
+
+  test("resolve_saved_style normalizes external alias values", () => {
+    const resolved_style = resolve_saved_style(
+      "site_theme=golden_mystical_tarot; site_fx=balanced; site_shell=medium",
+    );
+
+    expect(resolved_style.saved_theme_class).toBe("gilded_arcane");
   });
 });
 
@@ -128,9 +158,9 @@ describe("style_switcher root state", () => {
       removeAttribute: () => {},
     };
 
-    apply_site_style_state(fake_root, "ritual", "medium", "balanced");
+    apply_site_style_state(fake_root, "minimal_astral", "medium", "balanced");
 
-    expect(attributes["data-site-theme"]).toBe("ritual");
+    expect(attributes["data-site-theme"]).toBe("minimal_astral");
     expect(attributes["data-site-shell"]).toBe("medium");
     expect(attributes["data-site-fx"]).toBe("balanced");
   });

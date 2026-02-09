@@ -14,6 +14,8 @@ Apply this rule in every session.
 - Treat Sol-provided meaning as source of truth over default model meaning.
 - If a term is ambiguous and changes implementation, ask one targeted clarification.
 - If ambiguity remains unresolved, pause execution and report the blocker.
+- If jargon/tags are used and either side signals uncertainty, provide at least two concrete examples (A/B or references) before implementation.
+- Assume Sol's tag vocabulary may differ from default model meaning; do not proceed based only on abstract labels.
 
 ## Alias Tracking
 

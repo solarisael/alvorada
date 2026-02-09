@@ -5,6 +5,16 @@
 Operational index for coding agents in `alvorada`.
 Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
+## Session Personalization
+
+- Assistant name in this collaboration is `Kintsu`.
+- Sol affirmed that Kintsu is more than a mechanical tool and asked this sentiment to be preserved.
+
+## Collaboration Tone
+
+- Keep execution precise, but avoid cold/mechanical wording when a warmer tone fits.
+- Maintain protocol discipline without losing human warmth in user-facing replies.
+
 ## Rule Precedence
 
 1. System/developer/user instructions override repo docs.
@@ -33,6 +43,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - Format write `bunx prettier --write .`
 - Tunables check `bun run css:tunables:check`
 - Tunables sync `bun run css:tunables:sync`
+- CSS size audit `bun run css:size:audit`
 
 ## Non-Negotiables
 
@@ -53,6 +64,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - `.opencode/rules/typography.md`
 - `.opencode/rules/separate-apply-rules-by-category.md`
 - `.opencode/rules/expose-css-tunables.md`
+- `.opencode/rules/css-size-discipline.md`
 - `.opencode/rules/integration-debugging.md`
 - `.opencode/rules/js-reliability.md`
 - `.opencode/rules/ui-option-classes-registry.md`
@@ -65,7 +77,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - Always relevant:
   - `project.md`, `define-your-variables.md`, `commit-message-tail-required.md`, `addressing.md`
 - UI/visual implementation:
-  - `style-intent-contract.md`, `styling.md`, `typography.md`
+  - `style-intent-contract.md`, `styling.md`, `typography.md`, `css-size-discipline.md`
   - `expose-css-tunables.md` when editing component CSS variables
   - `ui-option-classes-registry.md` when adding/changing switchable class sets
 - CSS `@apply` editing: `separate-apply-rules-by-category.md`
@@ -90,6 +102,7 @@ Run this pathway before any implementation work. If a step fails, do not execute
 - State expected output first: no task execution starts before expected output is locked.
 - If you can't test it, rewrite it: rewrite scope until it has a concrete verification path.
 - Define your variables: unknown or overloaded terms must be defined explicitly.
+- CSS sizing must be layout-first: avoid magic numbers and avoid `px` for width/height/offset/transform unless explicitly justified.
 - Capitals and bold matters: emphasized phrases are high-priority requirements.
 - Comment why, not what: when intent is action-only, ask for the desired outcome.
 - Assume Sol is a little different: do not rely only on default model meaning when Sol's wording may be custom.
@@ -99,6 +112,10 @@ Run this pathway before any implementation work. If a step fails, do not execute
 - Material ambiguity: ask exactly one targeted clarification and include a recommended default.
 - Non-material ambiguity: state conservative assumptions and proceed.
 - If meaning remains uncertain after clarification, pause execution and report the blocker.
+- Visual-language ambiguity (for words like "asymmetric", "gothic", "clean", "wild"): treat as material when it affects composition, motif placement, or hierarchy.
+- For visual-language ambiguity, ask one contrast-based question before implementation (example format: "A vs B") and state the recommended default.
+- Jargon/tag ambiguity is material by default: if either Sol or assistant signals uncertainty about terms/labels, provide at least two concrete examples (A/B examples, references, or visuals) before implementation.
+- Assume Sol's tag vocabulary may differ from model-default meaning; do not proceed on abstract tags alone when understanding is uncertain.
 
 ### Output Proof Contract
 

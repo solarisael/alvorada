@@ -3,16 +3,39 @@ const window_any = /** @type {any} */ (globalThis);
 const SITE_THEME_COOKIE_NAME = "site_theme";
 const SITE_SHELL_COOKIE_NAME = "site_shell";
 const SITE_FX_COOKIE_NAME = "site_fx";
+const SITE_SWITCHER_COLLAPSED_COOKIE_NAME = "site_switcher_collapsed";
 
 const LEGACY_HOME_THEME_COOKIE_NAME = "home_theme";
 const LEGACY_HOME_FX_COOKIE_NAME = "home_fx";
 
-const SITE_THEME_DEFAULT = "ritual";
+const SITE_THEME_DEFAULT = "minimal_astral";
 const SITE_SHELL_DEFAULT = "medium";
 const SITE_FX_DEFAULT = "balanced";
+const SITE_SWITCHER_COLLAPSED_DEFAULT = true;
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 
-const site_theme_options = ["ritual", "vibrant", "arcane", "verdigris"];
+const site_theme_options = [
+  "minimal_astral",
+  "gilded_arcane",
+  "cosmic_overlay",
+  "witchy_ornate",
+  "graveyard_gothic",
+  "pixel_relic",
+  "grimdark_tarot",
+];
+
+const legacy_theme_alias_map = {
+  ritual: "minimal_astral",
+  vibrant: "gilded_arcane",
+  arcane: "cosmic_overlay",
+  verdigris: "witchy_ornate",
+  golden_mystical_tarot: "gilded_arcane",
+  astrology_themed: "minimal_astral",
+  cosmic_themed: "cosmic_overlay",
+  wicca_ornamentation: "witchy_ornate",
+  gothic_dark_girl: "graveyard_gothic",
+  relic_gothic: "pixel_relic",
+};
 const site_shell_options = ["subtle", "medium", "strong"];
 const site_fx_options = ["subtle", "balanced", "bold"];
 
@@ -138,12 +161,24 @@ const normalize_legacy_theme_value = (legacy_theme_value) => {
     return null;
   }
 
-  return legacy_theme_value.replace("site_theme_", "");
+  const normalized_theme = legacy_theme_value.replace("site_theme_", "");
+
+  return legacy_theme_alias_map[normalized_theme] ?? normalized_theme;
+};
+
+const normalize_theme_alias_value = (theme_value) => {
+  if (typeof theme_value !== "string") {
+    return null;
+  }
+
+  return legacy_theme_alias_map[theme_value] ?? theme_value;
 };
 
 const resolve_saved_style = (cookie_header = null) => {
   const saved_theme_class = get_safe_option(
-    read_cookie_value(SITE_THEME_COOKIE_NAME, cookie_header) ??
+    normalize_theme_alias_value(
+      read_cookie_value(SITE_THEME_COOKIE_NAME, cookie_header),
+    ) ??
       normalize_legacy_theme_value(
         read_cookie_value(LEGACY_HOME_THEME_COOKIE_NAME, cookie_header),
       ),
@@ -210,6 +245,37 @@ const bind_switcher_controls = () => {
   const theme_select_node = switcher_node.querySelector("[data-style-theme]");
   const shell_select_node = switcher_node.querySelector("[data-style-shell]");
   const fx_select_node = switcher_node.querySelector("[data-style-fx]");
+  const toggle_node = switcher_node.querySelector("[data-style-toggle]");
+
+  const set_switcher_collapsed = (is_collapsed) => {
+    switcher_node.dataset.styleCollapsed = is_collapsed ? "true" : "false";
+
+    if (toggle_node instanceof HTMLButtonElement) {
+      toggle_node.setAttribute(
+        "aria-expanded",
+        is_collapsed ? "false" : "true",
+      );
+      toggle_node.textContent = is_collapsed ? "style" : "close";
+    }
+  };
+
+  const read_collapsed_preference = () => {
+    const raw_switcher_state = read_cookie_value(
+      SITE_SWITCHER_COLLAPSED_COOKIE_NAME,
+    );
+
+    if (raw_switcher_state === "true") {
+      return true;
+    }
+
+    if (raw_switcher_state === "false") {
+      return false;
+    }
+
+    return SITE_SWITCHER_COLLAPSED_DEFAULT;
+  };
+
+  set_switcher_collapsed(read_collapsed_preference());
 
   const commit_switcher_state = () => {
     const selected_theme_name = get_safe_option(
@@ -256,6 +322,19 @@ const bind_switcher_controls = () => {
   if (fx_select_node instanceof HTMLSelectElement) {
     fx_select_node.addEventListener("change", commit_switcher_state);
   }
+
+  if (toggle_node instanceof HTMLButtonElement) {
+    toggle_node.addEventListener("click", () => {
+      const next_collapsed_state =
+        switcher_node.dataset.styleCollapsed !== "true";
+
+      set_switcher_collapsed(next_collapsed_state);
+      write_cookie_value(
+        SITE_SWITCHER_COLLAPSED_COOKIE_NAME,
+        next_collapsed_state ? "true" : "false",
+      );
+    });
+  }
 };
 
 const init_style_switcher = () => {
@@ -296,6 +375,8 @@ export {
   LEGACY_HOME_THEME_COOKIE_NAME,
   SITE_FX_COOKIE_NAME,
   SITE_FX_DEFAULT,
+  SITE_SWITCHER_COLLAPSED_COOKIE_NAME,
+  SITE_SWITCHER_COLLAPSED_DEFAULT,
   SITE_SHELL_COOKIE_NAME,
   SITE_SHELL_DEFAULT,
   SITE_THEME_COOKIE_NAME,
@@ -307,9 +388,11 @@ export {
   init_style_switcher,
   normalize_legacy_fx_value,
   normalize_legacy_theme_value,
+  normalize_theme_alias_value,
   parse_cookie_map,
   read_cookie_value,
   resolve_saved_style,
+  legacy_theme_alias_map,
   site_fx_options,
   site_shell_options,
   site_theme_options,

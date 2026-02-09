@@ -3,20 +3,32 @@ import "../styles/components/style-switcher.css";
 
 const theme_options = [
   {
-    label: "ritual",
-    value: "ritual",
+    label: "minimal_astral (astrology_themed) - clean celestial linework",
+    value: "minimal_astral",
   },
   {
-    label: "vibrant",
-    value: "vibrant",
+    label: "gilded_arcane (golden_mystical_tarot) - ornate black-gold tarot",
+    value: "gilded_arcane",
   },
   {
-    label: "arcane",
-    value: "arcane",
+    label: "cosmic_overlay (cosmic_themed) - orbital cosmic layouts",
+    value: "cosmic_overlay",
   },
   {
-    label: "verdigris",
-    value: "verdigris",
+    label: "witchy_ornate (wicca_ornamentation) - decorative occult motifs",
+    value: "witchy_ornate",
+  },
+  {
+    label: "graveyard_gothic (gothic_dark_girl) - dark feminine collage",
+    value: "graveyard_gothic",
+  },
+  {
+    label: "pixel_relic (relic_gothic) - retro relic HUD",
+    value: "pixel_relic",
+  },
+  {
+    label: "grimdark_tarot (grimdark_tarot) - moody narrative tarot",
+    value: "grimdark_tarot",
   },
 ];
 
@@ -51,41 +63,58 @@ const shell_options = [
 ];
 ---
 
-<aside id="style_switcher" aria-label="Visual style controls">
-  <p id="style_switcher_title" class="text_caption">style</p>
+<aside
+  id="style_switcher"
+  aria-label="Visual style controls"
+  data-style-collapsed="true"
+>
+  <button
+    id="style_switcher_toggle"
+    class="text_caption"
+    type="button"
+    data-style-toggle
+    aria-controls="style_switcher_panel"
+    aria-expanded="false"
+  >
+    style
+  </button>
 
-  <label class="style_switcher_group" for="style_switcher_theme">
-    <span class="style_switcher_label text_caption">theme</span>
-    <select id="style_switcher_theme" data-style-theme>
-      {
-        theme_options.map((theme_option) => (
-          <option value={theme_option.value}>{theme_option.label}</option>
-        ))
-      }
-    </select>
-  </label>
+  <div id="style_switcher_panel" data-style-panel>
+    <p id="style_switcher_title" class="text_caption">style</p>
 
-  <label class="style_switcher_group" for="style_switcher_fx">
-    <span class="style_switcher_label text_caption">intensity</span>
-    <select id="style_switcher_fx" data-style-fx>
-      {
-        fx_options.map((fx_option) => (
-          <option value={fx_option.value}>{fx_option.label}</option>
-        ))
-      }
-    </select>
-  </label>
+    <label class="style_switcher_group" for="style_switcher_theme">
+      <span class="style_switcher_label text_caption">theme</span>
+      <select id="style_switcher_theme" data-style-theme>
+        {
+          theme_options.map((theme_option) => (
+            <option value={theme_option.value}>{theme_option.label}</option>
+          ))
+        }
+      </select>
+    </label>
 
-  <label class="style_switcher_group" for="style_switcher_shell">
-    <span class="style_switcher_label text_caption">shell</span>
-    <select id="style_switcher_shell" data-style-shell>
-      {
-        shell_options.map((shell_option) => (
-          <option value={shell_option.value}>{shell_option.label}</option>
-        ))
-      }
-    </select>
-  </label>
+    <label class="style_switcher_group" for="style_switcher_fx">
+      <span class="style_switcher_label text_caption">intensity</span>
+      <select id="style_switcher_fx" data-style-fx>
+        {
+          fx_options.map((fx_option) => (
+            <option value={fx_option.value}>{fx_option.label}</option>
+          ))
+        }
+      </select>
+    </label>
+
+    <label class="style_switcher_group" for="style_switcher_shell">
+      <span class="style_switcher_label text_caption">shell</span>
+      <select id="style_switcher_shell" data-style-shell>
+        {
+          shell_options.map((shell_option) => (
+            <option value={shell_option.value}>{shell_option.label}</option>
+          ))
+        }
+      </select>
+    </label>
+  </div>
 </aside>
 
 <script is:inline type="module">
