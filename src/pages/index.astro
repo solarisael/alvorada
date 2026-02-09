@@ -1,26 +1,70 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+
+const phase_cards = [
+  {
+    phase_name: "Nigredo",
+    phase_slug: "nigredo",
+    phase_symbol: "01",
+    phase_blurb:
+      "Dissolution and shadow-work. Enter the black vessel of becoming.",
+  },
+  {
+    phase_name: "Albedo",
+    phase_slug: "albedo",
+    phase_symbol: "02",
+    phase_blurb: "Clarification and silver breath. Distill signal from noise.",
+  },
+  {
+    phase_name: "Citrinitas",
+    phase_slug: "citrinitas",
+    phase_symbol: "03",
+    phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
+  },
+  {
+    phase_name: "Rubedo",
+    phase_slug: "rubedo",
+    phase_symbol: "04",
+    phase_blurb: "Union and embodiment. Seal the work in living fire.",
+  },
+];
 ---
 
 <IndexLayout>
-  <section id="nigredo-home-scaffold" aria-label="Home scaffold">
-    <article id="nigredo-reading-article">
-      <header id="nigredo-reading-header">
-        <p id="nigredo-kicker">~/ nigredo</p>
-        <h1 id="nigredo-title">Home</h1>
+  <section id="home_card_gate" aria-label="Choose your alchemical phase">
+    <article id="home_gate_intro">
+      <header id="home_gate_header">
+        <p id="home_gate_kicker" class="text_kicker">~/ threshold</p>
+        <h1 id="home_gate_title" class="text_step_4">Choose your phase</h1>
       </header>
 
-      <div id="nigredo-reading-body">
+      <div id="home_gate_body">
         <p>
-          Scaffold page for <code>/</code>. Use this page to test navbar states,
-          breadcrumb updates, and HTMX transition behavior.
+          Four doors, one work. Pick a transmutation path and continue the
+          ritual.
         </p>
-        <p><a href="/nigredo">Go to Nigredo page</a></p>
-        <p><a href="/albedo">Go to Albedo page</a></p>
-        <p><a href="/citrinitas">Go to Citrinitas page</a></p>
-        <p><a href="/rubedo">Go to Rubedo page</a></p>
-        <p><a href="/codex">Go to Codex page</a></p>
       </div>
     </article>
+
+    <nav id="phase_card_grid" aria-label="Main phase routes">
+      {
+        phase_cards.map((phase_card) => (
+          <a
+            class={`phase_card_link phase_card_${phase_card.phase_slug}`}
+            href={`/${phase_card.phase_slug}`}
+            aria-label={`Enter ${phase_card.phase_name}`}
+          >
+            <p class="phase_card_symbol text_caption">
+              {phase_card.phase_symbol}
+            </p>
+            <h2 class="phase_card_title text_step_2">
+              {phase_card.phase_name}
+            </h2>
+            <p class="phase_card_blurb text_body">{phase_card.phase_blurb}</p>
+            <p class="phase_card_cta text_kicker">enter phase</p>
+          </a>
+        ))
+      }
+    </nav>
   </section>
 </IndexLayout>

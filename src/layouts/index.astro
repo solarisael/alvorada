@@ -6,10 +6,18 @@ import "../styles/index.css";
 import Breadcrumbers from "../components/breadcrumbers.astro";
 import MobileNavbar from "../components/mobile_navbar.astro";
 import Navbar from "../components/navbar.astro";
+import StyleSwitcher from "../components/style_switcher.astro";
+
+const { body_class = "" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html
+  lang="en"
+  data-site-theme="ritual"
+  data-site-shell="medium"
+  data-site-fx="balanced"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,7 +28,7 @@ import Navbar from "../components/navbar.astro";
     <script src="/js/scripts.js" type="module"></script>
   </head>
   <body
-    class="page-transition-breath-noticeable"
+    class:list={["page-transition-breath-noticeable", body_class]}
     hx-boost="true"
     hx-ext="morph,head-support,preload,sse"
     hx-target="#content"
@@ -34,13 +42,12 @@ import Navbar from "../components/navbar.astro";
     <container>
       <main id="page-main">
         <div id="content">
-          <div id="main_reading_shell">
-            <div id="main_reading_container">
-              <Breadcrumbers />
-              <slot />
-            </div>
+          <div id="main_reading_container">
+            <Breadcrumbers />
+            <slot />
           </div>
         </div>
+        <StyleSwitcher />
 
         <footer id="footer">
           <a href=""

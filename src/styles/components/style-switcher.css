@@ -1,0 +1,125 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+#style_switcher {
+  /* Quick Tune Variables (edit here first) */
+  /* geometry */
+  --style_switcher_radius: 14px;
+  --style_switcher_min_width: 164px;
+  --style_switcher_bottom: 1.1rem;
+  --style_switcher_right: 1rem;
+
+  /* colors */
+  --style_switcher_surface_mix: 78%;
+  --style_switcher_border_mix: 36%;
+  --style_switcher_title_mix: 76%;
+  --style_switcher_text_mix: 88%;
+
+  /* effects */
+  --style_switcher_blur: calc(10px * var(--site_shell_blur_mult, 1));
+  --style_switcher_shadow: 0 18px 30px -22px rgb(0 0 0 / 0.9);
+
+  @apply fixed z-40;
+  @apply flex flex-col;
+  @apply gap-2;
+  @apply px-3 py-3;
+  @apply border;
+
+  right: var(--style_switcher_right);
+  bottom: var(--style_switcher_bottom);
+  min-width: var(--style_switcher_min_width);
+  border-radius: var(--style_switcher_radius);
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) var(--style_switcher_border_mix),
+    transparent
+  );
+  background: linear-gradient(
+    165deg,
+    color-mix(
+      in oklch,
+      var(--ui_bg_mantle)
+        calc(
+          var(--style_switcher_surface_mix) * var(--site_shell_surface_mult, 1)
+        ),
+      transparent
+    ),
+    color-mix(
+      in oklch,
+      var(--ui_bg_crust) calc(72% * var(--site_shell_surface_mult, 1)),
+      transparent
+    )
+  );
+  box-shadow:
+    var(--style_switcher_shadow),
+    0 0 calc(14px * var(--site_fx_glow_mult, 1))
+      color-mix(in oklch, var(--site_style_accent) 26%, transparent);
+  backdrop-filter: blur(var(--style_switcher_blur));
+}
+
+#style_switcher_title {
+  @apply lowercase;
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) var(--style_switcher_title_mix),
+    var(--ui_text_secondary)
+  );
+}
+
+.style_switcher_group {
+  @apply flex flex-col;
+  @apply gap-1;
+}
+
+.style_switcher_label {
+  @apply lowercase;
+  color: color-mix(in oklch, var(--ui_text_muted) 86%, var(--ui_text_primary));
+}
+
+#style_switcher select {
+  @apply w-full;
+  @apply rounded-md border;
+  @apply px-2 py-1.5;
+  @apply lowercase;
+
+  color: color-mix(
+    in oklch,
+    var(--ui_text_primary) var(--style_switcher_text_mix),
+    white
+  );
+  border-color: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+  background-color: color-mix(
+    in oklch,
+    var(--ui_surface_soft) 62%,
+    transparent
+  );
+}
+
+#style_switcher select:focus-visible {
+  @apply outline-none;
+
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(52% * var(--site_fx_glow_mult, 1)),
+    transparent
+  );
+  box-shadow: 0 0 0 1px
+    color-mix(in oklch, var(--site_style_accent) 42%, transparent);
+}
+
+@media (max-width: 768px) {
+  #style_switcher {
+    --style_switcher_bottom: 5.8rem;
+    --style_switcher_right: 0.55rem;
+    --style_switcher_min_width: 148px;
+
+    @apply px-2.5 py-2.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #style_switcher select {
+    transition: none;
+  }
+}

@@ -8,6 +8,10 @@ When new optional class variants are introduced, add them here in the same chang
 
 - 2026-02-08: Added initial registry with `navbar-preset-*`,
   `route-active-tone-*`, and `page-transition-breath-*` option sets.
+- 2026-02-08: Added `home_theme_*` and `home_fx_*` option sets for `/` card-gate visuals.
+- 2026-02-08: Migrated `home_theme_*` to `site_theme_*` and `home_fx_*` to `site_fx_*` for global naming.
+- 2026-02-08: Added `site_shell_*` option set for shell intensity control.
+- 2026-02-08: Added `verdigris` to `data-site-theme` options.
 
 ## Navbar Preset
 
@@ -64,3 +68,52 @@ For each new option set, document:
 3. Default class
 4. Full options list
 5. One-line quick switch example
+
+## Site Theme
+
+- Purpose: controls global site visual language (ritual/vibrant/arcane).
+- Apply on: `html` via `data-site-theme` and globally via style switcher cookies.
+- Default: `ritual`.
+- Options:
+  - `ritual`
+  - `vibrant`
+  - `arcane`
+  - `verdigris`
+
+Quick switch:
+
+```html
+<html data-site-theme="ritual"></html>
+```
+
+## Site Effects Intensity
+
+- Purpose: controls global interaction intensity (motion, glow, lift) independent of theme.
+- Apply on: `html` via `data-site-fx` and globally via style switcher cookies.
+- Default: `balanced`.
+- Options:
+  - `subtle`
+  - `balanced`
+  - `bold`
+
+Quick switch:
+
+```html
+<html data-site-fx="bold"></html>
+```
+
+## Site Shell Strength
+
+- Purpose: controls global shell intensity for `#content` border/gradient/decorative overlays.
+- Apply on: `html` via `data-site-shell` and style switcher cookies.
+- Default: `medium`.
+- Options:
+  - `subtle`
+  - `medium`
+  - `strong`
+
+Quick switch:
+
+```html
+<html data-site-shell="strong"></html>
+```

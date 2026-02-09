@@ -20,31 +20,31 @@
 
   --rail_background: color-mix(
     in oklch,
-    var(--color-ctp-mantle) 78%,
+    var(--ui_bg_mantle) calc(78% * var(--site_shell_surface_mult, 1)),
     transparent
   );
   --rail_border: color-mix(
     in oklch,
-    var(--color-ctp-lavender) 42%,
+    var(--site_style_accent) calc(42% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --rail_shadow: 0 18px 45px -26px rgb(0 0 0 / 0.82);
-  --rail_glass_blur: 10px;
+  --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.16;
 
   --pill_background: color-mix(
     in oklch,
-    var(--color-ctp-base) 62%,
+    var(--ui_surface_soft) calc(62% * var(--site_shell_surface_mult, 1)),
     transparent
   );
   --pill_border: color-mix(
     in oklch,
-    var(--color-ctp-lavender) 24%,
+    var(--site_style_accent) calc(24% * var(--site_style_strength_mult, 1)),
     transparent
   );
-  --pill_text: color-mix(in oklch, var(--color-ctp-text) 88%, white);
-  --pill_glow_scale: 1;
-  --pill_transition: 260ms;
+  --pill_text: color-mix(in oklch, var(--ui_text_primary) 88%, white);
+  --pill_glow_scale: var(--site_fx_glow_mult, 1);
+  --pill_transition: calc(260ms * var(--site_fx_motion_mult, 1));
   --pill_active_tint_mix: 88%;
   --pill_active_tint_target: white;
   --pill_active_border_mix: 32%;
@@ -52,17 +52,17 @@
 
   --center_shell_border: color-mix(
     in oklch,
-    var(--color-citrinitas) 68%,
+    var(--site_style_accent) calc(68% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --center_shell_glow: color-mix(
     in oklch,
-    var(--color-citrinitas) 50%,
+    var(--site_style_accent) calc(50% * var(--site_fx_glow_mult, 1)),
     transparent
   );
   --center_core_background: color-mix(
     in oklch,
-    var(--color-ctp-crust) 100%,
+    var(--ui_bg_crust) calc(100% * var(--site_shell_surface_mult, 1)),
     transparent
   );
   --center_ring_size: 6.5rem;
@@ -93,22 +93,22 @@
 }
 
 #desktop-nav.navbar-preset-soft {
-  --rail_glass_blur: 10px;
+  --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.14;
-  --pill_glow_scale: 0.85;
+  --pill_glow_scale: calc(0.85 * var(--site_fx_glow_mult, 1));
 }
 
 #desktop-nav.navbar-preset-rich {
-  --rail_glass_blur: 20px;
+  --rail_glass_blur: calc(20px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.26;
-  --pill_glow_scale: 1.25;
+  --pill_glow_scale: calc(1.25 * var(--site_fx_glow_mult, 1));
 }
 
 #desktop-nav.route-active-tone-subtle {
   --pill_active_tint_mix: 94%;
   --pill_active_tint_target: color-mix(
     in oklch,
-    var(--color-ctp-surface1) 72%,
+    var(--ui_surface_raised) 72%,
     var(--neon_color)
   );
   --pill_active_border_mix: 26%;
@@ -170,7 +170,7 @@
 
   background: radial-gradient(
     230px circle at var(--cursor_x) var(--cursor_y),
-    color-mix(in oklch, var(--color-citrinitas) 48%, transparent)
+    color-mix(in oklch, var(--site_style_accent) 48%, transparent)
       calc(var(--rail_light_opacity) * 100%),
     transparent 68%
   );
@@ -199,7 +199,11 @@
   --pill_pointer_glow: 0;
   --pill_active_glow: 0;
   --pill_effective_glow: max(var(--pill_pointer_glow), var(--pill_active_glow));
-  --neon_color: color-mix(in oklch, var(--color-ctp-lavender) 45%, transparent);
+  --neon_color: color-mix(
+    in oklch,
+    var(--site_style_accent_alt) 45%,
+    transparent
+  );
 
   @apply relative;
   @apply inline-flex items-center justify-center;
@@ -230,7 +234,7 @@
   @apply mr-1;
   @apply text-xs;
 
-  color: color-mix(in oklch, var(--color-ctp-overlay0) 88%, transparent);
+  color: color-mix(in oklch, var(--ui_text_muted) 88%, transparent);
   transition:
     color var(--pill_transition) ease,
     text-shadow var(--pill_transition) ease;
@@ -268,14 +272,14 @@
 }
 
 .nav-pill.is-route-active::before {
-  color: color-mix(in oklch, var(--neon_color) 46%, var(--color-ctp-overlay0));
+  color: color-mix(in oklch, var(--neon_color) 46%, var(--ui_text_muted));
 }
 
 .nav-pill:hover,
 .nav-pill:focus-visible {
   @apply outline-none;
 
-  transform: translateY(-1px);
+  transform: translateY(calc(-1px * var(--site_fx_lift_mult, 1)));
   border-color: color-mix(in oklch, var(--neon_color) 42%, var(--pill_border));
   background-color: var(--pill_background);
   box-shadow:
@@ -288,7 +292,7 @@
 
 .nav-pill:hover::before,
 .nav-pill:focus-visible::before {
-  color: color-mix(in oklch, var(--neon_color) 58%, var(--color-ctp-overlay0));
+  color: color-mix(in oklch, var(--neon_color) 58%, var(--ui_text_muted));
   text-shadow:
     0 0 8px color-mix(in oklch, var(--neon_color) 58%, transparent),
     0 0 14px color-mix(in oklch, var(--neon_color) 40%, transparent);
@@ -311,7 +315,7 @@
 }
 
 .nav-pill[data-phase="codex"] {
-  --neon_color: var(--color-ctp-lavender);
+  --neon_color: var(--site_style_accent_alt);
 }
 
 #icon-user {
@@ -335,9 +339,9 @@
     from 0deg,
     transparent 0deg,
     transparent 306deg,
-    color-mix(in oklch, var(--color-citrinitas) 22%, transparent) 321deg,
-    color-mix(in oklch, var(--color-citrinitas) 88%, transparent) 334deg,
-    color-mix(in oklch, var(--color-citrinitas) 44%, transparent) 342deg,
+    color-mix(in oklch, var(--site_style_accent) 22%, transparent) 321deg,
+    color-mix(in oklch, var(--site_style_accent) 88%, transparent) 334deg,
+    color-mix(in oklch, var(--site_style_accent) 44%, transparent) 342deg,
     transparent 350deg,
     transparent 360deg
   );
@@ -348,7 +352,7 @@
   mask-composite: exclude;
   opacity: 0;
   filter: drop-shadow(
-    0 0 8px color-mix(in oklch, var(--color-citrinitas) 62%, transparent)
+    0 0 8px color-mix(in oklch, var(--site_style_accent) 62%, transparent)
   );
 }
 

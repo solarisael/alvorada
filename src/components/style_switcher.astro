@@ -1,0 +1,95 @@
+---
+import "../styles/components/style-switcher.css";
+
+const theme_options = [
+  {
+    label: "ritual",
+    value: "ritual",
+  },
+  {
+    label: "vibrant",
+    value: "vibrant",
+  },
+  {
+    label: "arcane",
+    value: "arcane",
+  },
+  {
+    label: "verdigris",
+    value: "verdigris",
+  },
+];
+
+const fx_options = [
+  {
+    label: "subtle",
+    value: "subtle",
+  },
+  {
+    label: "balanced",
+    value: "balanced",
+  },
+  {
+    label: "bold",
+    value: "bold",
+  },
+];
+
+const shell_options = [
+  {
+    label: "subtle",
+    value: "subtle",
+  },
+  {
+    label: "medium",
+    value: "medium",
+  },
+  {
+    label: "strong",
+    value: "strong",
+  },
+];
+---
+
+<aside id="style_switcher" aria-label="Visual style controls">
+  <p id="style_switcher_title" class="text_caption">style</p>
+
+  <label class="style_switcher_group" for="style_switcher_theme">
+    <span class="style_switcher_label text_caption">theme</span>
+    <select id="style_switcher_theme" data-style-theme>
+      {
+        theme_options.map((theme_option) => (
+          <option value={theme_option.value}>{theme_option.label}</option>
+        ))
+      }
+    </select>
+  </label>
+
+  <label class="style_switcher_group" for="style_switcher_fx">
+    <span class="style_switcher_label text_caption">intensity</span>
+    <select id="style_switcher_fx" data-style-fx>
+      {
+        fx_options.map((fx_option) => (
+          <option value={fx_option.value}>{fx_option.label}</option>
+        ))
+      }
+    </select>
+  </label>
+
+  <label class="style_switcher_group" for="style_switcher_shell">
+    <span class="style_switcher_label text_caption">shell</span>
+    <select id="style_switcher_shell" data-style-shell>
+      {
+        shell_options.map((shell_option) => (
+          <option value={shell_option.value}>{shell_option.label}</option>
+        ))
+      }
+    </select>
+  </label>
+</aside>
+
+<script is:inline type="module">
+  import { init_style_switcher } from "/js/modules/style_switcher.js";
+
+  init_style_switcher();
+</script>

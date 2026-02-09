@@ -2,10 +2,10 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #breadcrumbers_xd {
-  --crumb_theme_color: var(--color-nigredo);
+  --crumb_theme_color: var(--site_style_accent);
   --crumb_parent_color: color-mix(
     in oklch,
-    var(--color-ctp-subtext0) 75%,
+    var(--ui_text_muted) 75%,
     var(--crumb_theme_color)
   );
 
@@ -41,11 +41,11 @@
     @apply transition;
 
     color: var(--crumb_parent_color);
-    opacity: 0.64;
+    opacity: calc(0.58 + (0.06 * var(--site_fx_glow_mult, 1)));
     filter: saturate(0.7);
     text-shadow: 0 0 0 transparent;
     transition-property: opacity, filter, color, text-shadow, background-color;
-    transition-duration: 240ms;
+    transition-duration: calc(240ms * var(--site_fx_motion_mult, 1));
     transition-timing-function: ease;
   }
 
@@ -58,7 +58,7 @@
     color: color-mix(
       in oklch,
       var(--crumb_theme_color) 35%,
-      var(--color-ctp-text)
+      var(--ui_text_primary)
     );
     background-color: color-mix(
       in oklch,
@@ -72,7 +72,11 @@
     opacity: 1;
     filter: saturate(1.06);
     text-shadow: 0 0 14px
-      color-mix(in oklch, var(--crumb_theme_color) 30%, transparent);
+      color-mix(
+        in oklch,
+        var(--crumb_theme_color) calc(30% * var(--site_fx_glow_mult, 1)),
+        transparent
+      );
   }
 }
 
