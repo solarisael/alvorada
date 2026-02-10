@@ -70,6 +70,37 @@ For each new option set, document:
 4. Full options list
 5. One-line quick switch example
 
+## Text Effects
+
+- Purpose: inline visual emphasis that follows global `data-site-fx` intensity.
+- Apply on: inline `span` elements only.
+- Base class: `text_fx`.
+- Effect classes:
+  - `text_fx_glow`
+  - `text_fx_neon`
+  - `text_fx_shadow`
+  - `text_fx_chroma`
+  - `text_fx_blur`
+  - `text_fx_flicker`
+  - `text_fx_rainbow`
+  - `text_fx_gradient`
+  - `text_fx_wiggle`
+  - `text_fx_float`
+  - `text_fx_shake`
+  - `text_fx_glitch`
+
+Quick switch:
+
+```html
+<span class="text_fx text_fx_glow">luminous text</span>
+```
+
+Markdown marker (Obsidian flow):
+
+```md
+{{fx:glow}}luminous text{{/fx}}
+```
+
 ## Site Theme
 
 - Purpose: controls global site visual language aligned to inspiration families with dual alias names.
@@ -92,7 +123,7 @@ Quick switch:
 
 ## Site Effects Intensity
 
-- Purpose: controls global interaction intensity (motion, glow, lift) independent of theme.
+- Purpose: controls content emphasis intensity (text/border/interactions + non-shell motion) independent of theme.
 - Apply on: `html` via `data-site-fx` and globally via style switcher cookies.
 - Default: `balanced`.
 - Options:
@@ -108,7 +139,7 @@ Quick switch:
 
 ## Site Shell Strength
 
-- Purpose: controls global shell intensity for `#content` border/gradient/decorative overlays.
+- Purpose: controls page/chrome container intensity (surfaces/backgrounds/blur/shell glow/decorative overlays).
 - Apply on: `html` via `data-site-shell` and style switcher cookies.
 - Default: `medium`.
 - Options:

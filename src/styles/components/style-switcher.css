@@ -58,7 +58,7 @@
   );
   box-shadow:
     var(--style_switcher_shadow),
-    0 0 calc(14px * var(--site_fx_glow_mult, 1))
+    0 0 calc(14px * var(--site_shell_glow_mult, 1))
       color-mix(in oklch, var(--site_style_accent) 26%, transparent);
   backdrop-filter: blur(var(--style_switcher_blur));
   transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);

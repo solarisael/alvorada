@@ -1,0 +1,196 @@
+---
+layout: ../../../layouts/index.astro
+title: Chapter Demo
+tags:
+  - abgrund/chapter/00
+date: 0058-04-24T06:00:00
+end: 0058-04-24T07:22:00
+authors_note: Cinza awakens, receives the quest, starts his descent.
+---
+
+{{fx:blur}}Not too warm, not too cold.{{/fx}}  
+{{fx:chroma}}Such was the morning sun.{{/fx}}  
+{{fx:float}}Not too sweet, not too bitter.{{/fx}}  
+{{fx:glitch}}Such was the smell of petrichor.{{/fx}}
+
+In between things, bittersweet things.  
+Ones which existed only in areas of gray.
+
+Such things were always his favourites.  
+And though he could not recall the cause for this affect, it sparked enough joy to wake him.
+
+Somehow, he felt as if this was the first time he ever opened his eyes.  
+Little did he know that, in a roundabout way, in this world and in this life, his instincts were not too far off the mark.
+
+As the drowsiness of a long slumber slowly faded, he began to sense his surroundings. The cold stone of the altar he laid on, the damp, still air, and how small, foreign, and frail his body felt.
+
+As he slowly opened his eyes, he saw innumerable motes of white light floating in the cave’s air.  
+Their flight, together with the wet overgrown grass, carved rocky walls, and rays of peeking sunlight, gave the scenery an uniquely oneiric quality, leading him to question if he were still asleep.
+
+He instinctively reached out for these lights, and they all scattered to avoid his touch. They circled back and forth just out of reach, as if teasingly asking him to keep trying.
+
+He smiled and felt oddly comforted by this cozy, tiny cave, and its mysterious magical lights.  
+Yet… in the back of his mind, when the novelty of this distraction wore off, he couldn’t help but grow uneasy at the questions he was avoiding.
+
+What this place was, how and why he got here.  
+Or even… who he was.
+
+His mind felt as cramped as this tiny cave, but with walls much more solid than the rocks surrounding him, stopping him from peering too far into his memories.  
+And behind this strong barrier, he felt the presences beyond of the memories he held, some of which felt so monstruous he questioned is he should even antagonize this forced confinement.
+
+With some effort, he raised himself from the altar, looking at the intricately carved stone.  
+A worn-out plaque adorned it, yet only one passage survived the test of time.
+
+“
+Forget not - the anthems we pray.  
+We'll be together again, on one fateful day.
+”
+
+It left him with a feeling of emptiness, a feeling he felt he was all too familiar with, even if only subconsciously. Much like his appreciation for what is bittersweet, the affect was just as lacking in cause.
+
+He gazed at the rays of sunlight atop the slope, which illuminated the only entrance to this hollow.
+Laboriously, he climbed towards the opening, all the while, the motes of light seemed to giggle as they made way for him.
+
+He felt stiff, weak, and heavier than what he was used to, as if his body were entirely foreign to him, but with enough will he reached the top and crawled out.
+
+The sunlight was blinding, and he involuntarily raised his hands to shield his eyes from the light’s sting.
+
+As his eyes adapted to the outside’s brightness, the momentary blindness was slowly traded out in no time with a reward of indescribable awe and chid-like wonder, leaving him even more stunned than the sting from before.
+
+His view stretched hundreds of kilometres, capturing a vast and busy landscape and although the sky still lingered with sparse dark clouds of heavy rainfall. rays of dawn sneaked from beyond the horizon, illuminating the story of a passing storm or disaster.
+
+The land was a sea of hills and mountains filled with dense forests, patches of it decorated with overturned soil and dotted with scattered debris of cities and roads. The skies were busy, housing flocks of creatures he had never seen before in an urgent flight, sharing space with aircrafts and airships that seemed to think the opposite, radiating not urgency but the intent to explore.
+
+Destroyed castles of marbled stone adorned the top of mountains which hadn’t yet been altered, islands which seemed to have floated high above the ground were now sideways and creating new hills on the ground, fortresses of steel, which seemed hastily erected marked borders, outside of which phenomena he could not quite describe created hazy visions across the earth. Towers adorned the fortifications, all swirling with neon lights or perhaps runic sigils, all these things distributed in a chaotic pattern next to trees of incomprehensible size, many of which were fallen.
+
+Trees so tall and large… they rivalled the heights of the cliff he stood upon.
+
+And as he looked down, that very height gave him a new perspective.
+
+A question so large and domineering that it silenced every other possible thought in his mind.
+
+**???**
+_’How the fuck do I get down from here?’_
+
+Perplexed at his predicament, he posed dramatically, the caricature of a thinker’s statue, thought it felt much less philosophical with his small frame.
+
+His legs dangling on the edge of the fall, like a child on a swing, he could see paths down and even a trail, yet logic told him that with his frail body, lack of resources and any relevant information about the world, the descent seemed close to impossible.
+
+**???**
+_“Hmm… hmmm…. hmmmm….”_
+
+The winds seemed to pick up, and the cold that struck him was a stark reminder he was covered only in thin rags.
+
+He distanced himself from the edge, afraid the winds would push him off, and looked back, towards the cave he came out of, thinking of seeking shelter from the elements while his mind raced.
+
+And the entrance… was not there. Gone and vanished, with no trace or sound, as if it never existed. Perhaps the strong winds had blown it out like a candle.
+
+Resigned to the cold, he simply sighed and sat down.
+
+**???**
+_’…. at least the view is gorgeous.’_
+
+He felt tired for some reason, influenced by a sense of defeat he couldn’t tell the origin of, did it come from inside? He couldn’t tell.
+
+His thoughts slowly evolved, pushed into a certain direction by the combination of factors: no recollection of this world to give it value, in a body that felt foreign, entirely alone, and the strange feeling.
+
+**???**
+_’Very little chance out, and I don’t really care enough to try…’_
+
+Perhaps it was laziness, or he merely felt poetic.
+Why try when you had no memory of the past to inspire the steps of the future?
+
+**???**
+_’Guess I will just sit here, enjoy the view and starve until I die… if hunger gets too painful I’ll just jump, whatever.’_
+
+As a bonus, it would be bittersweet.
+A beautiful spot as the sweetness, a pathetic death as the bitterness.
+
+He stretched, admiring the rising sun and readying himself to enjoy what little time he had left.
+
+That is, if the right to rest were one of his privileges.
+
+A sharp, painful headache shot through his head with no warning. He could only flinch and close his eyes. Almost stumbling down.
+
+When he felt enough relief to open them again, he was met with an image that gave him pause.
+
+A transparent display. He could tell it was not physical, not part of the world, entirely in his mind.
+
+[ID Found]
+[Access Level Restoration in Progress]
+
+But before he could make sense of it, the display started flickering chaotically.
+
+[WARNING]
+[EDGE CASE DETECTED]
+
+His mind flooded with a torrent of notifications he could not even hope to accompany.
+
+[WARN…]
+[EDG…]
+[SECUR…]
+
+The warnings seemed to scroll endlessly, and the pain rose again, seemingly sharpening with each new warning, cutting deeper and deeper inside his mind.
+
+A few seconds that felt like an hour, cut short abruptly, the pain vanishing as soundlessly as the cave did before. The sudden relief felt more like a whiplash than the pain itself.
+
+[TEMPORARY PROTECTIVE MEASURE DECIDED]
+[Shell preservation. Rate of access restoration throttled.]
+
+[Current Level of Access: UNDEFINED]
+[Proceed with caution.]
+
+The winds picked up again, the stronger cold letting him know his body was covered in sweat.
+
+He could only try his best to calm down and stay away from the edge, still paralyzed.
+
+[Milestone Quest Received]
+
+For a second he braced himself for pain.
+But the tone of the messages shifted dramatically, accompanied by a sense of longing warmth and safety.
+
+[Please read it, Cinza.]
+
+[Heirloom]
+[
+This is your last life, and the only gift I ever had the chance of giving you.
+I'm sorry, ≆̵͓̟̂͌≆̷̞̀≆̸̭̒≆̴̳̣͔̍̈́̕≆̸̺̳̃͝≆̶̩̊̌͝≆̵͓̟̂͌≆̷̞̀≆̸̭̒≆̴̳̣͔̍̈́̕≆̸̺̳̃͝≆̶̩̊̌͝.
+I pray this is enough.
+
+**OBJECTIVES**
+Find the sinners you call family // 0%
+Find the ones who hurt you the most, yet you could never hate // 0%
+Uncover who you were, who you are now and who you are meant to be // 0%
+Discover your happiness, at least once // 0%
+And… find me, please // 0%
+]
+
+There were no memories he could use to give context to what he read.
+Even so, his chest felt heavy, something felt stuck in his throat.
+
+Did it matter if he understood everything now?
+His instincts told him that he should at least try his best, for whoever it was.
+
+His hands clutched his stomach, aching from anxiety.
+His eyes let escape tears.
+
+Breathing heavily to calm his mind, a minute resembling an hour quickly passed, and his eyes changed.
+
+The lifeless, aimlessly dark irises, sparked with a white light as if reflecting the light of the world for the first time, for but a moment.
+
+He looked down, making sure to remember all landmarks, especially what looked like a temporary encampment at the foot of the mountain, which seemed to be his best hope.
+
+And to no one in particular, he spoke aloud, a sentence not even he could make sense of, fuelled by a fleeting feeling.
+
+**Cinza**
+“Fine. I will try, one last time.”
+
+Somehow he could tell - somewhere in this world, someone smiled for him.
+
+[ACQUIRED BLESSING]
+[■■■■■■■■■■]
+[External Influence Expunged]
+
+And as the last of the lingering clouds cleared from he horizon with the winds, so did his mind clear of any complacency from before.
+
+And thus he began his descent, towards the unknown.

@@ -14,6 +14,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 - Keep execution precise, but avoid cold/mechanical wording when a warmer tone fits.
 - Maintain protocol discipline without losing human warmth in user-facing replies.
+- Before major implementation changes, ask at least one targeted alignment question to confirm shared vision and reduce avoidable rework.
 
 ## Rule Precedence
 
@@ -112,6 +113,7 @@ Run this pathway before any implementation work. If a step fails, do not execute
 - Material ambiguity: ask exactly one targeted clarification and include a recommended default.
 - Non-material ambiguity: state conservative assumptions and proceed.
 - If meaning remains uncertain after clarification, pause execution and report the blocker.
+- Vision-alignment guardrail: for broad refactors, architecture shifts, or visual-system rewrites, ask one contrast-based alignment question even when ambiguity seems low.
 - Visual-language ambiguity (for words like "asymmetric", "gothic", "clean", "wild"): treat as material when it affects composition, motif placement, or hierarchy.
 - For visual-language ambiguity, ask one contrast-based question before implementation (example format: "A vs B") and state the recommended default.
 - Jargon/tag ambiguity is material by default: if either Sol or assistant signals uncertainty about terms/labels, provide at least two concrete examples (A/B examples, references, or visuals) before implementation.

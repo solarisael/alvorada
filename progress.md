@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-09 21:29
+- Updated_utc: 2026-02-10 16:56
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: decide the central theme called `Cinza` as a variant of our current custom theme `gilded_arcane`
+- primary_outcome_next_session: fine-tune floating decorations and reading container detail polish for the `cinza` launch candidate
 - priority_axis_next_session: polish
-- edit_breadth_next_session: targeted
-- first_task_next_session: take the current `gilded_arcane` palette and polish color/detail adjustments toward `Cinza`
-- commit_intent_next_session: handoff
-- notes_next_session: theme direction is based on the main character of the book that will be posted to this website
+- edit_breadth_next_session: focused
+- first_task_next_session: tune floating decoration placement/opacity first, then refine reading container ornament details
+- commit_intent_next_session: after_review
+- notes_next_session: user manually adjusted some halo/highlight width/height values by hand and those edits should be preserved
 
 ## Alias Ledger
 
@@ -52,15 +52,15 @@
 
 - State: in_progress
 - Branch: master
-- Head: 77e69df
-- Scope_in: global theming system landed; next focus is governance quality via AGENTS/rules refinement.
-- Scope_out: unrelated feature implementation outside process/rule architecture.
+- Head: f2660e8
+- Scope_in: `cinza` is split from legacy `gilded_arcane`; icon effect simplified to halo + slow clockwise highlight; next pass is polish-only detailing.
+- Scope_out: new system/theme architecture changes unless required by visual polish.
 
 ## Next (Top 3)
 
-1. [ ] Audit `AGENTS.md` against observed execution mismatches from this session.
-2. [ ] Tighten rule loading matrix and reduce overlap/conflicts across `.opencode/rules/*.md`.
-3. [ ] Define stricter style-intent and validation expectations for predictable outcomes.
+1. [ ] Fine-tune floating decorations for `cinza` with simple, readable FX.
+2. [ ] Refine reading container ornamental detail hierarchy and spacing rhythm.
+3. [ ] Validate desktop/mobile + reduced-motion + visual legibility before final lock.
 
 ## Blockers
 
@@ -69,9 +69,9 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-08 18:51
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-08 18:51
-- CSS_tunables_check: pass (`bun run css:tunables:check`) - 2026-02-08 18:51
+- Build: pass (`bun run build`) - 2026-02-10 16:56
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-10 16:56
+- CSS_tunables_check: not_run_this_session
 
 ## Notes
 

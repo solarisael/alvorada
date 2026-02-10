@@ -1,131 +1,171 @@
-const SWATCHES = [
-  "#37e5a3",
-  "#24f5a8",
-  "#4cc9f0",
-  "#88c7ff",
-  "#9b5de5",
-  "#ff4dcd",
-  "#ff4d6d",
-  "#ff3d3d",
-  "#ffb703",
-  "#ffd166",
-  "#8aff80",
-  "#7ae582",
-  "#b7ffcf",
-  "#ffe2b4",
-  "#d7fbff",
-  "#ffe0ff",
-]
+const window_any = /** @type {any} */ (globalThis);
 
-const PALETTES = {
-  "qud-emerald": { fg: "#d8f2e1", accent: "#37e5a3", bg: "#0b0f10" },
-  "qud-amber": { fg: "#ffe8c7", accent: "#ffb703", bg: "#100d08" },
-  "qud-cyan": { fg: "#d7fbff", accent: "#4cc9f0", bg: "#071014" },
-  "qud-magenta": { fg: "#ffe0ff", accent: "#ff4dcd", bg: "#120715" },
-  "mono-green": { fg: "#b7ffcf", accent: "#24f5a8", bg: "#060a08" },
-  "mono-amber": { fg: "#ffe2b4", accent: "#ffb45a", bg: "#0c0906" },
-  ice: { fg: "#e8f6ff", accent: "#88c7ff", bg: "#05080d" },
-  blood: { fg: "#ffe2e2", accent: "#ff3d3d", bg: "#120606" },
-  void: { fg: "#d6d6ff", accent: "#9b5de5", bg: "#07060e" },
-  custom: null,
+const text_fx_effect_class_map = Object.freeze({
+  glow: "text_fx_glow",
+  neon: "text_fx_neon",
+  shadow: "text_fx_shadow",
+  chroma: "text_fx_chroma",
+  blur: "text_fx_blur",
+  flicker: "text_fx_flicker",
+  rainbow: "text_fx_rainbow",
+  gradient: "text_fx_gradient",
+  wiggle: "text_fx_wiggle",
+  float: "text_fx_float",
+  shake: "text_fx_shake",
+  glitch: "text_fx_glitch",
+});
+
+const text_fx_alias_map = (() => {
+  const alias_map = {};
+
+  for (const effect_name of Object.keys(text_fx_effect_class_map)) {
+    const class_name = text_fx_effect_class_map[effect_name];
+
+    alias_map[effect_name] = effect_name;
+    alias_map[effect_name.replaceAll("-", "_")] = effect_name;
+    alias_map[effect_name.replaceAll("_", "-")] = effect_name;
+
+    alias_map[`fx-${effect_name}`] = effect_name;
+    alias_map[`fx_${effect_name}`] = effect_name;
+
+    alias_map[class_name] = effect_name;
+  }
+
+  return Object.freeze(alias_map);
+})();
+
+const normalize_text_fx_token = (raw_token) => {
+  if (typeof raw_token !== "string") {
+    return null;
+  }
+
+  const normalized_token = raw_token.trim().toLowerCase();
+
+  if (!normalized_token) {
+    return null;
+  }
+
+  return text_fx_alias_map[normalized_token] ?? null;
+};
+
+const resolve_text_fx_class = (raw_token) => {
+  const normalized_effect = normalize_text_fx_token(raw_token);
+
+  if (!normalized_effect) {
+    return null;
+  }
+
+  return text_fx_effect_class_map[normalized_effect] ?? null;
+};
+
+const split_text_fx_tokens = (token_string = "") => {
+  return token_string
+    .split(/[\s,|]+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+};
+
+const collect_text_fx_classes_from_node = (node_value) => {
+  if (!(node_value instanceof HTMLElement)) {
+    return [];
+  }
+
+  const classes_to_apply = new Set();
+  const class_tokens = Array.from(node_value.classList);
+  const data_tokens = split_text_fx_tokens(node_value.dataset.textFx ?? "");
+
+  for (const token of [...class_tokens, ...data_tokens]) {
+    const resolved_class = resolve_text_fx_class(token);
+
+    if (resolved_class) {
+      classes_to_apply.add(resolved_class);
+    }
+  }
+
+  return Array.from(classes_to_apply);
+};
+
+const apply_text_fx_classes = (node_value) => {
+  if (!(node_value instanceof HTMLElement)) {
+    return [];
+  }
+
+  const effect_classes = collect_text_fx_classes_from_node(node_value);
+
+  if (!effect_classes.length) {
+    return [];
+  }
+
+  node_value.classList.add("text_fx");
+
+  for (const class_name of effect_classes) {
+    node_value.classList.add(class_name);
+  }
+
+  node_value.dataset.textFxHydrated = "true";
+
+  return effect_classes;
+};
+
+const find_text_fx_nodes = (root_node = document) => {
+  if (!root_node || typeof root_node.querySelectorAll !== "function") {
+    return [];
+  }
+
+  return Array.from(
+    root_node.querySelectorAll(
+      "span[data-text-fx], span[class*='fx-'], span[class*='text_fx']",
+    ),
+  );
+};
+
+const hydrate_text_effects = (root_node = document) => {
+  const text_fx_nodes = find_text_fx_nodes(root_node);
+
+  for (const text_fx_node of text_fx_nodes) {
+    apply_text_fx_classes(text_fx_node);
+  }
+};
+
+if (
+  typeof window !== "undefined" &&
+  typeof document !== "undefined" &&
+  !window_any.__text_fx_dom_ready_bound
+) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => hydrate_text_effects());
+  } else {
+    hydrate_text_effects();
+  }
+
+  window_any.__text_fx_dom_ready_bound = true;
 }
 
-const LETTER_PALETTES = {
-  qudCycle: [
-    [
-      "#37e5a3",
-      "#24f5a8",
-      "#4cc9f0",
-      "#88c7ff",
-      "#9b5de5",
-      "#ff4dcd",
-      "#ff4d6d",
-      "#ffb703",
-    ],
-    ["#b7ffcf", "#d7fbff", "#ffe0ff", "#ffe2b4", "#8aff80", "#4cc9f0"],
-    ["#ffb703", "#ffd166", "#ffe2b4", "#b7ffcf", "#24f5a8"],
-  ],
-  terminalWarm: [
-    ["#ffb703", "#ffd166", "#ffe2b4", "#ffe8c7", "#ff4d6d"],
-    ["#ffb45a", "#ffd166", "#ffe2b4", "#b7ffcf"],
-  ],
-  acidCandy: [
-    ["#ff4dcd", "#9b5de5", "#4cc9f0", "#8aff80", "#ffb703", "#ff4d6d"],
-    ["#00f5d4", "#f15bb5", "#9b5de5", "#fee440", "#00bbf9"],
-  ],
-  voidBloom: [
-    ["#d6d6ff", "#9b5de5", "#6c63ff", "#4cc9f0", "#37e5a3"],
-    ["#ffe0ff", "#9b5de5", "#4cc9f0", "#d7fbff"],
-  ],
-  iceFire: [
-    [
-      "#d7fbff",
-      "#88c7ff",
-      "#4cc9f0",
-      "#ffe2b4",
-      "#ffb703",
-      "#ff4d6d",
-      "#ff3d3d",
-    ],
-    ["#e8f6ff", "#88c7ff", "#ffb703", "#ff4d6d"],
-  ],
-  randomPerChar: [
-    [
-      "#37e5a3",
-      "#24f5a8",
-      "#4cc9f0",
-      "#88c7ff",
-      "#9b5de5",
-      "#ff4dcd",
-      "#ff4d6d",
-      "#ffb703",
-      "#ffd166",
-      "#8aff80",
-      "#b7ffcf",
-      "#ffe2b4",
-      "#d7fbff",
-      "#ffe0ff",
-    ],
-  ],
-  randomPerWord: [
-    [
-      "#37e5a3",
-      "#24f5a8",
-      "#4cc9f0",
-      "#88c7ff",
-      "#9b5de5",
-      "#ff4dcd",
-      "#ff4d6d",
-      "#ffb703",
-      "#ffd166",
-      "#8aff80",
-      "#b7ffcf",
-      "#ffe2b4",
-      "#d7fbff",
-      "#ffe0ff",
-    ],
-  ],
+if (
+  typeof window !== "undefined" &&
+  typeof document !== "undefined" &&
+  !window_any.__text_fx_after_swap_bound
+) {
+  document.body?.addEventListener("htmx:afterSwap", (event) => {
+    const swap_target = event?.detail?.target;
+
+    if (swap_target instanceof HTMLElement) {
+      hydrate_text_effects(swap_target);
+      return;
+    }
+
+    hydrate_text_effects();
+  });
+
+  window_any.__text_fx_after_swap_bound = true;
 }
 
-const EFFECTS = [
-  { id: "fx-neon", label: "Neon" },
-  { id: "fx-glow", label: "Glow" },
-  { id: "fx-blur", label: "Blur" },
-  { id: "fx-outline", label: "Outline" },
-  { id: "fx-shadow", label: "Shadow" },
-  { id: "fx-chroma", label: "Chroma" },
-  { id: "fx-glitch", label: "Glitch" },
-  { id: "fx-wiggle", label: "Wiggle" },
-  { id: "fx-float", label: "Float" },
-  { id: "fx-shake", label: "Shake" },
-  { id: "fx-flicker", label: "Flicker" },
-  { id: "fx-rainbow", label: "Rainbow" },
-  { id: "fx-gradient", label: "Gradient" },
-  { id: "fx-type", label: "Typewriter" },
-  { id: "fx-pixel", label: "Pixel-ish" },
-  { id: "fx-smear", label: "Smear" },
-  { id: "fx-wide", label: "Wide" },
-  { id: "fx-tight", label: "Tight" },
-  { id: "crt", label: "CRT Overlay (container)", target: "shell" },
-  { id: "fx-perletter", label: "Per-letter Colors" }, // NEW
-]
+export {
+  apply_text_fx_classes,
+  collect_text_fx_classes_from_node,
+  hydrate_text_effects,
+  normalize_text_fx_token,
+  resolve_text_fx_class,
+  split_text_fx_tokens,
+  text_fx_effect_class_map,
+};

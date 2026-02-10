@@ -1,4 +1,5 @@
 import "./modules/style_switcher.js";
+import "./modules/text_effects.js";
 
 const load_optional_dependency = async (dependency_path) => {
   try {
