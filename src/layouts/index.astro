@@ -41,10 +41,13 @@ const { body_class = "" } = Astro.props;
     <MobileNavbar />
     <container>
       <main id="page-main">
-        <div id="content">
-          <div id="main_reading_container">
-            <Breadcrumbers />
-            <slot />
+        <div id="content_stage">
+          <div id="content_fog_backdrop" aria-hidden="true"></div>
+          <div id="content">
+            <div id="main_reading_container">
+              <Breadcrumbers />
+              <slot />
+            </div>
           </div>
         </div>
         <StyleSwitcher />

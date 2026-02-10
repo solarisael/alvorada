@@ -27,6 +27,9 @@ Required mapping format:
 - Implement mapped targets first before optional polish.
 - Keep new styling switchable via classes/tokens when the request implies options.
 - Prefer semantic variables over hard-coded palette values for switchable themes.
+- For non-trivial effects, state an explicit structure plan first: which effect is rendered by HTML layers vs CSS backgrounds.
+- Prefer adding dedicated markup layers for complex FX rather than stacking many gradients in one pseudo-element.
+- Keep animation plans simple and readable; prefer `transform`/`opacity` and avoid paint-heavy animated properties by default.
 
 ## After Editing
 

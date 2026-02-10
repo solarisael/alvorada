@@ -1,0 +1,232 @@
+.text_fx {
+  --text_fx_glow_strength: var(--site_fx_glow_mult, 1);
+  --text_fx_motion_strength: var(--site_fx_motion_mult, 1);
+
+  position: relative;
+  display: inline-flex;
+  vertical-align: baseline;
+
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.text_fx_glow {
+  text-shadow:
+    0 0 calc(0.18em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 34%,
+        transparent
+      ),
+    0 0 calc(0.28em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 20%,
+        transparent
+      );
+}
+
+.text_fx_neon {
+  text-shadow:
+    0 0 calc(0.12em * var(--text_fx_glow_strength))
+      color-mix(in oklch, currentColor 72%, transparent),
+    0 0 calc(0.24em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 52%,
+        transparent
+      ),
+    0 0 calc(0.4em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 36%,
+        transparent
+      );
+}
+
+.text_fx_shadow {
+  text-shadow:
+    0.05em 0.05em 0 color-mix(in oklch, black 48%, transparent),
+    0.09em 0.09em 0 color-mix(in oklch, black 28%, transparent);
+}
+
+.text_fx_chroma {
+  text-shadow:
+    calc(-0.05em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.66),
+    calc(0.05em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.66);
+}
+
+.text_fx_blur {
+  filter: blur(calc(0.075em * var(--text_fx_glow_strength)));
+}
+
+.text_fx_flicker {
+  animation: text_fx_flicker calc(2.8s / var(--text_fx_motion_strength)) linear
+    infinite;
+}
+
+.text_fx_gradient {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, currentColor 86%, white),
+    color-mix(in oklch, var(--site_style_accent, currentColor) 92%, white),
+    color-mix(in oklch, currentColor 90%, white)
+  );
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text_fx_rainbow {
+  background: linear-gradient(
+    90deg,
+    #ff4d6d,
+    #ffb703,
+    #8aff80,
+    #4cc9f0,
+    #9b5de5,
+    #ff4d6d
+  );
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text_fx_wiggle {
+  animation: text_fx_wiggle calc(1.3s / var(--text_fx_motion_strength))
+    ease-in-out infinite;
+}
+
+.text_fx_float {
+  animation: text_fx_float calc(2.8s / var(--text_fx_motion_strength))
+    ease-in-out infinite;
+}
+
+.text_fx_shake {
+  animation: text_fx_shake calc(0.7s / var(--text_fx_motion_strength))
+    steps(2, end) infinite;
+}
+
+.text_fx_glitch {
+  text-shadow:
+    calc(-0.04em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.64),
+    calc(0.04em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.64);
+  animation: text_fx_glitch calc(1.05s / var(--text_fx_motion_strength))
+    steps(2) infinite;
+}
+
+@keyframes text_fx_flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  4% {
+    opacity: 0.82;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  46% {
+    opacity: 0.9;
+  }
+
+  52% {
+    opacity: 1;
+  }
+
+  86% {
+    opacity: 0.84;
+  }
+}
+
+@keyframes text_fx_wiggle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-1.5%) rotate(-0.55deg);
+  }
+
+  50% {
+    transform: translateY(1.5%) rotate(0.55deg);
+  }
+
+  75% {
+    transform: translateY(-0.75%) rotate(0.35deg);
+  }
+}
+
+@keyframes text_fx_float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8%);
+  }
+}
+
+@keyframes text_fx_shake {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(2%, -1.5%);
+  }
+
+  50% {
+    transform: translate(-2%, 1.5%);
+  }
+
+  75% {
+    transform: translate(1.5%, 2%);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes text_fx_glitch {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-1.5%, 0.8%);
+  }
+
+  40% {
+    transform: translate(1.5%, -0.8%);
+  }
+
+  60% {
+    transform: translate(-0.8%, -1.2%);
+  }
+
+  80% {
+    transform: translate(1.2%, 0.8%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text_fx_flicker,
+  .text_fx_rainbow,
+  .text_fx_wiggle,
+  .text_fx_float,
+  .text_fx_shake,
+  .text_fx_glitch {
+    animation: none;
+  }
+}

@@ -93,6 +93,15 @@ This project's main reading container should feel stable, centered, and immersiv
 - Keep timing smooth and restrained.
 - Respect reduced-motion preferences for all decorative or continuous effects.
 
+## Readable FX First (Structure Over Stack)
+
+- Prefer simple, readable effects over dense background/gradient stacks.
+- Prefer adding explicit HTML effect layers for complex visuals instead of overloading one selector with many background layers.
+- Keep animated properties to `transform` and `opacity` whenever possible.
+- Avoid animating `filter`, `background-position`, `background-size`, and other paint-heavy properties unless there is no viable alternative.
+- Keep concurrent decorative animations minimal (target 2-3 active layers per feature).
+- For each new visual effect, include a reduced-motion equivalent and verify performance impact remains low on desktop and mobile.
+
 ## Alchemy / Occult / Mysticism Integration Rules
 
 - Use alchemical phase language (`nigredo`, `albedo`, `citrinitas`, `rubedo`) as symbolic system cues.

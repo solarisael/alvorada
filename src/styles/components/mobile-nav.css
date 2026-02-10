@@ -449,3 +449,26 @@
     transition: none;
   }
 }
+
+:root[data-site-theme="cinza"] .mobile-nav-link.is-home-link {
+  --mobile_home_color_mix: 86%;
+  --mobile_home_ring_mix: 36%;
+  --mobile_home_shell_glow_mix: 60%;
+  --mobile_home_shell_active_ring_mix: 34%;
+  --mobile_home_shell_active_glow_mix: 72%;
+  --mobile_home_shell_active_glow_strong_mix: 78%;
+}
+
+:root[data-site-theme="cinza"] .mobile-home-avatar-shell {
+  background:
+    radial-gradient(
+      circle at 48% 24%,
+      rgb(255 255 255 / 0.14),
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--mobile_neon_color) 14%, transparent),
+      transparent 72%
+    );
+}

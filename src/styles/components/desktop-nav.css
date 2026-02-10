@@ -57,7 +57,7 @@
   );
   --center_shell_glow: color-mix(
     in oklch,
-    var(--site_style_accent) calc(50% * var(--site_fx_glow_mult, 1)),
+    var(--site_style_accent) calc(50% * var(--site_shell_glow_mult, 1)),
     transparent
   );
   --center_core_background: color-mix(
@@ -391,6 +391,13 @@
   );
 }
 
+.cinza_sun_halo,
+.cinza_sun_highlight {
+  @apply pointer-events-none absolute;
+
+  /* display: none; */
+}
+
 #icon-user-core {
   @apply relative z-20 overflow-hidden rounded-full;
   @apply border;
@@ -413,6 +420,123 @@
   @apply h-full w-full;
 
   object-fit: cover;
+}
+
+:root[data-site-theme="cinza"] #desktop-nav {
+  --cinza_sun_tint: color-mix(in oklch, white 84%, var(--site_style_accent));
+  --cinza_sun_neon_opacity: 1;
+  --cinza_sun_halo_opacity: 1;
+  --cinza_sun_highlight_opacity: 2;
+  --cinza_sun_saturation: 2;
+  --cinza_sun_contrast: 2;
+  --center_shell_border: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(34% * var(--site_style_strength_mult, 1)),
+    transparent
+  );
+  --center_shell_glow: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(42% * var(--site_shell_glow_mult, 1)),
+    transparent
+  );
+  --center_core_background: color-mix(
+    in oklch,
+    var(--ui_bg_crust) calc(95% * var(--site_shell_surface_mult, 1)),
+    transparent
+  );
+}
+
+:root[data-site-theme="cinza"][data-site-shell="medium"] #desktop-nav {
+  --cinza_sun_tint: color-mix(in oklch, white 90%, var(--site_style_accent));
+  --cinza_sun_neon_opacity: 0.96;
+  --cinza_sun_halo_opacity: 0.74;
+  --cinza_sun_highlight_opacity: 1;
+  --cinza_sun_saturation: 1.36;
+  --cinza_sun_contrast: 1.28;
+}
+
+:root[data-site-theme="cinza"][data-site-shell="strong"] #desktop-nav {
+  --cinza_sun_tint: color-mix(in oklch, white 95%, var(--site_style_accent));
+  --cinza_sun_neon_opacity: 1;
+  --cinza_sun_halo_opacity: 1;
+  --cinza_sun_highlight_opacity: 1;
+  --cinza_sun_saturation: 2;
+  --cinza_sun_contrast: 2;
+}
+
+:root[data-site-theme="cinza"] #icon-user {
+  isolation: isolate;
+  filter: drop-shadow(
+      0 0 26px rgb(255 255 255 / calc(0.32 * var(--site_fx_glow_mult, 1)))
+    )
+    drop-shadow(0 0 56px rgb(255 255 255 / 0.2));
+}
+
+:root[data-site-theme="cinza"] #icon-user-shell {
+  overflow: visible;
+}
+
+:root[data-site-theme="cinza"] .cinza_sun_halo {
+  width: 248%;
+  height: 248%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--cinza_sun_tint) 50%, transparent) 0 14%,
+    color-mix(in oklch, var(--cinza_sun_tint) 26%, transparent) 34%,
+    transparent 76%
+  );
+  opacity: calc(var(--cinza_sun_halo_opacity) * var(--cinza_sun_neon_opacity));
+  z-index: 1;
+  filter: blur(24px) saturate(var(--cinza_sun_saturation))
+    contrast(var(--cinza_sun_contrast));
+  mix-blend-mode: screen;
+}
+
+:root[data-site-theme="cinza"] #icon-user::before {
+  opacity: 0;
+  animation: none;
+}
+
+:root[data-site-theme="cinza"] #icon-user::after {
+  content: none;
+}
+
+:root[data-site-theme="cinza"] .cinza_sun_halo,
+:root[data-site-theme="cinza"] .cinza_sun_highlight {
+  display: block;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+}
+
+:root[data-site-theme="cinza"] .cinza_sun_highlight {
+  width: 105%;
+  height: 105%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: color-mix(in oklch, white 94%, var(--cinza_sun_tint));
+  border-right-color: color-mix(in oklch, white 74%, var(--cinza_sun_tint));
+  opacity: calc(
+    var(--cinza_sun_highlight_opacity) * var(--cinza_sun_neon_opacity)
+  );
+  filter: blur(6px) saturate(var(--cinza_sun_saturation))
+    contrast(var(--cinza_sun_contrast))
+    drop-shadow(
+      0 0 12px color-mix(in oklch, var(--cinza_sun_tint) 72%, transparent)
+    )
+    drop-shadow(
+      0 0 24px color-mix(in oklch, var(--cinza_sun_tint) 44%, transparent)
+    );
+  mix-blend-mode: screen;
+  animation: cinza_highlight_rotate 18s linear infinite;
+}
+
+:root[data-site-theme="cinza"] #icon-user:hover .cinza_sun_highlight,
+:root[data-site-theme="cinza"] #icon-user:focus-visible .cinza_sun_highlight,
+:root[data-site-theme="cinza"] #icon-user.is-route-active .cinza_sun_highlight {
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -438,6 +562,15 @@
   #icon-user:focus-visible::before {
     animation: none;
   }
+
+  #icon-user::after {
+    animation: none;
+  }
+
+  .cinza_sun_halo,
+  .cinza_sun_highlight {
+    animation: none;
+  }
 }
 
 @keyframes icon_orbit_glow {
@@ -447,5 +580,28 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes icon_solar_breath {
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.28;
+  }
+
+  50% {
+    transform: scale(1.06);
+    opacity: 0.48;
+  }
+}
+
+@keyframes cinza_highlight_rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }

@@ -3,6 +3,7 @@
 @import "@catppuccin/tailwindcss/mocha.css";
 @import "./typography.css";
 @import "./utils.css";
+@import "./components/text-effects.css";
 
 @theme {
   --default-font-family:
@@ -21,6 +22,7 @@
 
 @custom-variant site-theme-minimal-astral (&:where([data-site-theme="minimal_astral"] *));
 @custom-variant site-theme-gilded-arcane (&:where([data-site-theme="gilded_arcane"] *));
+@custom-variant site-theme-cinza (&:where([data-site-theme="cinza"] *));
 @custom-variant site-theme-cosmic-overlay (&:where([data-site-theme="cosmic_overlay"] *));
 @custom-variant site-theme-witchy-ornate (&:where([data-site-theme="witchy_ornate"] *));
 @custom-variant site-theme-graveyard-gothic (&:where([data-site-theme="graveyard_gothic"] *));
@@ -84,6 +86,23 @@
   --ui_accent: oklch(84% 0.15 84);
   --ui_accent_2: oklch(76% 0.09 60);
   --ui_focus: oklch(88% 0.1 78);
+}
+
+:root[data-site-theme="cinza"] {
+  --ui_bg_root: oklch(11% 0.008 265);
+  --ui_bg_mantle: oklch(17% 0.01 262);
+  --ui_bg_crust: oklch(7% 0.006 268);
+
+  --ui_surface_soft: oklch(22% 0.012 262);
+  --ui_surface_raised: oklch(28% 0.014 258);
+
+  --ui_text_primary: oklch(93% 0.008 88);
+  --ui_text_secondary: oklch(82% 0.008 86);
+  --ui_text_muted: oklch(70% 0.007 84);
+
+  --ui_accent: oklch(80% 0.048 86);
+  --ui_accent_2: oklch(72% 0.022 82);
+  --ui_focus: oklch(86% 0.04 86);
 }
 
 :root[data-site-theme="cosmic_overlay"] {

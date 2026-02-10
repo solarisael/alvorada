@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-08 18:56
-- Updated_by: agent (opencode)
+- Updated_utc: 2026-02-09 21:29
+- Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
-- mode_for_next_session: brainstorm
-- primary_outcome_next_session: lock in our styling terms and how the website will look design-wise
-- priority_axis_next_session: architecture
-- edit_breadth_next_session: broad
-- first_task_next_session: looking at inspiration UI images and trying to define terms for them, then aliasing them
+- mode_for_next_session: co-pilot
+- primary_outcome_next_session: decide the central theme called `Cinza` as a variant of our current custom theme `gilded_arcane`
+- priority_axis_next_session: polish
+- edit_breadth_next_session: targeted
+- first_task_next_session: take the current `gilded_arcane` palette and polish color/detail adjustments toward `Cinza`
 - commit_intent_next_session: handoff
-- notes_next_session: gonna be real fun!
+- notes_next_session: theme direction is based on the main character of the book that will be posted to this website
 
 ## Alias Ledger
 
@@ -78,3 +78,9 @@
 - Long Done/Decisions history moved to `progress.archive.md`.
 - Session start guardrail: if any required send-off field is missing, ask for missing fields first regardless of first prompt.
 - After kickoff alignment, reset `*_next_session` handoff fields to pending placeholders for the next send-off.
+
+## Launch Reminders
+
+1. [ ] Replace temporary CSS-based `cinza` sun effect with an optimized animated asset if a strong `dark_sun`/`black_hole` loop is approved.
+2. [ ] Run a final performance pass on decorative animations (desktop + mobile + reduced-motion).
+3. [ ] Confirm visual lock for theme keys (`gilded_arcane` legacy and `cinza` launch candidate) before launch freeze.

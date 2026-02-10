@@ -17,6 +17,7 @@ const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 const site_theme_options = [
   "minimal_astral",
   "gilded_arcane",
+  "cinza",
   "cosmic_overlay",
   "witchy_ornate",
   "graveyard_gothic",
@@ -27,6 +28,7 @@ const site_theme_options = [
 const legacy_theme_alias_map = {
   ritual: "minimal_astral",
   vibrant: "gilded_arcane",
+  gilded_arcana: "gilded_arcane",
   arcane: "cosmic_overlay",
   verdigris: "witchy_ornate",
   golden_mystical_tarot: "gilded_arcane",
