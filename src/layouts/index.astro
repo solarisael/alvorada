@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import "../styles/base.css";
 import "../styles/index.css";
+import "../styles/components/content-shell.css";
+import "../styles/components/footer.css";
 
 import Breadcrumbers from "../components/breadcrumbers.astro";
 import MobileNavbar from "../components/mobile_navbar.astro";
@@ -42,11 +44,109 @@ const { body_class = "" } = Astro.props;
     <container>
       <main id="page-main">
         <div id="content_stage">
-          <div id="content_fog_backdrop" aria-hidden="true"></div>
+          <div
+            class="content-stage-layer content-stage-layer-fog"
+            aria-hidden="true"
+          >
+          </div>
+          <div
+            class="content-stage-layer content-stage-layer-rails"
+            aria-hidden="true"
+          >
+          </div>
+
+          <div id="content_fog_backdrop" aria-hidden="true">
+            <div class="content-fog-layer content-fog-layer-top"></div>
+            <div class="content-fog-layer content-fog-layer-bottom"></div>
+          </div>
+
           <div id="content">
-            <div id="main_reading_container">
-              <Breadcrumbers />
-              <slot />
+            <div class="content-layer content-layer-surface" aria-hidden="true">
+            </div>
+            <div class="content-layer content-layer-noise" aria-hidden="true">
+            </div>
+            <div class="content-layer content-layer-deco" aria-hidden="true">
+            </div>
+            <div
+              class="content-layer content-layer-ornament-svg"
+              aria-hidden="true"
+            >
+              <img
+                class="content-ornament content-ornament-corner-tl"
+                src="/ornaments/cinza/frame_corner_tl.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-corner-tr"
+                src="/ornaments/cinza/frame_corner_tr.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-corner-bl"
+                src="/ornaments/cinza/frame_corner_bl.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-corner-br"
+                src="/ornaments/cinza/frame_corner_br.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-line-top"
+                src="/ornaments/cinza/frame_line_top.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-line-bottom"
+                src="/ornaments/cinza/frame_line_bottom.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-sigil-top"
+                src="/ornaments/cinza/sigil_moon_star.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="content-ornament content-ornament-sigil-bottom"
+                src="/ornaments/cinza/sigil_eye.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+
+            <div class="content-layer-body">
+              <div id="main_reading_container">
+                <div
+                  class="reading-layer reading-layer-surface"
+                  aria-hidden="true"
+                >
+                </div>
+                <div
+                  class="reading-layer reading-layer-noise"
+                  aria-hidden="true"
+                >
+                </div>
+
+                <div class="reading-layer-body">
+                  <Breadcrumbers />
+                  <slot />
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,0 +1,502 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+#home_card_gate {
+  --home_gate_card_radius: 18px;
+  --home_gate_card_border_width: 1px;
+  --home_gate_grid_gap: clamp(0.85rem, 1.8vw, 1.35rem);
+  --home_gate_card_min: 180px;
+
+  --home_gate_surface_mix: 56%;
+  --home_gate_border_mix: 42%;
+  --home_gate_halo_mix: 28%;
+  --home_gate_text_mix: 84%;
+
+  --home_gate_blur: 2px;
+  --home_gate_shadow_strength: 0.6;
+  --home_gate_star_opacity: 0.16;
+  --home_gate_ring_opacity: 0.22;
+
+  --home_gate_hover_lift: -1.2%;
+  --home_gate_transition_ms: 260ms;
+
+  @apply flex w-full grow flex-col;
+  @apply gap-7 md:gap-9;
+}
+
+#home_gate_intro {
+  @apply flex flex-col;
+  @apply gap-3;
+}
+
+#home_gate_header {
+  @apply flex flex-col;
+  @apply gap-2;
+}
+
+#home_gate_kicker {
+  margin: 0;
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent_alt) 46%,
+    var(--ui_text_primary)
+  );
+}
+
+#home_gate_title {
+  @apply font-semibold;
+
+  margin: 0;
+  color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
+}
+
+#home_gate_body {
+  @apply max-w-2xl;
+}
+
+#home_gate_body p {
+  color: color-mix(
+    in oklch,
+    var(--ui_text_secondary) 86%,
+    var(--ui_text_primary)
+  );
+}
+
+#phase_card_grid {
+  @apply grid;
+  @apply gap-3 md:gap-4;
+
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--home_gate_card_min)), 1fr)
+  );
+}
+
+.phase_card_link {
+  @apply relative isolate overflow-hidden;
+  @apply flex h-full flex-col;
+  @apply gap-4;
+  @apply px-4 py-4 md:px-5 md:py-5;
+  @apply no-underline;
+
+  --phase_card_layer_border_color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) var(--home_gate_border_mix),
+    transparent
+  );
+  --phase_card_layer_shadow_stack:
+    0 20px 32px -26px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.08)),
+    inset 0 1px 0 color-mix(in oklch, white 9%, transparent);
+  --phase_card_layer_hover_border_color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) 64%,
+    transparent
+  );
+  --phase_card_layer_hover_shadow_stack:
+    0 24px 36px -22px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.16)),
+    0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--phase_color, var(--site_style_accent_alt)) 34%,
+        transparent
+      ),
+    inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
+
+  border-radius: var(--home_gate_card_radius);
+  border: var(--home_gate_card_border_width) solid
+    var(--phase_card_layer_border_color);
+  box-shadow: var(--phase_card_layer_shadow_stack);
+  backdrop-filter: blur(var(--home_gate_blur));
+  transition:
+    transform var(--home_gate_transition_ms) cubic-bezier(0.16, 1, 0.3, 1),
+    border-color var(--home_gate_transition_ms) ease,
+    box-shadow var(--home_gate_transition_ms) ease;
+}
+
+.phase-card-layer {
+  @apply pointer-events-none absolute;
+
+  inset: 0;
+}
+
+.phase-card-layer-surface {
+  z-index: 0;
+  background:
+    radial-gradient(
+      120% 100% at 80% -10%,
+      color-mix(
+        in oklch,
+        var(--phase_color, var(--site_style_accent_alt))
+          var(--home_gate_halo_mix),
+        transparent
+      ),
+      transparent 66%
+    ),
+    linear-gradient(
+      155deg,
+      color-mix(
+        in oklch,
+        var(--phase_color, var(--site_style_accent_alt)) 8%,
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ui_bg_mantle) var(--home_gate_surface_mix),
+        transparent
+      )
+    );
+}
+
+.phase-card-layer-stars {
+  z-index: 1;
+  opacity: var(--home_gate_star_opacity);
+  background:
+    radial-gradient(
+      circle at 24% 26%,
+      color-mix(in oklch, white 56%, transparent) 0 0.6px,
+      transparent 0.7px
+    ),
+    radial-gradient(
+      circle at 76% 62%,
+      color-mix(in oklch, white 46%, transparent) 0 0.7px,
+      transparent 0.8px
+    );
+}
+
+.phase-card-layer-frame {
+  z-index: 3;
+  inset: clamp(0.55rem, 1.8%, 0.75rem);
+  border-radius: calc(var(--home_gate_card_radius) - 0.5rem);
+  border: 1px solid
+    color-mix(
+      in oklch,
+      var(--phase_color, var(--site_style_accent_alt)) 42%,
+      transparent
+    );
+  opacity: var(--home_gate_ring_opacity);
+}
+
+.phase-card-layer-ornament-svg {
+  display: none;
+  z-index: 2;
+}
+
+.phase-card-ornament {
+  @apply absolute;
+
+  display: block;
+  object-fit: contain;
+}
+
+.phase-card-layer-body {
+  @apply relative z-10;
+}
+
+.phase_card_symbol {
+  @apply font-mono;
+  color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) 66%,
+    var(--ui_text_primary)
+  );
+}
+
+.phase_card_title {
+  @apply mt-auto;
+  @apply font-semibold;
+  color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) var(--home_gate_text_mix),
+    var(--ui_text_primary)
+  );
+}
+
+.phase_card_blurb {
+  color: color-mix(
+    in oklch,
+    var(--ui_text_secondary) 86%,
+    var(--ui_text_primary)
+  );
+}
+
+.phase_card_cta {
+  color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) 70%,
+    var(--ui_text_muted)
+  );
+}
+
+.phase_card_link:hover,
+.phase_card_link:focus-visible {
+  transform: translateY(var(--home_gate_hover_lift));
+  border-color: var(--phase_card_layer_hover_border_color);
+  box-shadow: var(--phase_card_layer_hover_shadow_stack);
+}
+
+.phase_card_link:focus-visible {
+  outline: 2px solid
+    color-mix(
+      in oklch,
+      var(--phase_color, var(--site_style_accent_alt)) 76%,
+      white
+    );
+  outline-offset: 0.125rem;
+}
+
+.phase_card_nigredo {
+  --phase_color: var(--color-nigredo);
+}
+
+.phase_card_albedo {
+  --phase_color: var(--color-albedo);
+}
+
+.phase_card_citrinitas {
+  --phase_color: var(--color-citrinitas);
+}
+
+.phase_card_rubedo {
+  --phase_color: var(--color-rubedo);
+}
+
+:root[data-site-theme="cinza"] {
+  --home_gate_surface_mix: 42%;
+  --home_gate_border_mix: 38%;
+  --home_gate_halo_mix: 26%;
+  --home_gate_blur: 2.6px;
+  --home_gate_text_mix: 82%;
+  --home_gate_star_opacity: 0.08;
+  --home_gate_ring_opacity: 0.5;
+}
+
+:root[data-site-theme="cinza"] .phase_card_link {
+  --phase_ornament_inset: clamp(0.35rem, 1.2%, 0.55rem);
+  --phase_ornament_tl_size: clamp(2.1rem, 7vw, 2.4rem);
+  --phase_ornament_tr_size: clamp(2.25rem, 7.4vw, 2.62rem);
+  --phase_ornament_bl_size: clamp(1.9rem, 6.4vw, 2.2rem);
+  --phase_ornament_br_size: clamp(2.2rem, 7.2vw, 2.52rem);
+  --phase_ornament_sigil_size: clamp(1.15rem, 3.7vw, 1.5rem);
+  --phase_ornament_sigil_offset: 4%;
+  --phase_ornament_side_inline: clamp(0.75rem, 2.2vw, 1rem);
+  --phase_ornament_side_block: 76%;
+
+  --phase_card_layer_shadow_stack:
+    0 22px 36px -24px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.12)),
+    0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 1.25),
+        transparent
+      ),
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.8),
+        transparent
+      ),
+    inset 0 1px 0 color-mix(in oklch, white 22%, transparent);
+
+  --phase_card_layer_hover_border_color: color-mix(
+    in oklch,
+    var(--phase_color, var(--site_style_accent_alt)) 72%,
+    transparent
+  );
+  --phase_card_layer_hover_shadow_stack:
+    0 26px 38px -20px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.2)),
+    0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--phase_color, var(--site_style_accent_alt)) 44%,
+        transparent
+      ),
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--phase_color, var(--site_style_accent_alt)) 30%,
+        transparent
+      ),
+    inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
+}
+
+:root[data-site-theme="cinza"] .phase-card-layer-frame {
+  inset: var(--phase_ornament_inset);
+  border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
+  border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
+  background:
+    radial-gradient(
+        circle at 50% 14%,
+        transparent 0 44%,
+        color-mix(in oklch, var(--site_style_accent) 46%, transparent) 46% 52%,
+        transparent 54% 100%
+      )
+      50% 0 / 2rem 2rem no-repeat,
+    linear-gradient(
+        90deg,
+        transparent 0 44%,
+        color-mix(in oklch, var(--site_style_accent) 34%, transparent) 48% 52%,
+        transparent 56% 100%
+      )
+      50% 0 / 1.55rem 1.55rem no-repeat,
+    linear-gradient(
+        0deg,
+        transparent 0 38%,
+        color-mix(in oklch, var(--site_style_accent) 34%, transparent) 42% 62%,
+        transparent 66% 100%
+      )
+      50% 0 / 1.55rem 1.55rem no-repeat,
+    linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--site_style_accent) 38%, transparent),
+        transparent 18%
+      )
+      8% 50% / 0.06rem 84% no-repeat,
+    linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--site_style_accent) 38%, transparent),
+        transparent 18%
+      )
+      92% 50% / 0.06rem 84% no-repeat;
+  opacity: calc(var(--home_gate_ring_opacity) * 1.26);
+}
+
+:root[data-site-theme="cinza"] .phase-card-layer-ornament-svg {
+  display: block;
+  opacity: calc(var(--home_gate_ring_opacity) * 1.08);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-center-top,
+:root[data-site-theme="cinza"] .phase-card-ornament-side-left,
+:root[data-site-theme="cinza"] .phase-card-ornament-side-right {
+  object-fit: fill;
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-corner-tl {
+  left: var(--phase_ornament_inset);
+  top: var(--phase_ornament_inset);
+  inline-size: var(--phase_ornament_tl_size);
+  block-size: var(--phase_ornament_tl_size);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-corner-tr {
+  right: var(--phase_ornament_inset);
+  top: var(--phase_ornament_inset);
+  inline-size: var(--phase_ornament_tr_size);
+  block-size: var(--phase_ornament_tr_size);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-corner-bl {
+  left: var(--phase_ornament_inset);
+  bottom: var(--phase_ornament_inset);
+  inline-size: var(--phase_ornament_bl_size);
+  block-size: var(--phase_ornament_bl_size);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-corner-br {
+  right: var(--phase_ornament_inset);
+  bottom: var(--phase_ornament_inset);
+  inline-size: var(--phase_ornament_br_size);
+  block-size: var(--phase_ornament_br_size);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-center-top {
+  left: 50%;
+  top: var(--phase_ornament_inset);
+  inline-size: 84%;
+  block-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-side-left {
+  left: var(--phase_ornament_inset);
+  top: 50%;
+  inline-size: var(--phase_ornament_side_inline);
+  block-size: var(--phase_ornament_side_block);
+  transform: translateY(-50%);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-side-right {
+  right: var(--phase_ornament_inset);
+  top: 50%;
+  inline-size: var(--phase_ornament_side_inline);
+  block-size: var(--phase_ornament_side_block);
+  transform: translateY(-50%);
+}
+
+:root[data-site-theme="cinza"] .phase-card-ornament-sigil {
+  left: 50%;
+  bottom: var(--phase_ornament_sigil_offset);
+  inline-size: var(--phase_ornament_sigil_size);
+  block-size: var(--phase_ornament_sigil_size);
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="cinza"] .phase-card-layer-stars {
+  background:
+    radial-gradient(
+      circle at 24% 26%,
+      color-mix(in oklch, white 64%, transparent) 0 0.6px,
+      transparent 0.74px
+    ),
+    radial-gradient(
+      circle at 76% 62%,
+      color-mix(in oklch, white 52%, transparent) 0 0.7px,
+      transparent 0.82px
+    ),
+    radial-gradient(
+      140% 120% at 70% -20%,
+      color-mix(in oklch, var(--site_style_accent) 18%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      120% 100% at 20% 90%,
+      color-mix(in oklch, var(--site_style_accent_alt) 10%, transparent),
+      transparent 72%
+    );
+  opacity: calc(var(--home_gate_star_opacity) * 1.05);
+}
+
+:root[data-site-fx="subtle"] {
+  --home_gate_hover_lift: -0.6%;
+  --home_gate_transition_ms: calc(180ms * var(--site_fx_motion_mult));
+}
+
+:root[data-site-fx="balanced"] {
+  --home_gate_hover_lift: -1.2%;
+  --home_gate_transition_ms: calc(260ms * var(--site_fx_motion_mult));
+}
+
+:root[data-site-fx="bold"] {
+  --home_gate_hover_lift: -1.8%;
+  --home_gate_transition_ms: calc(320ms * var(--site_fx_motion_mult));
+}
+
+:root[data-site-shell="subtle"] {
+  --home_gate_shadow_strength: 0.46;
+}
+
+:root[data-site-shell="medium"] {
+  --home_gate_shadow_strength: 0.6;
+}
+
+:root[data-site-shell="strong"] {
+  --home_gate_shadow_strength: 0.74;
+}
+
+@media (max-width: 768px) {
+  #home_card_gate {
+    --home_gate_card_min: 210px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phase_card_link {
+    transition-duration: 1ms;
+  }
+
+  .phase_card_link:hover,
+  .phase_card_link:focus-visible {
+    transform: none;
+  }
+}

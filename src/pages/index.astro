@@ -1,5 +1,13 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+import "../styles/components/home-card-gate.css";
+
+const cinza_card_ornament_base = {
+  corner_tl: "/ornaments/cinza/card_corner_a.svg",
+  corner_tr: "/ornaments/cinza/card_corner_b.svg",
+  corner_bl: "/ornaments/cinza/card_corner_c.svg",
+  corner_br: "/ornaments/cinza/card_corner_d.svg",
+};
 
 const phase_cards = [
   {
@@ -8,24 +16,44 @@ const phase_cards = [
     phase_symbol: "01",
     phase_blurb:
       "Dissolution and shadow-work. Enter the black vessel of becoming.",
+    ornament: {
+      ...cinza_card_ornament_base,
+      sigil: "/ornaments/cinza/sigil_eye.svg",
+    },
   },
   {
     phase_name: "Albedo",
     phase_slug: "albedo",
     phase_symbol: "02",
     phase_blurb: "Clarification and silver breath. Distill signal from noise.",
+    ornament: {
+      ...cinza_card_ornament_base,
+      sigil: "/ornaments/cinza/sigil_moon_star.svg",
+    },
   },
   {
     phase_name: "Citrinitas",
     phase_slug: "citrinitas",
     phase_symbol: "03",
     phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
+    ornament: {
+      ...cinza_card_ornament_base,
+      corner_tl: "/ornaments/cinza/card_corner_b.svg",
+      corner_tr: "/ornaments/cinza/card_corner_a.svg",
+      sigil: "/ornaments/cinza/sigil_moon_star.svg",
+    },
   },
   {
     phase_name: "Rubedo",
     phase_slug: "rubedo",
     phase_symbol: "04",
     phase_blurb: "Union and embodiment. Seal the work in living fire.",
+    ornament: {
+      ...cinza_card_ornament_base,
+      corner_bl: "/ornaments/cinza/card_corner_d.svg",
+      corner_br: "/ornaments/cinza/card_corner_c.svg",
+      sigil: "/ornaments/cinza/sigil_eye.svg",
+    },
   },
 ];
 ---
@@ -54,14 +82,90 @@ const phase_cards = [
             href={`/${phase_card.phase_slug}`}
             aria-label={`Enter ${phase_card.phase_name}`}
           >
-            <p class="phase_card_symbol text_caption">
-              {phase_card.phase_symbol}
-            </p>
-            <h2 class="phase_card_title text_step_2">
-              {phase_card.phase_name}
-            </h2>
-            <p class="phase_card_blurb text_body">{phase_card.phase_blurb}</p>
-            <p class="phase_card_cta text_kicker">enter phase</p>
+            <span
+              class="phase-card-layer phase-card-layer-surface"
+              aria-hidden="true"
+            />
+            <span
+              class="phase-card-layer phase-card-layer-stars"
+              aria-hidden="true"
+            />
+            <span
+              class="phase-card-layer phase-card-layer-frame"
+              aria-hidden="true"
+            />
+            <div
+              class="phase-card-layer phase-card-layer-ornament-svg"
+              aria-hidden="true"
+            >
+              <img
+                class="phase-card-ornament phase-card-ornament-corner-tl"
+                src={phase_card.ornament.corner_tl}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-corner-tr"
+                src={phase_card.ornament.corner_tr}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-corner-bl"
+                src={phase_card.ornament.corner_bl}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-corner-br"
+                src={phase_card.ornament.corner_br}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-center-top"
+                src="/ornaments/cinza/card_center_top.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-side-left"
+                src="/ornaments/cinza/card_side_flourish.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-side-right"
+                src="/ornaments/cinza/card_side_flourish.svg"
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                class="phase-card-ornament phase-card-ornament-sigil"
+                src={phase_card.ornament.sigil}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+
+            <div class="phase-card-layer-body">
+              <p class="phase_card_symbol text_caption">
+                {phase_card.phase_symbol}
+              </p>
+              <h2 class="phase_card_title text_step_2">
+                {phase_card.phase_name}
+              </h2>
+              <p class="phase_card_blurb text_body">{phase_card.phase_blurb}</p>
+              <p class="phase_card_cta text_kicker">enter phase</p>
+            </div>
           </a>
         ))
       }

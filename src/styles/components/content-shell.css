@@ -1,0 +1,530 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+@reference "@catppuccin/tailwindcss/mocha.css";
+
+#page-main {
+  @apply flex grow flex-col;
+  @apply gap-2;
+  @apply pt-28 md:pt-32;
+}
+
+#content_stage {
+  @apply relative isolate;
+  @apply flex grow flex-col;
+}
+
+.content-stage-layer {
+  @apply pointer-events-none absolute;
+
+  inset: 0;
+}
+
+.content-stage-layer-fog {
+  inset: 0;
+  z-index: 0;
+}
+
+.content-stage-layer-rails {
+  inset: 0;
+  z-index: 1;
+}
+
+:root[data-site-theme="cinza"] .content-stage-layer-fog {
+  opacity: calc(var(--cinza_fog_halo_mix) * 0.008);
+  background: radial-gradient(
+    120% 100% at 50% 50%,
+    color-mix(in oklch, var(--site_style_accent) 38%, transparent),
+    transparent 72%
+  );
+}
+
+:root[data-site-theme="cinza"] .content-stage-layer-rails {
+  inset: 0.8% 1.2% 0.8% 1.2%;
+  --content_layer_cinza_rail_gradient: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--site_style_accent) 36%, transparent),
+    transparent 18%
+  );
+  opacity: calc(
+    var(--cinza_reliquary_opacity) * 0.54 * var(--cinza_tune_rails_in_stage)
+  );
+  background:
+    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_left)
+      var(--cinza_reliquary_axis_center) / 0.08rem
+      var(--cinza_reliquary_axis_effective_span) no-repeat,
+    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_right)
+      var(--cinza_reliquary_axis_center) / 0.08rem
+      var(--cinza_reliquary_axis_effective_span) no-repeat;
+  filter: blur(0.4px);
+}
+
+#content_fog_backdrop {
+  @apply pointer-events-none absolute;
+
+  inset: -10% -6% -14% -6%;
+  z-index: 0;
+  opacity: 0;
+  filter: blur(10px);
+}
+
+.content-fog-layer,
+.content-layer,
+.reading-layer {
+  @apply pointer-events-none absolute;
+
+  inset: 0;
+}
+
+:root[data-site-theme="cinza"] #content_fog_backdrop {
+  opacity: calc(var(--cinza_fog_halo_mix) * 0.014);
+}
+
+:root[data-site-theme="cinza"] .content-fog-layer-top {
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    color-mix(in oklch, var(--site_style_accent) 36%, transparent),
+    transparent 62%
+  );
+}
+
+:root[data-site-theme="cinza"] .content-fog-layer-bottom {
+  background: radial-gradient(
+    120% 100% at 50% 100%,
+    color-mix(
+      in oklch,
+      var(--ui_surface_raised)
+        calc(var(--cinza_fog_shadow_mix) * var(--site_style_strength_mult)),
+      transparent
+    ),
+    transparent 72%
+  );
+}
+
+#content {
+  @apply relative isolate overflow-hidden;
+  @apply flex grow flex-col;
+  @apply justify-start;
+  @apply px-2 py-2 md:px-3 md:py-2;
+  @apply border-2;
+
+  view-transition-name: page_content;
+  z-index: 2;
+
+  --content_layer_border_color: color-mix(
+    in oklch,
+    var(--site_style_accent)
+      calc(var(--site_style_border_mix) * var(--site_style_strength_mult)),
+    transparent
+  );
+  --content_layer_edge_stroke: color-mix(
+    in oklch,
+    var(--site_style_accent)
+      calc(var(--site_style_edge_mix) * var(--site_style_strength_mult)),
+    transparent
+  );
+  --content_layer_shadow_stack:
+    inset 0 0 0 1px var(--content_layer_edge_stroke),
+    0 24px 42px -34px rgb(0 0 0 / 0.92);
+
+  border-color: var(--content_layer_border_color);
+  box-shadow: var(--content_layer_shadow_stack);
+  backdrop-filter: blur(var(--site_style_blur)) saturate(1.04);
+}
+
+.content-layer-surface {
+  z-index: 0;
+  background:
+    radial-gradient(
+      120% 90% at 50% 0%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent)
+          calc(var(--site_style_halo_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+      transparent 72%
+    ),
+    linear-gradient(
+      165deg,
+      color-mix(
+        in oklch,
+        var(--ui_bg_mantle)
+          calc(var(--site_style_shell_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+      color-mix(in oklch, var(--ui_bg_crust) 36%, transparent)
+    );
+}
+
+.content-layer-noise {
+  z-index: 1;
+  opacity: var(--site_style_noise_opacity);
+  background:
+    radial-gradient(
+      circle at 18% 24%,
+      rgb(255 255 255 / 0.42) 0 0.5px,
+      transparent 0.7px
+    ),
+    radial-gradient(
+      circle at 80% 76%,
+      rgb(255 255 255 / 0.35) 0 0.6px,
+      transparent 0.8px
+    ),
+    radial-gradient(
+      circle at 45% 58%,
+      rgb(255 255 255 / 0.2) 0 0.4px,
+      transparent 0.6px
+    );
+}
+
+.content-layer-deco {
+  z-index: 2;
+  opacity: var(--site_style_deco_opacity);
+}
+
+.content-layer-body {
+  @apply relative z-10;
+}
+
+:root[data-site-theme="cinza"] #content {
+  --content_layer_shadow_stack:
+    inset 0 0 0 1px var(--content_layer_edge_stroke),
+    inset 0 0 0 2px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.42),
+        transparent
+      ),
+    0 24px 42px -34px rgb(0 0 0 / 0.92),
+    0 0 80px -52px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_fog_halo_mix) * 1.4),
+        transparent
+      );
+}
+
+:root[data-site-theme="cinza"] .content-layer-surface {
+  background:
+    radial-gradient(
+      120% 84% at 50% -10%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent)
+          calc(var(--cinza_sun_bleed_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+      transparent 62%
+    ),
+    radial-gradient(
+      130% 105% at 50% 104%,
+      color-mix(
+        in oklch,
+        var(--ui_surface_soft)
+          calc(var(--cinza_fog_depth_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+      transparent 66%
+    ),
+    linear-gradient(
+      172deg,
+      color-mix(
+        in oklch,
+        var(--ui_bg_mantle)
+          calc(var(--site_style_shell_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+      color-mix(in oklch, var(--ui_bg_crust) 44%, transparent)
+    );
+}
+
+:root[data-site-theme="cinza"] .content-layer-noise {
+  opacity: calc(var(--site_style_noise_opacity) * 0.65);
+  background:
+    radial-gradient(
+      120% 74% at 50% -14%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_sun_bleed_alt_mix) * 0.9),
+        transparent
+      ),
+      transparent 68%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 62%,
+      color-mix(
+          in oklch,
+          var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.34),
+          transparent
+        )
+        100%
+    );
+  filter: blur(2px);
+}
+
+:root[data-site-theme="cinza"] .content-layer-deco {
+  --content_layer_cinza_rail_gradient: linear-gradient(
+    180deg,
+    color-mix(
+      in oklch,
+      var(--site_style_accent) calc(36% * var(--cinza_tune_rails_in_content)),
+      transparent
+    ),
+    transparent 18%
+  );
+  opacity: calc(
+    var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity)
+  );
+  background:
+    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_left)
+      var(--cinza_reliquary_axis_center) / 0.08rem
+      var(--cinza_reliquary_axis_effective_span) no-repeat,
+    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_right)
+      var(--cinza_reliquary_axis_center) / 0.08rem
+      var(--cinza_reliquary_axis_effective_span) no-repeat,
+    radial-gradient(
+      112% 128% at 50% -8%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_sun_bleed_mix) * 0.8),
+        transparent
+      ),
+      transparent 60%
+    ),
+    radial-gradient(
+      120% 100% at 50% 108%,
+      color-mix(
+        in oklch,
+        var(--ui_surface_raised) calc(var(--cinza_fog_halo_mix) * 0.8),
+        transparent
+      ),
+      transparent 70%
+    );
+}
+
+.content-layer-ornament-svg {
+  display: none;
+  z-index: 3;
+}
+
+.content-ornament {
+  @apply absolute;
+
+  display: block;
+  object-fit: contain;
+}
+
+:root[data-site-theme="cinza"] .content-layer-ornament-svg {
+  display: block;
+  opacity: calc(
+    var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity) * 0.92
+  );
+  filter: saturate(var(--cinza_bw_saturation))
+    contrast(var(--cinza_bw_contrast))
+    drop-shadow(
+      0 0 18px
+        color-mix(
+          in oklch,
+          var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 1.46),
+          transparent
+        )
+    )
+    drop-shadow(
+      0 0 36px
+        color-mix(
+          in oklch,
+          var(--site_style_accent) calc(var(--cinza_reliquary_strong_mix) * 0.8),
+          transparent
+        )
+    );
+}
+
+:root[data-site-theme="cinza"] .content-ornament-line-top,
+:root[data-site-theme="cinza"] .content-ornament-line-bottom {
+  object-fit: fill;
+}
+
+:root[data-site-theme="cinza"] .content-ornament-corner-tl {
+  left: var(--cinza_reliquary_offset_left);
+  top: var(--cinza_reliquary_offset_top);
+  inline-size: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  block-size: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+}
+
+:root[data-site-theme="cinza"] .content-ornament-corner-tr {
+  right: var(--cinza_reliquary_offset_right);
+  top: var(--cinza_reliquary_offset_top);
+  inline-size: calc(7.8rem * var(--cinza_reliquary_corner_scale));
+  block-size: calc(7.8rem * var(--cinza_reliquary_corner_scale));
+}
+
+:root[data-site-theme="cinza"] .content-ornament-corner-bl {
+  left: var(--cinza_reliquary_offset_left);
+  bottom: var(--cinza_reliquary_offset_bottom);
+  inline-size: calc(7.4rem * var(--cinza_reliquary_corner_scale));
+  block-size: calc(7.4rem * var(--cinza_reliquary_corner_scale));
+}
+
+:root[data-site-theme="cinza"] .content-ornament-corner-br {
+  right: var(--cinza_reliquary_offset_right);
+  bottom: var(--cinza_reliquary_offset_bottom);
+  inline-size: calc(6.8rem * var(--cinza_reliquary_corner_scale));
+  block-size: calc(6.8rem * var(--cinza_reliquary_corner_scale));
+}
+
+:root[data-site-theme="cinza"] .content-ornament-line-top {
+  left: 50%;
+  top: calc(
+    var(--cinza_reliquary_offset_top) - var(--cinza_tune_rail_edge_nudge)
+  );
+  inline-size: 72%;
+  block-size: var(--cinza_reliquary_line_block_size);
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="cinza"] .content-ornament-line-bottom {
+  left: 50%;
+  bottom: calc(
+    var(--cinza_reliquary_offset_bottom) - var(--cinza_tune_rail_edge_nudge)
+  );
+  inline-size: 54%;
+  block-size: var(--cinza_reliquary_line_block_size);
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="cinza"] .content-ornament-sigil-top {
+  left: 50%;
+  top: calc(
+    var(--cinza_reliquary_offset_top) +
+      var(--cinza_reliquary_sigil_vertical_offset)
+  );
+  inline-size: var(--cinza_reliquary_sigil_size);
+  block-size: var(--cinza_reliquary_sigil_size);
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="cinza"] .content-ornament-sigil-bottom {
+  left: 50%;
+  bottom: calc(
+    var(--cinza_reliquary_offset_bottom) +
+      var(--cinza_reliquary_sigil_vertical_offset)
+  );
+  inline-size: var(--cinza_reliquary_sigil_size);
+  block-size: var(--cinza_reliquary_sigil_size);
+  transform: translateX(-50%);
+}
+
+#main_reading_container {
+  @apply relative isolate;
+  @apply w-full;
+  @apply mx-auto;
+  @apply rounded-2xl;
+  @apply px-5 py-6 md:px-8 md:py-8;
+
+  margin-block: clamp(4.5rem, 10vw, 6rem);
+  inline-size: clamp(340px, 62vw, 74vw);
+  border: 1px solid
+    color-mix(
+      in oklch,
+      var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.42),
+      transparent
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 14%, transparent),
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.18),
+        transparent
+      ),
+    0 24px 42px -34px rgb(0 0 0 / 0.96);
+  backdrop-filter: blur(calc(10px * var(--site_shell_blur_mult))) saturate(1.03);
+  transform: translate3d(0, var(--reading_plane_shift_y), 0);
+  will-change: transform;
+}
+
+.reading-layer {
+  border-radius: inherit;
+}
+
+.reading-layer-surface {
+  z-index: 0;
+  background:
+    linear-gradient(
+      164deg,
+      color-mix(
+        in oklch,
+        var(--ui_surface_soft)
+          calc(
+            60% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ui_bg_crust)
+          calc(
+            40% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      )
+    ),
+    radial-gradient(
+      120% 95% at 50% 0%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent)
+          calc(
+            11% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      ),
+      transparent 70%
+    );
+}
+
+.reading-layer-noise {
+  z-index: 1;
+  opacity: calc(var(--site_style_noise_opacity) * 0.62);
+  mix-blend-mode: soft-light;
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgb(255 255 255 / 0.2) 0 0.6px,
+      transparent 0.8px
+    ),
+    radial-gradient(
+      circle at 78% 68%,
+      rgb(255 255 255 / 0.16) 0 0.6px,
+      transparent 0.9px
+    ),
+    radial-gradient(
+      circle at 52% 44%,
+      rgb(0 0 0 / 0.16) 0 0.7px,
+      transparent 0.95px
+    );
+}
+
+.reading-layer-body {
+  @apply relative z-10;
+}
+
+@media (max-width: 768px) {
+  #page-main {
+    @apply pb-22;
+  }
+
+  #main_reading_container {
+    inline-size: min(100%, 680px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main_reading_container {
+    transform: none;
+  }
+}
