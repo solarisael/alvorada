@@ -10,6 +10,9 @@
     "test": "bun test",
     "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize",
     "css:size:audit": "bun scripts/css_size_audit.js check --scope=priority-a",
+    "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
+    "css:bg-stack:check": "bun scripts/css_background_stack_audit.js check",
+    "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check",
     "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color",
     "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color"
   },

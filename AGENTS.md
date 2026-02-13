@@ -47,6 +47,9 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - Tunables check `bun run css:tunables:check`
 - Tunables sync `bun run css:tunables:sync`
 - CSS size audit `bun run css:size:audit`
+- Ornament URL audit `bun run css:ornaments:check`
+- Background stack audit `bun run css:bg-stack:check`
+- CSS hard gates `bun run css:hard-gates:check`
 
 ## Non-Negotiables
 
@@ -68,6 +71,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - `.opencode/rules/separate-apply-rules-by-category.md`
 - `.opencode/rules/expose-css-tunables.md`
 - `.opencode/rules/css-size-discipline.md`
+- `.opencode/rules/visual-hard-gates.md`
 - `.opencode/rules/integration-debugging.md`
 - `.opencode/rules/js-reliability.md`
 - `.opencode/rules/ui-option-classes-registry.md`
@@ -79,8 +83,9 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 - Always relevant:
   - `project.md`, `define-your-variables.md`, `commit-message-tail-required.md`, `addressing.md`
+  - `style-intent-contract.md`, `styling.md`, `css-size-discipline.md`, `visual-hard-gates.md`
 - UI/visual implementation:
-  - `style-intent-contract.md`, `styling.md`, `typography.md`, `css-size-discipline.md`
+  - `typography.md`
   - `expose-css-tunables.md` when editing component CSS variables
   - `ui-option-classes-registry.md` when adding/changing switchable class sets
 - CSS `@apply` editing: `separate-apply-rules-by-category.md`
@@ -157,6 +162,7 @@ At session start:
 
 - Required: `bun run build`
 - Required: `bunx prettier --check .` (or touched-file formatting if repo has known unrelated formatting drift)
+- Required: `bun run css:hard-gates:check`
 - If tests are added later: run focused `bun test` for touched area.
 
 ## Docs Hygiene

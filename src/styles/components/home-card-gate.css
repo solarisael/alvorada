@@ -324,6 +324,7 @@
   inset: var(--phase_ornament_inset);
   border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
+  /* bg-stack-exception: frame uses 5-line sigil lattice to preserve motif geometry */
   background:
     radial-gradient(
         circle at 50% 14%,
@@ -433,6 +434,7 @@
 }
 
 :root[data-site-theme="cinza"] .phase-card-layer-stars {
+  /* bg-stack-exception: starfield uses 4 layers for grain plus dual aura falloff */
   background:
     radial-gradient(
       circle at 24% 26%,

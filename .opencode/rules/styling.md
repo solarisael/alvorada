@@ -2,7 +2,7 @@
 name: Styling Direction
 globs: "src/**/*.{astro,css,js}"
 description: Enforce the visual language and layout rhythm for the reading-focused high-fantasy sci-fi interface.
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Styling Direction
@@ -96,7 +96,9 @@ This project's main reading container should feel stable, centered, and immersiv
 ## Readable FX First (Structure Over Stack)
 
 - Prefer simple, readable effects over dense background/gradient stacks.
-- Prefer adding explicit HTML effect layers for complex visuals instead of overloading one selector with many background layers.
+- Complex decorative effects MUST be rendered with explicit HTML effect layers.
+- Decorative background stacks MUST NOT exceed 2 layers unless an explicit `bg-stack-exception` marker is documented.
+- Ornament assets under `/ornaments/` MUST NOT be referenced from CSS `url(...)`; render them in HTML.
 - Keep animated properties to `transform` and `opacity` whenever possible.
 - Avoid animating `filter`, `background-position`, `background-size`, and other paint-heavy properties unless there is no viable alternative.
 - Keep concurrent decorative animations minimal (target 2-3 active layers per feature).

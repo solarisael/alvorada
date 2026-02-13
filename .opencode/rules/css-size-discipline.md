@@ -1,7 +1,7 @@
 ---
 name: CSS Size Discipline
 description: Enforce layout-first sizing, anti-magic-number transforms, and on-demand CSS size auditing.
-alwaysApply: false
+alwaysApply: true
 ---
 
 # CSS Size Discipline Rule

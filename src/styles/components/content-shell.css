@@ -159,6 +159,7 @@
 .content-layer-noise {
   z-index: 1;
   opacity: var(--site_style_noise_opacity);
+  /* bg-stack-exception: legacy grain profile uses 3 light-noise grains for depth */
   background:
     radial-gradient(
       circle at 18% 24%,
@@ -205,6 +206,7 @@
 }
 
 :root[data-site-theme="cinza"] .content-layer-surface {
+  /* bg-stack-exception: cinza shell needs tri-layer depth halo + base gradient */
   background:
     radial-gradient(
       120% 84% at 50% -10%,
@@ -276,6 +278,7 @@
   opacity: calc(
     var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity)
   );
+  /* bg-stack-exception: cinza deco keeps rail + dual atmospheric radial glows */
   background:
     var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_left)
       var(--cinza_reliquary_axis_center) / 0.08rem
@@ -491,6 +494,7 @@
   z-index: 1;
   opacity: calc(var(--site_style_noise_opacity) * 0.62);
   mix-blend-mode: soft-light;
+  /* bg-stack-exception: reading plane grain requires 3 micro-noise passes */
   background:
     radial-gradient(
       circle at 12% 20%,
