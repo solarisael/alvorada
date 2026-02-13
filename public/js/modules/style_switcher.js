@@ -8,35 +8,27 @@ const SITE_SWITCHER_COLLAPSED_COOKIE_NAME = "site_switcher_collapsed";
 const LEGACY_HOME_THEME_COOKIE_NAME = "home_theme";
 const LEGACY_HOME_FX_COOKIE_NAME = "home_fx";
 
-const SITE_THEME_DEFAULT = "minimal_astral";
+const SITE_THEME_DEFAULT = "cinza";
 const SITE_SHELL_DEFAULT = "medium";
 const SITE_FX_DEFAULT = "balanced";
 const SITE_SWITCHER_COLLAPSED_DEFAULT = true;
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 
-const site_theme_options = [
-  "minimal_astral",
-  "gilded_arcane",
-  "cinza",
-  "cosmic_overlay",
-  "witchy_ornate",
-  "graveyard_gothic",
-  "pixel_relic",
-  "grimdark_tarot",
-];
+const site_theme_options = ["cinza"];
 
 const legacy_theme_alias_map = {
-  ritual: "minimal_astral",
-  vibrant: "gilded_arcane",
-  gilded_arcana: "gilded_arcane",
-  arcane: "cosmic_overlay",
-  verdigris: "witchy_ornate",
-  golden_mystical_tarot: "gilded_arcane",
-  astrology_themed: "minimal_astral",
-  cosmic_themed: "cosmic_overlay",
-  wicca_ornamentation: "witchy_ornate",
-  gothic_dark_girl: "graveyard_gothic",
-  relic_gothic: "pixel_relic",
+  ritual: "cinza",
+  vibrant: "cinza",
+  gilded_arcana: "cinza",
+  arcane: "cinza",
+  verdigris: "cinza",
+  golden_mystical_tarot: "cinza",
+  astrology_themed: "cinza",
+  cosmic_themed: "cinza",
+  wicca_ornamentation: "cinza",
+  gothic_dark_girl: "cinza",
+  relic_gothic: "cinza",
+  grimdark_tarot: "cinza",
 };
 const site_shell_options = ["subtle", "medium", "strong"];
 const site_fx_options = ["subtle", "balanced", "bold"];

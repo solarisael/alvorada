@@ -423,12 +423,12 @@
 }
 
 :root[data-site-theme="cinza"] #desktop-nav {
-  --cinza_sun_tint: color-mix(in oklch, white 84%, var(--site_style_accent));
-  --cinza_sun_neon_opacity: 1;
-  --cinza_sun_halo_opacity: 1;
-  --cinza_sun_highlight_opacity: 2;
-  --cinza_sun_saturation: 2;
-  --cinza_sun_contrast: 2;
+  --cinza_sun_tint: color-mix(in oklch, white 88%, var(--site_style_accent));
+  --cinza_sun_neon_opacity: 0.94;
+  --cinza_sun_halo_opacity: 0.82;
+  --cinza_sun_highlight_opacity: 0.82;
+  --cinza_sun_saturation: 1.2;
+  --cinza_sun_contrast: 1.2;
   --center_shell_border: color-mix(
     in oklch,
     var(--site_style_accent) calc(34% * var(--site_style_strength_mult, 1)),
@@ -448,20 +448,20 @@
 
 :root[data-site-theme="cinza"][data-site-shell="medium"] #desktop-nav {
   --cinza_sun_tint: color-mix(in oklch, white 90%, var(--site_style_accent));
-  --cinza_sun_neon_opacity: 0.96;
-  --cinza_sun_halo_opacity: 0.74;
-  --cinza_sun_highlight_opacity: 1;
-  --cinza_sun_saturation: 1.36;
-  --cinza_sun_contrast: 1.28;
+  --cinza_sun_neon_opacity: 1;
+  --cinza_sun_halo_opacity: 0.9;
+  --cinza_sun_highlight_opacity: 0.94;
+  --cinza_sun_saturation: 1.34;
+  --cinza_sun_contrast: 1.3;
 }
 
 :root[data-site-theme="cinza"][data-site-shell="strong"] #desktop-nav {
-  --cinza_sun_tint: color-mix(in oklch, white 95%, var(--site_style_accent));
+  --cinza_sun_tint: color-mix(in oklch, white 94%, var(--site_style_accent));
   --cinza_sun_neon_opacity: 1;
   --cinza_sun_halo_opacity: 1;
-  --cinza_sun_highlight_opacity: 1;
-  --cinza_sun_saturation: 2;
-  --cinza_sun_contrast: 2;
+  --cinza_sun_highlight_opacity: 1.04;
+  --cinza_sun_saturation: 1.54;
+  --cinza_sun_contrast: 1.52;
 }
 
 :root[data-site-theme="cinza"] #icon-user {

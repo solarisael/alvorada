@@ -9,12 +9,41 @@
     var(--crumb_theme_color)
   );
 
+  --crumb_divider_mix: 30%;
+  --crumb_divider_inset: 0;
+
   @apply relative z-10 flex;
-  @apply mb-3 md:mb-4;
+  @apply mb-4 md:mb-5;
+  @apply pb-0;
+
+  &::after {
+    content: "";
+
+    @apply absolute;
+
+    left: var(--crumb_divider_inset);
+    right: var(--crumb_divider_inset);
+    bottom: 0.05em;
+    height: 0.08rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--crumb_theme_color) 10%, transparent) 0%,
+      color-mix(
+          in oklch,
+          var(--crumb_theme_color) var(--crumb_divider_mix),
+          transparent
+        )
+        50%,
+      color-mix(in oklch, var(--crumb_theme_color) 10%, transparent) 100%
+    );
+    box-shadow: 0 0 10px
+      color-mix(in oklch, var(--crumb_theme_color) 22%, transparent);
+  }
 
   ol {
     @apply flex items-center;
-    @apply gap-1.5 md:gap-2;
+    @apply gap-1 md:gap-1.5;
     @apply min-w-0;
   }
 
@@ -24,10 +53,10 @@
   }
 
   li:not(:last-child)::after {
-    content: "/";
+    content: "//";
 
-    @apply ml-1.5 md:ml-2;
-    @apply text-xs md:text-sm;
+    @apply ml-0.5 md:ml-1;
+    @apply text-sm md:text-base;
 
     color: color-mix(in oklch, var(--crumb_parent_color) 70%, transparent);
     opacity: 0.72;
@@ -35,13 +64,13 @@
 
   a {
     @apply inline-flex items-center;
-    @apply text-xs md:text-sm;
+    @apply text-sm md:text-base;
     @apply lowercase;
-    @apply rounded px-1.5 py-0.5;
+    @apply rounded px-1 py-0;
     @apply transition;
 
     color: var(--crumb_parent_color);
-    opacity: calc(0.58 + (0.06 * var(--site_fx_glow_mult, 1)));
+    opacity: calc(0.7 + (0.06 * var(--site_fx_glow_mult, 1)));
     filter: saturate(0.7);
     text-shadow: 0 0 0 transparent;
     transition-property: opacity, filter, color, text-shadow, background-color;
@@ -68,6 +97,8 @@
   }
 
   li.is-current a {
+    @apply font-semibold;
+
     color: var(--crumb_theme_color);
     opacity: 1;
     filter: saturate(1.06);

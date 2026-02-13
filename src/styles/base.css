@@ -20,14 +20,7 @@
   --color-rubedo: oklch(63.7% 0.237 25.331);
 }
 
-@custom-variant site-theme-minimal-astral (&:where([data-site-theme="minimal_astral"] *));
-@custom-variant site-theme-gilded-arcane (&:where([data-site-theme="gilded_arcane"] *));
 @custom-variant site-theme-cinza (&:where([data-site-theme="cinza"] *));
-@custom-variant site-theme-cosmic-overlay (&:where([data-site-theme="cosmic_overlay"] *));
-@custom-variant site-theme-witchy-ornate (&:where([data-site-theme="witchy_ornate"] *));
-@custom-variant site-theme-graveyard-gothic (&:where([data-site-theme="graveyard_gothic"] *));
-@custom-variant site-theme-pixel-relic (&:where([data-site-theme="pixel_relic"] *));
-@custom-variant site-theme-grimdark-tarot (&:where([data-site-theme="grimdark_tarot"] *));
 
 @custom-variant site-shell-subtle (&:where([data-site-shell="subtle"] *));
 @custom-variant site-shell-medium (&:where([data-site-shell="medium"] *));
@@ -54,40 +47,6 @@
   --ui_focus: oklch(86% 0.12 85);
 }
 
-:root[data-site-theme="minimal_astral"] {
-  --ui_bg_root: oklch(17% 0.022 262);
-  --ui_bg_mantle: oklch(24% 0.028 258);
-  --ui_bg_crust: oklch(12% 0.016 262);
-
-  --ui_surface_soft: oklch(30% 0.03 254);
-  --ui_surface_raised: oklch(36% 0.034 248);
-
-  --ui_text_primary: oklch(93% 0.02 92);
-  --ui_text_secondary: oklch(82% 0.018 88);
-  --ui_text_muted: oklch(72% 0.014 88);
-
-  --ui_accent: oklch(81% 0.16 84);
-  --ui_accent_2: oklch(70% 0.09 225);
-  --ui_focus: oklch(86% 0.12 85);
-}
-
-:root[data-site-theme="gilded_arcane"] {
-  --ui_bg_root: oklch(12% 0.014 270);
-  --ui_bg_mantle: oklch(18% 0.018 266);
-  --ui_bg_crust: oklch(8% 0.01 272);
-
-  --ui_surface_soft: oklch(24% 0.022 264);
-  --ui_surface_raised: oklch(30% 0.026 260);
-
-  --ui_text_primary: oklch(95% 0.014 92);
-  --ui_text_secondary: oklch(85% 0.016 88);
-  --ui_text_muted: oklch(74% 0.014 84);
-
-  --ui_accent: oklch(84% 0.15 84);
-  --ui_accent_2: oklch(76% 0.09 60);
-  --ui_focus: oklch(88% 0.1 78);
-}
-
 :root[data-site-theme="cinza"] {
   --ui_bg_root: oklch(11% 0.008 265);
   --ui_bg_mantle: oklch(17% 0.01 262);
@@ -103,91 +62,6 @@
   --ui_accent: oklch(80% 0.048 86);
   --ui_accent_2: oklch(72% 0.022 82);
   --ui_focus: oklch(86% 0.04 86);
-}
-
-:root[data-site-theme="cosmic_overlay"] {
-  --ui_bg_root: oklch(16% 0.034 262);
-  --ui_bg_mantle: oklch(23% 0.05 252);
-  --ui_bg_crust: oklch(10% 0.022 270);
-
-  --ui_surface_soft: oklch(31% 0.055 248);
-  --ui_surface_raised: oklch(38% 0.065 240);
-
-  --ui_text_primary: oklch(94% 0.02 86);
-  --ui_text_secondary: oklch(84% 0.024 92);
-  --ui_text_muted: oklch(74% 0.02 100);
-
-  --ui_accent: oklch(78% 0.14 80);
-  --ui_accent_2: oklch(72% 0.11 235);
-  --ui_focus: oklch(86% 0.1 210);
-}
-
-:root[data-site-theme="witchy_ornate"] {
-  --ui_bg_root: oklch(13% 0.03 302);
-  --ui_bg_mantle: oklch(20% 0.048 300);
-  --ui_bg_crust: oklch(9% 0.02 296);
-
-  --ui_surface_soft: oklch(28% 0.05 298);
-  --ui_surface_raised: oklch(35% 0.06 292);
-
-  --ui_text_primary: oklch(93% 0.018 82);
-  --ui_text_secondary: oklch(82% 0.022 78);
-  --ui_text_muted: oklch(72% 0.02 72);
-
-  --ui_accent: oklch(76% 0.15 86);
-  --ui_accent_2: oklch(70% 0.12 310);
-  --ui_focus: oklch(86% 0.12 70);
-}
-
-:root[data-site-theme="graveyard_gothic"] {
-  --ui_bg_root: oklch(10% 0.006 262);
-  --ui_bg_mantle: oklch(16% 0.008 258);
-  --ui_bg_crust: oklch(7% 0.004 262);
-
-  --ui_surface_soft: oklch(22% 0.01 254);
-  --ui_surface_raised: oklch(28% 0.012 248);
-
-  --ui_text_primary: oklch(90% 0.008 92);
-  --ui_text_secondary: oklch(80% 0.006 88);
-  --ui_text_muted: oklch(68% 0.004 86);
-
-  --ui_accent: oklch(70% 0.01 88);
-  --ui_accent_2: oklch(74% 0.012 250);
-  --ui_focus: oklch(82% 0.014 90);
-}
-
-:root[data-site-theme="pixel_relic"] {
-  --ui_bg_root: oklch(12% 0.012 275);
-  --ui_bg_mantle: oklch(18% 0.016 270);
-  --ui_bg_crust: oklch(8% 0.01 278);
-
-  --ui_surface_soft: oklch(24% 0.018 268);
-  --ui_surface_raised: oklch(31% 0.024 264);
-
-  --ui_text_primary: oklch(88% 0.012 84);
-  --ui_text_secondary: oklch(78% 0.014 78);
-  --ui_text_muted: oklch(66% 0.012 72);
-
-  --ui_accent: oklch(74% 0.08 52);
-  --ui_accent_2: oklch(68% 0.05 24);
-  --ui_focus: oklch(84% 0.07 64);
-}
-
-:root[data-site-theme="grimdark_tarot"] {
-  --ui_bg_root: oklch(20% 0.055 332);
-  --ui_bg_mantle: oklch(28% 0.064 8);
-  --ui_bg_crust: oklch(13% 0.034 306);
-
-  --ui_surface_soft: oklch(36% 0.08 350);
-  --ui_surface_raised: oklch(44% 0.1 24);
-
-  --ui_text_primary: oklch(96% 0.024 80);
-  --ui_text_secondary: oklch(86% 0.035 62);
-  --ui_text_muted: oklch(76% 0.028 42);
-
-  --ui_accent: oklch(73% 0.235 24);
-  --ui_accent_2: oklch(83% 0.19 88);
-  --ui_focus: oklch(91% 0.12 56);
 }
 
 body {
@@ -214,15 +88,6 @@ container {
   & > .breakout {
     grid-column: grid;
   }
-}
-
-body {
-  @apply flex flex-col flex-wrap gap-1 md:flex-row;
-  @apply min-h-screen;
-  @apply p-4 md:p-2;
-
-  background-color: var(--ui_bg_root);
-  color: var(--ui_text_primary);
 }
 
 main {

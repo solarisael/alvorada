@@ -39,50 +39,23 @@ Ownership Matrix
   --site_fx_glow_mult: 1;
   --site_fx_motion_mult: 1;
   --site_fx_lift_mult: 1;
-}
 
-:root[data-site-theme="minimal_astral"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 44%;
-  --site_style_border_mix: 34%;
-  --site_style_halo_mix: 14%;
-  --site_style_edge_mix: 16%;
-  --site_style_noise_opacity: 0.1;
-  --site_style_deco_opacity: 0.2;
-}
+  --reading_plane_shift_y: 0px;
 
-:root[data-site-theme="gilded_arcane"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 54%;
-  --site_style_border_mix: 48%;
-  --site_style_halo_mix: 32%;
-  --site_style_edge_mix: 36%;
-  --site_style_noise_opacity: 0.16;
-  --site_style_deco_opacity: 0.34;
-  --gilded_ornament_opacity: 0.88;
-  --gilded_ornament_scale: 1;
-  --gilded_ornament_glow: 0.72;
-  --gilded_border_inner_mix: 48%;
-  --gilded_border_outer_mix: 74%;
-  --gilded_sigil_opacity: 0.62;
-  --gilded_corner_tl_size: clamp(8rem, 16vw, 9.5rem);
-  --gilded_corner_tr_size: clamp(8.8rem, 18vw, 11rem);
-  --gilded_corner_bl_size: clamp(8.6rem, 17vw, 10.2rem);
-  --gilded_corner_br_size: clamp(7.4rem, 15vw, 8.6rem);
-  --gilded_sigil_primary_size: clamp(2.4rem, 5vw, 2.9rem);
-  --gilded_sigil_secondary_size: clamp(2.1rem, 4.6vw, 2.6rem);
-  --gilded_center_top_asset_line: url("/ornaments/gilded/frame_line_top.svg");
-  --gilded_center_top_asset_compass: url("/ornaments/gilded/frame_compass_8pt_top_curved.svg");
-  --gilded_center_top_asset_eye: url("/ornaments/gilded/frame_eye_top.svg");
-  --gilded_center_bottom_asset_line: url("/ornaments/gilded/frame_line_bottom.svg");
-  --gilded_center_bottom_asset_compass: url("/ornaments/gilded/frame_compass_8pt_bottom_curved.svg");
-  --gilded_center_bottom_asset_eye: url("/ornaments/gilded/frame_eye_bottom.svg");
-  --gilded_center_top_span: 72%;
-  --gilded_center_bottom_span: 54%;
-  --gilded_stripe_step: 1.5rem;
-  --gilded_stripe_line: 0.08rem;
+  /* Cinza quick tuning: master controls */
+  --cinza_tune_axis_span: 98%;
+  --cinza_tune_rail_inline_offset: 0%;
+  --cinza_tune_corner_scale: 1;
+  --cinza_tune_line_block_size: clamp(1.18rem, 2.3vw, 1.76rem);
+  --cinza_tune_sigil_size: clamp(2rem, 4.6vw, 4rem);
+  --cinza_tune_sigil_offset: 50;
+  --cinza_tune_rail_edge_nudge: 0.8rem;
+  --cinza_tune_offset_up_mult: 1;
+  --cinza_tune_offset_down_mult: 1;
+  --cinza_tune_offset_left_mult: 1;
+  --cinza_tune_offset_right_mult: 1;
+  --cinza_tune_rails_in_content: 1;
+  --cinza_tune_rails_in_stage: 0;
 }
 
 :root[data-site-theme="cinza"] {
@@ -93,135 +66,123 @@ Ownership Matrix
   --site_style_halo_mix: 26%;
   --site_style_edge_mix: 36%;
   --site_style_noise_opacity: 0.1;
-  --site_style_deco_opacity: 0.42;
-  --cinza_reliquary_opacity: 0.86;
-  --cinza_reliquary_line_mix: 38%;
-  --cinza_reliquary_strong_mix: 58%;
-  --cinza_reliquary_corner_scale: 1.06;
-  --cinza_reliquary_cross_size: clamp(2rem, 4.4vw, 2.8rem);
-  --cinza_reliquary_medallion_size: clamp(2.6rem, 5.6vw, 3.5rem);
-  --cinza_reliquary_tracery_step: clamp(1rem, 2.2vw, 1.6rem);
-  --cinza_reliquary_tracery_line: 0.08rem;
-  --cinza_sun_bleed_mix: 30%;
-  --cinza_sun_bleed_alt_mix: 22%;
-  --cinza_fog_halo_mix: 24%;
-  --cinza_fog_depth_mix: 18%;
-  --cinza_fog_shadow_mix: 32%;
-  --cinza_bw_saturation: 0.28;
-  --cinza_bw_contrast: 1.18;
-}
+  --site_style_deco_opacity: 0.46;
+  --cinza_reliquary_opacity: 0.88;
+  --cinza_reliquary_line_mix: 40%;
+  --cinza_reliquary_strong_mix: 62%;
 
-:root[data-site-theme="gilded_arcane"][data-site-shell="subtle"] {
-  --gilded_ornament_glow: 0.42;
-  --gilded_ornament_opacity: 0.74;
+  /* Away from border + vertical positioning */
+  --cinza_reliquary_corner_scale: var(--cinza_tune_corner_scale);
+  --cinza_reliquary_axis_span: var(--cinza_tune_axis_span);
+  --cinza_reliquary_axis_offset: calc(
+    (100% - var(--cinza_reliquary_axis_span)) / 2
+  );
+  --cinza_reliquary_offset_up_mult: var(--cinza_tune_offset_up_mult);
+  --cinza_reliquary_offset_down_mult: var(--cinza_tune_offset_down_mult);
+  --cinza_reliquary_offset_left_mult: var(--cinza_tune_offset_left_mult);
+  --cinza_reliquary_offset_right_mult: var(--cinza_tune_offset_right_mult);
+  --cinza_reliquary_offset_top: calc(
+    var(--cinza_reliquary_axis_offset) * var(--cinza_reliquary_offset_up_mult)
+  );
+  --cinza_reliquary_offset_bottom: calc(
+    var(--cinza_reliquary_axis_offset) * var(--cinza_reliquary_offset_down_mult)
+  );
+  --cinza_reliquary_offset_left: calc(
+    var(--cinza_reliquary_axis_offset) * var(--cinza_reliquary_offset_left_mult)
+  );
+  --cinza_reliquary_offset_right: calc(
+    var(--cinza_reliquary_axis_offset) *
+      var(--cinza_reliquary_offset_right_mult)
+  );
+  --cinza_reliquary_axis_effective_span: calc(
+    100% - var(--cinza_reliquary_offset_top) -
+      var(--cinza_reliquary_offset_bottom)
+  );
+  --cinza_reliquary_axis_center: calc(
+    (
+        100% + var(--cinza_reliquary_offset_top) -
+          var(--cinza_reliquary_offset_bottom)
+      ) /
+      2
+  );
+
+  /* Horizontal positioning */
+  --cinza_reliquary_rail_inline_offset: var(--cinza_tune_rail_inline_offset);
+  --cinza_reliquary_rail_left: calc(
+    var(--cinza_reliquary_rail_inline_offset) *
+      var(--cinza_reliquary_offset_left_mult)
+  );
+  --cinza_reliquary_rail_right: calc(
+    100% -
+      (
+        var(--cinza_reliquary_rail_inline_offset) *
+          var(--cinza_reliquary_offset_right_mult)
+      )
+  );
+
+  /* Size */
+  --cinza_reliquary_line_block_size: var(--cinza_tune_line_block_size);
+  --cinza_reliquary_sigil_size: var(--cinza_tune_sigil_size);
+  --cinza_reliquary_sigil_vertical_offset: calc(
+    var(--cinza_reliquary_axis_offset) * var(--cinza_tune_sigil_offset) / 100
+  );
+  --cinza_sun_bleed_mix: 34%;
+  --cinza_sun_bleed_alt_mix: 24%;
+  --cinza_fog_halo_mix: 30%;
+  --cinza_fog_depth_mix: 20%;
+  --cinza_fog_shadow_mix: 34%;
+  --cinza_bw_saturation: 0.24;
+  --cinza_bw_contrast: 1.16;
 }
 
 :root[data-site-theme="cinza"][data-site-shell="subtle"] {
-  --cinza_reliquary_opacity: 0.72;
-  --cinza_reliquary_line_mix: 28%;
-  --cinza_reliquary_strong_mix: 44%;
-  --cinza_fog_halo_mix: 16%;
-}
-
-:root[data-site-theme="gilded_arcane"][data-site-shell="medium"] {
-  --gilded_ornament_glow: 0.72;
-  --gilded_ornament_opacity: 0.88;
+  --site_style_deco_opacity: 0.38;
+  --cinza_reliquary_opacity: 0.74;
+  --cinza_reliquary_line_mix: 30%;
+  --cinza_reliquary_strong_mix: 48%;
+  --cinza_sun_bleed_mix: 24%;
+  --cinza_sun_bleed_alt_mix: 16%;
+  --cinza_fog_halo_mix: 18%;
+  --cinza_fog_depth_mix: 14%;
+  --cinza_fog_shadow_mix: 24%;
+  --cinza_bw_saturation: 0.34;
+  --cinza_bw_contrast: 1.08;
 }
 
 :root[data-site-theme="cinza"][data-site-shell="medium"] {
-  --site_style_border_mix: 56%;
-  --site_style_halo_mix: 34%;
-  --site_style_edge_mix: 46%;
-  --site_style_noise_opacity: 0.18;
-  --site_style_deco_opacity: 0.58;
-  --cinza_reliquary_opacity: 0.86;
-  --cinza_reliquary_line_mix: 62%;
-  --cinza_reliquary_strong_mix: 82%;
+  --site_style_border_mix: 52%;
+  --site_style_halo_mix: 31%;
+  --site_style_edge_mix: 42%;
+  --site_style_noise_opacity: 0.14;
+  --site_style_deco_opacity: 0.52;
+  --cinza_reliquary_opacity: 0.9;
+  --cinza_reliquary_line_mix: 56%;
+  --cinza_reliquary_strong_mix: 76%;
   --cinza_sun_bleed_mix: 42%;
-  --cinza_sun_bleed_alt_mix: 30%;
-  --cinza_fog_halo_mix: 44%;
-  --cinza_fog_depth_mix: 26%;
-  --cinza_fog_shadow_mix: 46%;
-  --cinza_bw_saturation: 0.12;
-  --cinza_bw_contrast: 1.34;
-}
-
-:root[data-site-theme="gilded_arcane"][data-site-shell="strong"] {
-  --gilded_ornament_glow: 1.06;
-  --gilded_ornament_opacity: 1;
+  --cinza_sun_bleed_alt_mix: 28%;
+  --cinza_fog_halo_mix: 40%;
+  --cinza_fog_depth_mix: 24%;
+  --cinza_fog_shadow_mix: 42%;
+  --cinza_bw_saturation: 0.16;
+  --cinza_bw_contrast: 1.26;
 }
 
 :root[data-site-theme="cinza"][data-site-shell="strong"] {
-  --site_style_border_mix: 66%;
-  --site_style_halo_mix: 40%;
-  --site_style_edge_mix: 56%;
-  --site_style_noise_opacity: 0.24;
-  --site_style_deco_opacity: 0.72;
-  --cinza_reliquary_opacity: 1;
-  --cinza_reliquary_line_mix: 76%;
-  --cinza_reliquary_strong_mix: 96%;
-  --cinza_sun_bleed_mix: 52%;
-  --cinza_sun_bleed_alt_mix: 40%;
-  --cinza_fog_halo_mix: 58%;
-  --cinza_fog_depth_mix: 36%;
-  --cinza_fog_shadow_mix: 62%;
-  --cinza_bw_saturation: 0.06;
-  --cinza_bw_contrast: 1.46;
-}
-
-:root[data-site-theme="cosmic_overlay"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 58%;
-  --site_style_border_mix: 52%;
-  --site_style_halo_mix: 30%;
-  --site_style_edge_mix: 34%;
-  --site_style_noise_opacity: 0.16;
-  --site_style_deco_opacity: 0.32;
-}
-
-:root[data-site-theme="witchy_ornate"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 62%;
-  --site_style_border_mix: 56%;
-  --site_style_halo_mix: 34%;
-  --site_style_edge_mix: 40%;
-  --site_style_noise_opacity: 0.22;
-  --site_style_deco_opacity: 0.38;
-}
-
-:root[data-site-theme="graveyard_gothic"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 40%;
-  --site_style_border_mix: 28%;
-  --site_style_halo_mix: 10%;
-  --site_style_edge_mix: 14%;
-  --site_style_noise_opacity: 0.08;
-  --site_style_deco_opacity: 0.14;
-}
-
-:root[data-site-theme="pixel_relic"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 52%;
-  --site_style_border_mix: 44%;
-  --site_style_halo_mix: 22%;
-  --site_style_edge_mix: 30%;
-  --site_style_noise_opacity: 0.14;
-  --site_style_deco_opacity: 0.22;
-}
-
-:root[data-site-theme="grimdark_tarot"] {
-  --site_style_accent: var(--ui_accent);
-  --site_style_accent_alt: var(--ui_accent_2);
-  --site_style_shell_mix: 58%;
-  --site_style_border_mix: 52%;
-  --site_style_halo_mix: 30%;
-  --site_style_edge_mix: 34%;
-  --site_style_noise_opacity: 0.16;
-  --site_style_deco_opacity: 0.32;
+  --site_style_border_mix: 62%;
+  --site_style_halo_mix: 37%;
+  --site_style_edge_mix: 50%;
+  --site_style_noise_opacity: 0.18;
+  --site_style_deco_opacity: 0.62;
+  --cinza_reliquary_opacity: 0.95;
+  --cinza_reliquary_line_mix: 68%;
+  --cinza_reliquary_strong_mix: 88%;
+  --cinza_sun_bleed_mix: 50%;
+  --cinza_sun_bleed_alt_mix: 36%;
+  --cinza_fog_halo_mix: 52%;
+  --cinza_fog_depth_mix: 34%;
+  --cinza_fog_shadow_mix: 56%;
+  --cinza_bw_saturation: 0.1;
+  --cinza_bw_contrast: 1.34;
 }
 
 :root[data-site-shell="subtle"] {
@@ -274,6 +235,7 @@ Ownership Matrix
   @apply border-2;
 
   view-transition-name: page_content;
+  z-index: 2;
 
   border-color: color-mix(
     in oklch,
@@ -311,12 +273,54 @@ Ownership Matrix
         transparent
       ),
     0 24px 42px -34px rgb(0 0 0 / 0.92);
-  backdrop-filter: blur(var(--site_style_blur));
+  backdrop-filter: blur(var(--site_style_blur)) saturate(1.04);
 }
 
 #content_stage {
   @apply relative isolate;
   @apply flex grow flex-col;
+}
+
+#content_stage::before,
+#content_stage::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+:root[data-site-theme="cinza"] #content_stage::before {
+  inset: 0.8% 1.2% 0.8% 1.2%;
+  z-index: 1;
+  opacity: calc(
+    var(--cinza_reliquary_opacity) * 0.54 * var(--cinza_tune_rails_in_stage)
+  );
+  background:
+    linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--site_style_accent) 36%, transparent),
+        transparent 18%
+      )
+      var(--cinza_reliquary_rail_left) var(--cinza_reliquary_axis_center) /
+      0.08rem var(--cinza_reliquary_axis_effective_span) no-repeat,
+    linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--site_style_accent) 36%, transparent),
+        transparent 18%
+      )
+      var(--cinza_reliquary_rail_right) var(--cinza_reliquary_axis_center) /
+      0.08rem var(--cinza_reliquary_axis_effective_span) no-repeat;
+  filter: blur(0.4px);
+}
+
+:root[data-site-theme="cinza"] #content_stage::after {
+  inset: 0;
+  z-index: 0;
+  opacity: calc(var(--cinza_fog_halo_mix) * 0.008);
+  background: radial-gradient(
+    120% 100% at 50% 50%,
+    color-mix(in oklch, var(--site_style_accent) 38%, transparent),
+    transparent 72%
+  );
 }
 
 #content_fog_backdrop {
@@ -473,140 +477,79 @@ Ownership Matrix
   filter: blur(2px);
 }
 
-:root[data-site-theme="minimal_astral"] #content::after {
-  background:
-    radial-gradient(
-      110% 140% at 50% -8%,
-      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
-      transparent 58%
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 34px,
-      color-mix(in oklch, var(--site_style_accent) 12%, transparent) 35px 36px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 30px,
-      color-mix(in oklch, var(--site_style_accent) 10%, transparent) 31px 32px
-    );
-}
-
-:root[data-site-theme="gilded_arcane"] #content::after {
-  opacity: calc(
-    var(--site_style_deco_opacity) * var(--gilded_ornament_opacity)
-  );
-  background:
-    url("/ornaments/gilded/frame_corner_tl.svg") top left /
-      calc(var(--gilded_corner_tl_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_corner_tl_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    url("/ornaments/gilded/frame_corner_tr.svg") top right /
-      calc(var(--gilded_corner_tr_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_corner_tr_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    url("/ornaments/gilded/frame_corner_bl.svg") bottom left /
-      calc(var(--gilded_corner_bl_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_corner_bl_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    url("/ornaments/gilded/frame_corner_br.svg") bottom right /
-      calc(var(--gilded_corner_br_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_corner_br_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    var(--gilded_center_top_asset_line) 50% 0 /
-      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    var(--gilded_center_top_asset_compass) 50% 0 /
-      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    var(--gilded_center_top_asset_eye) 50% 0 /
-      calc(var(--gilded_center_top_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    var(--gilded_center_bottom_asset_line) 50% 100% /
-      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    var(--gilded_center_bottom_asset_compass) 50% 100% /
-      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    var(--gilded_center_bottom_asset_eye) 50% 100% /
-      calc(var(--gilded_center_bottom_span) * var(--gilded_ornament_scale)) auto
-      no-repeat,
-    url("/ornaments/gilded/sigil_moon_star.svg") 14% 36% /
-      calc(var(--gilded_sigil_primary_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_sigil_primary_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    url("/ornaments/gilded/sigil_eye.svg") 86% 68% /
-      calc(var(--gilded_sigil_secondary_size) * var(--gilded_ornament_scale))
-      calc(var(--gilded_sigil_secondary_size) * var(--gilded_ornament_scale))
-      no-repeat,
-    radial-gradient(
-      110% 140% at 50% -8%,
-      color-mix(in oklch, var(--site_style_accent) 28%, transparent),
-      transparent 58%
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 var(--gilded_stripe_step),
-      color-mix(in oklch, var(--site_style_accent) 14%, transparent)
-        calc(var(--gilded_stripe_step) + 0.01rem)
-        calc(var(--gilded_stripe_step) + var(--gilded_stripe_line))
-    ),
-    linear-gradient(
-      180deg,
-      transparent 0 85%,
-      color-mix(in oklch, var(--site_style_accent_alt) 24%, transparent) 100%
-    ),
-    radial-gradient(
-      120% 100% at 12% 42%,
-      color-mix(in oklch, var(--site_style_accent) 20%, transparent),
-      transparent 66%
-    ),
-    radial-gradient(
-      120% 100% at 88% 70%,
-      color-mix(in oklch, var(--site_style_accent_alt) 18%, transparent),
-      transparent 64%
-    );
-  filter: saturate(1.08)
-    drop-shadow(
-      0 0 10px rgb(218 170 96 / calc(var(--gilded_ornament_glow) * 0.44))
-    );
-}
-
 :root[data-site-theme="cinza"] #content::after {
   opacity: calc(
     var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity)
   );
   background:
-    url("/ornaments/cinza/frame_corner_tl.svg") top left /
-      calc(8.8rem * var(--cinza_reliquary_corner_scale))
-      calc(8.8rem * var(--cinza_reliquary_corner_scale)) no-repeat,
-    url("/ornaments/cinza/frame_corner_tr.svg") top right /
-      calc(9.6rem * var(--cinza_reliquary_corner_scale))
-      calc(9.6rem * var(--cinza_reliquary_corner_scale)) no-repeat,
-    url("/ornaments/cinza/frame_corner_bl.svg") bottom left /
-      calc(9.2rem * var(--cinza_reliquary_corner_scale))
-      calc(9.2rem * var(--cinza_reliquary_corner_scale)) no-repeat,
-    url("/ornaments/cinza/frame_corner_br.svg") bottom right /
-      calc(8.4rem * var(--cinza_reliquary_corner_scale))
-      calc(8.4rem * var(--cinza_reliquary_corner_scale)) no-repeat,
-    url("/ornaments/cinza/frame_line_top.svg") 50% 0 / 72% auto no-repeat,
-    url("/ornaments/cinza/frame_line_bottom.svg") 50% 100% / 54% auto no-repeat,
-    url("/ornaments/cinza/sigil_moon_star.svg") 50% 2.6% /
-      clamp(2.3rem, 5vw, 3rem) clamp(2.3rem, 5vw, 3rem) no-repeat,
-    url("/ornaments/cinza/sigil_eye.svg") 50% 97.4% / clamp(2rem, 4.2vw, 2.7rem)
-      clamp(2rem, 4.2vw, 2.7rem) no-repeat,
+    url("/ornaments/cinza/frame_corner_tl.svg") left
+      var(--cinza_reliquary_offset_left) top var(--cinza_reliquary_offset_top) /
+      calc(7.1rem * var(--cinza_reliquary_corner_scale))
+      calc(7.1rem * var(--cinza_reliquary_corner_scale)) no-repeat,
+    url("/ornaments/cinza/frame_corner_tr.svg") right
+      var(--cinza_reliquary_offset_right) top
+      var(--cinza_reliquary_offset_top) /
+      calc(7.8rem * var(--cinza_reliquary_corner_scale))
+      calc(7.8rem * var(--cinza_reliquary_corner_scale)) no-repeat,
+    url("/ornaments/cinza/frame_corner_bl.svg") left
+      var(--cinza_reliquary_offset_left) bottom
+      var(--cinza_reliquary_offset_bottom) /
+      calc(7.4rem * var(--cinza_reliquary_corner_scale))
+      calc(7.4rem * var(--cinza_reliquary_corner_scale)) no-repeat,
+    url("/ornaments/cinza/frame_corner_br.svg") right
+      var(--cinza_reliquary_offset_right) bottom
+      var(--cinza_reliquary_offset_bottom) /
+      calc(6.8rem * var(--cinza_reliquary_corner_scale))
+      calc(6.8rem * var(--cinza_reliquary_corner_scale)) no-repeat,
+    url("/ornaments/cinza/frame_line_top.svg") 50%
+      calc(
+        var(--cinza_reliquary_offset_top) - var(--cinza_tune_rail_edge_nudge)
+      ) /
+      72% var(--cinza_reliquary_line_block_size) no-repeat,
+    url("/ornaments/cinza/frame_line_bottom.svg") 50%
+      calc(
+        100% - var(--cinza_reliquary_offset_bottom) +
+          var(--cinza_tune_rail_edge_nudge)
+      ) /
+      54% var(--cinza_reliquary_line_block_size) no-repeat,
+    url("/ornaments/cinza/sigil_moon_star.svg") 50%
+      calc(
+        var(--cinza_reliquary_offset_top) +
+          var(--cinza_reliquary_sigil_vertical_offset)
+      ) /
+      var(--cinza_reliquary_sigil_size) var(--cinza_reliquary_sigil_size)
+      no-repeat,
+    url("/ornaments/cinza/sigil_eye.svg") 50%
+      calc(
+        100% - var(--cinza_reliquary_offset_bottom) -
+          var(--cinza_reliquary_sigil_vertical_offset)
+      ) /
+      var(--cinza_reliquary_sigil_size) var(--cinza_reliquary_sigil_size)
+      no-repeat,
     linear-gradient(
         180deg,
-        color-mix(in oklch, var(--site_style_accent) 42%, transparent),
-        transparent 22%
+        color-mix(
+          in oklch,
+          var(--site_style_accent)
+            calc(36% * var(--cinza_tune_rails_in_content)),
+          transparent
+        ),
+        transparent 18%
       )
-      6% 50% / 0.08rem 86% no-repeat,
+      var(--cinza_reliquary_rail_left) var(--cinza_reliquary_axis_center) /
+      0.08rem var(--cinza_reliquary_axis_effective_span) no-repeat,
     linear-gradient(
         180deg,
-        color-mix(in oklch, var(--site_style_accent) 42%, transparent),
-        transparent 22%
+        color-mix(
+          in oklch,
+          var(--site_style_accent)
+            calc(36% * var(--cinza_tune_rails_in_content)),
+          transparent
+        ),
+        transparent 18%
       )
-      94% 50% / 0.08rem 86% no-repeat,
+      var(--cinza_reliquary_rail_right) var(--cinza_reliquary_axis_center) /
+      0.08rem var(--cinza_reliquary_axis_effective_span) no-repeat,
     radial-gradient(
       112% 128% at 50% -8%,
       color-mix(
@@ -642,96 +585,6 @@ Ownership Matrix
           var(--site_style_accent) calc(var(--cinza_reliquary_strong_mix) * 0.8),
           transparent
         )
-    );
-}
-
-:root[data-site-theme="cosmic_overlay"] #content::after {
-  background:
-    radial-gradient(
-      120% 120% at 100% 0%,
-      color-mix(in oklch, var(--site_style_accent) 36%, transparent),
-      transparent 62%
-    ),
-    radial-gradient(
-      160% 140% at 0% 100%,
-      color-mix(in oklch, var(--site_style_accent_alt) 28%, transparent),
-      transparent 62%
-    ),
-    linear-gradient(
-      120deg,
-      transparent 0 22%,
-      color-mix(in oklch, var(--site_style_accent) 18%, transparent) 34% 42%,
-      transparent 54% 100%
-    );
-}
-
-:root[data-site-theme="witchy_ornate"] #content::after {
-  background:
-    radial-gradient(
-      160% 130% at 50% -18%,
-      color-mix(in oklch, var(--site_style_accent) 56%, transparent),
-      transparent 64%
-    ),
-    radial-gradient(
-      80% 80% at 50% 50%,
-      transparent 58%,
-      color-mix(in oklch, var(--site_style_accent) 20%, transparent) 60% 62%,
-      transparent 64%
-    ),
-    radial-gradient(
-      100% 100% at 50% 50%,
-      transparent 72%,
-      color-mix(in oklch, var(--site_style_accent_alt) 18%, transparent) 74% 75%,
-      transparent 77%
-    );
-}
-
-:root[data-site-theme="graveyard_gothic"] #content::after {
-  background:
-    radial-gradient(
-      140% 120% at 50% -20%,
-      color-mix(in oklch, var(--site_style_accent) 18%, transparent),
-      transparent 66%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 42px,
-      color-mix(in oklch, var(--site_style_accent) 8%, transparent) 43px 44px
-    );
-}
-
-:root[data-site-theme="pixel_relic"] #content::after {
-  background:
-    radial-gradient(
-      140% 120% at 20% 0%,
-      color-mix(in oklch, var(--site_style_accent) 38%, transparent),
-      transparent 64%
-    ),
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 26px,
-      color-mix(in oklch, var(--site_style_accent_alt) 14%, transparent) 27px
-        28px
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in oklch, var(--site_style_accent) 14%, transparent),
-      transparent 62%
-    );
-}
-
-:root[data-site-theme="grimdark_tarot"] #content::after {
-  background:
-    radial-gradient(
-      130% 120% at 50% 0%,
-      color-mix(in oklch, var(--site_style_accent) 30%, transparent),
-      transparent 68%
-    ),
-    linear-gradient(
-      165deg,
-      transparent 0 24%,
-      color-mix(in oklch, var(--site_style_accent_alt) 16%, transparent) 34% 44%,
-      transparent 58% 100%
     );
 }
 
@@ -830,22 +683,90 @@ Ownership Matrix
   @apply w-full;
   @apply mx-auto;
   @apply rounded-2xl;
-  @apply my-4 md:my-6;
+  margin-block: clamp(4.5rem, 10vw, 6rem);
   @apply px-5 py-6 md:px-8 md:py-8;
+  @apply relative isolate;
 
   inline-size: clamp(340px, 62vw, 74vw);
-  background: radial-gradient(
-    120% 95% at 50% 0%,
+  border: 1px solid
     color-mix(
       in oklch,
-      var(--site_style_accent)
-        calc(
-          8% * var(--site_style_strength_mult) * var(--site_shell_surface_mult)
-        ),
+      var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.42),
       transparent
+    );
+  background:
+    linear-gradient(
+      164deg,
+      color-mix(
+        in oklch,
+        var(--ui_surface_soft)
+          calc(
+            60% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ui_bg_crust)
+          calc(
+            40% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      )
     ),
-    transparent 70%
-  );
+    radial-gradient(
+      120% 95% at 50% 0%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent)
+          calc(
+            11% * var(--site_style_strength_mult) *
+              var(--site_shell_surface_mult)
+          ),
+        transparent
+      ),
+      transparent 70%
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 14%, transparent),
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.18),
+        transparent
+      ),
+    0 24px 42px -34px rgb(0 0 0 / 0.96);
+  backdrop-filter: blur(calc(10px * var(--site_shell_blur_mult))) saturate(1.03);
+  transform: translate3d(0, var(--reading_plane_shift_y), 0);
+  will-change: transform;
+}
+
+#main_reading_container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: calc(var(--site_style_noise_opacity) * 0.62);
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgb(255 255 255 / 0.2) 0 0.6px,
+      transparent 0.8px
+    ),
+    radial-gradient(
+      circle at 78% 68%,
+      rgb(255 255 255 / 0.16) 0 0.6px,
+      transparent 0.9px
+    ),
+    radial-gradient(
+      circle at 52% 44%,
+      rgb(0 0 0 / 0.16) 0 0.7px,
+      transparent 0.95px
+    );
+  mix-blend-mode: soft-light;
 }
 
 #home_card_gate {
@@ -887,6 +808,7 @@ Ownership Matrix
 }
 
 #home_gate_kicker {
+  margin: 0;
   color: color-mix(
     in oklch,
     var(--site_style_accent_alt) 46%,
@@ -896,6 +818,8 @@ Ownership Matrix
 
 #home_gate_title {
   @apply font-semibold;
+
+  margin: 0;
   color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
 }
 
@@ -1085,25 +1009,6 @@ Ownership Matrix
   --phase_color: var(--color-rubedo);
 }
 
-:root[data-site-theme="minimal_astral"] {
-  --home_gate_surface_mix: 44%;
-  --home_gate_border_mix: 34%;
-  --home_gate_halo_mix: 22%;
-  --home_gate_blur: 1.5px;
-  --home_gate_star_opacity: 0.12;
-  --home_gate_ring_opacity: 0.3;
-}
-
-:root[data-site-theme="gilded_arcane"] {
-  --home_gate_surface_mix: 56%;
-  --home_gate_border_mix: 48%;
-  --home_gate_halo_mix: 34%;
-  --home_gate_blur: 2.6px;
-  --home_gate_text_mix: 88%;
-  --home_gate_star_opacity: 0.18;
-  --home_gate_ring_opacity: 0.34;
-}
-
 :root[data-site-theme="cinza"] {
   --home_gate_surface_mix: 42%;
   --home_gate_border_mix: 38%;
@@ -1114,39 +1019,6 @@ Ownership Matrix
   --home_gate_ring_opacity: 0.5;
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_link {
-  --phase_ornament_corner_tl: url("/ornaments/gilded/card_corner_a.svg");
-  --phase_ornament_corner_tr: url("/ornaments/gilded/card_corner_b.svg");
-  --phase_ornament_corner_bl: url("/ornaments/gilded/card_corner_c.svg");
-  --phase_ornament_corner_br: url("/ornaments/gilded/card_corner_d.svg");
-  --phase_ornament_sigil: url("/ornaments/gilded/sigil_eye.svg");
-  --phase_ornament_inset: clamp(0.35rem, 1.2%, 0.55rem);
-  --phase_ornament_tl_size: clamp(2.4rem, 8vw, 2.75rem);
-  --phase_ornament_tr_size: clamp(2.6rem, 8.5vw, 3rem);
-  --phase_ornament_bl_size: clamp(2.2rem, 7.4vw, 2.5rem);
-  --phase_ornament_br_size: clamp(2.5rem, 8.2vw, 2.9rem);
-  --phase_ornament_sigil_size: clamp(1.35rem, 4.4vw, 1.75rem);
-  --phase_ornament_sigil_offset: 4%;
-  --phase_ornament_side_inline: clamp(0.75rem, 2.2vw, 1rem);
-  --phase_ornament_side_block: 76%;
-
-  box-shadow:
-    0 22px 36px -24px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.12)),
-    0 0 0 1px
-      color-mix(
-        in oklch,
-        var(--site_style_accent) var(--gilded_border_outer_mix),
-        transparent
-      ),
-    inset 0 0 0 1px
-      color-mix(
-        in oklch,
-        var(--site_style_accent) var(--gilded_border_inner_mix),
-        transparent
-      ),
-    inset 0 1px 0 color-mix(in oklch, white 22%, transparent);
-}
-
 :root[data-site-theme="cinza"] .phase_card_link {
   --phase_ornament_corner_tl: url("/ornaments/cinza/card_corner_a.svg");
   --phase_ornament_corner_tr: url("/ornaments/cinza/card_corner_b.svg");
@@ -1154,11 +1026,11 @@ Ownership Matrix
   --phase_ornament_corner_br: url("/ornaments/cinza/card_corner_d.svg");
   --phase_ornament_sigil: url("/ornaments/cinza/sigil_eye.svg");
   --phase_ornament_inset: clamp(0.35rem, 1.2%, 0.55rem);
-  --phase_ornament_tl_size: clamp(2.4rem, 8vw, 2.75rem);
-  --phase_ornament_tr_size: clamp(2.6rem, 8.5vw, 3rem);
-  --phase_ornament_bl_size: clamp(2.2rem, 7.4vw, 2.5rem);
-  --phase_ornament_br_size: clamp(2.5rem, 8.2vw, 2.9rem);
-  --phase_ornament_sigil_size: clamp(1.35rem, 4.4vw, 1.75rem);
+  --phase_ornament_tl_size: clamp(2.1rem, 7vw, 2.4rem);
+  --phase_ornament_tr_size: clamp(2.25rem, 7.4vw, 2.62rem);
+  --phase_ornament_bl_size: clamp(1.9rem, 6.4vw, 2.2rem);
+  --phase_ornament_br_size: clamp(2.2rem, 7.2vw, 2.52rem);
+  --phase_ornament_sigil_size: clamp(1.15rem, 3.7vw, 1.5rem);
   --phase_ornament_sigil_offset: 4%;
   --phase_ornament_side_inline: clamp(0.75rem, 2.2vw, 1rem);
   --phase_ornament_side_block: 76%;
@@ -1204,35 +1076,6 @@ Ownership Matrix
     inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_link::after {
-  inset: var(--phase_ornament_inset);
-  border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
-  border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
-  background:
-    var(--phase_ornament_corner_tl) top left / var(--phase_ornament_tl_size)
-      var(--phase_ornament_tl_size) no-repeat,
-    var(--phase_ornament_corner_tr) top right / var(--phase_ornament_tr_size)
-      var(--phase_ornament_tr_size) no-repeat,
-    var(--phase_ornament_corner_bl) bottom left / var(--phase_ornament_bl_size)
-      var(--phase_ornament_bl_size) no-repeat,
-    var(--phase_ornament_corner_br) bottom right / var(--phase_ornament_br_size)
-      var(--phase_ornament_br_size) no-repeat,
-    url("/ornaments/gilded/card_center_top.svg") 50% 0 / 84% auto no-repeat,
-    var(--phase_ornament_sigil) 50%
-      calc(100% - var(--phase_ornament_sigil_offset)) /
-      var(--phase_ornament_sigil_size) var(--phase_ornament_sigil_size)
-      no-repeat,
-    url("/ornaments/gilded/card_side_flourish.svg") 0 50% /
-      var(--phase_ornament_side_inline) var(--phase_ornament_side_block)
-      no-repeat,
-    url("/ornaments/gilded/card_side_flourish.svg") 100% 50% /
-      var(--phase_ornament_side_inline) var(--phase_ornament_side_block)
-      no-repeat;
-  opacity: calc(
-    var(--home_gate_ring_opacity) * 1.34 * var(--gilded_sigil_opacity)
-  );
-}
-
 :root[data-site-theme="cinza"] .phase_card_link::after {
   inset: var(--phase_ornament_inset);
   border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
@@ -1246,7 +1089,8 @@ Ownership Matrix
       var(--phase_ornament_bl_size) no-repeat,
     var(--phase_ornament_corner_br) bottom right / var(--phase_ornament_br_size)
       var(--phase_ornament_br_size) no-repeat,
-    url("/ornaments/cinza/card_center_top.svg") 50% 0 / 84% auto no-repeat,
+    url("/ornaments/cinza/card_center_top.svg") 50% 0 / 84%
+      clamp(1.4rem, 2.8vw, 1.9rem) no-repeat,
     var(--phase_ornament_sigil) 50%
       calc(100% - var(--phase_ornament_sigil_offset)) /
       var(--phase_ornament_sigil_size) var(--phase_ornament_sigil_size)
@@ -1293,31 +1137,6 @@ Ownership Matrix
   opacity: calc(var(--home_gate_ring_opacity) * 1.26);
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_link::before {
-  background:
-    radial-gradient(
-      circle at 24% 26%,
-      color-mix(in oklch, white 64%, transparent) 0 0.6px,
-      transparent 0.74px
-    ),
-    radial-gradient(
-      circle at 76% 62%,
-      color-mix(in oklch, white 52%, transparent) 0 0.7px,
-      transparent 0.82px
-    ),
-    radial-gradient(
-      140% 120% at 70% -20%,
-      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      120% 100% at 20% 90%,
-      color-mix(in oklch, var(--site_style_accent_alt) 16%, transparent),
-      transparent 72%
-    );
-  opacity: calc(var(--home_gate_star_opacity) * 1.25);
-}
-
 :root[data-site-theme="cinza"] .phase_card_link::before {
   background:
     radial-gradient(
@@ -1343,26 +1162,12 @@ Ownership Matrix
   opacity: calc(var(--home_gate_star_opacity) * 1.05);
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_nigredo {
-  --phase_ornament_sigil: url("/ornaments/gilded/sigil_eye.svg");
-}
-
 :root[data-site-theme="cinza"] .phase_card_nigredo {
   --phase_ornament_sigil: url("/ornaments/cinza/sigil_eye.svg");
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_albedo {
-  --phase_ornament_sigil: url("/ornaments/gilded/sigil_moon_star.svg");
-}
-
 :root[data-site-theme="cinza"] .phase_card_albedo {
   --phase_ornament_sigil: url("/ornaments/cinza/sigil_moon_star.svg");
-}
-
-:root[data-site-theme="gilded_arcane"] .phase_card_citrinitas {
-  --phase_ornament_corner_tl: url("/ornaments/gilded/card_corner_b.svg");
-  --phase_ornament_corner_tr: url("/ornaments/gilded/card_corner_a.svg");
-  --phase_ornament_sigil: url("/ornaments/gilded/sigil_moon_star.svg");
 }
 
 :root[data-site-theme="cinza"] .phase_card_citrinitas {
@@ -1371,62 +1176,9 @@ Ownership Matrix
   --phase_ornament_sigil: url("/ornaments/cinza/sigil_moon_star.svg");
 }
 
-:root[data-site-theme="gilded_arcane"] .phase_card_rubedo {
-  --phase_ornament_corner_bl: url("/ornaments/gilded/card_corner_d.svg");
-  --phase_ornament_corner_br: url("/ornaments/gilded/card_corner_c.svg");
-}
-
 :root[data-site-theme="cinza"] .phase_card_rubedo {
   --phase_ornament_corner_bl: url("/ornaments/cinza/card_corner_d.svg");
   --phase_ornament_corner_br: url("/ornaments/cinza/card_corner_c.svg");
-}
-
-:root[data-site-theme="cosmic_overlay"] {
-  --home_gate_surface_mix: 62%;
-  --home_gate_border_mix: 50%;
-  --home_gate_halo_mix: 40%;
-  --home_gate_blur: 3px;
-  --home_gate_text_mix: 90%;
-  --home_gate_star_opacity: 0.2;
-}
-
-:root[data-site-theme="witchy_ornate"] {
-  --home_gate_surface_mix: 74%;
-  --home_gate_border_mix: 58%;
-  --home_gate_halo_mix: 48%;
-  --home_gate_blur: 3.5px;
-  --home_gate_shadow_strength: 0.74;
-  --home_gate_ring_opacity: 0.36;
-}
-
-:root[data-site-theme="graveyard_gothic"] {
-  --home_gate_surface_mix: 40%;
-  --home_gate_border_mix: 30%;
-  --home_gate_halo_mix: 14%;
-  --home_gate_blur: 1.2px;
-  --home_gate_text_mix: 82%;
-  --home_gate_star_opacity: 0.1;
-  --home_gate_ring_opacity: 0.24;
-}
-
-:root[data-site-theme="pixel_relic"] {
-  --home_gate_surface_mix: 66%;
-  --home_gate_border_mix: 54%;
-  --home_gate_halo_mix: 36%;
-  --home_gate_blur: 2.8px;
-  --home_gate_text_mix: 88%;
-  --home_gate_star_opacity: 0.18;
-  --home_gate_ring_opacity: 0.34;
-}
-
-:root[data-site-theme="grimdark_tarot"] {
-  --home_gate_surface_mix: 58%;
-  --home_gate_border_mix: 48%;
-  --home_gate_halo_mix: 30%;
-  --home_gate_blur: 2.4px;
-  --home_gate_text_mix: 86%;
-  --home_gate_star_opacity: 0.16;
-  --home_gate_ring_opacity: 0.32;
 }
 
 :root[data-site-fx="subtle"] {
@@ -1510,6 +1262,10 @@ Ownership Matrix
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --reading_plane_shift_y: 0px;
+  }
+
   .phase_card_link {
     transition-duration: 1ms;
   }
@@ -1524,5 +1280,9 @@ Ownership Matrix
   ::view-transition-new(page_content) {
     animation-duration: 1ms;
     animation-delay: 0ms;
+  }
+
+  #main_reading_container {
+    transform: none;
   }
 }
