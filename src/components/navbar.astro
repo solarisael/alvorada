@@ -8,6 +8,9 @@ import "../styles/components/desktop-nav.css";
   aria-label="Primary"
 >
   <div id="nav-user-bar" class="nav-rail" data-nav-rail>
+    <div class="nav-rail-layer nav-rail-layer-cursor-glow" aria-hidden="true">
+    </div>
+
     <div class="nav-links" aria-label="Left navigation group">
       <a
         class="nav-pill"
@@ -15,7 +18,11 @@ import "../styles/components/desktop-nav.css";
         data-phase="nigredo"
         href="/nigredo"
         hx-get="/nigredo"
-        hx-push-url="true">nigredo</a
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring" aria-hidden="true"
+        ></span>
+        nigredo</a
       >
       <a
         class="nav-pill"
@@ -23,13 +30,20 @@ import "../styles/components/desktop-nav.css";
         data-phase="albedo"
         href="/albedo"
         hx-get="/albedo"
-        hx-push-url="true">albedo</a
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring" aria-hidden="true"
+        ></span>
+        albedo</a
       >
     </div>
 
     <div id="middle-guy" aria-hidden="true"></div>
 
     <a id="icon-user" href="/" aria-label="Home">
+      <span class="icon-user-layer icon-user-layer-orbit" aria-hidden="true"
+      ></span>
+
       <div id="icon-user-shell" aria-hidden="true">
         <div class="cinza_sun_halo"></div>
         <div class="cinza_sun_highlight"></div>
@@ -52,7 +66,11 @@ import "../styles/components/desktop-nav.css";
         data-phase="citrinitas"
         href="/citrinitas"
         hx-get="/citrinitas"
-        hx-push-url="true">citrinitas</a
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring" aria-hidden="true"
+        ></span>
+        citrinitas</a
       >
       <a
         class="nav-pill"
@@ -60,7 +78,11 @@ import "../styles/components/desktop-nav.css";
         data-phase="rubedo"
         href="/rubedo"
         hx-get="/rubedo"
-        hx-push-url="true">rubedo</a
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring" aria-hidden="true"
+        ></span>
+        rubedo</a
       >
       <a
         class="nav-pill"
@@ -68,7 +90,11 @@ import "../styles/components/desktop-nav.css";
         data-phase="codex"
         href="/codex"
         hx-get="/codex"
-        hx-push-url="true">codex</a
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring" aria-hidden="true"
+        ></span>
+        codex</a
       >
     </div>
   </div>

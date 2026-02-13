@@ -48,6 +48,8 @@ const active_theme_color = phase_color_by_name[active_phase];
   data-phase={active_phase}
   style={`--crumb_theme_color: ${active_theme_color};`}
 >
+  <div class="breadcrumb-divider" aria-hidden="true"></div>
+
   <ol>
     {
       crumb_items.map((crumb_item) => {

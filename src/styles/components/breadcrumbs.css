@@ -16,9 +16,7 @@
   @apply mb-4 md:mb-5;
   @apply pb-0;
 
-  &::after {
-    content: "";
-
+  .breadcrumb-divider {
     @apply absolute;
 
     left: var(--crumb_divider_inset);
