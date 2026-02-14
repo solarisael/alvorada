@@ -110,12 +110,15 @@ Markdown marker (Obsidian flow):
 {{fx:glow}}luminous text{{/fx}}
 {{fx:glow:1.4}}luminous text (visual only){{/fx}}
 {{fx:flicker:1.2:0.8}}fading signal (visual + motion){{/fx}}
+{{fx:glow|flicker|shadow:1.2:0.9}}stacked signal (left-to-right){{/fx}}
 {{fx:aura:1.5}}consecrated phrase{{/fx}}
 {{fx:sigil_pulse:1.4:1.1}}warding phrase{{/fx}}
 {{fx:cadence_oracular:1.1}}inner vow{{/fx}}
 ```
 
-- Marker syntax: `{{fx:effect_name[:visual_intensity][:motion_intensity]}}...{{/fx}}`
+- Marker syntax: `{{fx:effect_name[|effect_name...][:visual_intensity][:motion_intensity]}}...{{/fx}}`
+- Stack policy: text effects only, evaluated left-to-right.
+- Sanitization policy: blacklisted stack pairs auto-drop later tokens and emit build/dev warnings.
 - Intensity range: `0.2` -> `3` (runtime-clamped)
 - Coverage rule: every registered effect must appear in at least one sandbox page (`src/pages/codex/labs/test-texts.md` or `src/pages/codex/labs/test-overlays.md`).
 

@@ -16,7 +16,7 @@ const test_page_source = test_page_paths
 const has_effect_marker = (effect_name) => {
   const escaped_effect_name = effect_name.replaceAll("_", "[_]");
   const marker_regex = new RegExp(
-    `\\{\\{fx:${escaped_effect_name}(?::|\\}\\})`,
+    `\\{\\{fx:${escaped_effect_name}(?::|\\||\\}\\})`,
     "i",
   );
 

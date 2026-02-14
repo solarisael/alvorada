@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-13 19:15
+- Updated_utc: 2026-02-14 01:10
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: audit and improve typography scale/readability across `rubedo` pages without visual noise regression
+- primary_outcome_next_session: complete readability pass for `/rubedo` typography while preserving newly stabilized text-fx stack behavior
 - priority_axis_next_session: polish
 - edit_breadth_next_session: focused
-- first_task_next_session: measure current heading/body/caption size + line-height on `/rubedo` and `/rubedo/[book_slug]`, then map fixes in `src/styles/typography.css`
+- first_task_next_session: run rubedo typography audit on mobile/desktop, then apply scale and line-height adjustments in `src/styles/typography.css`
 - commit_intent_next_session: after_review
-- notes_next_session: preserve current cinza hard-gates and avoid touching personal tuning in `src/styles/index.css` unless explicitly requested
+- notes_next_session: stacked `fx:a|b|c` parsing is live with auto-sanitize warnings; `combat_feed` is allowed in stacks and forced to front for color priority; continue with typography polish unless Sol requests more labs/chaos variants
 
 ## Alias Ledger
 
@@ -50,17 +50,17 @@
 
 ## Active Scope
 
-- State: handoff_ready
+- State: in_progress
 - Branch: master
-- Head: 43b6773
-- Scope_in: visual hard-gates are enforced (ornaments-in-HTML + decorative background stack cap), next pass is typography readability for `rubedo`.
-- Scope_out: new decorative architecture changes unless required for typography readability fixes.
+- Head: (pending_commit)
+- Scope_in: stacked text-fx markers (`fx:a|b|c`) with left-to-right order, auto-sanitize warnings, labs stress coverage, and `combat_feed` color-priority compatibility.
+- Scope_out: broad visual-system rewrites unrelated to typography/readability and marker ergonomics.
 
 ## Next (Top 3)
 
 1. [ ] Audit current typography scale on `/rubedo` and `/rubedo/[book_slug]` (headings, body, caption, line-height, line-length).
 2. [ ] Apply readability-first scale adjustments in `src/styles/typography.css` with minimal route-specific overrides.
-3. [ ] Validate readability on desktop/mobile plus reduced-motion and run hard-gate checks.
+3. [ ] Optional: add second-pass "catastrophic chaos" lab lines only if explicitly requested after typography pass.
 
 ## Blockers
 
@@ -83,9 +83,9 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-13 19:09
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-13 19:09
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-13 19:09
+- Build: pass (`bun run build`) - 2026-02-14 01:08
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-14 01:08
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-14 01:08
 
 ## Notes
 
@@ -98,3 +98,10 @@
 1. [ ] Run a dedicated readability QA pass for `rubedo` chapter pages on small/medium/large viewports.
 2. [ ] Confirm typography scale lock before broader visual polish resumes.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
+
+## Session Delta (2026-02-14)
+
+- Implemented stacked marker grammar (`fx:a|b|c`) with parser sanitization and deduped warnings.
+- Allowed `combat_feed` as inline stack exception and forced it to class-order front for deterministic color priority.
+- Added extensive cinematic + extreme-chaos labs coverage in `src/pages/codex/labs/test-texts.md`.
+- Added combat-feed color-priority compatibility rules so non-token lines are slightly muted and combat tokens stay dominant.

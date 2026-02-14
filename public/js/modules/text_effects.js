@@ -101,6 +101,34 @@ const parse_combat_token_segments = (text_value) => {
 const text_fx_intensity_min = 0.2;
 const text_fx_intensity_max = 3;
 
+const text_fx_stack_blacklist_pairs = Object.freeze([
+  Object.freeze(["rainbow", "gradient"]),
+  Object.freeze(["shake", "float"]),
+]);
+
+const build_blacklist_lookup = () => {
+  const blacklist_lookup = new Map();
+
+  for (const pair of text_fx_stack_blacklist_pairs) {
+    const [left_effect, right_effect] = pair;
+
+    if (!blacklist_lookup.has(left_effect)) {
+      blacklist_lookup.set(left_effect, new Set());
+    }
+
+    if (!blacklist_lookup.has(right_effect)) {
+      blacklist_lookup.set(right_effect, new Set());
+    }
+
+    blacklist_lookup.get(left_effect).add(right_effect);
+    blacklist_lookup.get(right_effect).add(left_effect);
+  }
+
+  return blacklist_lookup;
+};
+
+const text_fx_stack_blacklist_lookup = build_blacklist_lookup();
+
 const text_fx_alias_map = (() => {
   const alias_map = {};
 
@@ -142,6 +170,53 @@ const resolve_text_fx_class = (raw_token) => {
   }
 
   return text_fx_effect_class_map[normalized_effect] ?? null;
+};
+
+const resolve_text_fx_effects_with_stack_rules = (raw_tokens) => {
+  const accepted_effects = [];
+  const seen_effects = new Set();
+
+  for (const raw_token of raw_tokens) {
+    const normalized_effect = normalize_text_fx_token(raw_token);
+
+    if (!normalized_effect || seen_effects.has(normalized_effect)) {
+      continue;
+    }
+
+    const is_text_effect =
+      text_fx_effect_class_map[normalized_effect]?.startsWith("text_fx_");
+
+    let is_blocked = false;
+
+    if (is_text_effect) {
+      for (const accepted_effect of accepted_effects) {
+        if (
+          text_fx_stack_blacklist_lookup
+            .get(accepted_effect)
+            ?.has(normalized_effect)
+        ) {
+          is_blocked = true;
+          break;
+        }
+      }
+    }
+
+    if (is_blocked) {
+      continue;
+    }
+
+    accepted_effects.push(normalized_effect);
+    seen_effects.add(normalized_effect);
+  }
+
+  if (!accepted_effects.includes("combat_feed")) {
+    return accepted_effects;
+  }
+
+  return [
+    "combat_feed",
+    ...accepted_effects.filter((effect_name) => effect_name !== "combat_feed"),
+  ];
 };
 
 const split_text_fx_tokens = (token_string = "") => {
@@ -218,8 +293,13 @@ const collect_text_fx_classes_from_node = (node_value) => {
   const class_tokens = Array.from(node_value.classList);
   const data_tokens = split_text_fx_tokens(node_value.dataset.textFx ?? "");
 
-  for (const token of [...class_tokens, ...data_tokens]) {
-    const resolved_class = resolve_text_fx_class(token);
+  const resolved_effects = resolve_text_fx_effects_with_stack_rules([
+    ...class_tokens,
+    ...data_tokens,
+  ]);
+
+  for (const effect_name of resolved_effects) {
+    const resolved_class = resolve_text_fx_class(effect_name);
 
     if (resolved_class) {
       classes_to_apply.add(resolved_class);

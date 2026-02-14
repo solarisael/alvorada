@@ -2,11 +2,14 @@
 
 Use canonical markers in notes:
 
-`{{fx:effect_name[:visual_intensity][:motion_intensity]}}your_text{{/fx}}`
+`{{fx:effect_name[|effect_name...][:visual_intensity][:motion_intensity]}}your_text{{/fx}}`
 
 - Intensity range is clamped to `0.2` -> `3`.
 - Single intensity affects visual only.
 - Motion intensity only applies when the third value is present.
+- Stack order is left-to-right (`glow|flicker|shadow` keeps that class order).
+- Stack mode is text-effects only; block effects remain single-effect wrappers.
+- Blacklisted pairings are auto-sanitized with build/dev warnings.
 - Soft line breaks are enabled globally, so single newlines render as `<br>`.
 
 ## Effects
@@ -52,6 +55,7 @@ Use canonical markers in notes:
 {{fx:glow}}luminous line{{/fx}}
 {{fx:glow:1.4}}brighter line{{/fx}}
 {{fx:flicker:1.2:0.8}}fading lantern{{/fx}}
+{{fx:glow|flicker|shadow:1.2:0.9}}stacked signal{{/fx}}
 {{fx:aura:1.5}}sanctuary ember{{/fx}}
 {{fx:etch:1.2}}carved vow{{/fx}}
 {{fx:whisper:1.3}}faint confession{{/fx}}

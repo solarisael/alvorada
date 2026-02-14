@@ -172,6 +172,75 @@ describe("text_effects markdown marker processing", () => {
     ]);
   });
 
+  test("supports stacked text effect markers in left-to-right order", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow|flicker|shadow}}signal{{/fx}}",
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value:
+          '<span class="text_fx text_fx_glow text_fx_flicker text_fx_shadow">signal</span>',
+      },
+    ]);
+  });
+
+  test("supports stacked text effects with intensity values", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow|flicker:1.2:0.7}}signal{{/fx}}",
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value:
+          '<span class="text_fx text_fx_glow text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7">signal</span>',
+      },
+    ]);
+  });
+
+  test("auto-sanitizes blacklisted stack combinations and warns once", () => {
+    const warning_messages = [];
+    const source_text =
+      "{{fx:shake|float|glow}}signal{{/fx}} {{fx:shake|float|glow}}echo{{/fx}}";
+    const nodes = split_text_fx_markers(source_text, {
+      warn: (warning_message) => {
+        warning_messages.push(warning_message);
+      },
+      warning_cache: new Set(),
+    });
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value: '<span class="text_fx text_fx_shake text_fx_glow">signal</span>',
+      },
+      { type: "text", value: " " },
+      {
+        type: "html",
+        value: '<span class="text_fx text_fx_shake text_fx_glow">echo</span>',
+      },
+    ]);
+
+    expect(warning_messages).toEqual([
+      "[text_fx] auto-sanitized marker 'shake|float|glow' -> 'shake|glow' (token 'float' dropped because 'shake+float' is blacklisted)",
+    ]);
+  });
+
+  test("treats stack markers with only block effects as plain text", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:terminal|stat_screen}}boot{{/fx}}",
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "text",
+        value: "{{fx:terminal|stat_screen}}boot{{/fx}}",
+      },
+    ]);
+  });
+
   test("supports inline combat feed marker", () => {
     const nodes = split_text_fx_markers(
       "{{fx:combat_feed:1.2}}CRIT lands{{/fx}}",
@@ -183,6 +252,45 @@ describe("text_effects markdown marker processing", () => {
         value:
           '<span class="text_fx text_fx_combat_feed" data-text-fx-intensity="1.2" style="--text_fx_marker_intensity:1.2">CRIT lands</span>',
       },
+    ]);
+  });
+
+  test("keeps combat_feed in stacks and forces it to the front", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glitch|combat_feed|flicker:1.2:1.1}}[CRIT] lands{{/fx}}",
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value:
+          '<span class="text_fx text_fx_combat_feed text_fx_glitch text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="1.1" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:1.1">[CRIT] lands</span>',
+      },
+    ]);
+  });
+
+  test("drops non-inline block effects from mixed stacks while keeping combat_feed", () => {
+    const warning_messages = [];
+    const nodes = split_text_fx_markers(
+      "{{fx:terminal|combat_feed|glow:1.1}}telemetry{{/fx}}",
+      {
+        warn: (warning_message) => {
+          warning_messages.push(warning_message);
+        },
+        warning_cache: new Set(),
+      },
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value:
+          '<span class="text_fx text_fx_combat_feed text_fx_glow" data-text-fx-intensity="1.1" style="--text_fx_marker_intensity:1.1">telemetry</span>',
+      },
+    ]);
+
+    expect(warning_messages).toEqual([
+      "[text_fx] auto-sanitized marker 'terminal|combat_feed|glow:1.1' -> 'combat_feed|glow' (block token 'terminal' is not allowed in stacks)",
     ]);
   });
 

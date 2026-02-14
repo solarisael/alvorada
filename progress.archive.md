@@ -110,3 +110,30 @@ Historical session log moved out of `progress.md` to keep active context concise
 - Text effects + coverage tests passed (`bun test tests/text_effects.test.js tests/effects_coverage.test.js`).
 - Build passed after parser and route migration (`bun run build`).
 - CSS hard gates passed (`bun run css:hard-gates:check`).
+
+## Archived Snapshot (2026-02-14)
+
+- Source: stacked text-fx grammar and labs stress-testing session.
+- Scope covered: `fx:a|b|c` stack syntax, sanitization warnings, combat-feed
+  priority behavior, and cinematic chaos lab authoring.
+
+### Completed Work (high level)
+
+- Extended markdown marker parsing to support stacked inline effects with
+  left-to-right precedence while preserving legacy `fx:effect[:v][:m]` markers.
+- Added auto-sanitize pipeline for unknown/duplicate/blacklisted stack tokens
+  with deduped build/dev warnings.
+- Added stack blacklist defaults and runtime parity enforcement between SSR
+  output and client hydration.
+- Allowed `combat_feed` as the inline block exception in stacks and forced it to
+  the front of emitted class order for deterministic priority.
+- Added combat-feed color-priority CSS compatibility so stacked gradient/rainbow
+  effects do not override combat line readability; combat tokens remain dominant.
+- Expanded codex lab content with large cinematic stack coverage and an extreme
+  chaos section for visual QA.
+
+### Validation Highlights
+
+- Text effects + coverage tests passed (`bun test tests/text_effects.test.js tests/effects_coverage.test.js`).
+- Build passed after parser/style/lab updates (`bun run build`).
+- CSS hard gates passed (`bun run css:hard-gates:check`).

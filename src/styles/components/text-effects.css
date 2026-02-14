@@ -506,9 +506,16 @@
 }
 
 .text_fx_combat_feed {
+  --combat_feed_line_color: color-mix(
+    in oklch,
+    currentColor calc(74% + (8% * var(--text_fx_glow_strength))),
+    transparent
+  );
+
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
+  color: var(--combat_feed_line_color);
   text-shadow: 0 0 calc(0.12em * var(--text_fx_glow_strength))
     color-mix(
       in oklch,
@@ -516,6 +523,22 @@
         calc(22% * var(--text_fx_glow_strength)),
       transparent
     );
+}
+
+.text_fx.text_fx_combat_feed.text_fx_gradient,
+.text_fx.text_fx_combat_feed.text_fx_rainbow {
+  background: none;
+  background-clip: border-box;
+  color: var(--combat_feed_line_color);
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+}
+
+.text_fx_combat_feed .combat_token {
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  background: none;
+  background-clip: border-box;
 }
 
 .combat_token {
