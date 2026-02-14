@@ -1,6 +1,10 @@
 .text_fx {
-  --text_fx_glow_strength: var(--site_fx_glow_mult, 1);
-  --text_fx_motion_strength: var(--site_fx_motion_mult, 1);
+  --text_fx_glow_strength: calc(
+    var(--site_fx_glow_mult, 1) * var(--text_fx_marker_intensity, 1)
+  );
+  --text_fx_motion_strength: calc(
+    var(--site_fx_motion_mult, 1) * var(--text_fx_marker_motion, 1)
+  );
 
   position: relative;
   display: inline-flex;
@@ -9,6 +13,441 @@
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
+}
+
+.block_fx {
+  --block_fx_glow_strength: calc(
+    var(--site_fx_glow_mult, 1) * var(--block_fx_marker_intensity, 1)
+  );
+  --block_fx_motion_strength: calc(
+    var(--site_fx_motion_mult, 1) * var(--block_fx_marker_motion, 1)
+  );
+
+  position: relative;
+  display: block;
+  margin-block: 1.2em;
+  padding: 1rem 1.05rem;
+  border: 1px solid
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(28% + (16% * var(--block_fx_glow_strength))),
+      transparent
+    );
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, currentColor 8%, transparent),
+      color-mix(in oklch, currentColor 2%, transparent)
+    ),
+    color-mix(in oklch, black 66%, transparent);
+  box-shadow:
+    0 0 calc(0.9rem * var(--block_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor)
+          calc(22% + (20% * var(--block_fx_glow_strength))),
+        transparent
+      ),
+    inset 0 0 calc(0.5rem * var(--block_fx_glow_strength))
+      color-mix(in oklch, white 5%, transparent);
+}
+
+.block_fx > :first-child {
+  margin-top: 0;
+}
+
+.block_fx > :last-child {
+  margin-bottom: 0;
+}
+
+.block_fx_terminal {
+  font-family: var(--default-mono-font-family, ui-monospace, monospace);
+  color: color-mix(
+    in oklch,
+    currentColor calc(82% + (12% * var(--block_fx_glow_strength))),
+    var(--site_style_accent, currentColor)
+  );
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, black 72%, transparent),
+      color-mix(in oklch, black 58%, transparent)
+    ),
+    color-mix(in oklch, black 72%, transparent);
+  overflow: hidden;
+}
+
+.block_fx_terminal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(0.14 * var(--block_fx_glow_strength));
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 0.18rem,
+    color-mix(in oklch, white 28%, transparent) 0.19rem,
+    transparent 0.22rem
+  );
+  animation: block_fx_terminal_scan
+    calc(5s / var(--block_fx_motion_strength, 1)) linear infinite;
+}
+
+.block_fx_terminal p,
+.block_fx_terminal li {
+  line-height: 1.56;
+}
+
+.block_fx_stat_screen {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(38% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    linear-gradient(
+      140deg,
+      color-mix(in oklch, currentColor 8%, transparent),
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 10%,
+        transparent
+      )
+    ),
+    color-mix(in oklch, black 62%, transparent);
+}
+
+.block_fx_stat_screen ul,
+.block_fx_stat_screen ol {
+  list-style: none;
+  padding-left: 0;
+  margin-block: 0.2em;
+}
+
+.block_fx_stat_screen li {
+  margin-top: 0.48em;
+  padding: 0.5em 0.62em;
+  border: 1px solid
+    color-mix(
+      in oklch,
+      currentColor calc(18% + (12% * var(--block_fx_glow_strength))),
+      transparent
+    );
+  border-radius: 0.5rem;
+  background: color-mix(in oklch, black 44%, transparent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.block_fx_game_screen {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(34% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    radial-gradient(
+      140% 100% at 100% 0,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor)
+          calc(16% + (14% * var(--block_fx_glow_strength))),
+        transparent
+      ),
+      transparent
+    ),
+    color-mix(in oklch, black 62%, transparent);
+}
+
+.block_fx_game_screen > :where(h1, h2, h3, h4, h5, h6, p:first-of-type) {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.block_fx_quest_log {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(42% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 10%,
+        transparent
+      ),
+      color-mix(in oklch, black 58%, transparent)
+    ),
+    color-mix(in oklch, black 66%, transparent);
+}
+
+.block_fx_quest_log ul,
+.block_fx_quest_log ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.block_fx_quest_log li {
+  margin-top: 0.42em;
+  padding-inline: 0.6em;
+  border-inline-start: 0.18rem solid
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(48% + (16% * var(--block_fx_glow_strength))),
+      transparent
+    );
+}
+
+.block_fx_skill_popup {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(48% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    radial-gradient(
+      140% 100% at 50% 0,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor)
+          calc(22% + (14% * var(--block_fx_glow_strength))),
+        transparent
+      ),
+      transparent
+    ),
+    color-mix(in oklch, black 62%, transparent);
+  animation: block_fx_skill_popup_glow
+    calc(2.6s / var(--block_fx_motion_strength, 1)) ease-in-out infinite;
+}
+
+.block_fx_inventory {
+  font-variant-numeric: tabular-nums;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, white 4%, transparent),
+      color-mix(in oklch, black 58%, transparent)
+    ),
+    color-mix(in oklch, black 66%, transparent);
+}
+
+.block_fx_inventory ul,
+.block_fx_inventory ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.block_fx_inventory li {
+  margin-top: 0.36em;
+  padding: 0.4em 0.52em;
+  border-radius: 0.4rem;
+  background: color-mix(in oklch, black 42%, transparent);
+}
+
+.block_fx_combat_feed {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(34% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, currentColor 9%, transparent),
+      color-mix(in oklch, black 62%, transparent)
+    ),
+    color-mix(in oklch, black 68%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.block_fx_combat_feed ul,
+.block_fx_combat_feed ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.block_fx_combat_feed li {
+  margin-top: 0.34em;
+  padding: 0.4em 0.54em;
+  border-inline-start: 0.16rem solid
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(44% + (14% * var(--block_fx_glow_strength))),
+      transparent
+    );
+  background: color-mix(in oklch, black 42%, transparent);
+  border-radius: 0.36rem;
+}
+
+.block_fx_combat_feed li + li {
+  margin-top: 0.4em;
+}
+
+.block_fx_combat_feed :where(strong, b) {
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(58% + (10% * var(--block_fx_glow_strength))),
+    currentColor
+  );
+}
+
+.block_fx_status_effects {
+  background:
+    linear-gradient(
+      120deg,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 10%,
+        transparent
+      ),
+      color-mix(in oklch, black 64%, transparent)
+    ),
+    color-mix(in oklch, black 66%, transparent);
+}
+
+.block_fx_status_effects ul,
+.block_fx_status_effects ol {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0.42em;
+}
+
+.block_fx_status_effects li {
+  padding: 0.38em 0.52em;
+  border-radius: 0.45rem;
+  border: 1px solid
+    color-mix(
+      in oklch,
+      currentColor calc(22% + (10% * var(--block_fx_glow_strength))),
+      transparent
+    );
+}
+
+.block_fx_system_warning {
+  border-color: color-mix(
+    in oklch,
+    oklch(84% 0.14 84) calc(52% + (18% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, oklch(82% 0.16 84) 22%, transparent),
+      color-mix(in oklch, black 62%, transparent)
+    ),
+    color-mix(in oklch, black 64%, transparent);
+  box-shadow:
+    0 0 calc(0.88rem * var(--block_fx_glow_strength))
+      color-mix(in oklch, oklch(82% 0.16 84) 36%, transparent),
+    inset 0 0 calc(0.45rem * var(--block_fx_glow_strength))
+      color-mix(in oklch, oklch(88% 0.1 88) 22%, transparent);
+  border-top-width: 0.24rem;
+}
+
+.block_fx_system_warning > :first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 640;
+}
+
+.block_fx_system_warning :where(strong, b) {
+  color: color-mix(in oklch, oklch(84% 0.14 84) 72%, currentColor);
+}
+
+.block_fx_memory_fragment {
+  border-style: dashed;
+  background:
+    linear-gradient(
+      140deg,
+      color-mix(in oklch, currentColor 8%, transparent),
+      color-mix(in oklch, black 68%, transparent)
+    ),
+    color-mix(in oklch, black 70%, transparent);
+  filter: saturate(0.92);
+}
+
+.block_fx_admin_trace {
+  font-family: var(--default-mono-font-family, ui-monospace, monospace);
+  border-color: color-mix(
+    in oklch,
+    currentColor calc(24% + (12% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  color: color-mix(in oklch, currentColor 78%, transparent);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, black 80%, transparent),
+      color-mix(in oklch, black 72%, transparent)
+    ),
+    color-mix(in oklch, black 78%, transparent);
+}
+
+.block_fx_party_roster {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 10%,
+        transparent
+      ),
+      color-mix(in oklch, black 60%, transparent)
+    ),
+    color-mix(in oklch, black 66%, transparent);
+}
+
+.block_fx_party_roster ul,
+.block_fx_party_roster ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.block_fx_party_roster li {
+  margin-top: 0.34em;
+  padding: 0.38em 0.52em;
+  border-radius: 0.44rem;
+  border: 1px solid
+    color-mix(
+      in oklch,
+      currentColor calc(20% + (10% * var(--block_fx_glow_strength))),
+      transparent
+    );
+}
+
+.block_fx_map_ping {
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor)
+      calc(36% + (16% * var(--block_fx_glow_strength))),
+    transparent
+  );
+  background:
+    radial-gradient(
+      120% 110% at 50% 100%,
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor)
+          calc(16% + (12% * var(--block_fx_glow_strength))),
+        transparent
+      ),
+      transparent
+    ),
+    color-mix(in oklch, black 66%, transparent);
 }
 
 .text_fx_glow {
@@ -66,6 +505,79 @@
     infinite;
 }
 
+.text_fx_combat_feed {
+  font-family: var(--default-mono-font-family, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 calc(0.12em * var(--text_fx_glow_strength))
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(22% * var(--text_fx_glow_strength)),
+      transparent
+    );
+}
+
+.combat_token {
+  font-weight: 640;
+  letter-spacing: 0.03em;
+}
+
+.combat_token_crit {
+  color: color-mix(in oklch, oklch(78% 0.19 29) 72%, currentColor);
+}
+
+.combat_token_miss {
+  color: color-mix(in oklch, oklch(72% 0.05 252) 62%, currentColor);
+}
+
+.combat_token_buff {
+  color: color-mix(in oklch, oklch(84% 0.15 146) 66%, currentColor);
+}
+
+.combat_token_debuff {
+  color: color-mix(in oklch, oklch(74% 0.17 24) 68%, currentColor);
+}
+
+.combat_token_block {
+  color: color-mix(in oklch, oklch(80% 0.12 85) 64%, currentColor);
+}
+
+.combat_token_dodge {
+  color: color-mix(in oklch, oklch(83% 0.11 210) 64%, currentColor);
+}
+
+.combat_token_immune {
+  color: color-mix(in oklch, oklch(86% 0.08 245) 66%, currentColor);
+}
+
+.combat_token_resist {
+  color: color-mix(in oklch, oklch(82% 0.1 115) 64%, currentColor);
+}
+
+.combat_token_mega_crit {
+  color: color-mix(in oklch, oklch(82% 0.23 25) 78%, currentColor);
+  text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
+    color-mix(in oklch, oklch(78% 0.2 25) 48%, transparent);
+}
+
+.combat_token_overkill {
+  color: color-mix(in oklch, oklch(74% 0.2 20) 76%, currentColor);
+}
+
+.combat_token_true_damage {
+  color: color-mix(in oklch, oklch(83% 0.18 332) 72%, currentColor);
+}
+
+.combat_token_guard_break {
+  color: color-mix(in oklch, oklch(84% 0.14 85) 74%, currentColor);
+}
+
+.combat_token_execute {
+  color: color-mix(in oklch, oklch(80% 0.18 10) 74%, currentColor);
+  letter-spacing: 0.04em;
+}
+
 .text_fx_gradient {
   background: linear-gradient(
     90deg,
@@ -77,6 +589,98 @@
   color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.text_fx_aura {
+  text-shadow:
+    0 0 calc(0.24em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 42%,
+        transparent
+      ),
+    0 0 calc(0.44em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 26%,
+        transparent
+      );
+}
+
+.text_fx_etch {
+  text-shadow:
+    0 0.02em 0 color-mix(in oklch, black 44%, transparent),
+    0 0 calc(0.08em * var(--text_fx_glow_strength))
+      color-mix(in oklch, currentColor 28%, transparent);
+  -webkit-text-stroke: 0.018em
+    color-mix(in oklch, currentColor 26%, transparent);
+}
+
+.text_fx_whisper {
+  color: color-mix(
+    in oklch,
+    currentColor calc(68% + (14% * var(--text_fx_glow_strength))),
+    transparent
+  );
+  text-shadow: 0 0 calc(0.1em * var(--text_fx_glow_strength))
+    color-mix(in oklch, currentColor 18%, transparent);
+}
+
+.text_fx_sigil_pulse {
+  text-shadow:
+    0 0 calc(0.16em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 44%,
+        transparent
+      ),
+    0 0 calc(0.3em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 24%,
+        transparent
+      );
+  animation: text_fx_sigil_pulse calc(2.4s / var(--text_fx_motion_strength, 1))
+    ease-in-out infinite;
+}
+
+.text_fx_veil {
+  color: color-mix(
+    in oklch,
+    currentColor calc(82% + (10% * var(--text_fx_glow_strength))),
+    white
+  );
+  text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(24% * var(--text_fx_glow_strength)),
+      transparent
+    );
+}
+
+.text_fx_cadence {
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.text_fx_cadence_soft {
+  font-style: italic;
+  font-weight: 460;
+  letter-spacing: 0.006em;
+}
+
+.text_fx_cadence_oracular {
+  font-style: italic;
+  font-weight: 540;
+  letter-spacing: 0.02em;
+}
+
+.text_fx_cadence_childlike {
+  font-style: italic;
+  font-weight: 480;
+  letter-spacing: 0.014em;
 }
 
 .text_fx_rainbow {
@@ -220,9 +824,64 @@
   }
 }
 
+@keyframes text_fx_sigil_pulse {
+  0%,
+  100% {
+    opacity: 0.92;
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-1.5%) scale(1.02);
+  }
+}
+
+@keyframes block_fx_terminal_scan {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(0.22rem);
+  }
+}
+
+@keyframes block_fx_skill_popup_glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 calc(0.6rem * var(--block_fx_glow_strength))
+        color-mix(
+          in oklch,
+          var(--site_style_accent, currentColor)
+            calc(18% + (12% * var(--block_fx_glow_strength))),
+          transparent
+        ),
+      inset 0 0 calc(0.32rem * var(--block_fx_glow_strength))
+        color-mix(in oklch, white 6%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 calc(1rem * var(--block_fx_glow_strength))
+        color-mix(
+          in oklch,
+          var(--site_style_accent, currentColor)
+            calc(26% + (14% * var(--block_fx_glow_strength))),
+          transparent
+        ),
+      inset 0 0 calc(0.45rem * var(--block_fx_glow_strength))
+        color-mix(in oklch, white 10%, transparent);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .block_fx_terminal::before,
+  .block_fx_skill_popup,
   .text_fx_flicker,
   .text_fx_rainbow,
+  .text_fx_sigil_pulse,
   .text_fx_wiggle,
   .text_fx_float,
   .text_fx_shake,

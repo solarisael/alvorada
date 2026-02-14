@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-10 16:56
+- Updated_utc: 2026-02-13 19:15
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: fine-tune floating decorations and reading container detail polish for the `cinza` launch candidate
+- primary_outcome_next_session: audit and improve typography scale/readability across `rubedo` pages without visual noise regression
 - priority_axis_next_session: polish
 - edit_breadth_next_session: focused
-- first_task_next_session: tune floating decoration placement/opacity first, then refine reading container ornament details
+- first_task_next_session: measure current heading/body/caption size + line-height on `/rubedo` and `/rubedo/[book_slug]`, then map fixes in `src/styles/typography.css`
 - commit_intent_next_session: after_review
-- notes_next_session: user manually adjusted some halo/highlight width/height values by hand and those edits should be preserved
+- notes_next_session: preserve current cinza hard-gates and avoid touching personal tuning in `src/styles/index.css` unless explicitly requested
 
 ## Alias Ledger
 
@@ -50,28 +50,42 @@
 
 ## Active Scope
 
-- State: in_progress
+- State: handoff_ready
 - Branch: master
-- Head: f2660e8
-- Scope_in: `cinza` is split from legacy `gilded_arcane`; icon effect simplified to halo + slow clockwise highlight; next pass is polish-only detailing.
-- Scope_out: new system/theme architecture changes unless required by visual polish.
+- Head: 43b6773
+- Scope_in: visual hard-gates are enforced (ornaments-in-HTML + decorative background stack cap), next pass is typography readability for `rubedo`.
+- Scope_out: new decorative architecture changes unless required for typography readability fixes.
 
 ## Next (Top 3)
 
-1. [ ] Fine-tune floating decorations for `cinza` with simple, readable FX.
-2. [ ] Refine reading container ornamental detail hierarchy and spacing rhythm.
-3. [ ] Validate desktop/mobile + reduced-motion + visual legibility before final lock.
+1. [ ] Audit current typography scale on `/rubedo` and `/rubedo/[book_slug]` (headings, body, caption, line-height, line-length).
+2. [ ] Apply readability-first scale adjustments in `src/styles/typography.css` with minimal route-specific overrides.
+3. [ ] Validate readability on desktop/mobile plus reduced-motion and run hard-gate checks.
 
 ## Blockers
 
 - No technical blocker.
-- Process blocker removed: next-session mode is now required at send-off.
+
+## Possibilities
+
+- Combat token tiers for higher-stakes logs (`MEGA_CRIT`, `OVERKILL`,
+  `TRUE_DAMAGE`, `GUARD_BREAK`, `EXECUTE`).
+- Per-POV overlay presets so the same overlay class family can shift tone by
+  narrator profile.
+- Overlay state modifiers (`calm`, `urgent`, `corrupted`) to avoid effect-name
+  explosion while keeping semantic control.
+- Semantic helpers inside overlays for percentages, durations, rarity labels,
+  and key-value stat lines.
+- Authoring ergonomics bundles/snippets for common scene patterns (combat beat,
+  quest acceptance, checkpoint summary).
+- Dedicated visual QA lab route to review all text and block effects quickly at
+  multiple intensities.
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-10 16:56
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-10 16:56
-- CSS_tunables_check: not_run_this_session
+- Build: pass (`bun run build`) - 2026-02-13 19:09
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-13 19:09
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-13 19:09
 
 ## Notes
 
@@ -81,6 +95,6 @@
 
 ## Launch Reminders
 
-1. [ ] Replace temporary CSS-based `cinza` sun effect with an optimized animated asset if a strong `dark_sun`/`black_hole` loop is approved.
-2. [ ] Run a final performance pass on decorative animations (desktop + mobile + reduced-motion).
-3. [ ] Confirm visual lock for theme keys (`gilded_arcane` legacy and `cinza` launch candidate) before launch freeze.
+1. [ ] Run a dedicated readability QA pass for `rubedo` chapter pages on small/medium/large viewports.
+2. [ ] Confirm typography scale lock before broader visual polish resumes.
+3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.

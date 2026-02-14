@@ -84,6 +84,15 @@ For each new option set, document:
   - `text_fx_flicker`
   - `text_fx_rainbow`
   - `text_fx_gradient`
+  - `text_fx_aura`
+  - `text_fx_etch`
+  - `text_fx_whisper`
+  - `text_fx_sigil_pulse`
+  - `text_fx_veil`
+  - `text_fx_cadence`
+  - `text_fx_cadence_soft`
+  - `text_fx_cadence_oracular`
+  - `text_fx_cadence_childlike`
   - `text_fx_wiggle`
   - `text_fx_float`
   - `text_fx_shake`
@@ -99,7 +108,71 @@ Markdown marker (Obsidian flow):
 
 ```md
 {{fx:glow}}luminous text{{/fx}}
+{{fx:glow:1.4}}luminous text (visual only){{/fx}}
+{{fx:flicker:1.2:0.8}}fading signal (visual + motion){{/fx}}
+{{fx:aura:1.5}}consecrated phrase{{/fx}}
+{{fx:sigil_pulse:1.4:1.1}}warding phrase{{/fx}}
+{{fx:cadence_oracular:1.1}}inner vow{{/fx}}
 ```
+
+- Marker syntax: `{{fx:effect_name[:visual_intensity][:motion_intensity]}}...{{/fx}}`
+- Intensity range: `0.2` -> `3` (runtime-clamped)
+- Coverage rule: every registered effect must appear in at least one sandbox page (`src/pages/codex/labs/test-texts.md` or `src/pages/codex/labs/test-overlays.md`).
+
+## Block Effects
+
+- Purpose: full-width in-prose overlays for LitRPG system layers.
+- Apply on: wrapper `div` generated from standalone marker pairs.
+- Base class: `block_fx`.
+- Effect classes:
+  - `block_fx_terminal`
+  - `block_fx_stat_screen`
+  - `block_fx_game_screen`
+  - `block_fx_quest_log`
+  - `block_fx_skill_popup`
+  - `block_fx_inventory`
+  - `block_fx_combat_feed`
+  - `block_fx_status_effects`
+  - `block_fx_system_warning`
+  - `block_fx_memory_fragment`
+  - `block_fx_admin_trace`
+  - `block_fx_party_roster`
+  - `block_fx_map_ping`
+
+Markdown marker (Obsidian flow):
+
+```md
+{{fx:terminal:1.2:0.9}}
+[SYSTEM] Awaiting input.
+{{/fx}}
+
+{{fx:stat_screen:1.1}}
+
+- HP: 100/100
+- MP: 62/62
+  {{/fx}}
+
+{{fx:game_screen:1.2}}
+**Milestone Quest Received**
+
+- Objective A // 0%
+  {{/fx}}
+
+{{fx:quest_log:1.25}}
+**Active Quests**
+
+- [Main] Descend alive // 0%
+  {{/fx}}
+
+{{fx:system_warning:1.2}}
+**CAUTION: ACCESS INSTABILITY DETECTED**
+{{/fx}}
+```
+
+- Block wrapper element: `div`
+- Marker syntax: `{{fx:block_effect[:visual_intensity][:motion_intensity]}} ... {{/fx}}`
+- Intensity range: `0.2` -> `3` (runtime-clamped)
+- Coverage rule: every registered effect must appear in at least one sandbox page (`src/pages/codex/labs/test-texts.md` or `src/pages/codex/labs/test-overlays.md`).
 
 ## Site Theme
 

@@ -37,12 +37,12 @@ Ownership Matrix
   --reading_plane_shift_y: 0px;
 
   /* Cinza quick tuning: master controls */
-  --cinza_tune_axis_span: 98%;
+  --cinza_tune_axis_span: 0.5rem;
   --cinza_tune_rail_inline_offset: 0%;
   --cinza_tune_corner_scale: 1;
   --cinza_tune_line_block_size: clamp(1.18rem, 2.3vw, 1.76rem);
   --cinza_tune_sigil_size: clamp(2rem, 4.6vw, 3.25rem);
-  --cinza_tune_rail_edge_nudge: 0.8rem;
+  --cinza_tune_rail_edge_nudge: 0.7rem;
   --cinza_tune_offset_up_mult: 1;
   --cinza_tune_offset_down_mult: 1;
   --cinza_tune_offset_left_mult: 1;
@@ -66,10 +66,7 @@ Ownership Matrix
 
   /* Away from border + vertical positioning */
   --cinza_reliquary_corner_scale: var(--cinza_tune_corner_scale);
-  --cinza_reliquary_axis_span: var(--cinza_tune_axis_span);
-  --cinza_reliquary_axis_offset: calc(
-    (100% - var(--cinza_reliquary_axis_span)) / 2
-  );
+  --cinza_reliquary_axis_offset: var(--cinza_tune_axis_span);
   --cinza_reliquary_offset_up_mult: var(--cinza_tune_offset_up_mult);
   --cinza_reliquary_offset_down_mult: var(--cinza_tune_offset_down_mult);
   --cinza_reliquary_offset_left_mult: var(--cinza_tune_offset_left_mult);

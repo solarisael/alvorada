@@ -8,13 +8,15 @@ end: 0058-04-24T07:22:00
 authors_note: Cinza awakens, receives the quest, starts his descent.
 ---
 
-{{fx:blur}}Not too warm, not too cold.{{/fx}}  
-{{fx:chroma}}Such was the morning sun.{{/fx}}  
-{{fx:float}}Not too sweet, not too bitter.{{/fx}}  
-{{fx:glitch}}Such was the smell of petrichor.{{/fx}}
+{{fx:blur:0.8}}Not too warm, not too cold.{{/fx}}  
+{{fx:blur:0.6}}Such was the morning sun.{{/fx}}  
+{{fx:blur:0.5}}Not too sweet, not too bitter.{{/fx}}  
+{{fx:blur:0.3}} Such was the smell of petrichor.{{/fx}}
 
 In between things, bittersweet things.  
-Ones which existed only in areas of gray.
+Ones which existed only in areas of {{fx:glitch}}gray{{/fx}}.
+
+He welcomed the gray, because it let him breathe between {{fx:cadence_childlike}}absolutes.{{/fx}}
 
 Such things were always his favourites.  
 And though he could not recall the cause for this affect, it sparked enough joy to wake him.
@@ -70,7 +72,7 @@ And as he looked down, that very height gave him a new perspective.
 A question so large and domineering that it silenced every other possible thought in his mind.
 
 **???**
-_’How the fuck do I get down from here?’_
+{{fx:cadence_childlike:1.1}}_’How the fuck do I get down from here?’_{{/fx}}
 
 Perplexed at his predicament, he posed dramatically, the caricature of a thinker’s statue, thought it felt much less philosophical with his small frame.
 
@@ -116,54 +118,84 @@ When he felt enough relief to open them again, he was met with an image that gav
 
 A transparent display. He could tell it was not physical, not part of the world, entirely in his mind.
 
+{{fx:terminal:1.2:0.9}}
+
 [ID Found]
 [Access Level Restoration in Progress]
 
+{{/fx}}
+
 But before he could make sense of it, the display started flickering chaotically.
 
-[WARNING]
+{{fx:terminal:1.5:1.2}}
+
+[WARNING]  
 [EDGE CASE DETECTED]
+
+{{/fx}}
 
 His mind flooded with a torrent of notifications he could not even hope to accompany.
 
-[WARN…]
-[EDG…]
-[SECUR…]
+{{fx:terminal:1.5:1.2}}
+
+{{fx:glitch}}[WARN…] {{/fx}}  
+{{fx:glitch:5}}[EDG…] {{/fx}}  
+{{fx:glitch:6}}[SECUR…] {{/fx}}
+
+{{/fx}}
 
 The warnings seemed to scroll endlessly, and the pain rose again, seemingly sharpening with each new warning, cutting deeper and deeper inside his mind.
 
 A few seconds that felt like an hour, cut short abruptly, the pain vanishing as soundlessly as the cave did before. The sudden relief felt more like a whiplash than the pain itself.
 
-[TEMPORARY PROTECTIVE MEASURE DECIDED]
-[Shell preservation. Rate of access restoration throttled.]
+{{fx:terminal:1.3:0.9}}
 
-[Current Level of Access: UNDEFINED]
+[TEMPORARY PROTECTIVE MEASURE DECIDED]  
+[Shell preservation. Rate of access restoration throttled.]  
+[Current Level of Access: UNDEFINED]  
 [Proceed with caution.]
+
+{{/fx}}
 
 The winds picked up again, the stronger cold letting him know his body was covered in sweat.
 
 He could only try his best to calm down and stay away from the edge, still paralyzed.
 
+{{fx:game_screen:1.3:1.05}}
+
 [Milestone Quest Received]
+
+{{/fx}}
 
 For a second he braced himself for pain.
 But the tone of the messages shifted dramatically, accompanied by a sense of longing warmth and safety.
 
+{{fx:terminal:1.1:0.8}}
+
 [Please read it, Cinza.]
 
-[Heirloom]
-[
+{{/fx}}
+
+{{fx:game_screen:1.25}}
+
+[Heirloom]  
 This is your last life, and the only gift I ever had the chance of giving you.
 I'm sorry, ≆̵͓̟̂͌≆̷̞̀≆̸̭̒≆̴̳̣͔̍̈́̕≆̸̺̳̃͝≆̶̩̊̌͝≆̵͓̟̂͌≆̷̞̀≆̸̭̒≆̴̳̣͔̍̈́̕≆̸̺̳̃͝≆̶̩̊̌͝.
 I pray this is enough.
 
+{{/fx}}
+
+{{fx:stat_screen:1.25}}
+
 **OBJECTIVES**
-Find the sinners you call family // 0%
-Find the ones who hurt you the most, yet you could never hate // 0%
-Uncover who you were, who you are now and who you are meant to be // 0%
-Discover your happiness, at least once // 0%
-And… find me, please // 0%
-]
+
+- Find the sinners you call family // 0%
+- Find the ones who hurt you the most, yet you could never hate // 0%
+- Uncover who you were, who you are now and who you are meant to be // 0%
+- Discover your happiness, at least once // 0%
+- And... find me, please // 0%
+
+{{/fx}}
 
 There were no memories he could use to give context to what he read.
 Even so, his chest felt heavy, something felt stuck in his throat.
@@ -187,9 +219,13 @@ And to no one in particular, he spoke aloud, a sentence not even he could make s
 
 Somehow he could tell - somewhere in this world, someone smiled for him.
 
+{{fx:game_screen:1.2:0.9}}
+
 [ACQUIRED BLESSING]
 [■■■■■■■■■■]
 [External Influence Expunged]
+
+{{/fx}}
 
 And as the last of the lingering clouds cleared from he horizon with the winds, so did his mind clear of any complacency from before.
 

@@ -1,8 +1,15 @@
 # Templater Text Effects
 
-This folder contains Obsidian templates for the canonical marker syntax used by the site build pipeline:
+This folder contains Obsidian templates for the canonical marker syntax used by
+the site build pipeline:
 
-`{{fx:effect_name}}...{{/fx}}`
+`{{fx:effect_name[:visual_intensity][:motion_intensity]}}...{{/fx}}`
+
+Notes:
+
+- `visual_intensity` and `motion_intensity` are optional.
+- Single intensity applies to visual only.
+- Supported range for both intensities is clamped to `0.2` -> `3`.
 
 ## Included Effects
 
@@ -14,6 +21,28 @@ This folder contains Obsidian templates for the canonical marker syntax used by 
 - flicker
 - rainbow
 - gradient
+- terminal
+- stat_screen
+- game_screen
+- quest_log
+- skill_popup
+- inventory
+- combat_feed
+- status_effects
+- system_warning
+- memory_fragment
+- admin_trace
+- party_roster
+- map_ping
+- aura
+- etch
+- whisper
+- sigil_pulse
+- veil
+- cadence
+- cadence_soft
+- cadence_oracular
+- cadence_childlike
 - wiggle
 - float
 - shake
@@ -23,6 +52,8 @@ This folder contains Obsidian templates for the canonical marker syntax used by 
 
 - `fx_<effect>.md`: wraps current selection with a specific effect marker.
 - `fx_picker.md`: asks for effect name and wraps current selection.
+- block effects (`terminal`, `stat_screen`, `game_screen`, `quest_log`, `skill_popup`, `inventory`, `combat_feed`, `status_effects`, `system_warning`, `memory_fragment`, `admin_trace`, `party_roster`, `map_ping`) wrap selection in multiline marker blocks.
+- `bundle_*.md`: scene-ready authoring bundles for common LitRPG beats.
 - `quickadd_setup.md`: ready-to-follow QuickAdd mapping.
 - `chapter_template.md`: starter chapter scaffold with canonical text effects.
 

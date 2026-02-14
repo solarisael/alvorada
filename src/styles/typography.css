@@ -71,9 +71,71 @@
     40px
   );
 
+  --font_family_reading_body:
+    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
+  --font_family_reading_heading:
+    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+
+  --font_size_reading_step_0: clamp(
+    14px,
+    calc(14px + (2px * var(--type_fluid_progress))),
+    16px
+  );
+  --font_size_reading_step_1: clamp(
+    16px,
+    calc(16px + (3px * var(--type_fluid_progress))),
+    19px
+  );
+  --font_size_reading_step_2: clamp(
+    20px,
+    calc(20px + (4px * var(--type_fluid_progress))),
+    24px
+  );
+  --font_size_reading_step_3: clamp(
+    24px,
+    calc(24px + (6px * var(--type_fluid_progress))),
+    30px
+  );
+  --font_size_reading_step_4: clamp(
+    30px,
+    calc(30px + (8px * var(--type_fluid_progress))),
+    38px
+  );
+  --font_size_reading_step_5: clamp(
+    38px,
+    calc(38px + (12px * var(--type_fluid_progress))),
+    50px
+  );
+  --font_size_reading_caption: clamp(
+    12px,
+    calc(12px + (1px * var(--type_fluid_progress))),
+    13px
+  );
+
   --line_height_tight: 1.2;
   --line_height_heading: 1.24;
   --line_height_relaxed: 1.7;
+
+  --line_height_reading_body: clamp(
+    1.2,
+    calc(1.5 + (0.08 * var(--type_fluid_progress))),
+    1.5
+  );
+  --line_height_reading_heading: 1.2;
+  --line_height_reading_subheading: 1.28;
+
+  --reading_measure_body: clamp(40ch, 88%, 68ch);
+  --reading_paragraph_gap: 1.18em;
+  --reading_section_gap: 1.38em;
+  --reading_heading_top_gap: 1.44em;
+  --reading_heading_bottom_gap: 0.54em;
+
+  --pov_reading_body_weight: 430;
+  --pov_heading_weight: 560;
+  --pov_cadence_style: italic;
+  --pov_cadence_weight: 500;
+  --pov_cadence_letter_spacing: 0.01em;
+  --pov_cadence_color_mix: 24%;
 }
 
 html {
@@ -86,79 +148,234 @@ body {
   line-height: var(--line_height_body);
 }
 
-#main_reading_container {
-  font-size: var(--font_size_step_0);
-  line-height: var(--line_height_body);
+:where(
+  #main_reading_container,
+  .reading_container,
+  [data-reading-container="true"]
+) {
+  font-family: var(--font_family_reading_body);
+  font-size: var(--font_size_reading_step_0);
+  line-height: var(--line_height_reading_body);
+  font-weight: var(--pov_reading_body_weight);
 }
 
-#main_reading_container :where(h1),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h1),
 .text_step_5 {
-  font-size: var(--font_size_step_5);
-  line-height: var(--line_height_tight);
+  font-family: var(--font_family_reading_heading);
+  font-size: var(--font_size_reading_step_5);
+  line-height: var(--line_height_reading_heading);
+  font-weight: var(--pov_heading_weight);
 }
 
-#main_reading_container :where(h2),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h2),
 .text_step_4 {
-  font-size: var(--font_size_step_4);
-  line-height: var(--line_height_heading);
+  font-family: var(--font_family_reading_heading);
+  font-size: var(--font_size_reading_step_4);
+  line-height: var(--line_height_reading_subheading);
+  font-weight: var(--pov_heading_weight);
 }
 
-#main_reading_container :where(h3),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h3),
 .text_step_3 {
-  font-size: var(--font_size_step_3);
-  line-height: var(--line_height_heading);
+  font-family: var(--font_family_reading_heading);
+  font-size: var(--font_size_reading_step_3);
+  line-height: var(--line_height_reading_subheading);
+  font-weight: var(--pov_heading_weight);
 }
 
-#main_reading_container :where(h4),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h4),
 .text_step_2 {
-  font-size: var(--font_size_step_2);
-  line-height: var(--line_height_heading);
+  font-family: var(--font_family_reading_heading);
+  font-size: var(--font_size_reading_step_2);
+  line-height: var(--line_height_reading_subheading);
+  font-weight: var(--pov_heading_weight);
 }
 
-#main_reading_container :where(h5),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h5),
 .text_step_1 {
-  font-size: var(--font_size_step_1);
+  font-size: var(--font_size_reading_step_1);
   line-height: 1.35;
+  font-weight: var(--pov_heading_weight);
 }
 
-#main_reading_container :where(h6),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h6),
 .text_step_0,
-#main_reading_container :where(p, li, dt, dd, th, td, a, blockquote) {
-  font-size: var(--font_size_step_0);
-  line-height: var(--line_height_body);
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(p, li, dt, dd, th, td, a, blockquote) {
+  font-size: var(--font_size_reading_step_0);
+  line-height: var(--line_height_reading_body);
 }
 
-#main_reading_container :where(small),
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(small),
 .text_step_n1 {
-  font-size: var(--font_size_step_n1);
+  font-size: var(--font_size_reading_caption);
   line-height: 1.4;
 }
 
-#main_reading_container :where(p + p) {
-  margin-top: 1em;
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(p, li, dt, dd, blockquote, pre, table, dl) {
+  max-inline-size: var(--reading_measure_body);
 }
 
-#main_reading_container :where(ul, ol, blockquote, pre, table, dl) {
-  margin-top: 1.1em;
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(p + p) {
+  margin-top: var(--reading_paragraph_gap);
 }
 
-#main_reading_container :where(h1, h2, h3, h4, h5, h6) {
-  margin-top: 1.25em;
-  margin-bottom: 0.5em;
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(ul, ol, blockquote, pre, table, dl) {
+  margin-top: var(--reading_section_gap);
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--reading_heading_top_gap);
+  margin-bottom: var(--reading_heading_bottom_gap);
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(blockquote) {
+  font-style: italic;
+  padding-inline-start: 1.1em;
+  border-inline-start: 1px solid
+    color-mix(in oklch, var(--site_style_accent, currentColor) 28%, transparent);
+}
+
+body.pov_cinza {
+  --font_family_reading_heading:
+    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+  --font_family_reading_body:
+    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
+  --font_size_reading_step_0: clamp(
+    15px,
+    calc(15px + (2px * var(--type_fluid_progress))),
+    17px
+  );
+  --line_height_reading_body: clamp(
+    1.74,
+    calc(1.74 + (0.08 * var(--type_fluid_progress))),
+    1.82
+  );
+  --reading_measure_body: clamp(39ch, 88%, 66ch);
+  --reading_paragraph_gap: 1.24em;
+  --reading_section_gap: 1.46em;
+  --reading_heading_top_gap: 1.52em;
+  --reading_heading_bottom_gap: 0.58em;
+  --pov_cadence_color_mix: 30%;
+}
+
+body.route_rubedo {
+  --reading_measure_body: clamp(38ch, 86%, 64ch);
+}
+
+body.route_rubedo_book {
+  --font_size_reading_step_0: clamp(
+    15px,
+    calc(15px + (3px * var(--type_fluid_progress))),
+    18px
+  );
+  --line_height_reading_body: clamp(
+    1.76,
+    calc(1.76 + (0.1 * var(--type_fluid_progress))),
+    1.86
+  );
+  --reading_measure_body: clamp(37ch, 84%, 62ch);
+  --reading_paragraph_gap: 1.3em;
+  --reading_section_gap: 1.54em;
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(
+    .text_fx_cadence,
+    .text_fx_cadence_soft,
+    .text_fx_cadence_oracular,
+    .text_fx_cadence_childlike
+  ) {
+  font-style: var(--pov_cadence_style);
+  font-weight: var(--pov_cadence_weight);
+  letter-spacing: var(--pov_cadence_letter_spacing);
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent, currentColor) var(--pov_cadence_color_mix),
+    currentColor
+  );
 }
 
 .text_step_n2 {
-  font-size: var(--font_size_step_n2);
+  font-size: var(--font_size_reading_caption);
   line-height: 1.35;
 }
 
 .text_body {
-  font-size: var(--font_size_step_0);
-  line-height: var(--line_height_body);
+  font-size: var(--font_size_reading_step_0);
+  line-height: var(--line_height_reading_body);
 }
 
 .text_lead {
-  font-size: var(--font_size_step_1);
+  font-size: var(--font_size_reading_step_1);
   line-height: var(--line_height_relaxed);
 }
 
@@ -170,18 +387,18 @@ body {
 }
 
 .text_caption {
-  font-size: var(--font_size_step_n2);
+  font-size: var(--font_size_reading_caption);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
 @utility text_body {
-  font-size: var(--font_size_step_0);
-  line-height: var(--line_height_body);
+  font-size: var(--font_size_reading_step_0);
+  line-height: var(--line_height_reading_body);
 }
 
 @utility text_lead {
-  font-size: var(--font_size_step_1);
+  font-size: var(--font_size_reading_step_1);
   line-height: var(--line_height_relaxed);
 }
 
@@ -193,32 +410,32 @@ body {
 }
 
 @utility text_caption {
-  font-size: var(--font_size_step_n2);
+  font-size: var(--font_size_reading_caption);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
 @utility text_step_1 {
-  font-size: var(--font_size_step_1);
+  font-size: var(--font_size_reading_step_1);
   line-height: 1.35;
 }
 
 @utility text_step_2 {
-  font-size: var(--font_size_step_2);
-  line-height: var(--line_height_heading);
+  font-size: var(--font_size_reading_step_2);
+  line-height: var(--line_height_reading_subheading);
 }
 
 @utility text_step_3 {
-  font-size: var(--font_size_step_3);
-  line-height: var(--line_height_heading);
+  font-size: var(--font_size_reading_step_3);
+  line-height: var(--line_height_reading_subheading);
 }
 
 @utility text_step_4 {
-  font-size: var(--font_size_step_4);
-  line-height: var(--line_height_heading);
+  font-size: var(--font_size_reading_step_4);
+  line-height: var(--line_height_reading_subheading);
 }
 
 @utility text_step_5 {
-  font-size: var(--font_size_step_5);
-  line-height: var(--line_height_tight);
+  font-size: var(--font_size_reading_step_5);
+  line-height: var(--line_height_reading_heading);
 }
