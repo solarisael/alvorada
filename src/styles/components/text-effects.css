@@ -255,6 +255,11 @@
 }
 
 .block_fx_combat_feed {
+  --combat_feed_bracket_color: currentColor;
+  --combat_token_bracket_opacity: 0.74;
+  --combat_token_bracket_tracking: -0.08em;
+  --combat_token_bracket_weight: 640;
+
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -511,16 +516,20 @@
     currentColor calc(74% + (8% * var(--text_fx_glow_strength))),
     transparent
   );
+  --combat_feed_bracket_color: var(--combat_feed_line_color);
+  --combat_token_bracket_opacity: 0.74;
+  --combat_token_bracket_tracking: -0.08em;
+  --combat_token_bracket_weight: 640;
 
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.05em;
   color: var(--combat_feed_line_color);
   text-shadow: 0 0 calc(0.12em * var(--text_fx_glow_strength))
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)
-        calc(22% * var(--text_fx_glow_strength)),
+        calc(36% * var(--text_fx_glow_strength)),
       transparent
     );
 }
@@ -542,62 +551,85 @@
 }
 
 .combat_token {
+  @apply mr-2;
+
   font-weight: 640;
   letter-spacing: 0.03em;
 }
 
+.combat_token_bracketed .combat_token_bracket {
+  color: var(--combat_feed_bracket_color, currentColor);
+  opacity: var(--combat_token_bracket_opacity, 0.74);
+  letter-spacing: var(--combat_token_bracket_tracking, -0.08em);
+  font-weight: var(--combat_token_bracket_weight, 640);
+}
+
+.combat_token_bracketed .combat_token_label {
+  letter-spacing: 0.02em;
+}
+
+.block_fx_combat_feed.combat_brackets_soft,
+.text_fx_combat_feed.combat_brackets_soft {
+  --combat_token_bracket_opacity: 0.68;
+}
+
+.block_fx_combat_feed.combat_brackets_text_weight,
+.text_fx_combat_feed.combat_brackets_text_weight {
+  --combat_token_bracket_weight: 400;
+}
+
 .combat_token_crit {
-  color: color-mix(in oklch, oklch(78% 0.19 29) 72%, currentColor);
+  color: color-mix(in oklch, oklch(78% 0.19 29) 100%, currentColor);
 }
 
 .combat_token_miss {
-  color: color-mix(in oklch, oklch(72% 0.05 252) 62%, currentColor);
+  color: color-mix(in oklch, oklch(72% 0.05 252) 100%, currentColor);
 }
 
 .combat_token_buff {
-  color: color-mix(in oklch, oklch(84% 0.15 146) 66%, currentColor);
+  color: color-mix(in oklch, oklch(84% 0.15 146) 100%, currentColor);
 }
 
 .combat_token_debuff {
-  color: color-mix(in oklch, oklch(74% 0.17 24) 68%, currentColor);
+  color: color-mix(in oklch, oklch(74% 0.17 24) 100%, currentColor);
 }
 
 .combat_token_block {
-  color: color-mix(in oklch, oklch(80% 0.12 85) 64%, currentColor);
+  color: color-mix(in oklch, oklch(80% 0.12 85) 100%, currentColor);
 }
 
 .combat_token_dodge {
-  color: color-mix(in oklch, oklch(83% 0.11 210) 64%, currentColor);
+  color: color-mix(in oklch, oklch(83% 0.11 210) 100%, currentColor);
 }
 
 .combat_token_immune {
-  color: color-mix(in oklch, oklch(86% 0.08 245) 66%, currentColor);
+  color: color-mix(in oklch, oklch(86% 0.08 245) 100%, currentColor);
 }
 
 .combat_token_resist {
-  color: color-mix(in oklch, oklch(82% 0.1 115) 64%, currentColor);
+  color: color-mix(in oklch, oklch(82% 0.1 115) 100%, currentColor);
 }
 
 .combat_token_mega_crit {
-  color: color-mix(in oklch, oklch(82% 0.23 25) 78%, currentColor);
+  color: color-mix(in oklch, oklch(82% 0.23 25) 100%, currentColor);
   text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
-    color-mix(in oklch, oklch(78% 0.2 25) 48%, transparent);
+    color-mix(in oklch, oklch(78% 0.2 25) 66%, transparent);
 }
 
 .combat_token_overkill {
-  color: color-mix(in oklch, oklch(74% 0.2 20) 76%, currentColor);
+  color: color-mix(in oklch, oklch(74% 0.2 20) 100%, currentColor);
 }
 
 .combat_token_true_damage {
-  color: color-mix(in oklch, oklch(83% 0.18 332) 72%, currentColor);
+  color: color-mix(in oklch, oklch(83% 0.18 332) 100%, currentColor);
 }
 
 .combat_token_guard_break {
-  color: color-mix(in oklch, oklch(84% 0.14 85) 74%, currentColor);
+  color: color-mix(in oklch, oklch(84% 0.14 85) 100%, currentColor);
 }
 
 .combat_token_execute {
-  color: color-mix(in oklch, oklch(80% 0.18 10) 74%, currentColor);
+  color: color-mix(in oklch, oklch(80% 0.18 10) 100%, currentColor);
   letter-spacing: 0.04em;
 }
 

@@ -54,7 +54,7 @@ const combat_token_class_by_name = Object.freeze({
 });
 
 const combat_token_regex =
-  /\b(MEGA_CRIT|TRUE_DAMAGE|GUARD_BREAK|OVERKILL|EXECUTE|CRIT|MISS|BUFF|DEBUFF|BLOCK|DODGE|IMMUNE|RESIST)\b/gi;
+  /\[(MEGA_CRIT|TRUE_DAMAGE|GUARD_BREAK|OVERKILL|EXECUTE|CRIT|MISS|BUFF|DEBUFF|BLOCK|DODGE|IMMUNE|RESIST)\]|\b(MEGA_CRIT|TRUE_DAMAGE|GUARD_BREAK|OVERKILL|EXECUTE|CRIT|MISS|BUFF|DEBUFF|BLOCK|DODGE|IMMUNE|RESIST)\b/gi;
 
 const parse_combat_token_segments = (text_value) => {
   const raw_text = String(text_value);
@@ -65,6 +65,9 @@ const parse_combat_token_segments = (text_value) => {
 
   for (const token_match of raw_text.matchAll(combat_token_regex)) {
     const full_match = token_match[0];
+    const bracketed_match = token_match[1] ?? null;
+    const bare_match = token_match[2] ?? null;
+    const token_value = bracketed_match ?? bare_match ?? full_match;
     const token_start = token_match.index ?? 0;
     const token_end = token_start + full_match.length;
 
@@ -75,14 +78,22 @@ const parse_combat_token_segments = (text_value) => {
       });
     }
 
-    const token_name = full_match.toLowerCase();
+    const token_name = token_value.toLowerCase();
     const token_class = combat_token_class_by_name[token_name] ?? null;
 
     if (token_class) {
-      segments.push({
+      const token_segment = {
         type: "token",
-        value: full_match,
+        value: token_value,
         token_class,
+      };
+
+      if (bracketed_match) {
+        token_segment.bracketed = true;
+      }
+
+      segments.push({
+        ...token_segment,
       });
     } else {
       segments.push({ type: "text", value: full_match });
@@ -388,6 +399,27 @@ const build_combat_token_fragment = (text_value) => {
 
     const token_span = document.createElement("span");
     token_span.className = `combat_token ${segment_value.token_class}`;
+
+    if (segment_value.bracketed) {
+      token_span.classList.add("combat_token_bracketed");
+
+      const open_bracket_span = document.createElement("span");
+      open_bracket_span.className = "combat_token_bracket";
+      open_bracket_span.textContent = "[";
+
+      const label_span = document.createElement("span");
+      label_span.className = "combat_token_label";
+      label_span.textContent = segment_value.value;
+
+      const close_bracket_span = document.createElement("span");
+      close_bracket_span.className = "combat_token_bracket";
+      close_bracket_span.textContent = "]";
+
+      token_span.append(open_bracket_span, label_span, close_bracket_span);
+      fragment.append(token_span);
+      return;
+    }
+
     token_span.textContent = segment_value.value;
     fragment.append(token_span);
   });

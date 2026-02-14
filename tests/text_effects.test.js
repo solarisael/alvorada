@@ -93,6 +93,27 @@ describe("text_effects runtime normalization", () => {
     ]);
   });
 
+  test("parses explicit bracketed combat tokens", () => {
+    expect(parse_combat_token_segments("[CRIT] lands. [BUFF] pulses.")).toEqual(
+      [
+        {
+          type: "token",
+          value: "CRIT",
+          token_class: "combat_token_crit",
+          bracketed: true,
+        },
+        { type: "text", value: " lands. " },
+        {
+          type: "token",
+          value: "BUFF",
+          token_class: "combat_token_buff",
+          bracketed: true,
+        },
+        { type: "text", value: " pulses." },
+      ],
+    );
+  });
+
   test("splits token lists from data attributes", () => {
     expect(split_text_fx_tokens("glow, neon|flicker")).toEqual([
       "glow",

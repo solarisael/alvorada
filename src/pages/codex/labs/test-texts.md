@@ -125,8 +125,12 @@ Note: these lines intentionally trigger auto-sanitize warnings while preserving 
 
 {{fx:combat_feed:4}}[CRIT] Cinza deals 14 to Wind Wisp.{{/fx}}
 {{fx:combat_feed:4}}[MEGA_CRIT] Cinza tears open the ward seam.{{/fx}}
-{{fx:combat_feed:1.2}}[TRUE_DAMAGE] Soul-lash bypasses armor.{{/fx}}
+{{fx:combat_feed:4}}[TRUE_DAMAGE] Soul-lash bypasses armor.{{/fx}}
 {{fx:combat_feed:1.2}}[BUFF] Lantern Blessing applied // 18s.{{/fx}}
+
+<span class="text_fx text_fx_combat_feed combat_brackets_soft" data-text-fx-intensity="1.2">[CRIT] Brackets soft opacity preview.</span>
+
+<span class="text_fx text_fx_combat_feed combat_brackets_text_weight" data-text-fx-intensity="1.2">[CRIT] Brackets body-weight preview.</span>
 {{fx:combat_feed:1.2}}[DEBUFF] Chilled inflicted // 6s.{{/fx}}
 {{fx:combat_feed:1.2}}[MISS] Wind Wisp fails to strike.{{/fx}}
 {{fx:combat_feed:1.2}}[DODGE] Cinza slips past the second lash.{{/fx}}
