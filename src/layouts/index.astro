@@ -11,6 +11,22 @@ import Navbar from "../components/navbar.astro";
 import StyleSwitcher from "../components/style_switcher.astro";
 
 const { body_class = "" } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const auto_body_classes = [];
+
+if (pathname === "/rubedo" || pathname.startsWith("/rubedo/")) {
+  auto_body_classes.push("route_rubedo");
+}
+
+const manual_body_classes = String(body_class).split(/\s+/).filter(Boolean);
+
+const resolved_body_classes = Array.from(
+  new Set([
+    "page-transition-breath-noticeable",
+    ...auto_body_classes,
+    ...manual_body_classes,
+  ]),
+);
 ---
 
 <!doctype html>
@@ -30,7 +46,7 @@ const { body_class = "" } = Astro.props;
     <script src="/js/scripts.js" type="module"></script>
   </head>
   <body
-    class:list={["page-transition-breath-noticeable", body_class]}
+    class:list={resolved_body_classes}
     hx-boost="true"
     hx-ext="morph,head-support,preload,sse"
     hx-target="#content"

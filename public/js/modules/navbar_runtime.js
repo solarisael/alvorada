@@ -1,0 +1,372 @@
+import {
+  debounce,
+  throttle,
+  queuer_preparator,
+} from "/js/modules/performance.js";
+
+const window_any = /** @type {any} */ (window);
+const POINTER_MOVE_DEBOUNCE_MS = 16;
+const POINTER_LEAVE_DEBOUNCE_MS = 16;
+const NAV_SCROLL_THROTTLE_MS = 16;
+const NAV_REVEAL_TOP_OFFSET_PX = 96;
+const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
+let last_applied_pathname = null;
+
+/**
+ * @param {string} pathname_value
+ */
+const normalize_pathname = (pathname_value) => {
+  const trimmed_pathname = pathname_value.replace(/\/+$/, "");
+
+  return trimmed_pathname || "/";
+};
+
+/**
+ * @param {string} current_pathname
+ * @param {string} target_pathname
+ */
+const is_section_path_active = (current_pathname, target_pathname) => {
+  if (target_pathname === "/") {
+    return current_pathname === "/";
+  }
+
+  return (
+    current_pathname === target_pathname ||
+    current_pathname.startsWith(`${target_pathname}/`)
+  );
+};
+
+const ensure_action_queuer = () => {
+  if (window_any.action_queuer) {
+    return;
+  }
+
+  queuer_preparator();
+};
+
+/**
+ * @param {string | null} [pathname_override=null]
+ */
+const apply_route_active_state = (pathname_override = null) => {
+  const nav_node = document.querySelector("#desktop-nav");
+
+  if (!(nav_node instanceof HTMLElement)) {
+    return;
+  }
+
+  const current_pathname = normalize_pathname(
+    pathname_override ?? window.location.pathname,
+  );
+
+  if (last_applied_pathname === current_pathname) {
+    return;
+  }
+
+  const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+    nav_node.querySelectorAll("[data-nav-pill]")
+  );
+
+  pill_nodes.forEach((pill_node) => {
+    if (!(pill_node instanceof HTMLAnchorElement)) {
+      return;
+    }
+
+    const href_value = pill_node.getAttribute("href");
+
+    if (!href_value) {
+      return;
+    }
+
+    const target_pathname = normalize_pathname(
+      new URL(href_value, window.location.origin).pathname,
+    );
+    const is_exact_match = current_pathname === target_pathname;
+    const is_active = is_section_path_active(current_pathname, target_pathname);
+
+    pill_node.classList.toggle("is-route-active", is_active);
+
+    if (is_exact_match) {
+      pill_node.setAttribute("aria-current", "page");
+      return;
+    }
+
+    pill_node.removeAttribute("aria-current");
+  });
+
+  const home_node = nav_node.querySelector("#icon-user");
+
+  if (!(home_node instanceof HTMLAnchorElement)) {
+    return;
+  }
+
+  const is_home_active = current_pathname === "/";
+  home_node.classList.toggle("is-route-active", is_home_active);
+
+  if (is_home_active) {
+    home_node.setAttribute("aria-current", "page");
+    last_applied_pathname = current_pathname;
+    return;
+  }
+
+  home_node.removeAttribute("aria-current");
+  last_applied_pathname = current_pathname;
+};
+
+/**
+ * @param {Event} event
+ */
+const derive_request_pathname = (event) => {
+  const htmx_event = /** @type {CustomEvent} */ (event);
+  const detail_any = /** @type {any} */ (htmx_event.detail);
+  const raw_request_path =
+    detail_any?.pathInfo?.finalRequestPath ??
+    detail_any?.requestConfig?.path ??
+    detail_any?.path;
+
+  if (typeof raw_request_path === "string") {
+    return normalize_pathname(
+      new URL(raw_request_path, window.location.origin).pathname,
+    );
+  }
+
+  const trigger_node = detail_any?.elt;
+
+  if (trigger_node instanceof HTMLAnchorElement) {
+    return normalize_pathname(new URL(trigger_node.href).pathname);
+  }
+
+  return null;
+};
+
+/**
+ * @param {NodeListOf<HTMLElement>} pill_nodes
+ */
+const reset_pill_glow = (pill_nodes) => {
+  pill_nodes.forEach((pill_node) => {
+    pill_node.style.setProperty("--pill_pointer_glow", "0");
+  });
+};
+
+/**
+ * @param {NodeListOf<HTMLElement>} pill_nodes
+ * @param {number} pointer_x
+ * @param {number} pointer_y
+ */
+const update_pill_glow = (pill_nodes, pointer_x, pointer_y) => {
+  const glow_radius = 180;
+  let nearest_pill = null;
+  let nearest_distance = Number.POSITIVE_INFINITY;
+
+  pill_nodes.forEach((pill_node) => {
+    const pill_box = pill_node.getBoundingClientRect();
+    const center_x = pill_box.left + pill_box.width / 2;
+    const center_y = pill_box.top + pill_box.height / 2;
+    const delta_x = pointer_x - center_x;
+    const delta_y = pointer_y - center_y;
+    const distance = Math.hypot(delta_x, delta_y);
+
+    if (distance < nearest_distance) {
+      nearest_distance = distance;
+      nearest_pill = pill_node;
+    }
+  });
+
+  pill_nodes.forEach((pill_node) => {
+    const is_nearest = pill_node === nearest_pill;
+
+    if (!is_nearest || nearest_distance > glow_radius) {
+      pill_node.style.setProperty("--pill_pointer_glow", "0");
+      return;
+    }
+
+    const proximity = Math.max(0, 1 - nearest_distance / glow_radius);
+    const glow_power = proximity.toFixed(3);
+    pill_node.style.setProperty("--pill_pointer_glow", glow_power);
+  });
+};
+
+/**
+ * @param {Document | Element} [root_node=document]
+ */
+const init_navbar_effects = (root_node = document) => {
+  ensure_action_queuer();
+
+  const nav_rails = /** @type {NodeListOf<HTMLElement>} */ (
+    root_node.querySelectorAll("[data-nav-rail]")
+  );
+
+  nav_rails.forEach((nav_rail) => {
+    if (nav_rail.dataset.navInit === "true") {
+      return;
+    }
+
+    nav_rail.dataset.navInit = "true";
+
+    const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+      nav_rail.querySelectorAll("[data-nav-pill]")
+    );
+
+    if (!pill_nodes.length) {
+      return;
+    }
+
+    const move_debounce_name = `nav_rail_move_${Math.random().toString(36).slice(2)}`;
+    const leave_debounce_name = `nav_rail_leave_${Math.random().toString(36).slice(2)}`;
+    let is_pointer_inside = false;
+
+    const apply_pointer_effects = (client_x, client_y) => {
+      const rail_box = nav_rail.getBoundingClientRect();
+      const cursor_x = client_x - rail_box.left;
+      const cursor_y = client_y - rail_box.top;
+
+      nav_rail.classList.add("is-pointer-active");
+      nav_rail.style.setProperty("--cursor_x", `${cursor_x}px`);
+      nav_rail.style.setProperty("--cursor_y", `${cursor_y}px`);
+
+      update_pill_glow(pill_nodes, client_x, client_y);
+    };
+
+    nav_rail.addEventListener("pointerenter", () => {
+      is_pointer_inside = true;
+      nav_rail.classList.add("is-pointer-active");
+    });
+
+    nav_rail.addEventListener("pointermove", (event) => {
+      const pointer_event = /** @type {PointerEvent} */ (event);
+
+      throttle(
+        apply_pointer_effects,
+        POINTER_MOVE_DEBOUNCE_MS,
+        move_debounce_name,
+        [pointer_event.clientX, pointer_event.clientY],
+      );
+    });
+
+    nav_rail.addEventListener("pointerleave", () => {
+      is_pointer_inside = false;
+
+      debounce(
+        () => {
+          if (is_pointer_inside) {
+            return;
+          }
+
+          nav_rail.classList.remove("is-pointer-active");
+          nav_rail.style.setProperty("--cursor_x", "50%");
+          nav_rail.style.setProperty("--cursor_y", "50%");
+          reset_pill_glow(pill_nodes);
+        },
+        POINTER_LEAVE_DEBOUNCE_MS,
+        leave_debounce_name,
+      );
+    });
+  });
+};
+
+const init_navbar_visibility = () => {
+  if (window_any.__navbar_visibility_listener_bound) {
+    return;
+  }
+
+  const nav_node = document.querySelector("#desktop-nav");
+
+  if (!(nav_node instanceof HTMLElement)) {
+    return;
+  }
+
+  ensure_action_queuer();
+
+  let last_scroll_y = window.scrollY;
+  const scroll_throttle_name = `nav_scroll_${Math.random().toString(36).slice(2)}`;
+
+  const update_nav_visibility = () => {
+    const current_scroll_y = window.scrollY;
+
+    if (current_scroll_y <= NAV_REVEAL_TOP_OFFSET_PX) {
+      nav_node.classList.remove("is-nav-hidden");
+      last_scroll_y = current_scroll_y;
+      return;
+    }
+
+    const scroll_delta = current_scroll_y - last_scroll_y;
+
+    if (Math.abs(scroll_delta) < NAV_SCROLL_DELTA_THRESHOLD_PX) {
+      return;
+    }
+
+    const should_hide_nav = scroll_delta > 0;
+    nav_node.classList.toggle("is-nav-hidden", should_hide_nav);
+    last_scroll_y = current_scroll_y;
+  };
+
+  nav_node.addEventListener("focusin", () => {
+    nav_node.classList.remove("is-nav-hidden");
+  });
+
+  window.addEventListener("scroll", () => {
+    throttle(
+      update_nav_visibility,
+      NAV_SCROLL_THROTTLE_MS,
+      scroll_throttle_name,
+    );
+  });
+
+  window_any.__navbar_visibility_listener_bound = true;
+};
+
+init_navbar_effects();
+init_navbar_visibility();
+apply_route_active_state();
+
+if (!window_any.__navbar_htmx_before_request_bound) {
+  document.body?.addEventListener("htmx:beforeRequest", (event) => {
+    const request_pathname = derive_request_pathname(event);
+
+    if (!request_pathname) {
+      return;
+    }
+
+    const current_pathname = normalize_pathname(window.location.pathname);
+
+    if (request_pathname === current_pathname) {
+      return;
+    }
+
+    apply_route_active_state(request_pathname);
+  });
+
+  window_any.__navbar_htmx_before_request_bound = true;
+}
+
+if (!window_any.__navbar_htmx_after_swap_bound) {
+  document.body?.addEventListener("htmx:afterSwap", (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const swap_target = htmx_event.detail?.target;
+
+    if (!(swap_target instanceof HTMLElement) || swap_target.id !== "content") {
+      return;
+    }
+
+    apply_route_active_state();
+  });
+
+  window_any.__navbar_htmx_after_swap_bound = true;
+}
+
+if (!window_any.__navbar_route_listener_bound) {
+  window.addEventListener("popstate", () => {
+    apply_route_active_state();
+  });
+
+  window_any.__navbar_route_listener_bound = true;
+}
+
+if (!window_any.__navbar_htmx_listener_bound) {
+  document.body?.addEventListener("htmx:load", (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const load_root = htmx_event.detail?.elt ?? document;
+    init_navbar_effects(load_root);
+  });
+
+  window_any.__navbar_htmx_listener_bound = true;
+}

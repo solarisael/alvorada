@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-14 03:06
+- Updated_utc: 2026-02-14 14:46
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: complete typography pass for readability and hierarchy across /rubedo routes while preserving combat_feed token behavior
-- priority_axis_next_session: polish
+- primary_outcome_next_session: design and scaffold Eyes + Timeline systems for chapter sequencing with POV-based content switching and optional story paths
+- priority_axis_next_session: architecture
 - edit_breadth_next_session: focused
-- first_task_next_session: run rubedo typography audit on mobile/desktop, then adjust scale, line-height, and measure in `src/styles/typography.css`
+- first_task_next_session: define canonical Eyes + Timeline data model (chapter nodes, timeline ordering, POV variants, and optional branch transitions)
 - commit_intent_next_session: after_review
-- notes_next_session: combat_feed bracket-inside-token rendering is live; brackets stay neutral while token labels keep semantic color; soft/body-weight bracket preview options are available in labs
+- notes_next_session: keep POV system independent from route classes; timeline should support deterministic chapter order plus optional branch edges resolved by POV and path choices
 
 ## Alias Ledger
 
@@ -53,14 +53,14 @@
 - State: in_progress
 - Branch: master
 - Head: (pending_commit)
-- Scope_in: rubedo typography readability pass (scale, hierarchy, line-height, line-length) with no regressions to text-fx/combat_feed token rendering.
-- Scope_out: new text-effect feature expansion unless explicitly requested during typography pass.
+- Scope_in: Eyes + Timeline architecture for chapter ordering, POV-based content switching, and optional story path branching.
+- Scope_out: visual polish refactors unless required to validate timeline/POV behavior.
 
 ## Next (Top 3)
 
-1. [ ] Audit typography on `/rubedo` and `/rubedo/[book_slug]` at mobile/tablet/desktop breakpoints.
-2. [ ] Apply readability-first typography adjustments in `src/styles/typography.css` (scale, line-height, measure, emphasis hierarchy).
-3. [ ] Re-validate text effects in codex labs to ensure combat_feed bracket styling remains stable.
+1. [ ] Define Eyes + Timeline schema (`chapter_id`, `timeline_position`, `pov_key`, `branch_key`, `next_edges`).
+2. [ ] Specify resolution logic for chapter variant selection by POV and path state.
+3. [ ] Build a minimal prototype flow to validate timeline navigation and POV/path switching.
 
 ## Blockers
 
@@ -83,9 +83,9 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-14 02:58
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-14 02:58
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-14 02:58
+- Build: pass (`bun run build`) - 2026-02-14 14:43
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-14 14:43
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-14 14:43
 
 ## Notes
 
@@ -95,8 +95,8 @@
 
 ## Launch Reminders
 
-1. [ ] Run a dedicated readability QA pass for `rubedo` chapter pages on small/medium/large viewports.
-2. [ ] Confirm typography scale lock before broader visual polish resumes.
+1. [ ] Lock Eyes + Timeline data contracts before implementing storage/rendering behavior.
+2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
 
 ## Session Delta (2026-02-14)
@@ -108,3 +108,7 @@
 - Added bracket-aware combat token parsing for explicit `[TOKEN]` forms.
 - Moved brackets inside `combat_token` rendering while keeping bracket color neutral and token label color semantic.
 - Added bracket style tunables and preview variants (`combat_brackets_soft`, `combat_brackets_text_weight`) in labs.
+- Modularized component inline scripts into component-local runtime modules (`navbar`, `mobile_navbar`, `breadcrumbers`, `style_switcher`).
+- Refactored `src/styles/typography.css` to canonical token families (`type`, `leading`, `measure`, `space`, `weight`) with section headers and mini TOC.
+- Collapsed rubedo route typography overrides into `route_rubedo` only and removed nested rubedo route-class dependency.
+- Added layout-level auto-derivation for `route_rubedo` from pathname while keeping POV classes explicit/manual.

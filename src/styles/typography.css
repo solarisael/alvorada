@@ -1,162 +1,150 @@
+/* TYPOGRAPHY TOKENS MAP
+ * 01) VIEWPORT FLUID RATIO
+ * 02) TYPE SCALE
+ * 03) LEADING (LINE-HEIGHT)
+ * 04) MEASURE
+ * 05) SPACING RHYTHM
+ * 06) WEIGHT
+ * 07) FONTS + CADENCE
+ * 08) OVERRIDES: POV
+ * 09) OVERRIDES: ROUTE
+ * 10) CONSUMERS + UTILITIES
+ */
+
 :root {
-  --type_min_viewport: 768;
-  --type_max_viewport: 1440;
-  --type_viewport_range: calc(
-    var(--type_max_viewport) - var(--type_min_viewport)
+  /* VIEWPORT FLUID RATIO */
+  --type_viewport_min: 768;
+  --type_viewport_max: 1440;
+  --type_viewport_span: calc(
+    var(--type_viewport_max) - var(--type_viewport_min)
   );
-  --type_fluid_progress: clamp(
+  --type_fluid_ratio: clamp(
     0,
     calc(
-      (100vw - (var(--type_min_viewport) * 1px)) /
-        (var(--type_viewport_range) * 1px)
+      (100vw - (var(--type_viewport_min) * 1px)) /
+        (var(--type_viewport_span) * 1px)
     ),
     1
   );
 
-  --font_size_min: 10;
-  --font_size_max: 12;
-
-  --font_size_body: clamp(
-    calc(var(--font_size_min) * 1px),
+  /* TYPE SCALE */
+  --type_ui_base_min_px: 10;
+  --type_ui_base_max_px: 12;
+  --type_ui_body: clamp(
+    calc(var(--type_ui_base_min_px) * 1px),
     calc(
-      (var(--font_size_min) * 1px) +
+      (var(--type_ui_base_min_px) * 1px) +
         (
-          (var(--font_size_max) - var(--font_size_min)) *
-            var(--type_fluid_progress) * 1px
+          (var(--type_ui_base_max_px) - var(--type_ui_base_min_px)) *
+            var(--type_fluid_ratio) * 1px
         )
     ),
-    calc(var(--font_size_max) * 1px)
+    calc(var(--type_ui_base_max_px) * 1px)
   );
+  --type_ui_n2: clamp(8px, calc(8px + (1px * var(--type_fluid_ratio))), 9px);
+  --type_ui_n1: clamp(9px, calc(9px + (1px * var(--type_fluid_ratio))), 10px);
+  --type_ui_0: var(--type_ui_body);
+  --type_ui_1: clamp(12px, calc(12px + (2px * var(--type_fluid_ratio))), 14px);
+  --type_ui_2: clamp(14px, calc(14px + (4px * var(--type_fluid_ratio))), 18px);
+  --type_ui_3: clamp(18px, calc(18px + (6px * var(--type_fluid_ratio))), 24px);
+  --type_ui_4: clamp(24px, calc(24px + (8px * var(--type_fluid_ratio))), 32px);
+  --type_ui_5: clamp(30px, calc(30px + (10px * var(--type_fluid_ratio))), 40px);
 
-  --line_height_body: clamp(
-    1.45,
-    calc(1.45 + (0.2 * var(--type_fluid_progress))),
-    1.65
-  );
-
-  --font_size_step_n2: clamp(
-    8px,
-    calc(8px + (1px * var(--type_fluid_progress))),
-    9px
-  );
-  --font_size_step_n1: clamp(
-    9px,
-    calc(9px + (1px * var(--type_fluid_progress))),
-    10px
-  );
-  --font_size_step_0: var(--font_size_body);
-  --font_size_step_1: clamp(
-    12px,
-    calc(12px + (2px * var(--type_fluid_progress))),
-    14px
-  );
-  --font_size_step_2: clamp(
+  --type_reading_0: clamp(
     14px,
-    calc(14px + (4px * var(--type_fluid_progress))),
-    18px
-  );
-  --font_size_step_3: clamp(
-    18px,
-    calc(18px + (6px * var(--type_fluid_progress))),
-    24px
-  );
-  --font_size_step_4: clamp(
-    24px,
-    calc(24px + (8px * var(--type_fluid_progress))),
-    32px
-  );
-  --font_size_step_5: clamp(
-    30px,
-    calc(30px + (10px * var(--type_fluid_progress))),
-    40px
-  );
-
-  --font_family_reading_body:
-    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
-  --font_family_reading_heading:
-    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
-
-  --font_size_reading_step_0: clamp(
-    14px,
-    calc(14px + (2px * var(--type_fluid_progress))),
+    calc(14px + (2px * var(--type_fluid_ratio))),
     16px
   );
-  --font_size_reading_step_1: clamp(
+  --type_reading_1: clamp(
     16px,
-    calc(16px + (3px * var(--type_fluid_progress))),
+    calc(16px + (3px * var(--type_fluid_ratio))),
     19px
   );
-  --font_size_reading_step_2: clamp(
+  --type_reading_2: clamp(
     20px,
-    calc(20px + (4px * var(--type_fluid_progress))),
+    calc(20px + (4px * var(--type_fluid_ratio))),
     24px
   );
-  --font_size_reading_step_3: clamp(
+  --type_reading_3: clamp(
     24px,
-    calc(24px + (6px * var(--type_fluid_progress))),
+    calc(24px + (6px * var(--type_fluid_ratio))),
     30px
   );
-  --font_size_reading_step_4: clamp(
+  --type_reading_4: clamp(
     30px,
-    calc(30px + (8px * var(--type_fluid_progress))),
+    calc(30px + (8px * var(--type_fluid_ratio))),
     38px
   );
-  --font_size_reading_step_5: clamp(
+  --type_reading_5: clamp(
     38px,
-    calc(38px + (12px * var(--type_fluid_progress))),
+    calc(38px + (12px * var(--type_fluid_ratio))),
     50px
   );
-  --font_size_reading_caption: clamp(
+  --type_reading_caption: clamp(
     12px,
-    calc(12px + (1px * var(--type_fluid_progress))),
+    calc(12px + (1px * var(--type_fluid_ratio))),
     13px
   );
 
-  --line_height_tight: 1.2;
-  --line_height_heading: 1.24;
-  --line_height_relaxed: 1.7;
-
-  --line_height_reading_body: clamp(
+  /* LEADING (LINE-HEIGHT) */
+  --leading_ui_body: clamp(
+    1.45,
+    calc(1.45 + (0.2 * var(--type_fluid_ratio))),
+    1.65
+  );
+  --leading_relaxed: 1.7;
+  --leading_reading_body: clamp(
     1.2,
-    calc(1.5 + (0.08 * var(--type_fluid_progress))),
+    calc(1.5 + (0.08 * var(--type_fluid_ratio))),
     1.5
   );
-  --line_height_reading_heading: 1.2;
-  --line_height_reading_subheading: 1.28;
+  --leading_reading_heading: 1.2;
+  --leading_reading_subheading: 1.28;
 
-  --reading_measure_body: clamp(40ch, 88%, 68ch);
-  --reading_paragraph_gap: 1.18em;
-  --reading_section_gap: 1.38em;
-  --reading_heading_top_gap: 1.44em;
-  --reading_heading_bottom_gap: 0.54em;
+  /* MEASURE */
+  --measure_reading_body: clamp(40ch, 88%, 68ch);
 
-  --pov_reading_body_weight: 430;
-  --pov_heading_weight: 560;
-  --pov_cadence_style: italic;
-  --pov_cadence_weight: 500;
-  --pov_cadence_letter_spacing: 0.01em;
-  --pov_cadence_color_mix: 24%;
+  /* SPACING RHYTHM */
+  --space_reading_paragraph: 1.18em;
+  --space_reading_section: 1.38em;
+  --space_reading_heading_top: 1.44em;
+  --space_reading_heading_bottom: 0.54em;
+
+  /* WEIGHT */
+  --weight_reading_body: 430;
+  --weight_reading_heading: 560;
+  --weight_cadence: 500;
+
+  /* FONTS + CADENCE */
+  --font_reading_body:
+    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
+  --font_reading_heading:
+    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+  --cadence_font_style: italic;
+  --cadence_letter_spacing: 0.01em;
+  --cadence_color_mix: 24%;
 }
 
 html {
-  font-size: var(--font_size_body);
-  line-height: var(--line_height_body);
+  font-size: var(--type_ui_body);
+  line-height: var(--leading_ui_body);
 }
 
 body {
-  font-size: var(--font_size_step_0);
-  line-height: var(--line_height_body);
+  font-size: var(--type_ui_0);
+  line-height: var(--leading_ui_body);
 }
 
+/* CONSUMERS: READING CONTAINERS */
 :where(
   #main_reading_container,
   .reading_container,
   [data-reading-container="true"]
 ) {
-  font-family: var(--font_family_reading_body);
-  font-size: var(--font_size_reading_step_0);
-  line-height: var(--line_height_reading_body);
-  font-weight: var(--pov_reading_body_weight);
+  font-family: var(--font_reading_body);
+  font-size: var(--type_reading_0);
+  line-height: var(--leading_reading_body);
+  font-weight: var(--weight_reading_body);
 }
 
 :where(
@@ -166,10 +154,10 @@ body {
   )
   :where(h1),
 .text_step_5 {
-  font-family: var(--font_family_reading_heading);
-  font-size: var(--font_size_reading_step_5);
-  line-height: var(--line_height_reading_heading);
-  font-weight: var(--pov_heading_weight);
+  font-family: var(--font_reading_heading);
+  font-size: var(--type_reading_5);
+  line-height: var(--leading_reading_heading);
+  font-weight: var(--weight_reading_heading);
 }
 
 :where(
@@ -179,10 +167,10 @@ body {
   )
   :where(h2),
 .text_step_4 {
-  font-family: var(--font_family_reading_heading);
-  font-size: var(--font_size_reading_step_4);
-  line-height: var(--line_height_reading_subheading);
-  font-weight: var(--pov_heading_weight);
+  font-family: var(--font_reading_heading);
+  font-size: var(--type_reading_4);
+  line-height: var(--leading_reading_subheading);
+  font-weight: var(--weight_reading_heading);
 }
 
 :where(
@@ -192,10 +180,10 @@ body {
   )
   :where(h3),
 .text_step_3 {
-  font-family: var(--font_family_reading_heading);
-  font-size: var(--font_size_reading_step_3);
-  line-height: var(--line_height_reading_subheading);
-  font-weight: var(--pov_heading_weight);
+  font-family: var(--font_reading_heading);
+  font-size: var(--type_reading_3);
+  line-height: var(--leading_reading_subheading);
+  font-weight: var(--weight_reading_heading);
 }
 
 :where(
@@ -205,10 +193,10 @@ body {
   )
   :where(h4),
 .text_step_2 {
-  font-family: var(--font_family_reading_heading);
-  font-size: var(--font_size_reading_step_2);
-  line-height: var(--line_height_reading_subheading);
-  font-weight: var(--pov_heading_weight);
+  font-family: var(--font_reading_heading);
+  font-size: var(--type_reading_2);
+  line-height: var(--leading_reading_subheading);
+  font-weight: var(--weight_reading_heading);
 }
 
 :where(
@@ -218,9 +206,9 @@ body {
   )
   :where(h5),
 .text_step_1 {
-  font-size: var(--font_size_reading_step_1);
+  font-size: var(--type_reading_1);
   line-height: 1.35;
-  font-weight: var(--pov_heading_weight);
+  font-weight: var(--weight_reading_heading);
 }
 
 :where(
@@ -236,8 +224,8 @@ body {
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, th, td, a, blockquote) {
-  font-size: var(--font_size_reading_step_0);
-  line-height: var(--line_height_reading_body);
+  font-size: var(--type_reading_0);
+  line-height: var(--leading_reading_body);
 }
 
 :where(
@@ -247,7 +235,7 @@ body {
   )
   :where(small),
 .text_step_n1 {
-  font-size: var(--font_size_reading_caption);
+  font-size: var(--type_reading_caption);
   line-height: 1.4;
 }
 
@@ -257,7 +245,7 @@ body {
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, blockquote, pre, table, dl) {
-  max-inline-size: var(--reading_measure_body);
+  max-inline-size: var(--measure_reading_body);
 }
 
 :where(
@@ -266,7 +254,7 @@ body {
     [data-reading-container="true"]
   )
   :where(p + p) {
-  margin-top: var(--reading_paragraph_gap);
+  margin-top: var(--space_reading_paragraph);
 }
 
 :where(
@@ -275,7 +263,7 @@ body {
     [data-reading-container="true"]
   )
   :where(ul, ol, blockquote, pre, table, dl) {
-  margin-top: var(--reading_section_gap);
+  margin-top: var(--space_reading_section);
 }
 
 :where(
@@ -284,8 +272,72 @@ body {
     [data-reading-container="true"]
   )
   :where(h1, h2, h3, h4, h5, h6) {
-  margin-top: var(--reading_heading_top_gap);
-  margin-bottom: var(--reading_heading_bottom_gap);
+  margin-top: var(--space_reading_heading_top);
+  margin-bottom: var(--space_reading_heading_bottom);
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(
+    #breadcrumbers_xd
+      + *
+      > :where(
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ul,
+        ol,
+        blockquote,
+        pre,
+        table,
+        dl
+      ):first-child,
+    #breadcrumbers_xd
+      + *
+      > *
+      > :where(
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ul,
+        ol,
+        blockquote,
+        pre,
+        table,
+        dl
+      ):first-child,
+    #breadcrumbers_xd
+      + *
+      > *
+      > *
+      > :where(
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ul,
+        ol,
+        blockquote,
+        pre,
+        table,
+        dl
+      ):first-child
+  ) {
+  margin-top: 0;
 }
 
 :where(
@@ -300,49 +352,50 @@ body {
     color-mix(in oklch, var(--site_style_accent, currentColor) 28%, transparent);
 }
 
+/* OVERRIDES: POV */
 body.pov_cinza {
-  --font_family_reading_heading:
+  --font_reading_heading:
     "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
-  --font_family_reading_body:
+  --font_reading_body:
     "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
-  --font_size_reading_step_0: clamp(
+  --type_reading_0: clamp(
     15px,
-    calc(15px + (2px * var(--type_fluid_progress))),
+    calc(15px + (2px * var(--type_fluid_ratio))),
     17px
   );
-  --line_height_reading_body: clamp(
+  --leading_reading_body: clamp(
     1.74,
-    calc(1.74 + (0.08 * var(--type_fluid_progress))),
+    calc(1.74 + (0.08 * var(--type_fluid_ratio))),
     1.82
   );
-  --reading_measure_body: clamp(39ch, 88%, 66ch);
-  --reading_paragraph_gap: 1.24em;
-  --reading_section_gap: 1.46em;
-  --reading_heading_top_gap: 1.52em;
-  --reading_heading_bottom_gap: 0.58em;
-  --pov_cadence_color_mix: 30%;
+  --measure_reading_body: clamp(39ch, 88%, 66ch);
+  --space_reading_paragraph: 1.24em;
+  --space_reading_section: 1.46em;
+  --space_reading_heading_top: 1.52em;
+  --space_reading_heading_bottom: 0.58em;
+  --cadence_color_mix: 30%;
 }
 
+/* OVERRIDES: ROUTE */
 body.route_rubedo {
-  --reading_measure_body: clamp(38ch, 86%, 64ch);
-}
-
-body.route_rubedo_book {
-  --font_size_reading_step_0: clamp(
-    15px,
-    calc(15px + (3px * var(--type_fluid_progress))),
-    18px
+  --type_reading_0: clamp(
+    16px,
+    calc(16px + (3px * var(--type_fluid_ratio))),
+    19px
   );
-  --line_height_reading_body: clamp(
+  --leading_reading_heading: 1.18;
+  --leading_reading_subheading: 1.25;
+  --leading_reading_body: clamp(
     1.76,
-    calc(1.76 + (0.1 * var(--type_fluid_progress))),
+    calc(1.76 + (0.1 * var(--type_fluid_ratio))),
     1.86
   );
-  --reading_measure_body: clamp(37ch, 84%, 62ch);
-  --reading_paragraph_gap: 1.3em;
-  --reading_section_gap: 1.54em;
+  --measure_reading_body: clamp(37ch, 84%, 62ch);
+  --space_reading_paragraph: 1.3em;
+  --space_reading_section: 1.54em;
 }
 
+/* CONSUMERS: CADENCE */
 :where(
     #main_reading_container,
     .reading_container,
@@ -354,88 +407,89 @@ body.route_rubedo_book {
     .text_fx_cadence_oracular,
     .text_fx_cadence_childlike
   ) {
-  font-style: var(--pov_cadence_style);
-  font-weight: var(--pov_cadence_weight);
-  letter-spacing: var(--pov_cadence_letter_spacing);
+  font-style: var(--cadence_font_style);
+  font-weight: var(--weight_cadence);
+  letter-spacing: var(--cadence_letter_spacing);
   color: color-mix(
     in oklch,
-    var(--site_style_accent, currentColor) var(--pov_cadence_color_mix),
+    var(--site_style_accent, currentColor) var(--cadence_color_mix),
     currentColor
   );
 }
 
+/* CONSUMERS + UTILITIES */
 .text_step_n2 {
-  font-size: var(--font_size_reading_caption);
+  font-size: var(--type_reading_caption);
   line-height: 1.35;
 }
 
 .text_body {
-  font-size: var(--font_size_reading_step_0);
-  line-height: var(--line_height_reading_body);
+  font-size: var(--type_reading_0);
+  line-height: var(--leading_reading_body);
 }
 
 .text_lead {
-  font-size: var(--font_size_reading_step_1);
-  line-height: var(--line_height_relaxed);
+  font-size: var(--type_reading_1);
+  line-height: var(--leading_relaxed);
 }
 
 .text_kicker {
-  font-size: var(--font_size_step_n1);
+  font-size: var(--type_ui_n1);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .text_caption {
-  font-size: var(--font_size_reading_caption);
+  font-size: var(--type_reading_caption);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
 @utility text_body {
-  font-size: var(--font_size_reading_step_0);
-  line-height: var(--line_height_reading_body);
+  font-size: var(--type_reading_0);
+  line-height: var(--leading_reading_body);
 }
 
 @utility text_lead {
-  font-size: var(--font_size_reading_step_1);
-  line-height: var(--line_height_relaxed);
+  font-size: var(--type_reading_1);
+  line-height: var(--leading_relaxed);
 }
 
 @utility text_kicker {
-  font-size: var(--font_size_step_n1);
+  font-size: var(--type_ui_n1);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 @utility text_caption {
-  font-size: var(--font_size_reading_caption);
+  font-size: var(--type_reading_caption);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
 @utility text_step_1 {
-  font-size: var(--font_size_reading_step_1);
+  font-size: var(--type_reading_1);
   line-height: 1.35;
 }
 
 @utility text_step_2 {
-  font-size: var(--font_size_reading_step_2);
-  line-height: var(--line_height_reading_subheading);
+  font-size: var(--type_reading_2);
+  line-height: var(--leading_reading_subheading);
 }
 
 @utility text_step_3 {
-  font-size: var(--font_size_reading_step_3);
-  line-height: var(--line_height_reading_subheading);
+  font-size: var(--type_reading_3);
+  line-height: var(--leading_reading_subheading);
 }
 
 @utility text_step_4 {
-  font-size: var(--font_size_reading_step_4);
-  line-height: var(--line_height_reading_subheading);
+  font-size: var(--type_reading_4);
+  line-height: var(--leading_reading_subheading);
 }
 
 @utility text_step_5 {
-  font-size: var(--font_size_reading_step_5);
-  line-height: var(--line_height_reading_heading);
+  font-size: var(--type_reading_5);
+  line-height: var(--leading_reading_heading);
 }

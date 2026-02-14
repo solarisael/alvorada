@@ -137,3 +137,32 @@ Historical session log moved out of `progress.md` to keep active context concise
 - Text effects + coverage tests passed (`bun test tests/text_effects.test.js tests/effects_coverage.test.js`).
 - Build passed after parser/style/lab updates (`bun run build`).
 - CSS hard gates passed (`bun run css:hard-gates:check`).
+
+## Archived Snapshot (2026-02-14 Pass 2)
+
+- Source: typography token-organization and debugability pass.
+- Scope covered: canonical token naming, sectioned CSS structure, cadence token inclusion, and legacy token removal with no visual-intent changes.
+
+### Completed Work (high level)
+
+- Reorganized `src/styles/typography.css` into a deterministic, debug-first layout with a top mini TOC and section headers.
+- Migrated typography tokens to canonical families:
+  - `type_*`
+  - `leading_*`
+  - `measure_*`
+  - `space_*`
+  - `weight_*`
+- Included cadence token normalization in the same structure pass (`cadence_*` and reading font token naming).
+- Removed old variable naming families instead of keeping CSS aliases, per session constraint.
+- Preserved route and POV override intent while keeping consumer/utility mappings consistent.
+
+### Validation Highlights
+
+- Formatting passed for touched stylesheet (`bunx prettier --check src/styles/typography.css`).
+- Build passed after token migration (`bun run build`).
+- CSS hard gates passed (`bun run css:hard-gates:check`).
+
+### Debug Convention Captured
+
+- Every major token family has an explicit comment header directly above it.
+- Section ordering is fixed and mirrored by the mini TOC for fast manual lookup.
