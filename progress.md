@@ -4,7 +4,7 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-14 14:46
+- Updated_utc: 2026-02-15 00:30
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
@@ -58,9 +58,9 @@
 
 ## Next (Top 3)
 
-1. [ ] Define Eyes + Timeline schema (`chapter_id`, `timeline_position`, `pov_key`, `branch_key`, `next_edges`).
-2. [ ] Specify resolution logic for chapter variant selection by POV and path state.
-3. [ ] Build a minimal prototype flow to validate timeline navigation and POV/path switching.
+1. [ ] Load chapter/thread scenes from markdown files into the resolver data contract.
+2. [ ] Replace prototype scene strings with authored chapter markdown content.
+3. [ ] Add visual styling pass for Eyes/timeline controls after behavior lock.
 
 ## Blockers
 
@@ -83,9 +83,10 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-14 14:43
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-14 14:43
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-14 14:43
+- Build: pass (`bun run build`) - 2026-02-15
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-15
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-15
+- JS_focused_tests: pass (`bun test tests/timeline_threads.test.js`) - 2026-02-15
 
 ## Notes
 
@@ -112,3 +113,8 @@
 - Refactored `src/styles/typography.css` to canonical token families (`type`, `leading`, `measure`, `space`, `weight`) with section headers and mini TOC.
 - Collapsed rubedo route typography overrides into `route_rubedo` only and removed nested rubedo route-class dependency.
 - Added layout-level auto-derivation for `route_rubedo` from pathname while keeping POV classes explicit/manual.
+- Implemented canonical timeline + thread resolver with fallback chain `exact -> thread core -> cinza core`.
+- Added Rubedo book timeline data scaffold and wired `/rubedo/[book_slug]` query-state navigation (`chapter_id`, `thread_key`, `thread_modifier`).
+- Replaced Eyes component scaffold with thread selector output and integrated it in Rubedo reader prototype.
+- Added focused resolver tests for invalid input sanitization, fallback behavior, and deterministic previous/next chapter ordering.
+- Added templater scaffold for thread-based chapter markdown frontmatter (`timeline_thread_scene_template.md`).

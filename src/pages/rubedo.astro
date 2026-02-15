@@ -1,7 +1,8 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+import { rubedo_book_map } from "../data/rubedo/book_timeline.js";
 
-const sample_book_slugs = ["book-of-ashes", "book-of-light", "book-of-return"];
+const sample_book_slugs = ["absurd-faith"];
 ---
 
 <IndexLayout body_class="pov_cinza">
@@ -14,15 +15,29 @@ const sample_book_slugs = ["book-of-ashes", "book-of-light", "book-of-return"];
 
       <div>
         <p>
-          Scaffold page for <code>/rubedo</code>. Choose a sample child book
-          page to test nested route behavior.
+          Rubedo now includes a timeline/thread prototype. Canonical chapter
+          order is deterministic, while thread view remains optional and
+          reader-controlled.
         </p>
 
         {
           sample_book_slugs.map((book_slug) => (
-            <p>
-              <a href={`/rubedo/${book_slug}`}>Open book: {book_slug}</a>
-            </p>
+            <div>
+              <p>
+                <a href={`/rubedo/${book_slug}`}>
+                  Open book: {rubedo_book_map[book_slug]?.title ?? book_slug}
+                </a>
+              </p>
+              {rubedo_book_map[book_slug]?.chapters?.[0] && (
+                <p>
+                  <a
+                    href={`/rubedo/${book_slug}?chapter_id=${rubedo_book_map[book_slug].chapters[0].chapter_id}&thread_key=cinza&thread_modifier=core`}
+                  >
+                    Open reader at first canonical chapter
+                  </a>
+                </p>
+              )}
+            </div>
           ))
         }
       </div>

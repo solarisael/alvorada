@@ -56,6 +56,8 @@ Notes:
 - `bundle_*.md`: scene-ready authoring bundles for common LitRPG beats.
 - `quickadd_setup.md`: ready-to-follow QuickAdd mapping.
 - `chapter_template.md`: starter chapter scaffold with canonical text effects.
+- `timeline_thread_scene_template.md`: frontmatter scaffold for canonical
+  timeline scenes and thread variants (`thread_key` + `thread_modifier`).
 
 ## Recommended Usage
 
