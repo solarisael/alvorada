@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-15 14:40
+- Updated_utc: 2026-02-15 17:15
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: pass through timeline functionality and layout behavior in the markdown-first Rubedo reader flow
+- primary_outcome_next_session: polish timeline layout and surrounding composition now that HTMX interactions are stable
 - priority_axis_next_session: polish
 - edit_breadth_next_session: focused
-- first_task_next_session: run functionality pass on /rubedo/[book_slug]/timeline interactions and adjust layout pain points on desktop/mobile
+- first_task_next_session: run a layout pass on /rubedo/[book_slug]/timeline for desktop/mobile balance and spacing hierarchy
 - commit_intent_next_session: after_review
-- notes_next_session: scene data is markdown-only under src/data/rubedo/scenes with strict duplicated tag/frontmatter identity checks; validate reader and timeline parity first
+- notes_next_session: timeline interaction layer is now HTMX-driven with stable inner swap target (#rubedo_timeline_state_content); preserve this contract while styling
 
 ## Alias Ledger
 
@@ -103,6 +103,9 @@
 
 ## Session Delta (2026-02-15)
 
+- Stabilized timeline HTMX interaction flow by splitting permanent panel wrapper and inner swap target to avoid target deletion (`#rubedo_timeline_state_panel` + `#rubedo_timeline_state_content`).
+- Added timeline-specific HTMX disinherit + explicit fragment selection to stop inherited global `hx-select` behavior from emptying panel swaps.
+- Reworked constellation/map + controls wiring so chapter/POV/modifier swaps update the panel reliably without forcing URL movement.
 - Added constellation timeline route and component for Rubedo (`/rubedo/[book_slug]/timeline`) with deterministic chapter node map and optional branch edges.
 - Added timeline styling layer and integrated reader/timeline cross-links while preserving query-state (`chapter_id`, `thread_key`, `thread_modifier`).
 - Implemented markdown-first Rubedo scene pipeline under `src/data/rubedo/scenes/**` with duplicated identity contract (frontmatter + tags).

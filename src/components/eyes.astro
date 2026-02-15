@@ -37,6 +37,10 @@ const resolve_eye_label = (thread_key) => {
           <li>
             <a
               href={eye_option.href}
+              hx-get={eye_option.hx_get}
+              hx-target={eye_option.hx_target}
+              hx-swap={eye_option.hx_swap}
+              hx-push-url={eye_option.hx_push_url}
               aria-current={is_active ? "page" : undefined}
             >
               {resolve_eye_label(eye_option.thread_key)}

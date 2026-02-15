@@ -2,8 +2,12 @@
 const {
   sorted_chapters = [],
   active_chapter_id = "",
+  active_thread_key = "cinza",
   build_chapter_href = ({ chapter_id }) => `?chapter_id=${chapter_id}`,
+  build_chapter_link_props = null,
 } = Astro.props;
+
+const map_thread_keys = ["cinza", "suul", "alvorada"];
 
 const constellation_lanes = [16, 50, 84];
 const vertical_step = 16;
@@ -20,39 +24,56 @@ const chapter_nodes = sorted_chapters.map((chapter, chapter_index) => {
   };
 });
 
-const chapter_node_map = new Map(
-  chapter_nodes.map((chapter_node) => {
-    return [chapter_node.chapter.chapter_id, chapter_node];
-  }),
-);
-
 const viewbox_height = Math.max(
   44,
   base_y + chapter_nodes.length * vertical_step,
 );
 
-const canonical_edges = chapter_nodes.flatMap((chapter_node, chapter_index) => {
-  const next_node = chapter_nodes[chapter_index + 1] ?? null;
+const chapter_has_thread = (chapter, thread_key) => {
+  return (chapter?.scenes ?? []).some((scene) => {
+    return scene?.thread_key === thread_key;
+  });
+};
 
-  if (!next_node) {
-    return [];
-  }
+const canonical_edges_by_thread = map_thread_keys.map((thread_key) => {
+  const thread_edges = chapter_nodes.flatMap((chapter_node, chapter_index) => {
+    const next_node = chapter_nodes[chapter_index + 1] ?? null;
 
-  return [
-    {
-      from_chapter_id: chapter_node.chapter.chapter_id,
-      to_chapter_id: next_node.chapter.chapter_id,
-      x1: chapter_node.x,
-      y1: chapter_node.y,
-      x2: next_node.x,
-      y2: next_node.y,
-    },
-  ];
+    if (!next_node) {
+      return [];
+    }
+
+    if (
+      !chapter_has_thread(chapter_node.chapter, thread_key) ||
+      !chapter_has_thread(next_node.chapter, thread_key)
+    ) {
+      return [];
+    }
+
+    return [
+      {
+        thread_key,
+        from_chapter_id: chapter_node.chapter.chapter_id,
+        to_chapter_id: next_node.chapter.chapter_id,
+        x1: chapter_node.x,
+        y1: chapter_node.y,
+        x2: next_node.x,
+        y2: next_node.y,
+      },
+    ];
+  });
+
+  return {
+    thread_key,
+    edges: thread_edges,
+  };
 });
 
 const canonical_edge_key_set = new Set(
-  canonical_edges.map((canonical_edge) => {
-    return `${canonical_edge.from_chapter_id}:${canonical_edge.to_chapter_id}`;
+  canonical_edges_by_thread.flatMap((thread_entry) => {
+    return thread_entry.edges.map((canonical_edge) => {
+      return `${canonical_edge.from_chapter_id}:${canonical_edge.to_chapter_id}`;
+    });
   }),
 );
 
@@ -61,7 +82,9 @@ const branch_edges = chapter_nodes.flatMap((chapter_node) => {
 
   return chapter_branch_edges.flatMap((branch_edge) => {
     const target_node =
-      chapter_node_map.get(branch_edge?.to_chapter_id) ?? null;
+      chapter_nodes.find((candidate_node) => {
+        return candidate_node.chapter.chapter_id === branch_edge?.to_chapter_id;
+      }) ?? null;
 
     if (!target_node) {
       return [];
@@ -87,7 +110,12 @@ const branch_edges = chapter_nodes.flatMap((chapter_node) => {
 });
 ---
 
-<section class="rubedo-constellation" aria-label="Chapter constellation map">
+<section
+  id="rubedo_constellation_map"
+  class="rubedo-constellation"
+  data-active-thread-key={active_thread_key}
+  aria-label="Chapter constellation map"
+>
   <svg
     class="rubedo-constellation-canvas"
     viewBox={`0 0 100 ${viewbox_height}`}
@@ -112,32 +140,50 @@ const branch_edges = chapter_nodes.flatMap((chapter_node) => {
       }
     </g>
 
-    <g
-      class="rubedo-constellation-layer rubedo-constellation-layer-canonical-edges"
-    >
-      {
-        canonical_edges.map((canonical_edge) => {
-          return (
-            <line
-              x1={canonical_edge.x1}
-              y1={canonical_edge.y1}
-              x2={canonical_edge.x2}
-              y2={canonical_edge.y2}
-            />
-          );
-        })
-      }
-    </g>
+    {
+      canonical_edges_by_thread.map((thread_entry) => {
+        return (
+          <g
+            class="rubedo-constellation-layer rubedo-constellation-layer-canonical-edges"
+            data-thread-key={thread_entry.thread_key}
+          >
+            {thread_entry.edges.map((canonical_edge) => {
+              return (
+                <line
+                  x1={canonical_edge.x1}
+                  y1={canonical_edge.y1}
+                  x2={canonical_edge.x2}
+                  y2={canonical_edge.y2}
+                />
+              );
+            })}
+          </g>
+        );
+      })
+    }
 
     <g class="rubedo-constellation-layer rubedo-constellation-layer-nodes">
       {
         chapter_nodes.map((chapter_node) => {
           const chapter_id = chapter_node.chapter.chapter_id;
           const is_active_chapter = chapter_id === active_chapter_id;
+          const chapter_link_props =
+            typeof build_chapter_link_props === "function"
+              ? build_chapter_link_props({ chapter_id })
+              : {
+                  href: build_chapter_href({ chapter_id }),
+                };
 
           return (
             <a
-              href={build_chapter_href({ chapter_id })}
+              href={chapter_link_props.href}
+              data-chapter-id={chapter_link_props.chapter_id ?? chapter_id}
+              hx-get={chapter_link_props.hx_get}
+              hx-target={chapter_link_props.hx_target}
+              hx-swap={chapter_link_props.hx_swap}
+              hx-push-url={chapter_link_props.hx_push_url}
+              hx-select={chapter_link_props.hx_select}
+              hx-select-oob={chapter_link_props.hx_select_oob}
               aria-current={is_active_chapter ? "page" : undefined}
               class="rubedo-constellation-node-link"
             >
