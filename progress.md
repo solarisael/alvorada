@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-15 00:30
+- Updated_utc: 2026-02-15 14:40
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: design and scaffold Eyes + Timeline systems for chapter sequencing with POV-based content switching and optional story paths
-- priority_axis_next_session: architecture
+- primary_outcome_next_session: pass through timeline functionality and layout behavior in the markdown-first Rubedo reader flow
+- priority_axis_next_session: polish
 - edit_breadth_next_session: focused
-- first_task_next_session: define canonical Eyes + Timeline data model (chapter nodes, timeline ordering, POV variants, and optional branch transitions)
+- first_task_next_session: run functionality pass on /rubedo/[book_slug]/timeline interactions and adjust layout pain points on desktop/mobile
 - commit_intent_next_session: after_review
-- notes_next_session: keep POV system independent from route classes; timeline should support deterministic chapter order plus optional branch edges resolved by POV and path choices
+- notes_next_session: scene data is markdown-only under src/data/rubedo/scenes with strict duplicated tag/frontmatter identity checks; validate reader and timeline parity first
 
 ## Alias Ledger
 
@@ -50,17 +50,17 @@
 
 ## Active Scope
 
-- State: in_progress
+- State: handoff_ready
 - Branch: master
 - Head: (pending_commit)
-- Scope_in: Eyes + Timeline architecture for chapter ordering, POV-based content switching, and optional story path branching.
-- Scope_out: visual polish refactors unless required to validate timeline/POV behavior.
+- Scope_in: Rubedo markdown-first timeline and reader flow with strict scene identity validation, plus constellation timeline UX.
+- Scope_out: broad non-Rubedo refactors and unrelated visual-system rewrites.
 
 ## Next (Top 3)
 
-1. [ ] Load chapter/thread scenes from markdown files into the resolver data contract.
-2. [ ] Replace prototype scene strings with authored chapter markdown content.
-3. [ ] Add visual styling pass for Eyes/timeline controls after behavior lock.
+1. [ ] Run timeline functionality pass for chapter switching, POV/modifier state persistence, and fallback badge behavior.
+2. [ ] Run layout pass for timeline and reader balance on desktop/mobile.
+3. [ ] Decide whether to wire `rubedo:scenes:check` into a single required validation command/workflow.
 
 ## Blockers
 
@@ -86,7 +86,8 @@
 - Build: pass (`bun run build`) - 2026-02-15
 - Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-15
 - CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-15
-- JS_focused_tests: pass (`bun test tests/timeline_threads.test.js`) - 2026-02-15
+- Rubedo_scene_identity: pass (`bun run rubedo:scenes:check`) - 2026-02-15
+- JS_focused_tests: pass (`bun test tests/timeline_threads.test.js tests/rubedo_scene_identity.test.js`) - 2026-02-15
 
 ## Notes
 
@@ -100,21 +101,13 @@
 2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
 
-## Session Delta (2026-02-14)
+## Session Delta (2026-02-15)
 
-- Implemented stacked marker grammar (`fx:a|b|c`) with parser sanitization and deduped warnings.
-- Allowed `combat_feed` as inline stack exception and forced it to class-order front for deterministic color priority.
-- Added extensive cinematic + extreme-chaos labs coverage in `src/pages/codex/labs/test-texts.md`.
-- Added combat-feed color-priority compatibility rules so non-token lines are slightly muted and combat tokens stay dominant.
-- Added bracket-aware combat token parsing for explicit `[TOKEN]` forms.
-- Moved brackets inside `combat_token` rendering while keeping bracket color neutral and token label color semantic.
-- Added bracket style tunables and preview variants (`combat_brackets_soft`, `combat_brackets_text_weight`) in labs.
-- Modularized component inline scripts into component-local runtime modules (`navbar`, `mobile_navbar`, `breadcrumbers`, `style_switcher`).
-- Refactored `src/styles/typography.css` to canonical token families (`type`, `leading`, `measure`, `space`, `weight`) with section headers and mini TOC.
-- Collapsed rubedo route typography overrides into `route_rubedo` only and removed nested rubedo route-class dependency.
-- Added layout-level auto-derivation for `route_rubedo` from pathname while keeping POV classes explicit/manual.
-- Implemented canonical timeline + thread resolver with fallback chain `exact -> thread core -> cinza core`.
-- Added Rubedo book timeline data scaffold and wired `/rubedo/[book_slug]` query-state navigation (`chapter_id`, `thread_key`, `thread_modifier`).
-- Replaced Eyes component scaffold with thread selector output and integrated it in Rubedo reader prototype.
-- Added focused resolver tests for invalid input sanitization, fallback behavior, and deterministic previous/next chapter ordering.
-- Added templater scaffold for thread-based chapter markdown frontmatter (`timeline_thread_scene_template.md`).
+- Added constellation timeline route and component for Rubedo (`/rubedo/[book_slug]/timeline`) with deterministic chapter node map and optional branch edges.
+- Added timeline styling layer and integrated reader/timeline cross-links while preserving query-state (`chapter_id`, `thread_key`, `thread_modifier`).
+- Implemented markdown-first Rubedo scene pipeline under `src/data/rubedo/scenes/**` with duplicated identity contract (frontmatter + tags).
+- Implemented strict scene identity validation helpers and CLI audit (`bun run rubedo:scenes:check`).
+- Extended resolver output with chapter card metadata (`resolved_chapter_title`, `resolved_chapter_description`, `resolved_chapter_snippet`) and thread-variant override precedence.
+- Updated reader/timeline panels to show title + description + chapter snippet card content from resolved state.
+- Added scene identity tests and expanded timeline resolver tests for metadata override/fallback behavior.
+- Completed markdown-only cutover by removing legacy fallback book timeline source and deleting standalone chapter route that duplicated authoring.

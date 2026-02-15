@@ -1,0 +1,159 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+
+.rubedo-timeline-page {
+  --rubedo_timeline_panel_border: color-mix(
+    in oklch,
+    var(--site_style_accent) 36%,
+    transparent
+  );
+  --rubedo_timeline_panel_surface: color-mix(
+    in oklch,
+    var(--ui_surface_raised) 38%,
+    transparent
+  );
+  --rubedo_timeline_node_glow: color-mix(
+    in oklch,
+    var(--site_style_accent) 72%,
+    transparent
+  );
+  --rubedo_timeline_node_dim: color-mix(
+    in oklch,
+    var(--site_style_accent) 32%,
+    transparent
+  );
+}
+
+.rubedo-timeline-header {
+  @apply mb-4;
+}
+
+.rubedo-timeline-grid {
+  @apply mt-6 grid gap-4;
+}
+
+.rubedo-timeline-grid > section {
+  @apply rounded-2xl p-4;
+
+  border: 1px solid var(--rubedo_timeline_panel_border);
+  background: linear-gradient(
+    154deg,
+    var(--rubedo_timeline_panel_surface),
+    color-mix(in oklch, var(--ui_bg_crust) 44%, transparent)
+  );
+  box-shadow:
+    inset 0 0 0 1px
+      color-mix(in oklch, var(--site_style_accent) 12%, transparent),
+    0 1.1rem 2.4rem -1.8rem rgb(0 0 0 / 0.84);
+}
+
+.rubedo-timeline-legend {
+  @apply mt-3 flex flex-col gap-1;
+}
+
+.rubedo-constellation {
+  @apply rounded-xl p-2;
+
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 22%, transparent);
+  background:
+    radial-gradient(
+      132% 92% at 50% -6%,
+      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
+      transparent 66%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--ui_surface_soft) 26%, transparent),
+      color-mix(in oklch, var(--ui_bg_mantle) 46%, transparent)
+    );
+}
+
+.rubedo-constellation-canvas {
+  @apply w-full;
+
+  display: block;
+  max-block-size: 48rem;
+}
+
+.rubedo-constellation-layer-branch-edges line {
+  stroke: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+  stroke-width: 0.36;
+  stroke-dasharray: 1.4 1.1;
+}
+
+.rubedo-constellation-layer-canonical-edges line {
+  stroke: color-mix(in oklch, var(--site_style_accent) 60%, transparent);
+  stroke-width: 0.42;
+}
+
+.rubedo-constellation-node-link {
+  outline: none;
+}
+
+.rubedo-constellation-node-halo {
+  fill: var(--rubedo_timeline_node_dim);
+  transition:
+    fill 180ms ease,
+    r 180ms ease;
+}
+
+.rubedo-constellation-node-core {
+  fill: color-mix(in oklch, white 82%, var(--site_style_accent));
+  transition: r 180ms ease;
+}
+
+.rubedo-constellation-node-label {
+  fill: color-mix(in oklch, var(--site_style_accent) 48%, white);
+  font-size: 3.1px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rubedo-constellation-node-link[aria-current="page"]
+  .rubedo-constellation-node-halo,
+.rubedo-constellation-node-link:hover .rubedo-constellation-node-halo,
+.rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-halo {
+  fill: var(--rubedo_timeline_node_glow);
+  r: 5;
+}
+
+.rubedo-constellation-node-link[aria-current="page"]
+  .rubedo-constellation-node-core,
+.rubedo-constellation-node-link:hover .rubedo-constellation-node-core,
+.rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-core {
+  r: 2.1;
+}
+
+.rubedo-timeline-fallback-badge {
+  @apply rounded-md px-2 py-0.5;
+
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 22%, transparent);
+}
+
+.rubedo-timeline-fallback-badge[data-fallback-state="exact"] {
+  background: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+}
+
+.rubedo-timeline-fallback-badge[data-fallback-state="thread_core_fallback"] {
+  background: color-mix(in oklch, var(--color-citrinitas) 28%, transparent);
+}
+
+.rubedo-timeline-fallback-badge[data-fallback-state="cinza_core_fallback"] {
+  background: color-mix(in oklch, var(--color-rubedo) 24%, transparent);
+}
+
+@media (min-width: 64rem) {
+  .rubedo-timeline-grid {
+    grid-template-columns: 1.3fr 1fr;
+    align-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rubedo-constellation-node-halo,
+  .rubedo-constellation-node-core {
+    transition: none;
+  }
+}

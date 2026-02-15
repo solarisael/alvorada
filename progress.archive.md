@@ -166,3 +166,35 @@ Historical session log moved out of `progress.md` to keep active context concise
 
 - Every major token family has an explicit comment header directly above it.
 - Section ordering is fixed and mirrored by the mini TOC for fast manual lookup.
+
+## Archived Snapshot (2026-02-15)
+
+- Source: Eyes + Timeline continuation focused on Rubedo constellation UX and markdown-first scene architecture.
+- Scope covered: dedicated timeline route/component, markdown scene ingestion, identity governance, metadata override resolution, and session cleanup to single source of truth.
+
+### Completed Work (high level)
+
+- Added interactive Rubedo constellation timeline route and component:
+  - `src/pages/rubedo/[book_slug]/timeline.astro`
+  - `src/components/rubedo_timeline_constellation.astro`
+  - `src/styles/components/rubedo-timeline.css`
+- Wired reader/timeline link parity so "Open full reader" preserves chapter and POV query-state.
+- Added markdown scene source files under `src/data/rubedo/scenes/absurd-faith/*` with duplicated identity fields/tags and per-variant card override support.
+- Added markdown runtime book map builder `src/data/rubedo/book_timeline_runtime.js` and switched Rubedo pages to it.
+- Added reusable identity validation module `src/data/rubedo/scene_identity.js`.
+- Added identity audit CLI `scripts/rubedo_scene_identity_audit.js` and command `bun run rubedo:scenes:check`.
+- Extended resolver output to include resolved chapter card metadata and override precedence in `src/utils/timeline_threads.js`.
+- Extended tests:
+  - `tests/timeline_threads.test.js`
+  - `tests/rubedo_scene_identity.test.js`
+- Completed markdown-only cutover by removing legacy fallback file `src/data/rubedo/book_timeline.js` and removing duplicate standalone chapter route `src/pages/rubedo/absurd-faith/af_000.md`.
+- Updated authoring docs/template for duplicated identity fields/tags:
+  - `templater/timeline_thread_scene_template.md`
+  - `AGENTS.md`
+
+### Validation Highlights
+
+- Rubedo scene identity audit passed (`bun run rubedo:scenes:check`).
+- Focused resolver + identity tests passed (`bun test tests/timeline_threads.test.js tests/rubedo_scene_identity.test.js`).
+- Build passed after markdown-only cutover (`bun run build`).
+- CSS hard gates passed (`bun run css:hard-gates:check`).

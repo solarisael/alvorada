@@ -47,6 +47,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 - Tunables check `bun run css:tunables:check`
 - Tunables sync `bun run css:tunables:sync`
 - CSS size audit `bun run css:size:audit`
+- Rubedo scenes identity audit `bun run rubedo:scenes:check`
 - Ornament URL audit `bun run css:ornaments:check`
 - Background stack audit `bun run css:bg-stack:check`
 - CSS hard gates `bun run css:hard-gates:check`
@@ -163,6 +164,7 @@ At session start:
 - Required: `bun run build`
 - Required: `bunx prettier --check .` (or touched-file formatting if repo has known unrelated formatting drift)
 - Required: `bun run css:hard-gates:check`
+- Required for Rubedo scene/timeline changes: `bun run rubedo:scenes:check`
 - If tests are added later: run focused `bun test` for touched area.
 
 ## Docs Hygiene

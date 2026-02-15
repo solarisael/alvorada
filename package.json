@@ -10,6 +10,7 @@
     "test": "bun test",
     "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize",
     "css:size:audit": "bun scripts/css_size_audit.js check --scope=priority-a",
+    "rubedo:scenes:check": "bun scripts/rubedo_scene_identity_audit.js check",
     "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
     "css:bg-stack:check": "bun scripts/css_background_stack_audit.js check",
     "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check",

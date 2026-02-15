@@ -1,0 +1,170 @@
+---
+const {
+  sorted_chapters = [],
+  active_chapter_id = "",
+  build_chapter_href = ({ chapter_id }) => `?chapter_id=${chapter_id}`,
+} = Astro.props;
+
+const constellation_lanes = [16, 50, 84];
+const vertical_step = 16;
+const base_y = 12;
+
+const chapter_nodes = sorted_chapters.map((chapter, chapter_index) => {
+  const lane_index = chapter_index % constellation_lanes.length;
+
+  return {
+    chapter,
+    chapter_index,
+    x: constellation_lanes[lane_index],
+    y: base_y + chapter_index * vertical_step,
+  };
+});
+
+const chapter_node_map = new Map(
+  chapter_nodes.map((chapter_node) => {
+    return [chapter_node.chapter.chapter_id, chapter_node];
+  }),
+);
+
+const viewbox_height = Math.max(
+  44,
+  base_y + chapter_nodes.length * vertical_step,
+);
+
+const canonical_edges = chapter_nodes.flatMap((chapter_node, chapter_index) => {
+  const next_node = chapter_nodes[chapter_index + 1] ?? null;
+
+  if (!next_node) {
+    return [];
+  }
+
+  return [
+    {
+      from_chapter_id: chapter_node.chapter.chapter_id,
+      to_chapter_id: next_node.chapter.chapter_id,
+      x1: chapter_node.x,
+      y1: chapter_node.y,
+      x2: next_node.x,
+      y2: next_node.y,
+    },
+  ];
+});
+
+const canonical_edge_key_set = new Set(
+  canonical_edges.map((canonical_edge) => {
+    return `${canonical_edge.from_chapter_id}:${canonical_edge.to_chapter_id}`;
+  }),
+);
+
+const branch_edges = chapter_nodes.flatMap((chapter_node) => {
+  const chapter_branch_edges = chapter_node.chapter?.branch_edges ?? [];
+
+  return chapter_branch_edges.flatMap((branch_edge) => {
+    const target_node =
+      chapter_node_map.get(branch_edge?.to_chapter_id) ?? null;
+
+    if (!target_node) {
+      return [];
+    }
+
+    const edge_key = `${chapter_node.chapter.chapter_id}:${target_node.chapter.chapter_id}`;
+
+    if (canonical_edge_key_set.has(edge_key)) {
+      return [];
+    }
+
+    return [
+      {
+        edge_key,
+        condition_label: branch_edge?.condition_label ?? "optional_path",
+        x1: chapter_node.x,
+        y1: chapter_node.y,
+        x2: target_node.x,
+        y2: target_node.y,
+      },
+    ];
+  });
+});
+---
+
+<section class="rubedo-constellation" aria-label="Chapter constellation map">
+  <svg
+    class="rubedo-constellation-canvas"
+    viewBox={`0 0 100 ${viewbox_height}`}
+    role="img"
+    aria-label="Constellation timeline with canonical and optional chapter paths"
+  >
+    <g
+      class="rubedo-constellation-layer rubedo-constellation-layer-branch-edges"
+    >
+      {
+        branch_edges.map((branch_edge) => {
+          return (
+            <line
+              x1={branch_edge.x1}
+              y1={branch_edge.y1}
+              x2={branch_edge.x2}
+              y2={branch_edge.y2}
+              data-condition-label={branch_edge.condition_label}
+            />
+          );
+        })
+      }
+    </g>
+
+    <g
+      class="rubedo-constellation-layer rubedo-constellation-layer-canonical-edges"
+    >
+      {
+        canonical_edges.map((canonical_edge) => {
+          return (
+            <line
+              x1={canonical_edge.x1}
+              y1={canonical_edge.y1}
+              x2={canonical_edge.x2}
+              y2={canonical_edge.y2}
+            />
+          );
+        })
+      }
+    </g>
+
+    <g class="rubedo-constellation-layer rubedo-constellation-layer-nodes">
+      {
+        chapter_nodes.map((chapter_node) => {
+          const chapter_id = chapter_node.chapter.chapter_id;
+          const is_active_chapter = chapter_id === active_chapter_id;
+
+          return (
+            <a
+              href={build_chapter_href({ chapter_id })}
+              aria-current={is_active_chapter ? "page" : undefined}
+              class="rubedo-constellation-node-link"
+            >
+              <circle
+                class="rubedo-constellation-node-halo"
+                cx={chapter_node.x}
+                cy={chapter_node.y}
+                r="4"
+              />
+              <circle
+                class="rubedo-constellation-node-core"
+                cx={chapter_node.x}
+                cy={chapter_node.y}
+                r="1.7"
+              />
+              <text
+                class="rubedo-constellation-node-label"
+                x={chapter_node.x}
+                y={chapter_node.y - 5}
+                text-anchor="middle"
+              >
+                {chapter_id}
+              </text>
+            </a>
+          );
+        })
+      }
+    </g>
+  </svg>
+</section>

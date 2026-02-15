@@ -167,6 +167,59 @@ const collect_thread_modifiers_for_chapter = (
   });
 };
 
+const get_preferred_text = (...candidate_values) => {
+  for (const candidate_value of candidate_values) {
+    if (typeof candidate_value === "string" && candidate_value.trim()) {
+      return candidate_value;
+    }
+  }
+
+  return null;
+};
+
+const resolve_chapter_card_metadata = (
+  active_chapter,
+  resolved_scene,
+  fallback_thread_key = default_thread_key,
+  fallback_thread_modifier = default_thread_modifier,
+) => {
+  const chapter_core_scene = get_scene_by_thread(
+    active_chapter,
+    fallback_thread_key,
+    fallback_thread_modifier,
+  );
+
+  const base_chapter_title = get_preferred_text(
+    active_chapter?.title,
+    chapter_core_scene?.chapter_title,
+    active_chapter?.chapter_id,
+  );
+  const base_chapter_description = get_preferred_text(
+    active_chapter?.chapter_description,
+    chapter_core_scene?.chapter_description,
+  );
+  const base_chapter_snippet = get_preferred_text(
+    active_chapter?.chapter_snippet,
+    chapter_core_scene?.chapter_snippet,
+  );
+
+  return {
+    resolved_chapter_title: get_preferred_text(
+      resolved_scene?.chapter_title_override,
+      base_chapter_title,
+      active_chapter?.chapter_id,
+    ),
+    resolved_chapter_description: get_preferred_text(
+      resolved_scene?.chapter_description_override,
+      base_chapter_description,
+    ),
+    resolved_chapter_snippet: get_preferred_text(
+      resolved_scene?.chapter_snippet_override,
+      base_chapter_snippet,
+    ),
+  };
+};
+
 const resolve_book_view_state = (
   book_timeline,
   {
@@ -201,6 +254,10 @@ const resolve_book_view_state = (
     safe_thread_key,
     safe_thread_modifier,
   );
+  const resolved_chapter_card = resolve_chapter_card_metadata(
+    active_chapter,
+    resolved_scene_variant.scene,
+  );
   const chapter_index = sorted_chapters.findIndex((chapter) => {
     return chapter.chapter_id === safe_chapter_id;
   });
@@ -220,6 +277,10 @@ const resolve_book_view_state = (
     requested_thread_modifier: safe_thread_modifier,
     resolved_thread_key: resolved_scene_variant.resolved_thread_key,
     resolved_thread_modifier: resolved_scene_variant.resolved_thread_modifier,
+    resolved_chapter_title: resolved_chapter_card.resolved_chapter_title,
+    resolved_chapter_description:
+      resolved_chapter_card.resolved_chapter_description,
+    resolved_chapter_snippet: resolved_chapter_card.resolved_chapter_snippet,
     thread_options: allowed_thread_keys,
     modifier_options,
     previous_chapter_id: previous_chapter?.chapter_id ?? null,

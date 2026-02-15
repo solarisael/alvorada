@@ -1,6 +1,6 @@
 ---
 import IndexLayout from "../layouts/index.astro";
-import { rubedo_book_map } from "../data/rubedo/book_timeline.js";
+import { rubedo_book_map } from "../data/rubedo/book_timeline_runtime.js";
 
 const sample_book_slugs = ["absurd-faith"];
 ---
@@ -34,6 +34,15 @@ const sample_book_slugs = ["absurd-faith"];
                     href={`/rubedo/${book_slug}?chapter_id=${rubedo_book_map[book_slug].chapters[0].chapter_id}&thread_key=cinza&thread_modifier=core`}
                   >
                     Open reader at first canonical chapter
+                  </a>
+                </p>
+              )}
+              {rubedo_book_map[book_slug]?.chapters?.[0] && (
+                <p>
+                  <a
+                    href={`/rubedo/${book_slug}/timeline?chapter_id=${rubedo_book_map[book_slug].chapters[0].chapter_id}&thread_key=cinza&thread_modifier=core`}
+                  >
+                    Open constellation timeline
                   </a>
                 </p>
               )}
