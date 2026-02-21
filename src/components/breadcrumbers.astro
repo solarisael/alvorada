@@ -44,11 +44,10 @@ const active_theme_color = phase_color_by_name[active_phase];
 
 <nav
   id="breadcrumbers_xd"
-  aria-label="Breadcrumb"
   data-phase={active_phase}
   style={`--crumb_theme_color: ${active_theme_color};`}
 >
-  <div class="breadcrumb-divider" aria-hidden="true"></div>
+  <div class="breadcrumb-divider"></div>
 
   <ol>
     {
@@ -59,7 +58,7 @@ const active_theme_color = phase_color_by_name[active_phase];
           <li class={is_current ? "is-current" : "is-parent"}>
             <a
               href={crumb_item.href}
-              aria-current={is_current ? "page" : undefined}
+              class:list={{ "is-current-link": is_current }}
             >
               {crumb_item.label}
             </a>

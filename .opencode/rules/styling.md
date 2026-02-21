@@ -74,7 +74,7 @@ Guideline scale:
 This project's main reading container should feel stable, centered, and immersive.
 
 - Prioritize readable line length over maximum width.
-- Use a centered container with responsive clamp-based sizing.
+- Use a centered container with stable sizing; reserve `clamp()` for typography-related scales.
 - Apply subtle glass treatment (light translucency, soft border, restrained blur).
 - Keep text contrast high and body copy comfortable for long sessions.
 - Decorative effects must stay secondary to content.
@@ -91,7 +91,19 @@ This project's main reading container should feel stable, centered, and immersiv
 - Use motion to suggest energy, not to distract.
 - Prefer CSS/native transitions for repeatable UI effects.
 - Keep timing smooth and restrained.
-- Respect reduced-motion preferences for all decorative or continuous effects.
+- Do not add `prefers-reduced-motion` branches for this project.
+
+## Layout Contracts
+
+- Body composition must be class-driven.
+- Use `body_grid` for the primary layout contract and `compound_body_grid` for the secondary composition contract.
+- Compound and primary templates must use `fr` tracks in `grid-template-columns`.
+- Do not use margin-centering as a substitute for grid placement when composition contracts exist.
+
+## Property Policy
+
+- Logical CSS properties are forbidden (`inline-size`, `block-size`, `padding-inline`, `margin-block`, `border-inline-*`, etc.).
+- Use physical properties (`width`, `height`, `padding-left/right/top/bottom`, `margin-top/bottom`, `border-left/right`).
 
 ## Readable FX First (Structure Over Stack)
 

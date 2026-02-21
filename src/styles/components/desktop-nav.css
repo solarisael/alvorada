@@ -23,12 +23,6 @@
     var(--ui_bg_mantle) calc(78% * var(--site_shell_surface_mult, 1)),
     transparent
   );
-  --rail_border: color-mix(
-    in oklch,
-    var(--site_style_accent) calc(42% * var(--site_style_strength_mult, 1)),
-    transparent
-  );
-  --rail_shadow: 0 18px 45px -26px rgb(0 0 0 / 0.82);
   --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.16;
 
@@ -42,7 +36,6 @@
     var(--site_style_accent) calc(24% * var(--site_style_strength_mult, 1)),
     transparent
   );
-  --pill_text: color-mix(in oklch, var(--ui_text_primary) 88%, white);
   --pill_glow_scale: var(--site_fx_glow_mult, 1);
   --pill_transition: calc(260ms * var(--site_fx_motion_mult, 1));
   --pill_active_tint_mix: 88%;
@@ -69,10 +62,15 @@
   --center_core_size: 6rem;
 
   @apply pointer-events-none fixed top-8 z-50;
-  @apply flex w-full justify-center;
-  @apply px-2;
+  @apply grid;
 
-  transform: translate3d(0, 0, 0);
+  left: 50%;
+  width: calc(100vw - (var(--layout_viewport_pad_x) * 2));
+  max-width: var(--layout_compound_max_inline);
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: var(--layout_compound_gap);
+
+  transform: translate3d(-50%, 0, 0);
   opacity: 1;
   will-change: transform, opacity;
   transition:
@@ -81,13 +79,13 @@
 }
 
 #desktop-nav.is-nav-hidden {
-  transform: translate3d(0, calc(-100% - 1.25rem), 0);
+  transform: translate3d(-50%, calc(-100% - 1.25rem), 0);
   opacity: 0;
   pointer-events: none;
 }
 
 #desktop-nav:focus-within {
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(-50%, 0, 0);
   opacity: 1;
   pointer-events: auto;
 }
@@ -136,18 +134,24 @@
 
   @apply pointer-events-auto relative;
   @apply flex items-center justify-between;
-  @apply h-18 w-full max-w-230;
+  @apply h-18 w-full;
   @apply rounded-full px-4 py-2 md:px-6 md:py-2;
   @apply border;
 
-  border-color: var(--rail_border);
+  grid-column: 2 / span 4;
+
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(42% * var(--site_style_strength_mult, 1)),
+    transparent
+  );
   background: linear-gradient(
     140deg,
     color-mix(in oklch, var(--rail_background) 85%, white) 0%,
     color-mix(in oklch, var(--rail_background) 72%, transparent) 42%,
     color-mix(in oklch, var(--rail_background) 92%, black) 100%
   );
-  box-shadow: var(--rail_shadow);
+  box-shadow: 0 18px 45px -26px rgb(0 0 0 / 0.82);
   backdrop-filter: blur(var(--rail_glass_blur));
   transition:
     --cursor_x var(--cursor_transition_duration)
@@ -198,9 +202,8 @@
 }
 
 .nav-pill {
-  --pill_pointer_glow: 0;
   --pill_active_glow: 0;
-  --pill_effective_glow: max(var(--pill_pointer_glow), var(--pill_active_glow));
+  --pill_effective_glow: var(--pill_active_glow);
   --neon_color: color-mix(
     in oklch,
     var(--site_style_accent_alt) 45%,
@@ -214,7 +217,7 @@
   @apply border;
 
   border-color: var(--pill_border);
-  color: var(--pill_text);
+  color: color-mix(in oklch, var(--ui_text_primary) 88%, white);
   background-color: var(--pill_background);
   --neon-color: var(--neon_color);
 
@@ -327,6 +330,7 @@
   @apply inline-flex items-center justify-center;
   @apply rounded-full;
 
+  left: calc(var(--site_center_axis_x) + var(--site_center_axis_nudge_x));
   width: var(--center_ring_size);
   height: var(--center_ring_size);
   transform: translate3d(-50%, 0, 0);
@@ -544,30 +548,6 @@
 @media (max-width: 768px) {
   #desktop-nav {
     @apply hidden;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #desktop-nav {
-    transition: none;
-  }
-
-  .nav-pill {
-    transition: none;
-  }
-
-  .nav-rail-layer-cursor-glow {
-    opacity: 0.6;
-  }
-
-  #icon-user:hover .icon-user-layer-orbit,
-  #icon-user:focus-visible .icon-user-layer-orbit {
-    animation: none;
-  }
-
-  .cinza_sun_halo,
-  .cinza_sun_highlight {
-    animation: none;
   }
 }
 

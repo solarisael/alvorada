@@ -13,9 +13,12 @@ Apply this rule for UI/CSS implementation and CSS refactors.
 - Layout-first sizing is mandatory: derive size from parent/container flow first.
 - Prefer `%` sizing/offsets when possible.
 - `px` is forbidden for width/height/offset/transform unless an explicit exception is documented in-file.
+- Logical sizing/spacing properties are forbidden (`inline-size`, `block-size`, `max-inline-size`, `padding-inline`, `margin-block`, `border-inline-*`, etc.).
+- Use physical sizing/spacing properties only (`width`, `height`, `max-width`, `padding-left/right/top/bottom`, `margin-top/bottom`, `border-left/right`).
 - Transform offsets must be variable-derived and should use `%` when feasible.
 - Avoid magic numbers: size math must map to named semantic variables.
-- Use `clamp()` when fluid behavior improves the result; do not force it when it harms intent.
+- `clamp()` is reserved for typography systems (font-size, line-height, reading measure) unless an explicit exception is documented in-file.
+- For non-typography spacing and layout sizing, prefer fixed `rem` values and use `%` only when container-proportional behavior is intentional.
 - Floating UI may ignore breakpoint inheritance when truly independent from surrounding layout.
 
 Allowed `px` exceptions (default):

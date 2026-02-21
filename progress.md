@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-15 17:15
+- Updated_utc: 2026-02-21 18:10
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - mode_for_next_session: co-pilot
-- primary_outcome_next_session: polish timeline layout and surrounding composition now that HTMX interactions are stable
+- primary_outcome_next_session: fix timeline layout consistency and chapter navigation bugs while preserving current composition contracts
 - priority_axis_next_session: polish
 - edit_breadth_next_session: focused
-- first_task_next_session: run a layout pass on /rubedo/[book_slug]/timeline for desktop/mobile balance and spacing hierarchy
+- first_task_next_session: reproduce chapter navigation failures on /rubedo/[book_slug]/timeline and map broken state transitions before editing
 - commit_intent_next_session: after_review
-- notes_next_session: timeline interaction layer is now HTMX-driven with stable inner swap target (#rubedo_timeline_state_content); preserve this contract while styling
+- notes_next_session: preserve HTMX timeline swap contract (#rubedo_timeline_state_content), keep body_grid/compound_body_grid composition, and verify chapter links/state sync across panel + map
 
 ## Alias Ledger
 
@@ -51,20 +51,20 @@
 ## Active Scope
 
 - State: handoff_ready
-- Branch: master
+- Branch: feat/compound-grid-body-composition-4plus6
 - Head: (pending_commit)
-- Scope_in: Rubedo markdown-first timeline and reader flow with strict scene identity validation, plus constellation timeline UX.
-- Scope_out: broad non-Rubedo refactors and unrelated visual-system rewrites.
+- Scope_in: composition cleanup complete; next focus is Rubedo timeline layout parity and chapter navigation reliability.
+- Scope_out: additional broad style-system rewrites unless required by timeline/chapter bug fixes.
 
 ## Next (Top 3)
 
-1. [ ] Run timeline functionality pass for chapter switching, POV/modifier state persistence, and fallback badge behavior.
-2. [ ] Run layout pass for timeline and reader balance on desktop/mobile.
-3. [ ] Decide whether to wire `rubedo:scenes:check` into a single required validation command/workflow.
+1. [ ] Reproduce and isolate chapter navigation bugs on `/rubedo/[book_slug]/timeline` and `/rubedo/[book_slug]` (chapter_id + thread state sync).
+2. [ ] Run a timeline layout pass for desktop/mobile hierarchy and spacing consistency after the new composition system.
+3. [ ] Patch chapter navigation state transitions (panel, constellation node current-state, breadcrumbs) and validate with focused regression checks.
 
 ## Blockers
 
-- No technical blocker.
+- No technical blocker; next risk is state desync between URL query, timeline panel, and constellation active node.
 
 ## Possibilities
 
@@ -83,11 +83,11 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-15
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-15
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-15
-- Rubedo_scene_identity: pass (`bun run rubedo:scenes:check`) - 2026-02-15
-- JS_focused_tests: pass (`bun test tests/timeline_threads.test.js tests/rubedo_scene_identity.test.js`) - 2026-02-15
+- Build: pass (`bun run build`) - 2026-02-21
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-21
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-21
+- CSS_tunables: pass (`bun run css:tunables:check`) - 2026-02-21
+- Rubedo_scene_identity: not run in this pass (unchanged scope)
 
 ## Notes
 
@@ -101,16 +101,13 @@
 2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
 
-## Session Delta (2026-02-15)
+## Session Delta (2026-02-21)
 
-- Stabilized timeline HTMX interaction flow by splitting permanent panel wrapper and inner swap target to avoid target deletion (`#rubedo_timeline_state_panel` + `#rubedo_timeline_state_content`).
-- Added timeline-specific HTMX disinherit + explicit fragment selection to stop inherited global `hx-select` behavior from emptying panel swaps.
-- Reworked constellation/map + controls wiring so chapter/POV/modifier swaps update the panel reliably without forcing URL movement.
-- Added constellation timeline route and component for Rubedo (`/rubedo/[book_slug]/timeline`) with deterministic chapter node map and optional branch edges.
-- Added timeline styling layer and integrated reader/timeline cross-links while preserving query-state (`chapter_id`, `thread_key`, `thread_modifier`).
-- Implemented markdown-first Rubedo scene pipeline under `src/data/rubedo/scenes/**` with duplicated identity contract (frontmatter + tags).
-- Implemented strict scene identity validation helpers and CLI audit (`bun run rubedo:scenes:check`).
-- Extended resolver output with chapter card metadata (`resolved_chapter_title`, `resolved_chapter_description`, `resolved_chapter_snippet`) and thread-variant override precedence.
-- Updated reader/timeline panels to show title + description + chapter snippet card content from resolved state.
-- Added scene identity tests and expanded timeline resolver tests for metadata override/fallback behavior.
-- Completed markdown-only cutover by removing legacy fallback book timeline source and deleting standalone chapter route that duplicated authoring.
+- Rebuilt desktop composition around class-driven body contracts (`body_grid`, `compound_body_grid`) and aligned nav/content on shared grid intent.
+- Moved footer into `#content` transition scope with a dedicated full-width lane and footer-slot override support.
+- Rebalanced shell lighting response by shell intensity: top-light capped and bottom-light boosted for subtle/medium/strong.
+- Added shared center-axis controls to align nav center and content line/sigil ornaments to one visual spine.
+- Removed logical CSS properties, removed reduced-motion branches, and migrated runtime aria-state behavior to classes/data attributes.
+- Reduced non-typography clamp usage and simplified spacing/sizing values while preserving container-proportional percentages where composition-critical.
+- Converted text effect animation offsets from percentages to `em` constants with stronger motion amplitude.
+- Updated project/rules docs to codify new constraints and prevent regression.

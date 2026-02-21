@@ -29,19 +29,25 @@ Ownership Matrix
   --site_shell_blur_mult: 1;
   --site_shell_surface_mult: 1;
   --site_shell_glow_mult: 1;
+  --site_shell_top_light_mult: 0.5;
+  --site_shell_bottom_light_mult: 1;
 
   --site_fx_glow_mult: 1;
   --site_fx_motion_mult: 1;
   --site_fx_lift_mult: 1;
 
   --reading_plane_shift_y: 0px;
+  --site_center_axis_x: 50%;
+  --site_center_axis_nudge_x: 0rem;
+  --site_center_axis_line_nudge_x: 0.2rem;
+  --site_center_axis_sigil_nudge_x: 0.2rem;
 
   /* Cinza quick tuning: master controls */
   --cinza_tune_axis_span: 0.5rem;
   --cinza_tune_rail_inline_offset: 0%;
   --cinza_tune_corner_scale: 1;
-  --cinza_tune_line_block_size: clamp(1.18rem, 2.3vw, 1.76rem);
-  --cinza_tune_sigil_size: clamp(2rem, 4.6vw, 3.25rem);
+  --cinza_tune_line_block_size: 1.5rem;
+  --cinza_tune_sigil_size: 2.6rem;
   --cinza_tune_rail_edge_nudge: 0.7rem;
   --cinza_tune_offset_up_mult: 1;
   --cinza_tune_offset_down_mult: 1;
@@ -180,6 +186,8 @@ Ownership Matrix
   --site_shell_blur_mult: 0.84;
   --site_shell_surface_mult: 0.9;
   --site_shell_glow_mult: 0.84;
+  --site_shell_top_light_mult: 0.5;
+  --site_shell_bottom_light_mult: 0.9;
 }
 
 :root[data-site-shell="medium"] {
@@ -188,6 +196,8 @@ Ownership Matrix
   --site_shell_blur_mult: 1;
   --site_shell_surface_mult: 1;
   --site_shell_glow_mult: 1;
+  --site_shell_top_light_mult: 0.5;
+  --site_shell_bottom_light_mult: 1.15;
 }
 
 :root[data-site-shell="strong"] {
@@ -196,6 +206,8 @@ Ownership Matrix
   --site_shell_blur_mult: 1.22;
   --site_shell_surface_mult: 1.16;
   --site_shell_glow_mult: 1.22;
+  --site_shell_top_light_mult: 0.5;
+  --site_shell_bottom_light_mult: 1.4;
 }
 
 :root[data-site-fx="subtle"] {
@@ -304,18 +316,5 @@ Ownership Matrix
 
   to {
     opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --reading_plane_shift_y: 0px;
-  }
-
-  ::view-transition-group(page_content),
-  ::view-transition-old(page_content),
-  ::view-transition-new(page_content) {
-    animation-duration: 1ms;
-    animation-delay: 0ms;
   }
 }

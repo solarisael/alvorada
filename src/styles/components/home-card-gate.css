@@ -5,7 +5,7 @@
 #home_card_gate {
   --home_gate_card_radius: 18px;
   --home_gate_card_border_width: 1px;
-  --home_gate_grid_gap: clamp(0.85rem, 1.8vw, 1.35rem);
+  --home_gate_grid_gap: 1.1rem;
   --home_gate_card_min: 180px;
 
   --home_gate_surface_mix: 56%;
@@ -166,7 +166,7 @@
 
 .phase-card-layer-frame {
   z-index: 3;
-  inset: clamp(0.55rem, 1.8%, 0.75rem);
+  inset: 0.65rem;
   border-radius: calc(var(--home_gate_card_radius) - 0.5rem);
   border: 1px solid
     color-mix(
@@ -272,14 +272,14 @@
 }
 
 :root[data-site-theme="cinza"] .phase_card_link {
-  --phase_ornament_inset: clamp(0.35rem, 1.2%, 0.55rem);
-  --phase_ornament_tl_size: clamp(2.1rem, 7vw, 2.4rem);
-  --phase_ornament_tr_size: clamp(2.25rem, 7.4vw, 2.62rem);
-  --phase_ornament_bl_size: clamp(1.9rem, 6.4vw, 2.2rem);
-  --phase_ornament_br_size: clamp(2.2rem, 7.2vw, 2.52rem);
-  --phase_ornament_sigil_size: clamp(1.15rem, 3.7vw, 1.5rem);
-  --phase_ornament_sigil_offset: 4%;
-  --phase_ornament_side_inline: clamp(0.75rem, 2.2vw, 1rem);
+  --phase_ornament_inset: 0.5rem;
+  --phase_ornament_tl_size: 2.25rem;
+  --phase_ornament_tr_size: 2.45rem;
+  --phase_ornament_bl_size: 2.05rem;
+  --phase_ornament_br_size: 2.35rem;
+  --phase_ornament_sigil_size: 1.35rem;
+  --phase_ornament_sigil_offset: 0.75rem;
+  --phase_ornament_side_inline: 0.9rem;
   --phase_ornament_side_block: 76%;
 
   --phase_card_layer_shadow_stack:
@@ -376,60 +376,60 @@
 :root[data-site-theme="cinza"] .phase-card-ornament-corner-tl {
   left: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
-  inline-size: var(--phase_ornament_tl_size);
-  block-size: var(--phase_ornament_tl_size);
+  width: var(--phase_ornament_tl_size);
+  height: var(--phase_ornament_tl_size);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-corner-tr {
   right: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
-  inline-size: var(--phase_ornament_tr_size);
-  block-size: var(--phase_ornament_tr_size);
+  width: var(--phase_ornament_tr_size);
+  height: var(--phase_ornament_tr_size);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-corner-bl {
   left: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
-  inline-size: var(--phase_ornament_bl_size);
-  block-size: var(--phase_ornament_bl_size);
+  width: var(--phase_ornament_bl_size);
+  height: var(--phase_ornament_bl_size);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-corner-br {
   right: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
-  inline-size: var(--phase_ornament_br_size);
-  block-size: var(--phase_ornament_br_size);
+  width: var(--phase_ornament_br_size);
+  height: var(--phase_ornament_br_size);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-center-top {
   left: 50%;
   top: var(--phase_ornament_inset);
-  inline-size: 84%;
-  block-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  width: 84%;
+  height: 1.65rem;
   transform: translateX(-50%);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-side-left {
   left: var(--phase_ornament_inset);
   top: 50%;
-  inline-size: var(--phase_ornament_side_inline);
-  block-size: var(--phase_ornament_side_block);
+  width: var(--phase_ornament_side_inline);
+  height: var(--phase_ornament_side_block);
   transform: translateY(-50%);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-side-right {
   right: var(--phase_ornament_inset);
   top: 50%;
-  inline-size: var(--phase_ornament_side_inline);
-  block-size: var(--phase_ornament_side_block);
+  width: var(--phase_ornament_side_inline);
+  height: var(--phase_ornament_side_block);
   transform: translateY(-50%);
 }
 
 :root[data-site-theme="cinza"] .phase-card-ornament-sigil {
   left: 50%;
   bottom: var(--phase_ornament_sigil_offset);
-  inline-size: var(--phase_ornament_sigil_size);
-  block-size: var(--phase_ornament_sigil_size);
+  width: var(--phase_ornament_sigil_size);
+  height: var(--phase_ornament_sigil_size);
   transform: translateX(-50%);
 }
 
@@ -489,16 +489,5 @@
 @media (max-width: 768px) {
   #home_card_gate {
     --home_gate_card_min: 210px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .phase_card_link {
-    transition-duration: 1ms;
-  }
-
-  .phase_card_link:hover,
-  .phase_card_link:focus-visible {
-    transform: none;
   }
 }

@@ -245,10 +245,7 @@ const bind_switcher_controls = () => {
     switcher_node.dataset.styleCollapsed = is_collapsed ? "true" : "false";
 
     if (toggle_node instanceof HTMLButtonElement) {
-      toggle_node.setAttribute(
-        "aria-expanded",
-        is_collapsed ? "false" : "true",
-      );
+      toggle_node.dataset.expanded = is_collapsed ? "false" : "true";
       toggle_node.textContent = is_collapsed ? "style" : "close";
     }
   };

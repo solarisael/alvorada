@@ -107,13 +107,7 @@ const apply_constant_crumb_state = (pathname_value) => {
     const is_current = crumb_link_node === current_link_node;
     crumb_item_node.classList.toggle("is-current", is_current);
     crumb_item_node.classList.toggle("is-parent", !is_current);
-
-    if (is_current) {
-      crumb_link_node.setAttribute("aria-current", "page");
-      return;
-    }
-
-    crumb_link_node.removeAttribute("aria-current");
+    crumb_link_node.classList.toggle("is-current-link", is_current);
   });
 
   last_applied_pathname = normalized_pathname;

@@ -3,22 +3,24 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #footer {
-  @apply flex h-20 items-center justify-center;
-  @apply mb-30 md:mb-0;
+  @apply flex min-h-20 w-full items-center justify-center;
+  @apply px-4 py-4;
   @apply border-2;
+  @apply rounded-xl;
 
   border-color: color-mix(
     in oklch,
-    var(--site_style_accent) calc(var(--site_style_border_mix) * 0.9),
+    var(--site_style_accent)
+      calc(var(--site_style_border_mix) * var(--site_style_strength_mult)),
     transparent
   );
   background: linear-gradient(
-    160deg,
+    165deg,
     color-mix(
       in oklch,
       var(--ui_bg_mantle)
         calc(
-          52% * var(--site_style_strength_mult) * var(--site_shell_surface_mult)
+          56% * var(--site_style_strength_mult) * var(--site_shell_surface_mult)
         ),
       transparent
     ),
@@ -26,14 +28,20 @@
       in oklch,
       var(--ui_bg_crust)
         calc(
-          40% * var(--site_style_strength_mult) * var(--site_shell_surface_mult)
+          42% * var(--site_style_strength_mult) * var(--site_shell_surface_mult)
         ),
       transparent
     )
   );
   box-shadow:
-    inset 0 1px 0 color-mix(in oklch, var(--site_style_accent) 18%, transparent),
-    0 14px 28px -22px rgb(0 0 0 / 0.9);
+    inset 0 0 0 1px
+      color-mix(
+        in oklch,
+        var(--site_style_accent)
+          calc(var(--site_style_edge_mix) * var(--site_style_strength_mult)),
+        transparent
+      ),
+    0 18px 32px -24px rgb(0 0 0 / 0.92);
   backdrop-filter: blur(calc(6px * var(--site_shell_blur_mult)));
 }
 

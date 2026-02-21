@@ -23,6 +23,8 @@ const manual_body_classes = String(body_class).split(/\s+/).filter(Boolean);
 
 const resolved_body_classes = Array.from(
   new Set([
+    "body_grid",
+    "compound_body_grid",
     "page-transition-breath-noticeable",
     ...auto_body_classes,
     ...manual_body_classes,
@@ -65,33 +67,19 @@ const resolved_body_classes = Array.from(
     <container>
       <main id="page-main">
         <div id="content_stage">
-          <div
-            class="content-stage-layer content-stage-layer-fog"
-            aria-hidden="true"
-          >
-          </div>
-          <div
-            class="content-stage-layer content-stage-layer-rails"
-            aria-hidden="true"
-          >
-          </div>
+          <div class="content-stage-layer content-stage-layer-fog"></div>
+          <div class="content-stage-layer content-stage-layer-rails"></div>
 
-          <div id="content_fog_backdrop" aria-hidden="true">
+          <div id="content_fog_backdrop">
             <div class="content-fog-layer content-fog-layer-top"></div>
             <div class="content-fog-layer content-fog-layer-bottom"></div>
           </div>
 
           <div id="content">
-            <div class="content-layer content-layer-surface" aria-hidden="true">
-            </div>
-            <div class="content-layer content-layer-noise" aria-hidden="true">
-            </div>
-            <div class="content-layer content-layer-deco" aria-hidden="true">
-            </div>
-            <div
-              class="content-layer content-layer-ornament-svg"
-              aria-hidden="true"
-            >
+            <div class="content-layer content-layer-surface"></div>
+            <div class="content-layer content-layer-noise"></div>
+            <div class="content-layer content-layer-deco"></div>
+            <div class="content-layer content-layer-ornament-svg">
               <img
                 class="content-ornament content-ornament-corner-tl"
                 src="/ornaments/cinza/frame_corner_tl.svg"
@@ -152,33 +140,29 @@ const resolved_body_classes = Array.from(
 
             <div class="content-layer-body">
               <div id="main_reading_container">
-                <div
-                  class="reading-layer reading-layer-surface"
-                  aria-hidden="true"
-                >
-                </div>
-                <div
-                  class="reading-layer reading-layer-noise"
-                  aria-hidden="true"
-                >
-                </div>
+                <div class="reading-layer reading-layer-surface"></div>
+                <div class="reading-layer reading-layer-noise"></div>
 
                 <div class="reading-layer-body">
                   <Breadcrumbers />
                   <slot />
                 </div>
               </div>
+
+              <div id="content_footer_lane">
+                <slot name="footer">
+                  <footer id="footer">
+                    <a href=""
+                      >Made with pure hatred <br />
+                      You should all die</a
+                    >
+                  </footer>
+                </slot>
+              </div>
             </div>
           </div>
         </div>
         <StyleSwitcher />
-
-        <footer id="footer">
-          <a href=""
-            >Made with pure hatred <br />
-            You should all die</a
-          >
-        </footer>
       </main>
     </container>
   </body>

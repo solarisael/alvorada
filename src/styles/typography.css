@@ -245,7 +245,7 @@ body {
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, blockquote, pre, table, dl) {
-  max-inline-size: var(--measure_reading_body);
+  max-width: var(--measure_reading_body);
 }
 
 :where(
@@ -347,8 +347,8 @@ body {
   )
   :where(blockquote) {
   font-style: italic;
-  padding-inline-start: 1.1em;
-  border-inline-start: 1px solid
+  padding-left: 1.1em;
+  border-left: 1px solid
     color-mix(in oklch, var(--site_style_accent, currentColor) 28%, transparent);
 }
 

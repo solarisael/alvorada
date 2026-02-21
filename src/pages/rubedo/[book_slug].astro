@@ -103,7 +103,7 @@ const ResolvedSceneComponent =
 ---
 
 <IndexLayout body_class="pov_cinza">
-  <section aria-label="Rubedo book timeline prototype">
+  <section>
     <article>
       <header>
         <p>~/ rubedo / {book_slug}</p>
@@ -138,7 +138,7 @@ const ResolvedSceneComponent =
               }
             />
 
-            <section aria-label="Thread modifier selector">
+            <section>
               <p>Thread modifier</p>
               <ul>
                 {modifier_options.map((modifier_option) => {
@@ -150,7 +150,7 @@ const ResolvedSceneComponent =
                     <li>
                       <a
                         href={modifier_option.href}
-                        aria-current={is_active_modifier ? "page" : undefined}
+                        class:list={{ "is-route-current": is_active_modifier }}
                       >
                         {modifier_option.thread_modifier}
                       </a>
@@ -160,7 +160,7 @@ const ResolvedSceneComponent =
               </ul>
             </section>
 
-            <section aria-label="Chapter timeline selector">
+            <section>
               <p>Timeline</p>
               <ul>
                 {resolved_view_state.sorted_chapters.map((chapter) => {
@@ -173,7 +173,7 @@ const ResolvedSceneComponent =
                         href={build_reader_href({
                           chapter_id: chapter.chapter_id,
                         })}
-                        aria-current={is_active_chapter ? "page" : undefined}
+                        class:list={{ "is-route-current": is_active_chapter }}
                       >
                         {chapter.chapter_id} ({chapter.title})
                       </a>
@@ -183,7 +183,7 @@ const ResolvedSceneComponent =
               </ul>
             </section>
 
-            <section aria-label="Resolved scene output">
+            <section>
               <h2>
                 {resolved_view_state.resolved_chapter_title ??
                   "Unknown chapter"}
@@ -218,7 +218,7 @@ const ResolvedSceneComponent =
               )}
             </section>
 
-            <nav aria-label="Chapter step navigation">
+            <nav>
               <ul>
                 <li>
                   {resolved_view_state.previous_chapter_id ? (

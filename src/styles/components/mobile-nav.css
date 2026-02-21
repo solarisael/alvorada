@@ -442,16 +442,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mobile-nav-link {
-    transition: none;
-  }
-
-  .mobile-nav-layer-topline {
-    transition: none;
-  }
-}
-
 :root[data-site-theme="cinza"] .mobile-nav-link.is-home-link {
   --mobile_home_color_mix: 86%;
   --mobile_home_ring_mix: 36%;

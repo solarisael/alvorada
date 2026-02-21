@@ -92,7 +92,7 @@ const map_default_link_state = {
 ---
 
 <IndexLayout body_class="pov_cinza">
-  <section class="rubedo-timeline-page" aria-label="Rubedo timeline map">
+  <section class="rubedo-timeline-page">
     <article>
       <header class="rubedo-timeline-header">
         <p>~/ rubedo / {book_slug} / timeline</p>
@@ -132,7 +132,7 @@ const map_default_link_state = {
               }
               data-fragment-route-root={`/rubedo/${book_slug}/timeline/fragment`}
             >
-              <section aria-label="Constellation timeline panel">
+              <section>
                 <h2>Constellation map</h2>
 
                 <RubedoTimelineConstellation
@@ -158,7 +158,7 @@ const map_default_link_state = {
                   }}
                 />
 
-                <ul class="rubedo-timeline-legend" aria-label="Map legend">
+                <ul class="rubedo-timeline-legend">
                   <li>white path = cinza thread</li>
                   <li>green path = suul thread</li>
                   <li>orange path = alvorada thread</li>
@@ -167,10 +167,7 @@ const map_default_link_state = {
                 </ul>
               </section>
 
-              <div
-                class="rubedo-timeline-panel-column"
-                aria-label="Timeline panel"
-              >
+              <div class="rubedo-timeline-panel-column">
                 <section
                   id="rubedo_timeline_state_panel"
                   class="rubedo-timeline-state-panel"

@@ -86,12 +86,8 @@ const resolved_scene_excerpt =
       data-current-thread-modifier={
         resolved_view_state.requested_thread_modifier
       }
-      aria-live="polite"
     >
-      <section
-        aria-label="Timeline state controls"
-        class="rubedo-timeline-panel-card"
-      >
+      <section class="rubedo-timeline-panel-card">
         <h2>Eyes and thread state</h2>
 
         <form class="rubedo-timeline-controls" data-rubedo-timeline-controls>
@@ -166,10 +162,7 @@ const resolved_scene_excerpt =
         </form>
       </section>
 
-      <section
-        aria-label="Resolved scene excerpt"
-        class="rubedo-timeline-panel-card"
-      >
+      <section class="rubedo-timeline-panel-card">
         <h3>
           {resolved_view_state.resolved_chapter_title ?? "Unknown chapter"}
         </h3>
@@ -205,10 +198,7 @@ const resolved_scene_excerpt =
         {resolved_scene_excerpt && <p>{resolved_scene_excerpt}</p>}
       </section>
 
-      <nav
-        aria-label="Chapter step navigation"
-        class="rubedo-timeline-panel-card"
-      >
+      <nav class="rubedo-timeline-panel-card">
         <ul>
           <li>
             {resolved_view_state.previous_chapter_id ? (

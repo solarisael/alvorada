@@ -116,7 +116,7 @@
   @apply w-full;
 
   display: block;
-  max-block-size: 48rem;
+  max-height: 48rem;
 }
 
 .rubedo-constellation-layer-branch-edges line {
@@ -179,16 +179,14 @@
   text-transform: uppercase;
 }
 
-.rubedo-constellation-node-link[aria-current="page"]
-  .rubedo-constellation-node-halo,
+.rubedo-constellation-node-link.is-current-node .rubedo-constellation-node-halo,
 .rubedo-constellation-node-link:hover .rubedo-constellation-node-halo,
 .rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-halo {
   fill: var(--rubedo_timeline_node_glow);
   r: 5;
 }
 
-.rubedo-constellation-node-link[aria-current="page"]
-  .rubedo-constellation-node-core,
+.rubedo-constellation-node-link.is-current-node .rubedo-constellation-node-core,
 .rubedo-constellation-node-link:hover .rubedo-constellation-node-core,
 .rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-core {
   r: 2.1;
@@ -217,12 +215,5 @@
   .rubedo-timeline-grid {
     grid-template-columns: 1.3fr 1fr;
     align-items: start;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rubedo-constellation-node-halo,
-  .rubedo-constellation-node-core {
-    transition: none;
   }
 }

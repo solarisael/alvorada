@@ -31,11 +31,14 @@ Required structure format:
 - Implement mapped targets first before optional polish.
 - Keep new styling switchable via classes/tokens when the request implies options.
 - Prefer semantic variables over hard-coded palette values for switchable themes.
+- Runtime states must be class/data-driven; do not use ARIA/role as runtime state contracts.
 - For non-trivial effects, state an explicit structure plan first: which effect is rendered by HTML layers vs CSS backgrounds.
 - Complex decorative FX MUST use dedicated markup layers.
 - Decorative background stacks above 2 layers are forbidden unless a documented `bg-stack-exception` marker exists.
 - CSS `url(...)` references to `/ornaments/` are forbidden; ornament rendering must be in HTML.
 - Keep animation plans simple and readable; prefer `transform`/`opacity` and avoid paint-heavy animated properties by default.
+- Do not use logical CSS properties; use physical property equivalents.
+- For composition work, apply `body_grid` and `compound_body_grid` contracts before component-local alignment.
 
 ## After Editing
 

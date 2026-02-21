@@ -16,6 +16,7 @@ Apply this rule in every session.
 - If ambiguity remains unresolved, pause execution and report the blocker.
 - If jargon/tags are used and either side signals uncertainty, provide at least two concrete examples (A/B or references) before implementation.
 - Assume Sol's tag vocabulary may differ from default model meaning; do not proceed based only on abstract labels.
+- This rule is about semantic term definitions, not about introducing CSS custom-property aliases.
 
 ## Alias Tracking
 

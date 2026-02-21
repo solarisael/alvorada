@@ -84,13 +84,7 @@ const apply_route_active_state = (pathname_override = null) => {
     const is_active = is_section_path_active(current_pathname, target_pathname);
 
     pill_node.classList.toggle("is-route-active", is_active);
-
-    if (is_exact_match) {
-      pill_node.setAttribute("aria-current", "page");
-      return;
-    }
-
-    pill_node.removeAttribute("aria-current");
+    pill_node.classList.toggle("is-route-current", is_exact_match);
   });
 
   const home_node = nav_node.querySelector("#icon-user");
@@ -101,14 +95,7 @@ const apply_route_active_state = (pathname_override = null) => {
 
   const is_home_active = current_pathname === "/";
   home_node.classList.toggle("is-route-active", is_home_active);
-
-  if (is_home_active) {
-    home_node.setAttribute("aria-current", "page");
-    last_applied_pathname = current_pathname;
-    return;
-  }
-
-  home_node.removeAttribute("aria-current");
+  home_node.classList.toggle("is-route-current", is_home_active);
   last_applied_pathname = current_pathname;
 };
 

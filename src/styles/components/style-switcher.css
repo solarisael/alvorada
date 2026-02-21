@@ -7,8 +7,8 @@
   /* geometry */
   --style_switcher_radius: 0.875rem;
   --style_switcher_panel_inline: min(20rem, calc(100vw - 3rem));
-  --style_switcher_tab_inline: clamp(2.1rem, 3.2vw, 2.5rem);
-  --style_switcher_tab_block: clamp(10rem, 24vh, 14rem);
+  --style_switcher_tab_inline: 2.3rem;
+  --style_switcher_tab_block: 12rem;
   --style_switcher_bottom: 1rem;
   --style_switcher_right: 0;
 
@@ -30,10 +30,10 @@
 
   right: var(--style_switcher_right);
   bottom: var(--style_switcher_bottom);
-  inline-size: calc(
+  width: calc(
     var(--style_switcher_panel_inline) + var(--style_switcher_tab_inline)
   );
-  max-inline-size: calc(100vw - 0.5rem);
+  max-width: calc(100vw - 0.5rem);
   border-radius: var(--style_switcher_radius) 0 0 var(--style_switcher_radius);
   border-color: color-mix(
     in oklch,
@@ -72,8 +72,8 @@
   @apply px-6 py-3;
   @apply lowercase;
 
-  inline-size: var(--style_switcher_tab_inline);
-  block-size: var(--style_switcher_tab_block);
+  width: var(--style_switcher_tab_inline);
+  height: var(--style_switcher_tab_block);
   text-orientation: mixed;
   letter-spacing: 0.06em;
   color: color-mix(
@@ -90,7 +90,7 @@
   @apply gap-2;
   @apply px-3 py-3;
 
-  inline-size: var(--style_switcher_panel_inline);
+  width: var(--style_switcher_panel_inline);
 }
 
 #style_switcher[data-style-collapsed="true"] {
@@ -155,13 +155,7 @@
   #style_switcher {
     --style_switcher_bottom: 5.6rem;
     --style_switcher_panel_inline: min(17rem, calc(100vw - 2.4rem));
-    --style_switcher_tab_inline: clamp(1.8rem, 6vw, 2.2rem);
-    --style_switcher_tab_block: clamp(8.5rem, 18vh, 11.2rem);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #style_switcher select {
-    transition: none;
+    --style_switcher_tab_inline: 2rem;
+    --style_switcher_tab_block: 9.8rem;
   }
 }

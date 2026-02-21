@@ -59,7 +59,7 @@ const phase_cards = [
 ---
 
 <IndexLayout>
-  <section id="home_card_gate" aria-label="Choose your alchemical phase">
+  <section id="home_card_gate">
     <article id="home_gate_intro">
       <header id="home_gate_header">
         <p id="home_gate_kicker" class="text_kicker">~/ threshold</p>
@@ -74,30 +74,17 @@ const phase_cards = [
       </div>
     </article>
 
-    <nav id="phase_card_grid" aria-label="Main phase routes">
+    <nav id="phase_card_grid">
       {
         phase_cards.map((phase_card) => (
           <a
             class={`phase_card_link phase_card_${phase_card.phase_slug}`}
             href={`/${phase_card.phase_slug}`}
-            aria-label={`Enter ${phase_card.phase_name}`}
           >
-            <span
-              class="phase-card-layer phase-card-layer-surface"
-              aria-hidden="true"
-            />
-            <span
-              class="phase-card-layer phase-card-layer-stars"
-              aria-hidden="true"
-            />
-            <span
-              class="phase-card-layer phase-card-layer-frame"
-              aria-hidden="true"
-            />
-            <div
-              class="phase-card-layer phase-card-layer-ornament-svg"
-              aria-hidden="true"
-            >
+            <span class="phase-card-layer phase-card-layer-surface" />
+            <span class="phase-card-layer phase-card-layer-stars" />
+            <span class="phase-card-layer phase-card-layer-frame" />
+            <div class="phase-card-layer phase-card-layer-ornament-svg">
               <img
                 class="phase-card-ornament phase-card-ornament-corner-tl"
                 src={phase_card.ornament.corner_tl}

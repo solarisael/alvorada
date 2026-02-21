@@ -198,3 +198,40 @@ Historical session log moved out of `progress.md` to keep active context concise
 - Focused resolver + identity tests passed (`bun test tests/timeline_threads.test.js tests/rubedo_scene_identity.test.js`).
 - Build passed after markdown-only cutover (`bun run build`).
 - CSS hard gates passed (`bun run css:hard-gates:check`).
+
+## Archived Snapshot (2026-02-21)
+
+- Source: compound grid + shell cleanup + motion/style governance pass.
+- Scope covered: body composition contracts, nav/content/footer alignment, CSS policy hardening, runtime state migration away from aria, clamp/logical-property cleanup, and shell-light rebalance with center-axis alignment.
+
+### Completed Work (high level)
+
+- Introduced class-driven body composition contracts and wired desktop layout around shared grid intent:
+  - `body_grid`
+  - `compound_body_grid`
+- Rebuilt nav/content shell alignment for desktop while preserving fixed nav behavior and interaction runtime contracts.
+- Moved footer inside `#content` transition scope with a dedicated full-width footer lane and per-page footer slot support.
+- Rebalanced content shell light behavior by shell strength:
+  - capped top light multiplier
+  - increased bottom light multiplier for subtle/medium/strong
+- Added shared center-axis tokens and aligned nav center + content line/sigil ornaments to the same center contract.
+- Removed legacy duplicated stylesheet payload by deleting `src/styles/style.css`.
+- Performed broad CSS cleanup:
+  - removed logical properties (`*-inline`, `*-block`) in favor of physical properties
+  - reduced non-typography clamp usage and kept clamp usage typography-scoped
+  - pruned redundant percentage-based layout usage where not composition-critical
+- Converted text effect motion keyframes from percent offsets to `em` constants with amplified motion profile.
+- Removed `prefers-reduced-motion` branches from styles.
+- Removed aria/role runtime-state contracts from markup and JS flows; migrated active/current/expanded behavior to classes/data attributes.
+- Updated policy docs/rules to prevent regressions:
+  - explicit ban on logical properties
+  - aria/role runtime-state prohibition
+  - no `prefers-reduced-motion` branches
+  - clamp guidance restricted to typography
+
+### Validation Highlights
+
+- Repeated formatting checks passed on touched files (`bunx prettier --check ...`).
+- Build passed after each major checkpoint (`bun run build`).
+- Visual hard gates passed (`bun run css:hard-gates:check`).
+- Tunables checks passed (`bun run css:tunables:check`).

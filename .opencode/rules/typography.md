@@ -23,6 +23,7 @@ Use this document as a strict rule for all text styles.
 - Use a minimum base size of `10px`.
 - Use fluid interpolation range from `768px` to `1440px`.
 - Prefer `clamp()` and custom properties for reusable formulas.
+- `clamp()` guidance here is typography-only and must not be expanded to general layout/spacing rules.
 
 ## Scale and Hierarchy
 

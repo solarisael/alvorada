@@ -27,3 +27,7 @@ This is a personal website built with Astro, with these specifications:
 - Do not use classes.
 - Purely functional paradigm code structure.
 - Avoid OOP.
+- Do not use logical CSS properties (`inline-size`, `block-size`, `padding-inline`, `margin-block`, `border-inline-*`, etc.). Use physical properties instead.
+- Do not add `aria-*` or `role` attributes for runtime state contracts; use classes or `data-*` state hooks.
+- Do not add `@media (prefers-reduced-motion: reduce)` branches.
+- Body-level composition must be class-driven via `body_grid` and `compound_body_grid`.

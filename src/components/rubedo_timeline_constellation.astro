@@ -114,13 +114,10 @@ const branch_edges = chapter_nodes.flatMap((chapter_node) => {
   id="rubedo_constellation_map"
   class="rubedo-constellation"
   data-active-thread-key={active_thread_key}
-  aria-label="Chapter constellation map"
 >
   <svg
     class="rubedo-constellation-canvas"
     viewBox={`0 0 100 ${viewbox_height}`}
-    role="img"
-    aria-label="Constellation timeline with canonical and optional chapter paths"
   >
     <g
       class="rubedo-constellation-layer rubedo-constellation-layer-branch-edges"
@@ -184,8 +181,10 @@ const branch_edges = chapter_nodes.flatMap((chapter_node) => {
               hx-push-url={chapter_link_props.hx_push_url}
               hx-select={chapter_link_props.hx_select}
               hx-select-oob={chapter_link_props.hx_select_oob}
-              aria-current={is_active_chapter ? "page" : undefined}
-              class="rubedo-constellation-node-link"
+              class:list={{
+                "rubedo-constellation-node-link": true,
+                "is-current-node": is_active_chapter,
+              }}
             >
               <circle
                 class="rubedo-constellation-node-halo"

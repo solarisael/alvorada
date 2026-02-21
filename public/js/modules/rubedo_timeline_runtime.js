@@ -101,11 +101,11 @@ const apply_active_map_state = ({ chapter_id = "", thread_key = "cinza" }) => {
     }
 
     if (map_link_node.dataset.chapterId === chapter_id) {
-      map_link_node.setAttribute("aria-current", "page");
+      map_link_node.classList.add("is-current-node");
       return;
     }
 
-    map_link_node.removeAttribute("aria-current");
+    map_link_node.classList.remove("is-current-node");
   });
 };
 
