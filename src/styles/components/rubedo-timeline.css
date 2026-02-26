@@ -22,6 +22,21 @@
     var(--site_style_accent) 32%,
     transparent
   );
+  --rubedo_timeline_node_fog: color-mix(
+    in oklch,
+    var(--site_style_accent) 24%,
+    transparent
+  );
+  --rubedo_timeline_node_reliquary_ring: color-mix(
+    in oklch,
+    var(--site_style_accent) 64%,
+    transparent
+  );
+  --rubedo_timeline_node_reliquary_edge: color-mix(
+    in oklch,
+    white 76%,
+    var(--site_style_accent)
+  );
 }
 
 .rubedo-timeline-header {
@@ -30,6 +45,12 @@
 
 .rubedo-timeline-grid {
   @apply mt-6 grid gap-4;
+
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "filters"
+    "map"
+    "state_lane";
 }
 
 .rubedo-timeline-grid > section {
@@ -59,6 +80,32 @@
   @apply flex flex-col gap-4;
 }
 
+.rubedo-timeline-map-card {
+  grid-area: map;
+}
+
+.rubedo-timeline-filters-card {
+  grid-area: filters;
+}
+
+.rubedo-timeline-state-lane-card {
+  @apply flex flex-col gap-2;
+
+  grid-area: state_lane;
+}
+
+.rubedo-timeline-preview-action {
+  @apply mt-auto pt-4;
+}
+
+.rubedo-timeline-go-to-chapter {
+  @apply inline-flex rounded-lg px-3 py-1.5;
+
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 32%, transparent);
+  background: color-mix(in oklch, var(--site_style_accent) 18%, transparent);
+}
+
 .rubedo-timeline-panel-card {
   @apply rounded-2xl p-4;
 
@@ -78,6 +125,12 @@
   @apply mt-3 flex flex-col gap-3;
 }
 
+.rubedo-timeline-controls span {
+  @apply text-xs uppercase;
+
+  letter-spacing: 0.08em;
+}
+
 .rubedo-timeline-controls label {
   @apply flex flex-col gap-1;
 }
@@ -90,12 +143,20 @@
   background: color-mix(in oklch, var(--ui_bg_mantle) 54%, transparent);
 }
 
+@media (min-width: 52rem) {
+  .rubedo-timeline-controls {
+    @apply grid gap-3;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .rubedo-timeline-legend {
   @apply mt-3 flex flex-col gap-1;
 }
 
 .rubedo-constellation {
-  @apply rounded-xl p-2;
+  @apply relative rounded-xl p-2;
 
   border: 1px solid
     color-mix(in oklch, var(--site_style_accent) 22%, transparent);
@@ -112,84 +173,138 @@
     );
 }
 
-.rubedo-constellation-canvas {
-  @apply w-full;
+.rubedo-constellation-controls {
+  @apply absolute top-3 right-3 z-20 inline-flex items-center gap-2 rounded-lg px-2 py-1;
 
-  display: block;
-  max-height: 48rem;
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 32%, transparent);
+  background: color-mix(in oklch, var(--ui_bg_mantle) 72%, transparent);
 }
 
-.rubedo-constellation-layer-branch-edges line {
-  stroke: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
-  stroke-width: 0.36;
-  stroke-dasharray: 1.4 1.1;
+.rubedo-constellation-controls button {
+  @apply rounded px-2 py-1 text-xs;
+
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 30%, transparent);
+  background: color-mix(in oklch, var(--site_style_accent) 14%, transparent);
 }
 
-.rubedo-constellation-layer-canonical-edges line {
-  stroke: color-mix(in oklch, var(--site_style_accent) 36%, transparent);
-  stroke-width: 0.42;
-  stroke-opacity: 0.46;
+.rubedo-constellation-controls input[type="range"] {
+  width: 7.5rem;
 }
 
-.rubedo-constellation-layer-canonical-edges[data-thread-key="cinza"] line {
-  stroke: #fff;
-}
+.rubedo-constellation-zoom-badge {
+  @apply rounded px-2 py-0.5 text-[0.62rem] uppercase;
 
-.rubedo-constellation-layer-canonical-edges[data-thread-key="suul"] line {
-  stroke: #4dd66b;
-}
-
-.rubedo-constellation-layer-canonical-edges[data-thread-key="alvorada"] line {
-  stroke: #ff9f2e;
-}
-
-.rubedo-constellation[data-active-thread-key="cinza"]
-  .rubedo-constellation-layer-canonical-edges[data-thread-key="cinza"]
-  line,
-.rubedo-constellation[data-active-thread-key="suul"]
-  .rubedo-constellation-layer-canonical-edges[data-thread-key="suul"]
-  line,
-.rubedo-constellation[data-active-thread-key="alvorada"]
-  .rubedo-constellation-layer-canonical-edges[data-thread-key="alvorada"]
-  line {
-  stroke-width: 0.58;
-  stroke-opacity: 1;
-}
-
-.rubedo-constellation-node-link {
-  outline: none;
-}
-
-.rubedo-constellation-node-halo {
-  fill: var(--rubedo_timeline_node_dim);
+  letter-spacing: 0.08em;
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 36%, transparent);
+  background: color-mix(in oklch, var(--site_style_accent) 22%, transparent);
+  opacity: 0;
+  transform: translateY(-0.15rem);
   transition:
-    fill 180ms ease,
-    r 180ms ease;
+    opacity 180ms ease,
+    transform 220ms ease;
 }
 
-.rubedo-constellation-node-core {
-  fill: color-mix(in oklch, white 82%, var(--site_style_accent));
-  transition: r 180ms ease;
+.rubedo-constellation-zoom-badge.is-active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .rubedo-constellation-node-label {
-  fill: color-mix(in oklch, var(--site_style_accent) 48%, white);
-  font-size: 3.1px;
-  letter-spacing: 0.05em;
+  @apply pointer-events-none absolute;
+
+  color: color-mix(in oklch, var(--site_style_accent) 52%, white);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 0.5rem)) translateY(0.35rem);
+  filter: drop-shadow(0 0 8px rgb(255 255 255 / 0.18));
+  transition:
+    opacity 260ms ease,
+    transform 340ms ease,
+    filter 320ms ease;
 }
 
-.rubedo-constellation-node-link.is-current-node .rubedo-constellation-node-halo,
-.rubedo-constellation-node-link:hover .rubedo-constellation-node-halo,
-.rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-halo {
-  fill: var(--rubedo_timeline_node_glow);
-  r: 5;
+.rubedo-constellation-node-label.is-visible,
+.rubedo-constellation-node-label.is-active {
+  opacity: 1;
+  transform: translate(-50%, calc(-100% - 0.5rem)) translateY(0);
+  filter: drop-shadow(0 0 10px rgb(255 255 255 / 0.6))
+    drop-shadow(
+      0 0 22px color-mix(in oklch, var(--site_style_accent) 38%, transparent)
+    );
 }
 
-.rubedo-constellation-node-link.is-current-node .rubedo-constellation-node-core,
-.rubedo-constellation-node-link:hover .rubedo-constellation-node-core,
-.rubedo-constellation-node-link:focus-visible .rubedo-constellation-node-core {
-  r: 2.1;
+.rubedo-constellation-canvas-surface {
+  @apply w-full;
+
+  display: block;
+  min-height: 70vh;
+  max-height: 92vh;
+  cursor: grab;
+  outline: none;
+}
+
+.rubedo-constellation-label-overlay {
+  @apply pointer-events-none absolute;
+
+  inset: 0;
+}
+
+.rubedo-constellation-hover-preview-layer {
+  @apply absolute z-30;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.rubedo-timeline-hover-preview {
+  @apply absolute rounded-xl p-3;
+
+  left: 1rem;
+  top: 1rem;
+  width: min(22rem, calc(100% - 2rem));
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 34%, transparent);
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklch, var(--ui_bg_mantle) 86%, transparent),
+    color-mix(in oklch, var(--ui_bg_crust) 78%, transparent)
+  );
+  box-shadow:
+    inset 0 0 0 1px
+      color-mix(in oklch, var(--site_style_accent) 10%, transparent),
+    0 1.2rem 2.8rem -1.8rem rgb(0 0 0 / 0.88);
+  opacity: 0;
+  transform: translateY(0.6rem) scale(0.985);
+  transition:
+    opacity 220ms ease,
+    transform 260ms ease;
+  pointer-events: none;
+}
+
+.rubedo-timeline-hover-preview.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.rubedo-timeline-hover-preview h3 {
+  @apply text-sm uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+.rubedo-timeline-hover-preview p {
+  @apply text-sm;
 }
 
 .rubedo-timeline-fallback-badge {
@@ -213,7 +328,11 @@
 
 @media (min-width: 64rem) {
   .rubedo-timeline-grid {
-    grid-template-columns: 1.3fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "filters filters"
+      "map map"
+      "state_lane state_lane";
     align-items: start;
   }
 }

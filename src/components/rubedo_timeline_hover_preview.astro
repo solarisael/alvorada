@@ -1,0 +1,45 @@
+---
+const {
+  resolved_view_state = null,
+  build_reader_href = () => "#",
+} = Astro.props;
+
+const reader_href = resolved_view_state
+  ? build_reader_href({
+      chapter_id: resolved_view_state.chapter_id,
+      thread_key: resolved_view_state.requested_thread_key,
+      thread_modifier: resolved_view_state.requested_thread_modifier,
+    })
+  : "#";
+---
+
+<section id="rubedo_timeline_hover_preview" class="rubedo-timeline-hover-preview">
+  {
+    resolved_view_state ? (
+      <>
+        <h3>{resolved_view_state.resolved_chapter_title ?? "Unknown chapter"}</h3>
+        {resolved_view_state.resolved_chapter_description && (
+          <p>{resolved_view_state.resolved_chapter_description}</p>
+        )}
+        {resolved_view_state.resolved_chapter_snippet && (
+          <p>{resolved_view_state.resolved_chapter_snippet}</p>
+        )}
+        <p class="rubedo-timeline-preview-action">
+          <a
+            href={reader_href}
+            hx-get={reader_href}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true"
+            class="rubedo-timeline-go-to-chapter"
+          >
+            Go to chapter
+          </a>
+        </p>
+      </>
+    ) : (
+      <p>Hover a chapter node to preview it.</p>
+    )
+  }
+</section>

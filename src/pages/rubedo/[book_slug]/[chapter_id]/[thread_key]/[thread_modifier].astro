@@ -1,0 +1,178 @@
+---
+import ChapterLayout from "../../../../../layouts/chapter.astro";
+import {
+  rubedo_book_map,
+  rubedo_book_slugs,
+} from "../../../../../data/rubedo/book_timeline_runtime.js";
+import {
+  collect_thread_keys,
+  collect_thread_modifiers_for_chapter,
+  default_thread_key,
+  default_thread_modifier,
+  resolve_book_view_state,
+} from "../../../../../utils/timeline_threads.js";
+
+export const getStaticPaths = () => {
+  return rubedo_book_slugs.flatMap((book_slug) => {
+    const selected_book_timeline = rubedo_book_map[book_slug] ?? null;
+
+    if (!selected_book_timeline) {
+      return [];
+    }
+
+    const thread_keys = collect_thread_keys(selected_book_timeline);
+
+    return selected_book_timeline.chapters.flatMap((chapter) => {
+      return thread_keys.flatMap((thread_key) => {
+        const modifier_options = collect_thread_modifiers_for_chapter(
+          chapter,
+          thread_key,
+        );
+
+        return modifier_options.map((thread_modifier) => {
+          return {
+            params: {
+              book_slug,
+              chapter_id: chapter.chapter_id,
+              thread_key,
+              thread_modifier,
+            },
+          };
+        });
+      });
+    });
+  });
+};
+
+const book_slug = Astro.params.book_slug ?? "unknown-book";
+const chapter_id_param = Astro.params.chapter_id ?? "";
+const thread_key_param = Astro.params.thread_key ?? default_thread_key;
+const thread_modifier_param =
+  Astro.params.thread_modifier ?? default_thread_modifier;
+
+const selected_book_timeline = rubedo_book_map[book_slug] ?? null;
+
+const resolved_view_state = selected_book_timeline
+  ? resolve_book_view_state(selected_book_timeline, {
+      chapter_id: chapter_id_param,
+      thread_key: thread_key_param,
+      thread_modifier: thread_modifier_param,
+    })
+  : null;
+
+const build_hx_link_attrs = (href) => {
+  return {
+    hx_get: href,
+    hx_target: "#content",
+    hx_select: "#content",
+    hx_swap: "morph swap:240ms settle:240ms",
+    hx_push_url: "true",
+  };
+};
+
+const build_reader_href = ({
+  chapter_id = resolved_view_state?.chapter_id ?? "",
+  thread_key = resolved_view_state?.requested_thread_key ?? default_thread_key,
+  thread_modifier = resolved_view_state?.requested_thread_modifier ??
+    default_thread_modifier,
+} = {}) => {
+  return `/rubedo/${book_slug}/${chapter_id}/${thread_key}/${thread_modifier}`;
+};
+
+const canonical_entry_state = selected_book_timeline
+  ? resolve_book_view_state(selected_book_timeline, {
+      chapter_id: "",
+      thread_key: default_thread_key,
+      thread_modifier: default_thread_modifier,
+    })
+  : null;
+
+const canonical_reader_href = canonical_entry_state
+  ? `/rubedo/${book_slug}/${canonical_entry_state.chapter_id}/${canonical_entry_state.requested_thread_key}/${canonical_entry_state.requested_thread_modifier}`
+  : `/rubedo/${book_slug}`;
+
+const previous_chapter_link = resolved_view_state?.previous_chapter_id
+  ? (() => {
+      const href = build_reader_href({
+        chapter_id: resolved_view_state.previous_chapter_id,
+      });
+
+      return {
+        href,
+        ...build_hx_link_attrs(href),
+      };
+    })()
+  : null;
+
+const next_chapter_link = resolved_view_state?.next_chapter_id
+  ? (() => {
+      const href = build_reader_href({
+        chapter_id: resolved_view_state.next_chapter_id,
+      });
+
+      return {
+        href,
+        ...build_hx_link_attrs(href),
+      };
+    })()
+  : null;
+
+const ResolvedSceneComponent =
+  resolved_view_state?.scene?.scene_component ?? null;
+---
+
+<ChapterLayout
+  body_class="pov_cinza"
+  previous_chapter_link={previous_chapter_link}
+  next_chapter_link={next_chapter_link}
+>
+  {
+    !selected_book_timeline || !resolved_view_state ? (
+      <>
+        <header>
+          <h1>{selected_book_timeline?.title ?? "Unknown book"}</h1>
+        </header>
+        <p>
+          Unknown book/chapter state. Use the canonical route to recover this
+          chapter flow.
+        </p>
+        <p>
+          <a
+            href={canonical_reader_href}
+            hx-get={canonical_reader_href}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true"
+          >
+            Back to {book_slug} canonical route
+          </a>
+        </p>
+      </>
+    ) : (
+      <>
+        <header>
+          <h1>
+            {resolved_view_state.resolved_chapter_title ?? "Unknown chapter"}
+          </h1>
+        </header>
+
+        {resolved_view_state.resolved_chapter_description && (
+          <p>{resolved_view_state.resolved_chapter_description}</p>
+        )}
+
+        {resolved_view_state.resolved_chapter_snippet && (
+          <p>{resolved_view_state.resolved_chapter_snippet}</p>
+        )}
+
+        {ResolvedSceneComponent ? (
+          <ResolvedSceneComponent />
+        ) : (
+          resolved_view_state.scene?.scene_lines?.map((scene_line) => {
+            return <p>{scene_line}</p>;
+          })
+        )}
+      </>
+    )
+  }
+</ChapterLayout>

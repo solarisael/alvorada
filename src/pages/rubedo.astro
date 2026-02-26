@@ -3,6 +3,49 @@ import IndexLayout from "../layouts/index.astro";
 import { rubedo_book_map } from "../data/rubedo/book_timeline_runtime.js";
 
 const sample_book_slugs = ["absurd-faith"];
+
+const build_hx_link_attrs = (href) => {
+  return {
+    hx_get: href,
+    hx_target: "#content",
+    hx_select: "#content",
+    hx_swap: "morph swap:240ms settle:240ms",
+    hx_push_url: "true",
+  };
+};
+
+const sample_book_links = sample_book_slugs.map((book_slug) => {
+  const book_entry = rubedo_book_map[book_slug] ?? null;
+  const first_chapter = book_entry?.chapters?.[0] ?? null;
+  const book_href = `/rubedo/${book_slug}`;
+  const reader_href = first_chapter
+    ? `/rubedo/${book_slug}/${first_chapter.chapter_id}/cinza/core`
+    : null;
+  const timeline_href = first_chapter
+    ? `/rubedo/${book_slug}/timeline/${first_chapter.chapter_id}/cinza/core`
+    : null;
+
+  return {
+    book_slug,
+    book_title: book_entry?.title ?? book_slug,
+    book_link: {
+      href: book_href,
+      ...build_hx_link_attrs(book_href),
+    },
+    reader_link: reader_href
+      ? {
+          href: reader_href,
+          ...build_hx_link_attrs(reader_href),
+        }
+      : null,
+    timeline_link: timeline_href
+      ? {
+          href: timeline_href,
+          ...build_hx_link_attrs(timeline_href),
+        }
+      : null,
+  };
+});
 ---
 
 <IndexLayout body_class="pov_cinza">
@@ -21,26 +64,43 @@ const sample_book_slugs = ["absurd-faith"];
         </p>
 
         {
-          sample_book_slugs.map((book_slug) => (
+          sample_book_links.map((sample_book) => (
             <div>
               <p>
-                <a href={`/rubedo/${book_slug}`}>
-                  Open book: {rubedo_book_map[book_slug]?.title ?? book_slug}
+                <a
+                  href={sample_book.book_link.href}
+                  hx-get={sample_book.book_link.hx_get}
+                  hx-target={sample_book.book_link.hx_target}
+                  hx-select={sample_book.book_link.hx_select}
+                  hx-swap={sample_book.book_link.hx_swap}
+                  hx-push-url={sample_book.book_link.hx_push_url}
+                >
+                  Open book: {sample_book.book_title}
                 </a>
               </p>
-              {rubedo_book_map[book_slug]?.chapters?.[0] && (
+              {sample_book.reader_link && (
                 <p>
                   <a
-                    href={`/rubedo/${book_slug}?chapter_id=${rubedo_book_map[book_slug].chapters[0].chapter_id}&thread_key=cinza&thread_modifier=core`}
+                    href={sample_book.reader_link.href}
+                    hx-get={sample_book.reader_link.hx_get}
+                    hx-target={sample_book.reader_link.hx_target}
+                    hx-select={sample_book.reader_link.hx_select}
+                    hx-swap={sample_book.reader_link.hx_swap}
+                    hx-push-url={sample_book.reader_link.hx_push_url}
                   >
                     Open reader at first canonical chapter
                   </a>
                 </p>
               )}
-              {rubedo_book_map[book_slug]?.chapters?.[0] && (
+              {sample_book.timeline_link && (
                 <p>
                   <a
-                    href={`/rubedo/${book_slug}/timeline?chapter_id=${rubedo_book_map[book_slug].chapters[0].chapter_id}&thread_key=cinza&thread_modifier=core`}
+                    href={sample_book.timeline_link.href}
+                    hx-get={sample_book.timeline_link.hx_get}
+                    hx-target={sample_book.timeline_link.hx_target}
+                    hx-select={sample_book.timeline_link.hx_select}
+                    hx-swap={sample_book.timeline_link.hx_swap}
+                    hx-push-url={sample_book.timeline_link.hx_push_url}
                   >
                     Open constellation timeline
                   </a>

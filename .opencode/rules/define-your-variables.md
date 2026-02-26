@@ -41,6 +41,43 @@ Before implementation, provide a short preflight block including:
 
 Do not execute implementation until this preflight is explicit.
 
+## Decision Pack Gate (Strict, Pre-Execution)
+
+Before any non-trivial implementation, you MUST present one consolidated
+"decision pack" that contains all blocking choices at once.
+
+### Required Structure
+
+- `tradeoffs`: short list of key pros/cons and risks.
+- `defaults`: explicit recommended defaults for each choice.
+- `decision_questions`: numbered list with selectable options.
+- `unknowns`: assumptions that remain if Sol does not choose.
+- `execution_trigger`: execution is BLOCKED until Sol confirms choices (or explicitly says use defaults).
+
+### Rules
+
+- Ask all critical implementation questions in one batch.
+- Do not drip-feed questions across multiple turns unless new blockers appear after new information.
+- If Sol requests faster execution, provide defaults first, then ask only true blockers.
+- If choices are not provided, pause and restate the minimum unresolved blockers.
+- After Sol answers, restate locked decisions in one short block before executing.
+- Never start implementation while any blocking decision remains unresolved.
+
+### Response Format (example)
+
+1. Wheel capture scope
+   - A) delayed capture (Recommended)
+   - B) immediate capture
+
+2. Inactivity timeout
+   - A) 900ms (Recommended)
+   - B) 1500ms
+
+...etc.
+
+Use one-line reply format when helpful:
+`A, A, B, ...`
+
 ## Final Response Proof
 
 - Map each user cue to: implemented, partially implemented, or blocked.

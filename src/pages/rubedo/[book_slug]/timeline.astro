@@ -1,9 +1,7 @@
 ---
 import IndexLayout from "../../../layouts/index.astro";
-import RubedoTimelineConstellation from "../../../components/rubedo_timeline_constellation.astro";
-import RubedoTimelineStatePanel from "../../../components/rubedo_timeline_state_panel.astro";
 import {
-  rubedo_book_map,
+  rubedo_book_json_map,
   rubedo_book_slugs,
 } from "../../../data/rubedo/book_timeline_runtime.js";
 import {
@@ -23,7 +21,7 @@ export const getStaticPaths = () => {
 };
 
 const book_slug = Astro.params.book_slug ?? "unknown-book";
-const selected_book_timeline = rubedo_book_map[book_slug] ?? null;
+const selected_book_timeline = rubedo_book_json_map[book_slug] ?? null;
 
 const default_resolved_view_state = selected_book_timeline
   ? resolve_book_view_state(selected_book_timeline, {
@@ -33,62 +31,13 @@ const default_resolved_view_state = selected_book_timeline
     })
   : null;
 
-const build_canonical_timeline_href = ({
-  chapter_id = default_resolved_view_state?.chapter_id ?? "",
-  thread_key = default_resolved_view_state?.requested_thread_key ??
-    default_thread_key,
-  thread_modifier = default_resolved_view_state?.requested_thread_modifier ??
-    default_thread_modifier,
-} = {}) => {
-  const timeline_params = new URLSearchParams();
+const canonical_timeline_href = default_resolved_view_state
+  ? `/rubedo/${book_slug}/timeline/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`
+  : `/rubedo/${book_slug}`;
 
-  if (chapter_id) {
-    timeline_params.set("chapter_id", chapter_id);
-  }
-
-  timeline_params.set("thread_key", thread_key);
-  timeline_params.set("thread_modifier", thread_modifier);
-
-  return `/rubedo/${book_slug}/timeline?${timeline_params.toString()}`;
-};
-
-const build_fragment_timeline_href = ({
-  chapter_id = default_resolved_view_state?.chapter_id ?? "",
-  thread_key = default_resolved_view_state?.requested_thread_key ??
-    default_thread_key,
-  thread_modifier = default_resolved_view_state?.requested_thread_modifier ??
-    default_thread_modifier,
-} = {}) => {
-  return `/rubedo/${book_slug}/timeline/fragment/${chapter_id}/${thread_key}/${thread_modifier}`;
-};
-
-const build_reader_href = ({
-  chapter_id = default_resolved_view_state?.chapter_id ?? "",
-  thread_key = default_resolved_view_state?.requested_thread_key ??
-    default_thread_key,
-  thread_modifier = default_resolved_view_state?.requested_thread_modifier ??
-    default_thread_modifier,
-} = {}) => {
-  const reader_params = new URLSearchParams();
-
-  if (chapter_id) {
-    reader_params.set("chapter_id", chapter_id);
-  }
-
-  reader_params.set("thread_key", thread_key);
-  reader_params.set("thread_modifier", thread_modifier);
-
-  return `/rubedo/${book_slug}?${reader_params.toString()}`;
-};
-
-const timeline_route_href = `/rubedo/${book_slug}/timeline`;
-const map_default_link_state = {
-  thread_key:
-    default_resolved_view_state?.requested_thread_key ?? default_thread_key,
-  thread_modifier:
-    default_resolved_view_state?.requested_thread_modifier ??
-    default_thread_modifier,
-};
+const canonical_reader_href = default_resolved_view_state
+  ? `/rubedo/${book_slug}/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`
+  : `/rubedo/${book_slug}`;
 ---
 
 <IndexLayout body_class="pov_cinza">
@@ -104,91 +53,51 @@ const map_default_link_state = {
           <p>{selected_book_timeline.synopsis}</p>
         ) : (
           <p>
-            Unknown book slug <code>{book_slug}</code>. Available books are
-            deterministic and declared in static paths.
+            Unknown book slug <code>{book_slug}</code>. Return to Rubedo index.
           </p>
         )
       }
 
       <p>
-        <a href="/rubedo">Back to Rubedo index</a>
+        <a
+          href="/rubedo"
+          hx-get="/rubedo"
+          hx-target="#content"
+          hx-select="#content"
+          hx-swap="morph swap:240ms settle:240ms"
+          hx-push-url="true"
+        >
+          Back to Rubedo index
+        </a>
       </p>
 
       {
-        selected_book_timeline && default_resolved_view_state && (
+        selected_book_timeline && (
           <>
-            <div
-              class="rubedo-timeline-grid"
-              hx-disinherit="hx-select hx-select-oob hx-target hx-swap hx-push-url hx-boost"
-              hx-push-url="false"
-              data-rubedo-timeline-shell
-              data-book-slug={book_slug}
-              data-default-chapter-id={default_resolved_view_state.chapter_id}
-              data-default-thread-key={
-                default_resolved_view_state.requested_thread_key
-              }
-              data-default-thread-modifier={
-                default_resolved_view_state.requested_thread_modifier
-              }
-              data-fragment-route-root={`/rubedo/${book_slug}/timeline/fragment`}
-            >
-              <section>
-                <h2>Constellation map</h2>
-
-                <RubedoTimelineConstellation
-                  sorted_chapters={default_resolved_view_state.sorted_chapters}
-                  active_chapter_id={default_resolved_view_state.chapter_id}
-                  active_thread_key={
-                    default_resolved_view_state.requested_thread_key
-                  }
-                  build_chapter_link_props={({ chapter_id }) => {
-                    return {
-                      chapter_id,
-                      href: timeline_route_href,
-                      hx_get: build_fragment_timeline_href({
-                        chapter_id,
-                        thread_key: map_default_link_state.thread_key,
-                        thread_modifier: map_default_link_state.thread_modifier,
-                      }),
-                      hx_target: "#rubedo_timeline_state_content",
-                      hx_swap: "innerHTML",
-                      hx_push_url: "false",
-                      hx_select: ".rubedo-timeline-state-panel-body",
-                    };
-                  }}
-                />
-
-                <ul class="rubedo-timeline-legend">
-                  <li>white path = cinza thread</li>
-                  <li>green path = suul thread</li>
-                  <li>orange path = alvorada thread</li>
-                  <li>dashed path = optional branch</li>
-                  <li>bright sigil = active chapter</li>
-                </ul>
-              </section>
-
-              <div class="rubedo-timeline-panel-column">
-                <section
-                  id="rubedo_timeline_state_panel"
-                  class="rubedo-timeline-state-panel"
-                >
-                  <div id="rubedo_timeline_state_content">
-                    <RubedoTimelineStatePanel
-                      resolved_view_state={default_resolved_view_state}
-                      build_canonical_timeline_href={(state_parts) => {
-                        return build_canonical_timeline_href(state_parts);
-                      }}
-                      build_fragment_timeline_href={(state_parts) => {
-                        return build_fragment_timeline_href(state_parts);
-                      }}
-                      build_reader_href={(state_parts) => {
-                        return build_reader_href(state_parts);
-                      }}
-                    />
-                  </div>
-                </section>
-              </div>
-            </div>
+            <p>
+              <a
+                href={canonical_timeline_href}
+                hx-get={canonical_timeline_href}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
+                Open {book_slug} canonical timeline route
+              </a>
+            </p>
+            <p>
+              <a
+                href={canonical_reader_href}
+                hx-get={canonical_reader_href}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
+                Open {book_slug} reader route
+              </a>
+            </p>
           </>
         )
       }

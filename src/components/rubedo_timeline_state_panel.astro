@@ -6,9 +6,16 @@ import {
 
 const {
   resolved_view_state = null,
+  build_hx_link_attrs = (href) => {
+    return {
+      hx_get: href,
+      hx_target: "#content",
+      hx_swap: "morph swap:240ms settle:240ms",
+      hx_push_url: "true",
+      hx_select: "#content",
+    };
+  },
   build_canonical_timeline_href = () => "#",
-  build_fragment_timeline_href = () => "#",
-  build_reader_href = () => "#",
 } = Astro.props;
 
 const resolve_fallback_state = (resolved_state) => {
@@ -58,79 +65,74 @@ const build_link_bundle = ({
       thread_key,
       thread_modifier,
     }),
-    hx_get: build_fragment_timeline_href({
-      chapter_id,
-      thread_key,
-      thread_modifier,
-    }),
-    hx_target: "#rubedo_timeline_state_content",
-    hx_swap: "innerHTML",
-    hx_push_url: "false",
-    hx_select: ".rubedo-timeline-state-panel-body",
+    ...build_hx_link_attrs(
+      build_canonical_timeline_href({
+        chapter_id,
+        thread_key,
+        thread_modifier,
+      }),
+    ),
   };
 };
 
 const fallback_state = resolve_fallback_state(resolved_view_state);
-const resolved_scene_excerpt =
-  resolved_view_state?.scene?.scene_excerpt ??
-  resolved_view_state?.resolved_chapter_snippet ??
-  null;
+
+const thread_options =
+  resolved_view_state?.thread_options.map((thread_key) => {
+    return {
+      thread_key,
+      ...build_link_bundle({
+        chapter_id: resolved_view_state.chapter_id,
+        thread_key,
+        thread_modifier: default_thread_modifier,
+      }),
+    };
+  }) ?? [];
+
+const modifier_options =
+  resolved_view_state?.modifier_options.map((thread_modifier) => {
+    return {
+      thread_modifier,
+      ...build_link_bundle({
+        chapter_id: resolved_view_state.chapter_id,
+        thread_key: resolved_view_state.requested_thread_key,
+        thread_modifier,
+      }),
+    };
+  }) ?? [];
 ---
 
 {
   resolved_view_state && (
-    <div
-      class="rubedo-timeline-state-panel-body"
-      data-current-chapter-id={resolved_view_state.chapter_id}
-      data-current-thread-key={resolved_view_state.requested_thread_key}
-      data-current-thread-modifier={
-        resolved_view_state.requested_thread_modifier
-      }
-    >
-      <section class="rubedo-timeline-panel-card">
+    <>
+      <section
+        class="rubedo-timeline-panel-card rubedo-timeline-filters-card"
+        data-current-chapter-id={resolved_view_state.chapter_id}
+        data-current-thread-key={resolved_view_state.requested_thread_key}
+        data-current-thread-modifier={
+          resolved_view_state.requested_thread_modifier
+        }
+      >
         <h2>Eyes and thread state</h2>
 
-        <form class="rubedo-timeline-controls" data-rubedo-timeline-controls>
+        <div class="rubedo-timeline-controls" data-rubedo-timeline-controls>
           <label>
-            Chapter
-            <select
-              name="chapter_id"
-              data-role="chapter"
-              value={resolved_view_state.chapter_id}
-            >
-              {resolved_view_state.sorted_chapters.map((chapter) => {
-                const chapter_title = chapter.title ?? chapter.chapter_id;
-
-                return (
-                  <option
-                    value={chapter.chapter_id}
-                    selected={
-                      chapter.chapter_id === resolved_view_state.chapter_id
-                    }
-                  >
-                    {chapter.timeline_position} - {chapter_title}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
-
-          <label>
-            Eye thread
+            <span>Eye thread</span>
             <select
               name="thread_key"
-              data-role="thread_key"
-              value={resolved_view_state.requested_thread_key}
+              hx-on:change={`htmx.ajax('GET', this.value, {target: '#rubedo_timeline_interactive', select: '#rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
             >
-              {resolved_view_state.thread_options.map((thread_key) => {
+              {thread_options.map((thread_option) => {
+                const is_current_thread =
+                  thread_option.thread_key ===
+                  resolved_view_state.requested_thread_key;
+
                 return (
                   <option
-                    value={thread_key}
-                    selected={
-                      thread_key === resolved_view_state.requested_thread_key
-                    }
+                    value={thread_option.href}
+                    selected={is_current_thread}
                   >
-                    {thread_key}
+                    {thread_option.thread_key}
                   </option>
                 );
               })}
@@ -138,40 +140,32 @@ const resolved_scene_excerpt =
           </label>
 
           <label>
-            Thread modifier
+            <span>Thread modifier</span>
             <select
               name="thread_modifier"
-              data-role="thread_modifier"
-              value={resolved_view_state.requested_thread_modifier}
+              hx-on:change={`htmx.ajax('GET', this.value, {target: '#rubedo_timeline_interactive', select: '#rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
             >
-              {resolved_view_state.modifier_options.map((thread_modifier) => {
+              {modifier_options.map((modifier_option) => {
+                const is_current_modifier =
+                  modifier_option.thread_modifier ===
+                  resolved_view_state.requested_thread_modifier;
+
                 return (
                   <option
-                    value={thread_modifier}
-                    selected={
-                      thread_modifier ===
-                      resolved_view_state.requested_thread_modifier
-                    }
+                    value={modifier_option.href}
+                    selected={is_current_modifier}
                   >
-                    {thread_modifier}
+                    {modifier_option.thread_modifier}
                   </option>
                 );
               })}
             </select>
           </label>
-        </form>
+        </div>
       </section>
 
-      <section class="rubedo-timeline-panel-card">
-        <h3>
-          {resolved_view_state.resolved_chapter_title ?? "Unknown chapter"}
-        </h3>
-        {resolved_view_state.resolved_chapter_description && (
-          <p>{resolved_view_state.resolved_chapter_description}</p>
-        )}
-        {resolved_view_state.resolved_chapter_snippet && (
-          <p>{resolved_view_state.resolved_chapter_snippet}</p>
-        )}
+      <section class="rubedo-timeline-panel-card rubedo-timeline-state-lane-card">
+        <h3>Current state</h3>
         <p>
           Scene lens:{" "}
           <strong>
@@ -195,73 +189,7 @@ const resolved_scene_excerpt =
             {fallback_state}
           </span>
         </p>
-        {resolved_scene_excerpt && <p>{resolved_scene_excerpt}</p>}
       </section>
-
-      <nav class="rubedo-timeline-panel-card">
-        <ul>
-          <li>
-            {resolved_view_state.previous_chapter_id ? (
-              (() => {
-                const previous_link = build_link_bundle({
-                  chapter_id: resolved_view_state.previous_chapter_id,
-                });
-
-                return (
-                  <a
-                    href={previous_link.href}
-                    hx-get={previous_link.hx_get}
-                    hx-target={previous_link.hx_target}
-                    hx-swap={previous_link.hx_swap}
-                    hx-push-url={previous_link.hx_push_url}
-                    hx-select={previous_link.hx_select}
-                  >
-                    Previous chapter
-                  </a>
-                );
-              })()
-            ) : (
-              <span>Previous chapter</span>
-            )}
-          </li>
-          <li>
-            {resolved_view_state.next_chapter_id ? (
-              (() => {
-                const next_link = build_link_bundle({
-                  chapter_id: resolved_view_state.next_chapter_id,
-                });
-
-                return (
-                  <a
-                    href={next_link.href}
-                    hx-get={next_link.hx_get}
-                    hx-target={next_link.hx_target}
-                    hx-swap={next_link.hx_swap}
-                    hx-push-url={next_link.hx_push_url}
-                    hx-select={next_link.hx_select}
-                  >
-                    Next chapter
-                  </a>
-                );
-              })()
-            ) : (
-              <span>Next chapter</span>
-            )}
-          </li>
-        </ul>
-      </nav>
-
-      <p>
-        <a
-          href={build_reader_href({
-            chapter_id: resolved_view_state.chapter_id,
-            thread_key: resolved_view_state.requested_thread_key,
-            thread_modifier: resolved_view_state.requested_thread_modifier,
-          })}
-        >
-          Open full reader
-        </a>
-      </p>
-    </div>
+    </>
   )
 }

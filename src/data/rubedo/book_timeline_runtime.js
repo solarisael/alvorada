@@ -251,4 +251,48 @@ const rubedo_book_slugs = Object.freeze(
   }),
 );
 
-export { rubedo_book_map, rubedo_book_slugs };
+const to_serializable_scene = (scene = {}) => {
+  return {
+    thread_key: scene.thread_key,
+    thread_modifier: scene.thread_modifier,
+    scene_title: scene.scene_title,
+    scene_excerpt: scene.scene_excerpt,
+    chapter_title_override: scene.chapter_title_override,
+    chapter_description_override: scene.chapter_description_override,
+    chapter_snippet_override: scene.chapter_snippet_override,
+  };
+};
+
+const to_serializable_chapter = (chapter = {}) => {
+  return {
+    chapter_id: chapter.chapter_id,
+    timeline_position: chapter.timeline_position,
+    title: chapter.title,
+    chapter_description: chapter.chapter_description,
+    chapter_snippet: chapter.chapter_snippet,
+    branch_edges: [...(chapter.branch_edges ?? [])],
+    scenes: (chapter.scenes ?? []).map((scene) => {
+      return to_serializable_scene(scene);
+    }),
+  };
+};
+
+const rubedo_book_json_map = Object.freeze(
+  Object.fromEntries(
+    Object.entries(rubedo_book_map).map(([book_slug, book_entry]) => {
+      return [
+        book_slug,
+        {
+          book_slug: book_entry.book_slug,
+          title: book_entry.title,
+          synopsis: book_entry.synopsis,
+          chapters: (book_entry.chapters ?? []).map((chapter) => {
+            return to_serializable_chapter(chapter);
+          }),
+        },
+      ];
+    }),
+  ),
+);
+
+export { rubedo_book_map, rubedo_book_json_map, rubedo_book_slugs };

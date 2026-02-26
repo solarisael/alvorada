@@ -235,3 +235,42 @@ Historical session log moved out of `progress.md` to keep active context concise
 - Build passed after each major checkpoint (`bun run build`).
 - Visual hard gates passed (`bun run css:hard-gates:check`).
 - Tunables checks passed (`bun run css:tunables:check`).
+
+## Archived Snapshot (2026-02-26)
+
+- Source: Rubedo timeline map performance + interaction refinement pass.
+- Scope covered: canvas/WebGL constellation runtime migration, map-first layout,
+  floating hover preview integration, overscroll/inertia tuning, and final drag
+  reliability polish.
+
+### Completed Work (high level)
+
+- Replaced heavy timeline map runtime with a canvas renderer using WebGL2 as the
+  primary path and Canvas2D fallback in
+  `public/js/modules/rubedo_constellation_webgl.js`.
+- Kept timeline map interactions local via HTMX swaps (no URL mutation for map
+  state interactions) while preserving chapter navigation behavior.
+- Expanded map travel range and softened edge behavior with axis-scaled bounds,
+  elastic overscroll resistance, and delayed correction behavior.
+- Fixed drag reliability issues, including releasing drag when the pointer exits
+  the canvas to prevent stuck interaction state.
+- Added floating hover preview behavior on the map:
+  - new component: `src/components/rubedo_timeline_hover_preview.astro`
+  - new static hover fragment route:
+    `src/pages/rubedo/[book_slug]/timeline/hover/[chapter_id]/[thread_key]/[thread_modifier].astro`
+  - payload/wiring updates in constellation component + timeline page.
+- Removed the old static side preview card from the state panel so the map is
+  the primary focus surface.
+- Increased map footprint for a map-dominant layout and refined overlay
+  pass-through behavior so hidden preview UI does not block drag.
+- Final edge-return tuning:
+  - removed twitch-prone pull state machine
+  - kept inertia damping behavior
+  - switched to idle-only gentle return after delay (`1400ms`) with capped
+    correction steps.
+
+### Validation Highlights
+
+- Repeated touched-file format checks passed (`bunx prettier --check ...`).
+- Build passed after each major checkpoint (`bun run build`).
+- CSS hard gates passed (`bun run css:hard-gates:check`).

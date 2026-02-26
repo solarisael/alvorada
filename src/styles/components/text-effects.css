@@ -55,14 +55,6 @@
       color-mix(in oklch, white 5%, transparent);
 }
 
-.block_fx > :first-child {
-  margin-top: 0;
-}
-
-.block_fx > :last-child {
-  margin-bottom: 0;
-}
-
 .block_fx_terminal {
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   color: color-mix(
@@ -126,12 +118,9 @@
 .block_fx_stat_screen ol {
   list-style: none;
   padding-left: 0;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
 }
 
 .block_fx_stat_screen li {
-  margin-top: 0.48em;
   padding: 0.5em 0.62em;
   border: 1px solid
     color-mix(
@@ -198,7 +187,6 @@
 }
 
 .block_fx_quest_log li {
-  margin-top: 0.42em;
   padding-left: 0.6em;
   padding-right: 0.6em;
   border-left: 0.18rem solid
@@ -251,7 +239,6 @@
 }
 
 .block_fx_inventory li {
-  margin-top: 0.36em;
   padding: 0.4em 0.52em;
   border-radius: 0.4rem;
   background: color-mix(in oklch, black 42%, transparent);
@@ -286,7 +273,6 @@
 }
 
 .block_fx_combat_feed li {
-  margin-top: 0.34em;
   padding: 0.4em 0.54em;
   border-left: 0.16rem solid
     color-mix(
@@ -297,10 +283,6 @@
     );
   background: color-mix(in oklch, black 42%, transparent);
   border-radius: 0.36rem;
-}
-
-.block_fx_combat_feed li + li {
-  margin-top: 0.4em;
 }
 
 .block_fx_combat_feed :where(strong, b) {
@@ -426,7 +408,6 @@
 }
 
 .block_fx_party_roster li {
-  margin-top: 0.34em;
   padding: 0.38em 0.52em;
   border-radius: 0.44rem;
   border: 1px solid

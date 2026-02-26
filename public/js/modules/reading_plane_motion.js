@@ -6,11 +6,13 @@ const SHIFT_TRIGGER_PX = 2;
 const SHIFT_VELOCITY_FACTOR = 0.16;
 const SHIFT_EASE_FACTOR = 0.18;
 const SHIFT_DAMPING_FACTOR = 0.9;
+const SCROLL_THROTTLE_MS = 16;
 
 let current_shift_px = 0;
 let target_shift_px = 0;
 let raf_id = 0;
 let last_scroll_y = 0;
+let last_scroll_handle_at = 0;
 
 const clamp_value = (value, min_value, max_value) => {
   return Math.min(max_value, Math.max(min_value, value));
@@ -99,6 +101,7 @@ const init_reading_plane_motion = () => {
     }
 
     last_scroll_y = window.scrollY;
+    last_scroll_handle_at = 0;
   };
 
   apply_motion_mode();
@@ -109,6 +112,14 @@ const init_reading_plane_motion = () => {
       if (reduced_motion_query.matches) {
         return;
       }
+
+      const now = performance.now();
+
+      if (now - last_scroll_handle_at < SCROLL_THROTTLE_MS) {
+        return;
+      }
+
+      last_scroll_handle_at = now;
 
       handle_scroll();
     },

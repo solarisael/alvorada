@@ -39,8 +39,8 @@ Ownership Matrix
   --reading_plane_shift_y: 0px;
   --site_center_axis_x: 50%;
   --site_center_axis_nudge_x: 0rem;
-  --site_center_axis_line_nudge_x: 0.2rem;
-  --site_center_axis_sigil_nudge_x: 0.2rem;
+  --site_center_axis_line_nudge_x: 0.1rem;
+  --site_center_axis_sigil_nudge_x: 0.1rem;
 
   /* Cinza quick tuning: master controls */
   --cinza_tune_axis_span: 0.5rem;

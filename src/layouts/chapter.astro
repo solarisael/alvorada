@@ -1,0 +1,62 @@
+---
+import IndexLayout from "./index.astro";
+
+const {
+  body_class = "pov_cinza",
+  previous_chapter_link = null,
+  next_chapter_link = null,
+} = Astro.props;
+---
+
+<IndexLayout body_class={body_class}>
+  <section class="chapter_shell">
+    <article class="chapter_shell_article">
+      <div class="chapter_content">
+        <slot />
+      </div>
+
+      <nav class="chapter_pager">
+        <ul class="chapter_pager_list">
+          <li class="chapter_pager_item chapter_pager_item_previous">
+            {
+              previous_chapter_link ? (
+                <a
+                  class="chapter_pager_link"
+                  href={previous_chapter_link.href}
+                  hx-get={previous_chapter_link.hx_get}
+                  hx-target={previous_chapter_link.hx_target}
+                  hx-select={previous_chapter_link.hx_select}
+                  hx-swap={previous_chapter_link.hx_swap}
+                  hx-push-url={previous_chapter_link.hx_push_url}
+                >
+                  Previous chapter
+                </a>
+              ) : (
+                <span class="chapter_pager_placeholder">Previous chapter</span>
+              )
+            }
+          </li>
+          <li class="chapter_pager_item chapter_pager_item_next">
+            {
+              next_chapter_link ? (
+                <a
+                  class="chapter_pager_link"
+                  href={next_chapter_link.href}
+                  hx-get={next_chapter_link.hx_get}
+                  hx-target={next_chapter_link.hx_target}
+                  hx-select={next_chapter_link.hx_select}
+                  hx-swap={next_chapter_link.hx_swap}
+                  hx-push-url={next_chapter_link.hx_push_url}
+                >
+                  Next chapter
+                </a>
+              ) : (
+                <span class="chapter_pager_placeholder">Next chapter</span>
+              )
+            }
+          </li>
+        </ul>
+      </nav>
+    </article>
+  </section>
+</IndexLayout>
