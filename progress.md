@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-21 18:10
+- Updated_utc: 2026-02-26 01:39
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
-- mode_for_next_session: co-pilot
-- primary_outcome_next_session: fix timeline layout consistency and chapter navigation bugs while preserving current composition contracts
-- priority_axis_next_session: polish
-- edit_breadth_next_session: focused
-- first_task_next_session: reproduce chapter navigation failures on /rubedo/[book_slug]/timeline and map broken state transitions before editing
-- commit_intent_next_session: after_review
-- notes_next_session: preserve HTMX timeline swap contract (#rubedo_timeline_state_content), keep body_grid/compound_body_grid composition, and verify chapter links/state sync across panel + map
+- next_session: co-pilot
+- primary_outcome: finalize Rubedo timeline + map behavior, tune text/overlay presentation for the new WebGL map context, and start GitHub Pages implementation groundwork
+- priority: architecture
+- edit_breadth: focused
+- first_task: audit current timeline/map UX and list remaining polish gaps plus concrete GitHub Pages deployment prerequisites
+- commit_intent: after_review
+- notes: keep map-first interaction local via HTMX, preserve current WebGL/canvas fallback behavior, and prioritize low-risk deployment scaffolding for GitHub Pages
 
 ## Alias Ledger
 
@@ -53,18 +53,26 @@
 - State: handoff_ready
 - Branch: feat/compound-grid-body-composition-4plus6
 - Head: (pending_commit)
-- Scope_in: composition cleanup complete; next focus is Rubedo timeline layout parity and chapter navigation reliability.
-- Scope_out: additional broad style-system rewrites unless required by timeline/chapter bug fixes.
+- Scope_in: timeline/map core is implemented; next focus is final interaction polish, text/overlay optimization around map UX, and deployment pipeline prep for GitHub Pages.
+- Scope_out: broad visual-system rewrites not directly tied to timeline/map finalization or deployment readiness.
 
 ## Next (Top 3)
 
-1. [ ] Reproduce and isolate chapter navigation bugs on `/rubedo/[book_slug]/timeline` and `/rubedo/[book_slug]` (chapter_id + thread state sync).
-2. [ ] Run a timeline layout pass for desktop/mobile hierarchy and spacing consistency after the new composition system.
-3. [ ] Patch chapter navigation state transitions (panel, constellation node current-state, breadcrumbs) and validate with focused regression checks.
+1. [ ] Finalize timeline + map interactions (edge return feel, hover preview ergonomics, and final mobile/desktop behavior parity).
+2. [ ] Optimize text and overlay presentation to complement map-first WebGL runtime without reducing readability.
+3. [ ] Start GitHub Pages implementation: define deploy workflow, static output constraints, and first end-to-end deployment check.
 
 ## Blockers
 
-- No technical blocker; next risk is state desync between URL query, timeline panel, and constellation active node.
+- No hard blocker; main risks are over-tuning interaction feel and introducing regressions while preparing deployment wiring.
+
+## GitHub Pages Constraints (next session)
+
+- Treat deployment target as static hosting first; avoid introducing server-only runtime requirements.
+- Confirm Astro `site` + `base` strategy early (repo subpath deployment by default unless custom domain is confirmed).
+- Verify all critical links/assets/scripts remain base-aware under non-root paths.
+- Keep Bun-only workflow in deployment automation and local verification.
+- Validate HTMX navigation + deep-link refresh behavior under the final GitHub Pages base path.
 
 ## Possibilities
 
@@ -83,10 +91,10 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-21
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-21
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-21
-- CSS_tunables: pass (`bun run css:tunables:check`) - 2026-02-21
+- Build: pass (`bun run build`) - 2026-02-26
+- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-26
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-26
+- CSS_tunables: not run in this pass
 - Rubedo_scene_identity: not run in this pass (unchanged scope)
 
 ## Notes
