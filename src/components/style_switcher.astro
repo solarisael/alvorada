@@ -2,10 +2,11 @@
 import "../styles/components/style-switcher.css";
 
 const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
   const normalized_path = String(path_value).replace(/^\/+/, "");
 
-  return `${base_url}${normalized_path}`;
+  return `${base_path}/${normalized_path}`;
 };
 
 const theme_options = [

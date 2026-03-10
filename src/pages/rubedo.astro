@@ -3,6 +3,13 @@ import IndexLayout from "../layouts/index.astro";
 import { rubedo_book_map } from "../data/rubedo/book_timeline_runtime.js";
 
 const sample_book_slugs = ["absurd-faith"];
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_path}/${normalized_path}`;
+};
 
 const build_hx_link_attrs = (href) => {
   return {
@@ -17,12 +24,14 @@ const build_hx_link_attrs = (href) => {
 const sample_book_links = sample_book_slugs.map((book_slug) => {
   const book_entry = rubedo_book_map[book_slug] ?? null;
   const first_chapter = book_entry?.chapters?.[0] ?? null;
-  const book_href = `/rubedo/${book_slug}`;
+  const book_href = with_base(`/rubedo/${book_slug}`);
   const reader_href = first_chapter
-    ? `/rubedo/${book_slug}/${first_chapter.chapter_id}/cinza/core`
+    ? with_base(`/rubedo/${book_slug}/${first_chapter.chapter_id}/cinza/core`)
     : null;
   const timeline_href = first_chapter
-    ? `/rubedo/${book_slug}/timeline/${first_chapter.chapter_id}/cinza/core`
+    ? with_base(
+        `/rubedo/${book_slug}/timeline/${first_chapter.chapter_id}/cinza/core`,
+      )
     : null;
 
   return {

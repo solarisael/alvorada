@@ -10,6 +10,13 @@ const sample_entry_paths = [
 ];
 
 const sample_category_paths = ["characters", "factions", "places", "relics"];
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_path}/${normalized_path}`;
+};
 ---
 
 <IndexLayout>
@@ -29,7 +36,7 @@ const sample_category_paths = ["characters", "factions", "places", "relics"];
         {
           sample_category_paths.map((category_path) => (
             <p>
-              <a href={`/codex/${category_path}`}>
+              <a href={with_base(`/codex/${category_path}`)}>
                 Open category: {category_path}
               </a>
             </p>
@@ -39,7 +46,9 @@ const sample_category_paths = ["characters", "factions", "places", "relics"];
         {
           sample_entry_paths.map((entry_path) => (
             <p>
-              <a href={`/codex/${entry_path}`}>Open entry: {entry_path}</a>
+              <a href={with_base(`/codex/${entry_path}`)}>
+                Open entry: {entry_path}
+              </a>
             </p>
           ))
         }

@@ -45,6 +45,13 @@ export const getStaticPaths = () => {
 };
 
 const book_slug = Astro.params.book_slug ?? "unknown-book";
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_path}/${normalized_path}`;
+};
 const chapter_id_param = Astro.params.chapter_id ?? "";
 const thread_key_param = Astro.params.thread_key ?? default_thread_key;
 const thread_modifier_param =
@@ -66,7 +73,9 @@ const build_reader_href = ({
   thread_modifier = resolved_view_state?.requested_thread_modifier ??
     default_thread_modifier,
 } = {}) => {
-  return `/rubedo/${book_slug}/${chapter_id}/${thread_key}/${thread_modifier}`;
+  return with_base(
+    `/rubedo/${book_slug}/${chapter_id}/${thread_key}/${thread_modifier}`,
+  );
 };
 ---
 
