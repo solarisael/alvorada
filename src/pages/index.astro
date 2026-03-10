@@ -2,11 +2,18 @@
 import IndexLayout from "../layouts/index.astro";
 import "../styles/components/home-card-gate.css";
 
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
+
 const cinza_card_ornament_base = {
-  corner_tl: "/ornaments/cinza/card_corner_a.svg",
-  corner_tr: "/ornaments/cinza/card_corner_b.svg",
-  corner_bl: "/ornaments/cinza/card_corner_c.svg",
-  corner_br: "/ornaments/cinza/card_corner_d.svg",
+  corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
+  corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
+  corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
+  corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
 };
 
 const phase_cards = [
@@ -18,7 +25,7 @@ const phase_cards = [
       "Dissolution and shadow-work. Enter the black vessel of becoming.",
     ornament: {
       ...cinza_card_ornament_base,
-      sigil: "/ornaments/cinza/sigil_eye.svg",
+      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
     },
   },
   {
@@ -28,7 +35,7 @@ const phase_cards = [
     phase_blurb: "Clarification and silver breath. Distill signal from noise.",
     ornament: {
       ...cinza_card_ornament_base,
-      sigil: "/ornaments/cinza/sigil_moon_star.svg",
+      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
     },
   },
   {
@@ -38,9 +45,9 @@ const phase_cards = [
     phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
     ornament: {
       ...cinza_card_ornament_base,
-      corner_tl: "/ornaments/cinza/card_corner_b.svg",
-      corner_tr: "/ornaments/cinza/card_corner_a.svg",
-      sigil: "/ornaments/cinza/sigil_moon_star.svg",
+      corner_tl: with_base("ornaments/cinza/card_corner_b.svg"),
+      corner_tr: with_base("ornaments/cinza/card_corner_a.svg"),
+      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
     },
   },
   {
@@ -50,9 +57,9 @@ const phase_cards = [
     phase_blurb: "Union and embodiment. Seal the work in living fire.",
     ornament: {
       ...cinza_card_ornament_base,
-      corner_bl: "/ornaments/cinza/card_corner_d.svg",
-      corner_br: "/ornaments/cinza/card_corner_c.svg",
-      sigil: "/ornaments/cinza/sigil_eye.svg",
+      corner_bl: with_base("ornaments/cinza/card_corner_d.svg"),
+      corner_br: with_base("ornaments/cinza/card_corner_c.svg"),
+      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
     },
   },
 ];
@@ -79,7 +86,7 @@ const phase_cards = [
         phase_cards.map((phase_card) => (
           <a
             class={`phase_card_link phase_card_${phase_card.phase_slug}`}
-            href={`/${phase_card.phase_slug}`}
+            href={with_base(phase_card.phase_slug)}
           >
             <span class="phase-card-layer phase-card-layer-surface" />
             <span class="phase-card-layer phase-card-layer-stars" />
@@ -115,21 +122,21 @@ const phase_cards = [
               />
               <img
                 class="phase-card-ornament phase-card-ornament-center-top"
-                src="/ornaments/cinza/card_center_top.svg"
+                src={with_base("ornaments/cinza/card_center_top.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="phase-card-ornament phase-card-ornament-side-left"
-                src="/ornaments/cinza/card_side_flourish.svg"
+                src={with_base("ornaments/cinza/card_side_flourish.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="phase-card-ornament phase-card-ornament-side-right"
-                src="/ornaments/cinza/card_side_flourish.svg"
+                src={with_base("ornaments/cinza/card_side_flourish.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"

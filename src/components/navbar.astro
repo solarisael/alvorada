@@ -1,5 +1,12 @@
 ---
 import "../styles/components/desktop-nav.css";
+
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
 ---
 
 <nav id="desktop-nav" class="navbar-preset-rich route-active-tone-medium">
@@ -11,8 +18,8 @@ import "../styles/components/desktop-nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="nigredo"
-        href="/nigredo"
-        hx-get="/nigredo"
+        href={with_base("nigredo")}
+        hx-get={with_base("nigredo")}
         hx-push-url="true"
       >
         <span class="nav-pill-layer nav-pill-layer-ring"></span>
@@ -22,8 +29,8 @@ import "../styles/components/desktop-nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="albedo"
-        href="/albedo"
-        hx-get="/albedo"
+        href={with_base("albedo")}
+        hx-get={with_base("albedo")}
         hx-push-url="true"
       >
         <span class="nav-pill-layer nav-pill-layer-ring"></span>
@@ -33,7 +40,7 @@ import "../styles/components/desktop-nav.css";
 
     <div id="middle-guy"></div>
 
-    <a id="icon-user" href="/">
+    <a id="icon-user" href={base_url}>
       <span class="icon-user-layer icon-user-layer-orbit"></span>
 
       <div id="icon-user-shell">
@@ -45,7 +52,7 @@ import "../styles/components/desktop-nav.css";
       <div id="icon-user-core">
         <img
           id="icon-user-photo"
-          src="/images/sol-curr.jpg"
+          src={with_base("images/sol-curr.jpg")}
           alt="Sol logo placeholder"
         />
       </div>
@@ -56,8 +63,8 @@ import "../styles/components/desktop-nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="citrinitas"
-        href="/citrinitas"
-        hx-get="/citrinitas"
+        href={with_base("citrinitas")}
+        hx-get={with_base("citrinitas")}
         hx-push-url="true"
       >
         <span class="nav-pill-layer nav-pill-layer-ring"></span>
@@ -67,8 +74,8 @@ import "../styles/components/desktop-nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="rubedo"
-        href="/rubedo"
-        hx-get="/rubedo"
+        href={with_base("rubedo")}
+        hx-get={with_base("rubedo")}
         hx-push-url="true"
       >
         <span class="nav-pill-layer nav-pill-layer-ring"></span>
@@ -78,8 +85,8 @@ import "../styles/components/desktop-nav.css";
         class="nav-pill"
         data-nav-pill
         data-phase="codex"
-        href="/codex"
-        hx-get="/codex"
+        href={with_base("codex")}
+        hx-get={with_base("codex")}
         hx-push-url="true"
       >
         <span class="nav-pill-layer nav-pill-layer-ring"></span>
@@ -89,4 +96,4 @@ import "../styles/components/desktop-nav.css";
   </div>
 </nav>
 
-<script type="module" src="/js/modules/navbar_runtime.js"></script>
+<script type="module" src={with_base("js/modules/navbar_runtime.js")}></script>

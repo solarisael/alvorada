@@ -1,8 +1,4 @@
-import {
-  debounce,
-  throttle,
-  queuer_preparator,
-} from "/js/modules/performance.js";
+import { debounce, throttle, queuer_preparator } from "./performance.js";
 
 const window_any = /** @type {any} */ (window);
 const POINTER_MOVE_DEBOUNCE_MS = 16;
@@ -93,7 +89,13 @@ const apply_route_active_state = (pathname_override = null) => {
     return;
   }
 
-  const is_home_active = current_pathname === "/";
+  const home_href_value = home_node.getAttribute("href");
+  const home_target_pathname = home_href_value
+    ? normalize_pathname(
+        new URL(home_href_value, window.location.origin).pathname,
+      )
+    : "/";
+  const is_home_active = current_pathname === home_target_pathname;
   home_node.classList.toggle("is-route-active", is_home_active);
   home_node.classList.toggle("is-route-current", is_home_active);
   last_applied_pathname = current_pathname;

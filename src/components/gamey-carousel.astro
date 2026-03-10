@@ -1,3 +1,7 @@
+---
+const base_url = import.meta.env.BASE_URL;
+---
+
 <style>
   @reference "tailwindcss";
 
@@ -27,31 +31,31 @@
   data-current="0"
   data-items="0"
   data-offset="1"
-  class="w-12 h-24 flex max-w-full items-center justify-center relative mx-8"
+  class="relative mx-8 flex h-24 w-12 max-w-full items-center justify-center"
 >
   <button
-    class="absolute -left-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    class="text-ctp-base bg-ctp-lavender-50 absolute -left-1 z-10 flex h-4 w-4 items-center justify-center rounded-full pb-0.5 text-4xl leading-6"
     >‹</button
   >
 
-  <div class="flex flex-nowrap items-center absolute gap-4 h-12">
+  <div class="absolute flex h-12 flex-nowrap items-center gap-4">
     <!-- slides start -->
-    <div class="w-full shrink-0 rounded-full overflow-hidden">
-      <img src="/images/sol-curr.jpg" alt="" />
+    <div class="w-full shrink-0 overflow-hidden rounded-full">
+      <img src={`${base_url}images/sol-curr.jpg`} alt="" />
     </div>
-    <div class="w-full shrink-0 rounded-full overflow-hidden">
-      <img src="/images/sol-curr.jpg" alt="" />
+    <div class="w-full shrink-0 overflow-hidden rounded-full">
+      <img src={`${base_url}images/sol-curr.jpg`} alt="" />
     </div>
-    <div class="w-full shrink-0 rounded-full overflow-hidden">
-      <img src="/images/sol-curr.jpg" alt="" />
+    <div class="w-full shrink-0 overflow-hidden rounded-full">
+      <img src={`${base_url}images/sol-curr.jpg`} alt="" />
     </div>
     <!-- slides end -->
   </div>
 
-  <div id="lenses" class="h-12 w-12 border-2 border-ctp-blue-50"></div>
+  <div id="lenses" class="border-ctp-blue-50 h-12 w-12 border-2"></div>
 
   <button
-    class="absolute -right-1 text-4xl text-ctp-base bg-ctp-lavender-50 w-4 h-4 flex justify-center items-center rounded-full leading-6 pb-0.5 z-10"
+    class="text-ctp-base bg-ctp-lavender-50 absolute -right-1 z-10 flex h-4 w-4 items-center justify-center rounded-full pb-0.5 text-4xl leading-6"
     >›</button
   >
 </div>

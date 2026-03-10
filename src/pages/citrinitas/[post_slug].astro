@@ -10,6 +10,7 @@ export const getStaticPaths = () => {
 };
 
 const post_slug = Astro.params.post_slug ?? "unknown-post";
+const base_url = import.meta.env.BASE_URL;
 ---
 
 <IndexLayout>
@@ -25,7 +26,7 @@ const post_slug = Astro.params.post_slug ?? "unknown-post";
           Scaffold child page for <code>/citrinitas/{post_slug}</code>. Use this
           to verify nested breadcrumbs and HTMX transitions.
         </p>
-        <p><a href="/citrinitas">Back to Citrinitas index</a></p>
+        <p><a href={`${base_url}citrinitas`}>Back to Citrinitas index</a></p>
       </div>
     </article>
   </section>

@@ -21,15 +21,21 @@ const entry_path = Array.isArray(entry_path_raw)
   : (entry_path_raw ?? "unknown-entry");
 const entry_segments = entry_path.split("/");
 const entry_category = entry_segments[0] ?? "";
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
 const is_category_page = entry_segments.length === 1;
 const category_index_href = is_category_page
   ? null
-  : `/codex/${entry_category}`;
+  : with_base(`/codex/${entry_category}`);
 const sibling_entry_href =
   entry_path === "characters/sol"
-    ? "/codex/characters/luna"
+    ? with_base("/codex/characters/luna")
     : entry_path === "characters/luna"
-      ? "/codex/characters/sol"
+      ? with_base("/codex/characters/sol")
       : null;
 const sibling_entry_label =
   entry_path === "characters/sol"
@@ -79,7 +85,7 @@ const sibling_entry_label =
             </p>
           )
         }
-        <p><a href="/codex">Back to Codex index</a></p>
+        <p><a href={with_base("/codex")}>Back to Codex index</a></p>
       </div>
     </article>
   </section>

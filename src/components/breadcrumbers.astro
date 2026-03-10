@@ -9,9 +9,21 @@ const phase_color_by_name = {
   codex: "var(--color-ctp-lavender)",
 };
 
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
 const pathname_raw = Astro.url.pathname;
 const pathname = pathname_raw.replace(/\/+$/, "") || "/";
-const path_segments = pathname === "/" ? [] : pathname.slice(1).split("/");
+const pathname_without_base = pathname.startsWith(base_url)
+  ? pathname.slice(base_url.length - 1) || "/"
+  : pathname;
+const path_segments =
+  pathname_without_base === "/"
+    ? []
+    : pathname_without_base.slice(1).split("/");
 
 const active_phase =
   path_segments[0] in phase_color_by_name ? path_segments[0] : "nigredo";
@@ -57,7 +69,7 @@ const active_theme_color = phase_color_by_name[active_phase];
         return (
           <li class={is_current ? "is-current" : "is-parent"}>
             <a
-              href={crumb_item.href}
+              href={with_base(crumb_item.href)}
               class:list={{ "is-current-link": is_current }}
             >
               {crumb_item.label}
@@ -69,4 +81,5 @@ const active_theme_color = phase_color_by_name[active_phase];
   </ol>
 </nav>
 
-<script type="module" src="/js/modules/breadcrumbs_runtime.js"></script>
+<script type="module" src={with_base("js/modules/breadcrumbs_runtime.js")}
+></script>

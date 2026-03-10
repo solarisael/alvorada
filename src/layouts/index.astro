@@ -12,10 +12,22 @@ import Navbar from "../components/navbar.astro";
 import StyleSwitcher from "../components/style_switcher.astro";
 
 const { body_class = "" } = Astro.props;
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
 const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const normalized_pathname = pathname.startsWith(base_url)
+  ? pathname.slice(base_url.length - 1) || "/"
+  : pathname;
 const auto_body_classes = [];
 
-if (pathname === "/rubedo" || pathname.startsWith("/rubedo/")) {
+if (
+  normalized_pathname === "/rubedo" ||
+  normalized_pathname.startsWith("/rubedo/")
+) {
   auto_body_classes.push("route_rubedo");
 }
 
@@ -46,11 +58,9 @@ const resolved_body_classes = Array.from(
     <title>Sol's Rest</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <script is:inline src="/node_modules/htmx.org/dist/htmx.min.js"></script>
-    <script is:inline src="/node_modules/idiomorph/dist/idiomorph.js"></script>
-    <!-- <script is:inline src="/node_modules/idiomorph/dist/idiomorph-ext.js"
-    ></script> -->
-    <script src="/js/scripts.js" type="module"></script>
+    <script src={with_base("js/vendor/htmx_runtime.js")} type="module"></script>
+    <script src={with_base("js/vendor/idiomorph-ext.js")}></script>
+    <script src={with_base("js/scripts.js")} type="module"></script>
   </head>
   <body
     class:list={resolved_body_classes}
@@ -82,56 +92,56 @@ const resolved_body_classes = Array.from(
             <div class="content-layer content-layer-ornament-svg">
               <img
                 class="content-ornament content-ornament-corner-tl"
-                src="/ornaments/cinza/frame_corner_tl.svg"
+                src={with_base("ornaments/cinza/frame_corner_tl.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-corner-tr"
-                src="/ornaments/cinza/frame_corner_tr.svg"
+                src={with_base("ornaments/cinza/frame_corner_tr.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-corner-bl"
-                src="/ornaments/cinza/frame_corner_bl.svg"
+                src={with_base("ornaments/cinza/frame_corner_bl.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-corner-br"
-                src="/ornaments/cinza/frame_corner_br.svg"
+                src={with_base("ornaments/cinza/frame_corner_br.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-line-top"
-                src="/ornaments/cinza/frame_line_top.svg"
+                src={with_base("ornaments/cinza/frame_line_top.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-line-bottom"
-                src="/ornaments/cinza/frame_line_bottom.svg"
+                src={with_base("ornaments/cinza/frame_line_bottom.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-sigil-top"
-                src="/ornaments/cinza/sigil_moon_star.svg"
+                src={with_base("ornaments/cinza/sigil_moon_star.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
                 class="content-ornament content-ornament-sigil-bottom"
-                src="/ornaments/cinza/sigil_eye.svg"
+                src={with_base("ornaments/cinza/sigil_eye.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"

@@ -1,3 +1,3 @@
-import { init_style_switcher } from "/js/modules/style_switcher.js";
+import { init_style_switcher } from "./style_switcher.js";
 
 init_style_switcher();

@@ -48,6 +48,12 @@ export const getStaticPaths = () => {
 };
 
 const book_slug = Astro.params.book_slug ?? "unknown-book";
+const base_url = import.meta.env.BASE_URL;
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_url}${normalized_path}`;
+};
 const chapter_id_param = Astro.params.chapter_id ?? "";
 const thread_key_param = Astro.params.thread_key ?? default_thread_key;
 const thread_modifier_param =
@@ -77,7 +83,9 @@ const build_canonical_timeline_href = ({
   thread_modifier = resolved_view_state?.requested_thread_modifier ??
     default_thread_modifier,
 } = {}) => {
-  return `/rubedo/${book_slug}/timeline/${chapter_id}/${thread_key}/${thread_modifier}`;
+  return with_base(
+    `/rubedo/${book_slug}/timeline/${chapter_id}/${thread_key}/${thread_modifier}`,
+  );
 };
 
 const build_reader_href = ({
@@ -86,7 +94,9 @@ const build_reader_href = ({
   thread_modifier = resolved_view_state?.requested_thread_modifier ??
     default_thread_modifier,
 } = {}) => {
-  return `/rubedo/${book_slug}/${chapter_id}/${thread_key}/${thread_modifier}`;
+  return with_base(
+    `/rubedo/${book_slug}/${chapter_id}/${thread_key}/${thread_modifier}`,
+  );
 };
 
 const build_hover_preview_href = ({
@@ -94,12 +104,16 @@ const build_hover_preview_href = ({
   thread_key = resolved_view_state?.requested_thread_key ?? default_thread_key,
   thread_modifier = default_thread_modifier,
 } = {}) => {
-  return `/rubedo/${book_slug}/timeline/hover/${chapter_id}/${thread_key}/${thread_modifier}`;
+  return with_base(
+    `/rubedo/${book_slug}/timeline/hover/${chapter_id}/${thread_key}/${thread_modifier}`,
+  );
 };
 
 const canonical_timeline_href = default_resolved_view_state
-  ? `/rubedo/${book_slug}/timeline/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`
-  : `/rubedo/${book_slug}/timeline`;
+  ? with_base(
+      `/rubedo/${book_slug}/timeline/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`,
+    )
+  : with_base(`/rubedo/${book_slug}/timeline`);
 
 const build_hx_link_attrs = (href) => {
   return {
@@ -132,8 +146,8 @@ const build_hx_link_attrs = (href) => {
 
       <p>
         <a
-          href="/rubedo"
-          hx-get="/rubedo"
+          href={with_base("/rubedo")}
+          hx-get={with_base("/rubedo")}
           hx-target="#content"
           hx-select="#content"
           hx-swap="morph swap:240ms settle:240ms"
