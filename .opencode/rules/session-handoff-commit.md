@@ -10,8 +10,8 @@ At handoff, commit scope is full-worktree by default.
 
 - You must clearly indicate session handoff (for example, "we will
   proceed in another session").
-- The agent should update session tracking docs (such as `progress.md`) before
-  committing.
+- The agent should update `progress.md` (repo root) before committing.
+  This file is the session tracking source of truth.
 - At handoff commit time, stage all tracked and untracked changes with
   `git add -A`.
 - Do not limit the handoff commit to only files in the immediate request unless

@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "bunx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\laragon\\www\\alvorada"
+      ]
+    },
+    "git": {
+      "command": "cmd",
+      "args": ["/c", "bunx", "-y", "git-mcp"]
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": ["/c", "bunx", "-y", "@playwright/mcp@latest"]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "sequential": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "bunx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    }
+  }
+}
