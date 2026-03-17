@@ -3,10 +3,14 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #footer {
-  @apply flex min-h-20 w-full items-center justify-center;
+  /* layout */
+  @apply flex items-center justify-center;
+  /* sizing */
+  @apply min-h-20 w-full;
+  /* spacing */
   @apply px-4 py-4;
-  @apply border-2;
-  @apply rounded-xl;
+  /* shape / borders */
+  @apply rounded-xl border-2;
 
   border-color: color-mix(
     in oklch,

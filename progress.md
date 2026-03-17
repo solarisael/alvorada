@@ -91,10 +91,10 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-02-26
-- Format_touched: pass (`bunx prettier --check` on touched files) - 2026-02-26
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-02-26
-- CSS_tunables: not run in this pass
+- Build: pass (`bun run build`) - 2026-03-17
+- Format_touched: pass (`bunx prettier --write` on touched files) - 2026-03-17
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-03-17
+- CSS_tunables: pass (`bun run css:tunables:check`) - 2026-03-17
 - Rubedo_scene_identity: not run in this pass (unchanged scope)
 
 ## Notes
@@ -108,6 +108,20 @@
 1. [ ] Lock Eyes + Timeline data contracts before implementing storage/rendering behavior.
 2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
+
+## Session Delta (2026-03-17)
+
+- Light CSS audit pass across all component stylesheets.
+- Removed 5 orphaned legacy canvas variables from `rubedo-timeline.css` (superseded by WebGL `THREAD_RGB` constants).
+- Restructured `filter` transitions off host elements onto `::before` pseudo-elements in `rubedo-timeline.css`; removed `filter` from `transition-property` in `breadcrumbs.css` (saturate cannot delegate to pseudo-element).
+- Moved `block_fx_skill_popup` box-shadow animation to `::before` in `text-effects.css`.
+- Lifted 13 combat token raw oklch literals into a named `--combat_*` Quick Tune variable block; introduced `--block_fx_warning_color` token for system_warning amber.
+- Added doc comments to rainbow and chroma aberration intentional fixed-color values.
+- Converted 6 forbidden `px` sizing values to `rem` across desktop-nav, mobile-nav, home-card-gate, content-shell.
+- Fixed `@apply` grouping violations in footer, desktop-nav, mobile-nav, style-switcher; removed no-op `px-0 py-0` from style-switcher.
+- Added `/* Quick Tune Variables (edit here first) */` labels to desktop-nav, home-card-gate, breadcrumbs, rubedo-timeline.
+- Documented `clamp()` reading-measure exception in typography.css; marked fog.css as DRAFT.
+- Pre-flight HTML/JS audit confirmed zero JS or markup changes required.
 
 ## Session Delta (2026-02-21)
 

@@ -22,10 +22,13 @@
   --style_switcher_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --style_switcher_shadow: 0 18px 30px -22px rgb(0 0 0 / 0.9);
 
+  /* positioning / stacking */
   @apply fixed z-40;
+  /* layout */
   @apply flex items-start;
+  /* spacing */
   @apply gap-2;
-  @apply px-0 py-0;
+  /* borders */
   @apply border-y border-l;
 
   right: var(--style_switcher_right);

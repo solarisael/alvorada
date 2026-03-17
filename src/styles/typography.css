@@ -93,7 +93,7 @@
   --leading_reading_heading: 1.06;
   --leading_reading_subheading: 1.12;
 
-  /* MEASURE */
+  /* MEASURE — reading-measure exception: clamp() permitted for ch-based column width */
   --measure_reading_body: clamp(40ch, 88%, 68ch);
 
   /* SPACING RHYTHM */

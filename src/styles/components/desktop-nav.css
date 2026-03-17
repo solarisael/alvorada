@@ -15,6 +15,8 @@
 }
 
 #desktop-nav {
+  /* Quick Tune Variables (edit here first) */
+
   --cursor_x: 50%;
   --cursor_y: 50%;
 
@@ -61,8 +63,12 @@
   --center_ring_size: 6.5rem;
   --center_core_size: 6rem;
 
-  @apply pointer-events-none fixed top-8 z-50;
+  /* positioning / stacking */
+  @apply fixed top-8 z-50;
+  /* layout */
   @apply grid;
+  /* interaction */
+  @apply pointer-events-none;
 
   left: 50%;
   width: calc(100vw - (var(--layout_viewport_pad_x) * 2));
@@ -132,11 +138,16 @@
   --cursor_recenter_transition: 1200ms;
   --cursor_transition_duration: var(--cursor_recenter_transition);
 
-  @apply pointer-events-auto relative;
+  /* positioning */
+  @apply relative;
+  /* layout */
   @apply flex items-center justify-between;
+  /* sizing */
   @apply h-18 w-full;
-  @apply rounded-full px-4 py-2 md:px-6 md:py-2;
-  @apply border;
+  /* shape / spacing / borders */
+  @apply rounded-full border px-4 py-2 md:px-6 md:py-2;
+  /* interaction */
+  @apply pointer-events-auto;
 
   grid-column: 2 / span 4;
 
@@ -286,7 +297,7 @@
 .nav-pill:focus-visible {
   @apply outline-none;
 
-  transform: translateY(calc(-1px * var(--site_fx_lift_mult, 1)));
+  transform: translateY(calc(-0.0625rem * var(--site_fx_lift_mult, 1)));
   border-color: color-mix(in oklch, var(--neon_color) 42%, var(--pill_border));
   background-color: var(--pill_background);
   box-shadow:

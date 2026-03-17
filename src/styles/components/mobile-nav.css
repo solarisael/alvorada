@@ -30,7 +30,7 @@
   --mobile_link_transition_fast: calc(180ms * var(--site_fx_motion_mult, 1));
   --mobile_link_transition_slow: calc(220ms * var(--site_fx_motion_mult, 1));
   --mobile_link_topline_opacity_mix: 86%;
-  --mobile_link_topline_height: 2px;
+  --mobile_link_topline_height: 0.125rem;
 
   /* Active neon stack */
   --mobile_active_color_mix: 78%;
@@ -62,8 +62,13 @@
 
 @media (max-width: 768px) {
   #mobile-nav {
-    @apply fixed inset-x-0 bottom-0 z-50 block;
+    /* positioning / stacking */
+    @apply fixed inset-x-0 bottom-0 z-50;
+    /* display */
+    @apply block;
+    /* borders */
     @apply border-t;
+    /* overflow */
     @apply overflow-visible;
 
     border-color: color-mix(

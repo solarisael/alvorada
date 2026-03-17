@@ -2,6 +2,9 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #breadcrumbers_xd {
+  /* Quick Tune Variables (edit here first) */
+
+  /* Colors */
   --crumb_theme_color: var(--site_style_accent);
   --crumb_parent_color: color-mix(
     in oklch,
@@ -9,6 +12,7 @@
     var(--crumb_theme_color)
   );
 
+  /* Geometry */
   --crumb_divider_mix: 30%;
   --crumb_divider_inset: 0;
 
@@ -69,9 +73,11 @@
 
     color: var(--crumb_parent_color);
     opacity: calc(0.7 + (0.06 * var(--site_fx_glow_mult, 1)));
-    filter: saturate(0.7);
+    filter: saturate(
+      0.7
+    ); /* state-only — not animated, see transition-property below */
     text-shadow: 0 0 0 transparent;
-    transition-property: opacity, filter, color, text-shadow, background-color;
+    transition-property: opacity, color, text-shadow, background-color;
     transition-duration: calc(240ms * var(--site_fx_motion_mult, 1));
     transition-timing-function: ease;
   }

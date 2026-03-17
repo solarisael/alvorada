@@ -217,6 +217,15 @@
       transparent
     ),
     color-mix(in oklch, black 62%, transparent);
+}
+
+/* Glow pulse lives on ::before — box-shadow animation never runs on the host, avoids paint thrash */
+.block_fx_skill_popup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
   animation: block_fx_skill_popup_glow
     calc(2.6s / var(--block_fx_motion_strength, 1)) ease-in-out infinite;
 }
@@ -328,23 +337,27 @@
 }
 
 .block_fx_system_warning {
+  /* Quick Tune Variables (edit here first) */
+  --block_fx_warning_color: oklch(84% 0.14 84); /* amber warning tone */
+
   border-color: color-mix(
     in oklch,
-    oklch(84% 0.14 84) calc(52% + (18% * var(--block_fx_glow_strength))),
+    var(--block_fx_warning_color)
+      calc(52% + (18% * var(--block_fx_glow_strength))),
     transparent
   );
   background:
     linear-gradient(
       180deg,
-      color-mix(in oklch, oklch(82% 0.16 84) 22%, transparent),
+      color-mix(in oklch, var(--block_fx_warning_color) 22%, transparent),
       color-mix(in oklch, black 62%, transparent)
     ),
     color-mix(in oklch, black 64%, transparent);
   box-shadow:
     0 0 calc(0.88rem * var(--block_fx_glow_strength))
-      color-mix(in oklch, oklch(82% 0.16 84) 36%, transparent),
+      color-mix(in oklch, var(--block_fx_warning_color) 36%, transparent),
     inset 0 0 calc(0.45rem * var(--block_fx_glow_strength))
-      color-mix(in oklch, oklch(88% 0.1 88) 22%, transparent);
+      color-mix(in oklch, var(--block_fx_warning_color) 22%, transparent);
   border-top-width: 0.24rem;
 }
 
@@ -355,7 +368,7 @@
 }
 
 .block_fx_system_warning :where(strong, b) {
-  color: color-mix(in oklch, oklch(84% 0.14 84) 72%, currentColor);
+  color: color-mix(in oklch, var(--block_fx_warning_color) 72%, currentColor);
 }
 
 .block_fx_memory_fragment {
@@ -479,6 +492,7 @@
     0.09em 0.09em 0 color-mix(in oklch, black 28%, transparent);
 }
 
+/* intentionally fixed red/blue aberration values — chromatic effect requires these specific hues */
 .text_fx_chroma {
   text-shadow:
     calc(-0.05em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.66),
@@ -562,58 +576,90 @@
   --combat_token_bracket_weight: 400;
 }
 
+/* Combat token palette — Quick Tune Variables (edit here first)
+   Intentionally fixed game-state colors, not theme-variant. */
+:where(
+  .combat_token_crit,
+  .combat_token_miss,
+  .combat_token_buff,
+  .combat_token_debuff,
+  .combat_token_block,
+  .combat_token_dodge,
+  .combat_token_immune,
+  .combat_token_resist,
+  .combat_token_mega_crit,
+  .combat_token_overkill,
+  .combat_token_true_damage,
+  .combat_token_guard_break,
+  .combat_token_execute
+) {
+  --combat_crit: oklch(78% 0.19 29);
+  --combat_miss: oklch(72% 0.05 252);
+  --combat_buff: oklch(84% 0.15 146);
+  --combat_debuff: oklch(74% 0.17 24);
+  --combat_block: oklch(80% 0.12 85);
+  --combat_dodge: oklch(83% 0.11 210);
+  --combat_immune: oklch(86% 0.08 245);
+  --combat_resist: oklch(82% 0.1 115);
+  --combat_mega_crit: oklch(82% 0.23 25);
+  --combat_overkill: oklch(74% 0.2 20);
+  --combat_true_damage: oklch(83% 0.18 332);
+  --combat_guard_break: oklch(84% 0.14 85);
+  --combat_execute: oklch(80% 0.18 10);
+}
+
 .combat_token_crit {
-  color: color-mix(in oklch, oklch(78% 0.19 29) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_crit) 100%, currentColor);
 }
 
 .combat_token_miss {
-  color: color-mix(in oklch, oklch(72% 0.05 252) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_miss) 100%, currentColor);
 }
 
 .combat_token_buff {
-  color: color-mix(in oklch, oklch(84% 0.15 146) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_buff) 100%, currentColor);
 }
 
 .combat_token_debuff {
-  color: color-mix(in oklch, oklch(74% 0.17 24) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_debuff) 100%, currentColor);
 }
 
 .combat_token_block {
-  color: color-mix(in oklch, oklch(80% 0.12 85) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_block) 100%, currentColor);
 }
 
 .combat_token_dodge {
-  color: color-mix(in oklch, oklch(83% 0.11 210) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_dodge) 100%, currentColor);
 }
 
 .combat_token_immune {
-  color: color-mix(in oklch, oklch(86% 0.08 245) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_immune) 100%, currentColor);
 }
 
 .combat_token_resist {
-  color: color-mix(in oklch, oklch(82% 0.1 115) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_resist) 100%, currentColor);
 }
 
 .combat_token_mega_crit {
-  color: color-mix(in oklch, oklch(82% 0.23 25) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_mega_crit) 100%, currentColor);
   text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
-    color-mix(in oklch, oklch(78% 0.2 25) 66%, transparent);
+    color-mix(in oklch, var(--combat_crit) 66%, transparent);
 }
 
 .combat_token_overkill {
-  color: color-mix(in oklch, oklch(74% 0.2 20) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_overkill) 100%, currentColor);
 }
 
 .combat_token_true_damage {
-  color: color-mix(in oklch, oklch(83% 0.18 332) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_true_damage) 100%, currentColor);
 }
 
 .combat_token_guard_break {
-  color: color-mix(in oklch, oklch(84% 0.14 85) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_guard_break) 100%, currentColor);
 }
 
 .combat_token_execute {
-  color: color-mix(in oklch, oklch(80% 0.18 10) 100%, currentColor);
+  color: color-mix(in oklch, var(--combat_execute) 100%, currentColor);
   letter-spacing: 0.04em;
 }
 
@@ -722,6 +768,7 @@
   letter-spacing: 0.014em;
 }
 
+/* intentionally fixed spectrum — not theme-variant */
 .text_fx_rainbow {
   background: linear-gradient(
     90deg,

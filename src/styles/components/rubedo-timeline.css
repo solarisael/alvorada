@@ -2,6 +2,9 @@
 @reference "../utils.css";
 
 .rubedo-timeline-page {
+  /* Quick Tune Variables (edit here first) */
+
+  /* Panel surfaces */
   --rubedo_timeline_panel_border: color-mix(
     in oklch,
     var(--site_style_accent) 36%,
@@ -11,31 +14,6 @@
     in oklch,
     var(--ui_surface_raised) 38%,
     transparent
-  );
-  --rubedo_timeline_node_glow: color-mix(
-    in oklch,
-    var(--site_style_accent) 72%,
-    transparent
-  );
-  --rubedo_timeline_node_dim: color-mix(
-    in oklch,
-    var(--site_style_accent) 32%,
-    transparent
-  );
-  --rubedo_timeline_node_fog: color-mix(
-    in oklch,
-    var(--site_style_accent) 24%,
-    transparent
-  );
-  --rubedo_timeline_node_reliquary_ring: color-mix(
-    in oklch,
-    var(--site_style_accent) 64%,
-    transparent
-  );
-  --rubedo_timeline_node_reliquary_edge: color-mix(
-    in oklch,
-    white 76%,
-    var(--site_style_accent)
   );
 }
 
@@ -223,17 +201,31 @@
   white-space: nowrap;
   opacity: 0;
   transform: translate(-50%, calc(-100% - 0.5rem)) translateY(0.35rem);
-  filter: drop-shadow(0 0 8px rgb(255 255 255 / 0.18));
   transition:
     opacity 260ms ease,
-    transform 340ms ease,
-    filter 320ms ease;
+    transform 340ms ease;
+}
+
+/* Glow lives on ::before so filter never participates in the transition — avoids paint thrash */
+.rubedo-constellation-node-label::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgb(255 255 255 / 0.18));
+  opacity: 0;
+  transition: opacity 320ms ease;
 }
 
 .rubedo-constellation-node-label.is-visible,
 .rubedo-constellation-node-label.is-active {
   opacity: 1;
   transform: translate(-50%, calc(-100% - 0.5rem)) translateY(0);
+}
+
+.rubedo-constellation-node-label.is-visible::before,
+.rubedo-constellation-node-label.is-active::before {
+  opacity: 1;
   filter: drop-shadow(0 0 10px rgb(255 255 255 / 0.6))
     drop-shadow(
       0 0 22px color-mix(in oklch, var(--site_style_accent) 38%, transparent)

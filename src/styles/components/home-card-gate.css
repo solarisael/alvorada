@@ -3,10 +3,13 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 #home_card_gate {
+  /* Quick Tune Variables (edit here first) */
+
+  /* Geometry */
   --home_gate_card_radius: 18px;
   --home_gate_card_border_width: 1px;
   --home_gate_grid_gap: 1.1rem;
-  --home_gate_card_min: 180px;
+  --home_gate_card_min: 11.25rem;
 
   --home_gate_surface_mix: 56%;
   --home_gate_border_mix: 42%;
@@ -488,6 +491,6 @@
 
 @media (max-width: 768px) {
   #home_card_gate {
-    --home_gate_card_min: 210px;
+    --home_gate_card_min: 13.125rem;
   }
 }
