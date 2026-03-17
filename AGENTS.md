@@ -73,17 +73,18 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 ## Rule Index
 
 - `.opencode/rules/project.md`
-- `.opencode/rules/define-your-variables.md`
+- `.opencode/rules/project.md`
+- `.opencode/rules/intent-lock.md`
 - `.opencode/rules/style-intent-contract.md`
 - `.opencode/rules/styling.md`
 - `.opencode/rules/typography.md`
-- `.opencode/rules/separate-apply-rules-by-category.md`
+- `.opencode/rules/apply-discipline.md`
 - `.opencode/rules/expose-css-tunables.md`
 - `.opencode/rules/css-size-discipline.md`
 - `.opencode/rules/visual-hard-gates.md`
-- `.opencode/rules/integration-debugging.md`
+- `.opencode/rules/workflow.md`
 - `.opencode/rules/js-reliability.md`
-- `.opencode/rules/ui-option-classes-registry.md`
+- `.opencode/rules/option-classes.md`
 - `.opencode/rules/session-handoff-commit.md`
 - `.opencode/rules/commit-message-tail-required.md`
 - `.opencode/rules/addressing.md`
@@ -91,14 +92,14 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 ## Rule Loading Matrix
 
 - Always relevant:
-  - `project.md`, `define-your-variables.md`, `commit-message-tail-required.md`, `addressing.md`
+  - `project.md`, `intent-lock.md`, `commit-message-tail-required.md`, `addressing.md`
   - `style-intent-contract.md`, `styling.md`, `css-size-discipline.md`, `visual-hard-gates.md`
 - UI/visual implementation:
   - `typography.md`
   - `expose-css-tunables.md` when editing component CSS variables
-  - `ui-option-classes-registry.md` when adding/changing switchable class sets
-- CSS `@apply` editing: `separate-apply-rules-by-category.md`
-- Debugging/integration: `integration-debugging.md`
+  - `option-classes.md` when adding/changing switchable class sets
+- CSS `@apply` editing: `apply-discipline.md`
+- Debugging/integration/workflow: `workflow.md`
 - JavaScript behavior changes: `js-reliability.md`
 - Session-end handoff/commit flow: `session-handoff-commit.md`, `commit-message-tail-required.md`
 
