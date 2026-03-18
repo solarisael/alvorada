@@ -264,7 +264,7 @@
   --phase_color: var(--color-rubedo);
 }
 
-:root[data-site-theme="cinza"] {
+:root[data-site-theme="solarisael"] {
   --home_gate_surface_mix: 42%;
   --home_gate_border_mix: 38%;
   --home_gate_halo_mix: 26%;
@@ -274,7 +274,7 @@
   --home_gate_ring_opacity: 0.5;
 }
 
-:root[data-site-theme="cinza"] .phase_card_link {
+:root[data-site-theme="solarisael"] .phase_card_link {
   --phase_ornament_inset: 0.5rem;
   --phase_ornament_tl_size: 2.25rem;
   --phase_ornament_tr_size: 2.45rem;
@@ -323,7 +323,7 @@
     inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
 }
 
-:root[data-site-theme="cinza"] .phase-card-layer-frame {
+:root[data-site-theme="solarisael"] .phase-card-layer-frame {
   inset: var(--phase_ornament_inset);
   border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
@@ -365,46 +365,46 @@
   opacity: calc(var(--home_gate_ring_opacity) * 1.26);
 }
 
-:root[data-site-theme="cinza"] .phase-card-layer-ornament-svg {
+:root[data-site-theme="solarisael"] .phase-card-layer-ornament-svg {
   display: block;
   opacity: calc(var(--home_gate_ring_opacity) * 1.08);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-center-top,
-:root[data-site-theme="cinza"] .phase-card-ornament-side-left,
-:root[data-site-theme="cinza"] .phase-card-ornament-side-right {
+:root[data-site-theme="solarisael"] .phase-card-ornament-center-top,
+:root[data-site-theme="solarisael"] .phase-card-ornament-side-left,
+:root[data-site-theme="solarisael"] .phase-card-ornament-side-right {
   object-fit: fill;
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-corner-tl {
+:root[data-site-theme="solarisael"] .phase-card-ornament-corner-tl {
   left: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
   width: var(--phase_ornament_tl_size);
   height: var(--phase_ornament_tl_size);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-corner-tr {
+:root[data-site-theme="solarisael"] .phase-card-ornament-corner-tr {
   right: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
   width: var(--phase_ornament_tr_size);
   height: var(--phase_ornament_tr_size);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-corner-bl {
+:root[data-site-theme="solarisael"] .phase-card-ornament-corner-bl {
   left: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_bl_size);
   height: var(--phase_ornament_bl_size);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-corner-br {
+:root[data-site-theme="solarisael"] .phase-card-ornament-corner-br {
   right: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_br_size);
   height: var(--phase_ornament_br_size);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-center-top {
+:root[data-site-theme="solarisael"] .phase-card-ornament-center-top {
   left: 50%;
   top: var(--phase_ornament_inset);
   width: 84%;
@@ -412,7 +412,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-side-left {
+:root[data-site-theme="solarisael"] .phase-card-ornament-side-left {
   left: var(--phase_ornament_inset);
   top: 50%;
   width: var(--phase_ornament_side_inline);
@@ -420,7 +420,7 @@
   transform: translateY(-50%);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-side-right {
+:root[data-site-theme="solarisael"] .phase-card-ornament-side-right {
   right: var(--phase_ornament_inset);
   top: 50%;
   width: var(--phase_ornament_side_inline);
@@ -428,7 +428,7 @@
   transform: translateY(-50%);
 }
 
-:root[data-site-theme="cinza"] .phase-card-ornament-sigil {
+:root[data-site-theme="solarisael"] .phase-card-ornament-sigil {
   left: 50%;
   bottom: var(--phase_ornament_sigil_offset);
   width: var(--phase_ornament_sigil_size);
@@ -436,7 +436,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="cinza"] .phase-card-layer-stars {
+:root[data-site-theme="solarisael"] .phase-card-layer-stars {
   /* bg-stack-exception: starfield uses 4 layers for grain plus dual aura falloff */
   background:
     radial-gradient(

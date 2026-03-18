@@ -11,7 +11,12 @@ import MobileNavbar from "../components/mobile_navbar.astro";
 import Navbar from "../components/navbar.astro";
 import StyleSwitcher from "../components/style_switcher.astro";
 
-const { body_class = "" } = Astro.props;
+const {
+  body_class = "",
+  crumb_label_overrides = {},
+  crumbs = null,
+  theme_color = null,
+} = Astro.props;
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
@@ -38,7 +43,7 @@ const resolved_body_classes = Array.from(
 <!doctype html>
 <html
   lang="en"
-  data-site-theme="cinza"
+  data-site-theme="solarisael"
   data-site-shell="medium"
   data-site-fx="balanced"
 >
@@ -143,7 +148,11 @@ const resolved_body_classes = Array.from(
                 <div class="reading-layer reading-layer-noise"></div>
 
                 <div class="reading-layer-body">
-                  <Breadcrumbers />
+                  <Breadcrumbers
+                    crumbs={crumbs}
+                    crumb_label_overrides={crumb_label_overrides}
+                    theme_color={theme_color}
+                  />
                   <slot />
                 </div>
               </div>

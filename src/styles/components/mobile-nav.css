@@ -447,7 +447,7 @@
   }
 }
 
-:root[data-site-theme="cinza"] .mobile-nav-link.is-home-link {
+:root[data-site-theme="solarisael"] .mobile-nav-link.is-home-link {
   --mobile_home_color_mix: 86%;
   --mobile_home_ring_mix: 36%;
   --mobile_home_shell_glow_mix: 60%;
@@ -456,7 +456,7 @@
   --mobile_home_shell_active_glow_strong_mix: 78%;
 }
 
-:root[data-site-theme="cinza"] .mobile-home-avatar-shell {
+:root[data-site-theme="solarisael"] .mobile-home-avatar-shell {
   background:
     radial-gradient(
       circle at 48% 24%,

@@ -1,78 +1,86 @@
 ---
+// Timeline constellation page — single page per book, no sub-routes.
+// The constellation fetches /rubedo/data/:book_slug.json on load and
+// caches it in a module-scoped object. Hover preview reads from that cache.
+// No server roundtrip on hover. No static pages per timeline state.
+//
+// FUTURE: chapter nodes should reflect codex unlock state —
+// locked nodes render dimmed or with a locked sigil variant.
+// This requires passing session state to the constellation init.
+
 import IndexLayout from "../../../layouts/index.astro";
 import {
-  rubedo_book_json_map,
+  rubedo_book_map,
   rubedo_book_slugs,
+  derive_chapter_slug,
 } from "../../../data/rubedo/book_timeline_runtime.js";
-import {
-  default_thread_key,
-  default_thread_modifier,
-  resolve_book_view_state,
-} from "../../../utils/timeline_threads.js";
 
 export const getStaticPaths = () => {
   return rubedo_book_slugs.map((book_slug) => {
-    return {
-      params: {
-        book_slug,
-      },
-    };
+    return { params: { book_slug } };
   });
 };
 
-const book_slug = Astro.params.book_slug ?? "unknown-book";
+const { book_slug } = Astro.params;
+
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
   const normalized_path = String(path_value).replace(/^\/+/, "");
-
   return `${base_path}/${normalized_path}`;
 };
-const selected_book_timeline = rubedo_book_json_map[book_slug] ?? null;
 
-const default_resolved_view_state = selected_book_timeline
-  ? resolve_book_view_state(selected_book_timeline, {
-      chapter_id: "",
-      thread_key: default_thread_key,
-      thread_modifier: default_thread_modifier,
-    })
-  : null;
+const book_entry = rubedo_book_map[book_slug] ?? null;
 
-const canonical_timeline_href = default_resolved_view_state
+// JSON endpoint the constellation will fetch on load.
+const timeline_data_href = with_base(`/rubedo/data/${book_slug}.json`);
+
+// Canonical first chapter — used as entry point from this page.
+// Spread before sort — book_entry.chapters is frozen.
+const first_chapter =
+  [...(book_entry?.chapters ?? [])].sort(
+    (left_chapter, right_chapter) =>
+      left_chapter.timeline_position - right_chapter.timeline_position,
+  )[0] ?? null;
+
+const reader_entry_href = first_chapter
   ? with_base(
-      `/rubedo/${book_slug}/timeline/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`,
+      `/rubedo/${book_slug}/${derive_chapter_slug(first_chapter.timeline_position)}`,
     )
   : with_base(`/rubedo/${book_slug}`);
 
-const canonical_reader_href = default_resolved_view_state
-  ? with_base(
-      `/rubedo/${book_slug}/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`,
-    )
-  : with_base(`/rubedo/${book_slug}`);
+const rubedo_index_href = with_base("/rubedo");
+
+const crumb_label_overrides = {
+  timeline: "constellation",
+};
 ---
 
-<IndexLayout body_class="pov_cinza">
+<IndexLayout
+  body_class="pov_cinza"
+  crumb_label_overrides={crumb_label_overrides}
+>
   <section class="rubedo-timeline-page">
     <article>
       <header class="rubedo-timeline-header">
-        <p>~/ rubedo / {book_slug} / timeline</p>
-        <h1>{selected_book_timeline?.title ?? "Rubedo Book"} constellation</h1>
+        <h1>{book_entry?.title ?? "Rubedo Book"} — constellation</h1>
       </header>
 
+      {book_entry?.synopsis && <p>{book_entry.synopsis}</p>}
+
       {
-        selected_book_timeline ? (
-          <p>{selected_book_timeline.synopsis}</p>
-        ) : (
+        !book_entry && (
           <p>
-            Unknown book slug <code>{book_slug}</code>. Return to Rubedo index.
+            Unknown book slug <code>{book_slug}</code>. Return to the Rubedo
+            index.
           </p>
         )
       }
 
       <p>
         <a
-          href={with_base("/rubedo")}
-          hx-get={with_base("/rubedo")}
+          href={rubedo_index_href}
+          hx-get={rubedo_index_href}
           hx-target="#content"
           hx-select="#content"
           hx-swap="morph swap:240ms settle:240ms"
@@ -83,33 +91,61 @@ const canonical_reader_href = default_resolved_view_state
       </p>
 
       {
-        selected_book_timeline && (
-          <>
-            <p>
-              <a
-                href={canonical_timeline_href}
-                hx-get={canonical_timeline_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open {book_slug} canonical timeline route
-              </a>
-            </p>
-            <p>
-              <a
-                href={canonical_reader_href}
-                hx-get={canonical_reader_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open {book_slug} reader route
-              </a>
-            </p>
-          </>
+        book_entry && (
+          <p>
+            <a
+              href={reader_entry_href}
+              hx-get={reader_entry_href}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              Begin reading {book_entry.title}
+            </a>
+          </p>
+        )
+      }
+
+      {
+        book_entry && (
+          <section
+            id="rubedo_timeline_interactive"
+            class="rubedo-timeline-interactive"
+            data-book-slug={book_slug}
+            data-timeline-data-href={timeline_data_href}
+          >
+            {/* Canvas constellation — initialized by rubedo_constellation_webgl.js.
+                The module reads data-timeline-data-href, fetches JSON once on init,
+                caches result in a module-scoped object, then renders the constellation.
+                Hover preview is rendered client-side from that cache — no server roundtrip. */}
+            <canvas
+              id="rubedo_timeline_canvas"
+              class="rubedo-timeline-canvas"
+            />
+
+            <div
+              id="rubedo_timeline_hover_preview"
+              class="rubedo-timeline-hover-preview"
+            >
+              {/* Populated client-side from cached JSON on node hover. */}
+            </div>
+
+            <div
+              id="rubedo_timeline_state_panel"
+              class="rubedo-timeline-state-panel"
+            >
+              {/* Populated client-side after JSON fetch completes. */}
+            </div>
+
+            <ul class="rubedo-timeline-legend">
+              <li>white path — cinza thread</li>
+              <li>green path — suul thread</li>
+              <li>orange path — alvorada thread</li>
+              <li>dashed path — optional branch</li>
+              <li>bright sigil — active chapter</li>
+            </ul>
+          </section>
         )
       }
     </article>

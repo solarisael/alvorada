@@ -3,65 +3,53 @@ import IndexLayout from "../../layouts/index.astro";
 import {
   rubedo_book_map,
   rubedo_book_slugs,
+  derive_chapter_slug,
 } from "../../data/rubedo/book_timeline_runtime.js";
-import {
-  default_thread_key,
-  default_thread_modifier,
-  resolve_book_view_state,
-} from "../../utils/timeline_threads.js";
 
 export const getStaticPaths = () => {
   return rubedo_book_slugs.map((book_slug) => {
-    return {
-      params: {
-        book_slug,
-      },
-    };
+    return { params: { book_slug } };
   });
 };
 
-const book_slug = Astro.params.book_slug ?? "unknown-book";
+const { book_slug } = Astro.params;
+
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
   const normalized_path = String(path_value).replace(/^\/+/, "");
-
   return `${base_path}/${normalized_path}`;
 };
-const selected_book_timeline = rubedo_book_map[book_slug] ?? null;
 
-const default_resolved_view_state = selected_book_timeline
-  ? resolve_book_view_state(selected_book_timeline, {
-      chapter_id: "",
-      thread_key: default_thread_key,
-      thread_modifier: default_thread_modifier,
-    })
-  : null;
+const book_entry = rubedo_book_map[book_slug] ?? null;
 
-const canonical_reader_href = default_resolved_view_state
+const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
+  (left_chapter, right_chapter) =>
+    left_chapter.timeline_position - right_chapter.timeline_position,
+);
+
+const first_chapter = sorted_chapters[0] ?? null;
+
+const canonical_reader_href = first_chapter
   ? with_base(
-      `/rubedo/${book_slug}/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`,
+      `/rubedo/${book_slug}/${derive_chapter_slug(first_chapter.timeline_position)}`,
     )
   : with_base("/rubedo");
 
-const canonical_timeline_href = default_resolved_view_state
-  ? with_base(
-      `/rubedo/${book_slug}/timeline/${default_resolved_view_state.chapter_id}/${default_resolved_view_state.requested_thread_key}/${default_resolved_view_state.requested_thread_modifier}`,
-    )
-  : with_base(`/rubedo/${book_slug}/timeline`);
+const timeline_href = with_base(`/rubedo/${book_slug}/timeline`);
+const rubedo_index_href = with_base("/rubedo");
 ---
 
 <IndexLayout body_class="pov_cinza">
   <section>
     <article>
       <header>
-        <p>~/ rubedo / {book_slug}</p>
-        <h1>{selected_book_timeline?.title ?? "Rubedo Book"}</h1>
+        <h1>{book_entry?.title ?? "Rubedo Book"}</h1>
       </header>
 
       {
-        selected_book_timeline ? (
-          <p>{selected_book_timeline.synopsis}</p>
+        book_entry ? (
+          <p>{book_entry.synopsis}</p>
         ) : (
           <p>
             Unknown book slug <code>{book_slug}</code>. Return to Rubedo index.
@@ -71,8 +59,8 @@ const canonical_timeline_href = default_resolved_view_state
 
       <p>
         <a
-          href={with_base("/rubedo")}
-          hx-get={with_base("/rubedo")}
+          href={rubedo_index_href}
+          hx-get={rubedo_index_href}
           hx-target="#content"
           hx-select="#content"
           hx-swap="morph swap:240ms settle:240ms"
@@ -83,7 +71,7 @@ const canonical_timeline_href = default_resolved_view_state
       </p>
 
       {
-        selected_book_timeline && (
+        book_entry && (
           <>
             <p>
               <a
@@ -94,19 +82,19 @@ const canonical_timeline_href = default_resolved_view_state
                 hx-swap="morph swap:240ms settle:240ms"
                 hx-push-url="true"
               >
-                Open {book_slug} canonical chapter route
+                Begin reading {book_entry.title}
               </a>
             </p>
             <p>
               <a
-                href={canonical_timeline_href}
-                hx-get={canonical_timeline_href}
+                href={timeline_href}
+                hx-get={timeline_href}
                 hx-target="#content"
                 hx-select="#content"
                 hx-swap="morph swap:240ms settle:240ms"
                 hx-push-url="true"
               >
-                Open {book_slug} timeline route
+                Open constellation timeline
               </a>
             </p>
           </>

@@ -18,7 +18,7 @@
   --color-rubedo: oklch(63.7% 0.237 25.331);
 }
 
-@custom-variant site-theme-cinza (&:where([data-site-theme="cinza"] *));
+@custom-variant site-theme-solarisael (&:where([data-site-theme="solarisael"] *));
 
 @custom-variant site-shell-subtle (&:where([data-site-shell="subtle"] *));
 @custom-variant site-shell-medium (&:where([data-site-shell="medium"] *));
@@ -45,7 +45,16 @@
   --ui_focus: oklch(86% 0.12 85);
 }
 
-:root[data-site-theme="cinza"] {
+/* Thread identity colors — per character, not per theme.
+   Values derived from character descriptions:
+   cinza = divine light, suul = abyssal green (Envy), alvorada = dawn */
+:root {
+  --color-thread-cinza: oklch(94% 0.018 85);
+  --color-thread-suul: oklch(58% 0.18 148);
+  --color-thread-alvorada: oklch(74% 0.13 47);
+}
+
+:root[data-site-theme="solarisael"] {
   --ui_bg_root: oklch(11% 0.008 265);
   --ui_bg_mantle: oklch(17% 0.01 262);
   --ui_bg_crust: oklch(7% 0.006 268);

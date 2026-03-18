@@ -1,6 +1,21 @@
 ---
 import "../styles/components/breadcrumbs.css";
 
+// crumbs: explicit array of { label, href } objects.
+// When provided, bypasses the URL parser entirely — the page controls the trail.
+// When null, falls back to the URL-parser with crumb_label_overrides.
+//
+// crumb_label_overrides: record of url segment -> human-readable label.
+// Used as fallback when crumbs is not provided.
+// theme_color: optional CSS color string or variable reference.
+// When provided, overrides the phase color for --crumb_theme_color.
+// Used by thread pages to color breadcrumbs per character identity.
+const {
+  crumbs = null,
+  crumb_label_overrides = {},
+  theme_color = null,
+} = Astro.props;
+
 const phase_color_by_name = {
   nigredo: "var(--color-nigredo)",
   albedo: "var(--color-albedo)",
@@ -13,9 +28,9 @@ const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
   const normalized_path = String(path_value).replace(/^\/+/, "");
-
   return `${base_path}/${normalized_path}`;
 };
+
 const pathname_raw = Astro.url.pathname;
 const pathname = pathname_raw.replace(/\/+$/, "") || "/";
 const pathname_without_base = pathname.startsWith(base_path)
@@ -29,30 +44,42 @@ const path_segments =
 const active_phase =
   path_segments[0] in phase_color_by_name ? path_segments[0] : "nigredo";
 
-/**
- * @param {string} segment
- */
 const segment_to_label = (segment) => {
   const decoded_segment = decodeURIComponent(segment);
-
   return decoded_segment.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
 };
 
-const crumb_items = [{ href: "/", label: "home" }];
+// Resolve the crumb list — explicit or URL-derived.
+let crumb_items;
 
-let current_path = "";
+if (Array.isArray(crumbs) && crumbs.length > 0) {
+  // Explicit crumbs passed by the page. Hrefs are already base-resolved.
+  crumb_items = crumbs;
+} else {
+  // URL-derived fallback.
+  crumb_items = [{ href: with_base("/"), label: "home" }];
+  let current_path = "";
 
-path_segments.forEach((segment) => {
-  current_path += `/${segment}`;
+  path_segments.forEach((segment) => {
+    current_path += `/${segment}`;
 
-  crumb_items.push({
-    href: current_path,
-    label: segment_to_label(segment),
+    const label =
+      segment in crumb_label_overrides
+        ? crumb_label_overrides[segment]
+        : segment_to_label(segment);
+
+    crumb_items.push({
+      href: with_base(current_path),
+      label,
+    });
   });
-});
+}
 
-const current_crumb_href = crumb_items.at(-1)?.href ?? "/";
-const active_theme_color = phase_color_by_name[active_phase];
+const current_crumb_href = crumb_items.at(-1)?.href ?? with_base("/");
+const active_theme_color =
+  theme_color ??
+  phase_color_by_name[active_phase] ??
+  "var(--site_style_accent)";
 ---
 
 <nav
@@ -70,7 +97,7 @@ const active_theme_color = phase_color_by_name[active_phase];
         return (
           <li class={is_current ? "is-current" : "is-parent"}>
             <a
-              href={with_base(crumb_item.href)}
+              href={crumb_item.href}
               class:list={{ "is-current-link": is_current }}
             >
               {crumb_item.label}

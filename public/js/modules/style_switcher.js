@@ -8,27 +8,29 @@ const SITE_SWITCHER_COLLAPSED_COOKIE_NAME = "site_switcher_collapsed";
 const LEGACY_HOME_THEME_COOKIE_NAME = "home_theme";
 const LEGACY_HOME_FX_COOKIE_NAME = "home_fx";
 
-const SITE_THEME_DEFAULT = "cinza";
+const SITE_THEME_DEFAULT = "solarisael";
 const SITE_SHELL_DEFAULT = "medium";
 const SITE_FX_DEFAULT = "balanced";
 const SITE_SWITCHER_COLLAPSED_DEFAULT = true;
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 
-const site_theme_options = ["cinza"];
+const site_theme_options = ["solarisael"];
 
 const legacy_theme_alias_map = {
-  ritual: "cinza",
-  vibrant: "cinza",
-  gilded_arcana: "cinza",
-  arcane: "cinza",
-  verdigris: "cinza",
-  golden_mystical_tarot: "cinza",
-  astrology_themed: "cinza",
-  cosmic_themed: "cinza",
-  wicca_ornamentation: "cinza",
-  gothic_dark_girl: "cinza",
-  relic_gothic: "cinza",
-  grimdark_tarot: "cinza",
+  ritual: "solarisael",
+  vibrant: "solarisael",
+  gilded_arcana: "solarisael",
+  arcane: "solarisael",
+  verdigris: "solarisael",
+  golden_mystical_tarot: "solarisael",
+  astrology_themed: "solarisael",
+  cosmic_themed: "solarisael",
+  wicca_ornamentation: "solarisael",
+  gothic_dark_girl: "solarisael",
+  relic_gothic: "solarisael",
+  grimdark_tarot: "solarisael",
+  // Legacy alias — cinza was the previous name for the solarisael theme.
+  cinza: "solarisael",
 };
 const site_shell_options = ["subtle", "medium", "strong"];
 const site_fx_options = ["subtle", "balanced", "bold"];

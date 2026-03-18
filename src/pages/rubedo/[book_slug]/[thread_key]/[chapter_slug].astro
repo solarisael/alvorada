@@ -1,0 +1,242 @@
+---
+import ChapterLayout from "../../../../layouts/chapter.astro";
+import {
+  rubedo_book_map,
+  rubedo_book_slugs,
+  derive_chapter_slug,
+} from "../../../../data/rubedo/book_timeline_runtime.js";
+
+const default_thread_key = "cinza";
+const default_thread_modifier = "core";
+
+export const getStaticPaths = () => {
+  return rubedo_book_slugs.flatMap((book_slug) => {
+    const book_entry = rubedo_book_map[book_slug] ?? null;
+
+    if (!book_entry) return [];
+
+    return (book_entry.chapters ?? []).flatMap((chapter) => {
+      const chapter_slug = derive_chapter_slug(chapter.timeline_position);
+
+      const thread_keys = [
+        ...new Set(
+          (chapter.scenes ?? [])
+            .map((scene) => scene.thread_key)
+            .filter(Boolean),
+        ),
+      ];
+
+      return thread_keys.map((thread_key) => {
+        return {
+          params: { book_slug, thread_key, chapter_slug },
+          props: { chapter, book_entry },
+        };
+      });
+    });
+  });
+};
+
+const { chapter, book_entry } = Astro.props;
+const { book_slug, thread_key, chapter_slug } = Astro.params;
+
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+  return `${base_path}/${normalized_path}`;
+};
+
+// Resolve the scene for the active thread — prefer core modifier.
+const thread_scene =
+  (chapter?.scenes ?? []).find((scene) => {
+    return (
+      scene.thread_key === thread_key &&
+      scene.thread_modifier === default_thread_modifier
+    );
+  }) ??
+  (chapter?.scenes ?? []).find((scene) => scene.thread_key === thread_key) ??
+  null;
+
+// All thread keys for this chapter — drives the Eyes nav slots.
+// FUTURE: compare against codex unlock state to gate non-canonical threads.
+const chapter_thread_keys = [
+  ...new Set(
+    (chapter?.scenes ?? []).map((scene) => scene.thread_key).filter(Boolean),
+  ),
+].sort((left_key, right_key) => {
+  if (left_key === default_thread_key) return -1;
+  if (right_key === default_thread_key) return 1;
+  return left_key.localeCompare(right_key);
+});
+
+// Sorted chapters for prev/next pager.
+const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
+  (left_chapter, right_chapter) =>
+    left_chapter.timeline_position - right_chapter.timeline_position,
+);
+
+const chapter_index = sorted_chapters.findIndex(
+  (candidate) => candidate.chapter_id === chapter?.chapter_id,
+);
+
+const previous_chapter =
+  chapter_index > 0 ? sorted_chapters[chapter_index - 1] : null;
+const next_chapter =
+  chapter_index >= 0 && chapter_index < sorted_chapters.length - 1
+    ? sorted_chapters[chapter_index + 1]
+    : null;
+
+// Pager links preserve the active thread across chapters.
+const build_chapter_href = (target_chapter) => {
+  if (!target_chapter) return null;
+  const target_slug = derive_chapter_slug(target_chapter.timeline_position);
+  return with_base(`/rubedo/${book_slug}/${thread_key}/${target_slug}`);
+};
+
+const build_hx_link = (href) => {
+  if (!href) return null;
+  return {
+    href,
+    hx_get: href,
+    hx_target: "#content",
+    hx_select: "#content",
+    hx_swap: "morph swap:240ms settle:240ms",
+    hx_push_url: "true",
+  };
+};
+
+const previous_chapter_link = build_hx_link(
+  build_chapter_href(previous_chapter),
+);
+const next_chapter_link = build_hx_link(build_chapter_href(next_chapter));
+
+const timeline_href = with_base(`/rubedo/${book_slug}/timeline`);
+
+// Body class reflects the active thread POV.
+const body_class = `pov_${thread_key}`;
+
+const ResolvedSceneComponent = thread_scene?.scene_component ?? null;
+
+// Thread identity colors — map to CSS custom properties defined in base.css.
+// Cinza = divine light, Suul = abyssal green, Alvorada = dawn.
+const thread_color_map = {
+  cinza: "var(--color-thread-cinza)",
+  suul: "var(--color-thread-suul)",
+  alvorada: "var(--color-thread-alvorada)",
+};
+const theme_color = thread_color_map[thread_key] ?? null;
+
+// Explicit breadcrumb trail — avoids exposing thread_key as a navigation segment.
+// Cinza gets no thread suffix (canonical default). All others get " - thread_name".
+const chapter_title = chapter?.title ?? chapter_slug;
+const thread_suffix =
+  thread_key !== default_thread_key ? ` - ${thread_key}` : "";
+
+const crumbs = [
+  { label: "home", href: with_base("/") },
+  { label: "rubedo", href: with_base("/rubedo") },
+  {
+    label: book_entry?.title ?? book_slug,
+    href: with_base(`/rubedo/${book_slug}`),
+  },
+  {
+    label: `${chapter_title}${thread_suffix}`,
+    href: with_base(`/rubedo/${book_slug}/${thread_key}/${chapter_slug}`),
+  },
+];
+---
+
+<ChapterLayout
+  body_class={body_class}
+  previous_chapter_link={previous_chapter_link}
+  next_chapter_link={next_chapter_link}
+  theme_color={theme_color}
+  crumbs={crumbs}
+>
+  <header>
+    <h1>{chapter?.title ?? "Unknown chapter"}</h1>
+  </header>
+
+  {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
+
+  {
+    chapter?.chapter_snippet && (
+      <p class="chapter_snippet">{chapter.chapter_snippet}</p>
+    )
+  }
+
+  {
+    /*
+      Eyes thread switcher — full navigation per slot.
+      Each slot navigates to /book/thread/chapter via HTMX full content swap.
+      URL updates to reflect the active thread. Active thread slot is inert.
+
+      FUTURE: locked slots render muted/glitched for threads not yet in codex.
+      FUTURE: paywall gate on chapter index.
+    */
+  }
+  <nav
+    class="chapter_eyes_nav"
+    data-chapter-slug={chapter_slug}
+    data-book-slug={book_slug}
+    data-active-thread={thread_key}
+  >
+    {
+      chapter_thread_keys.map((slot_thread_key) => {
+        const is_active = slot_thread_key === thread_key;
+        const slot_href = with_base(
+          `/rubedo/${book_slug}/${slot_thread_key}/${chapter_slug}`,
+        );
+
+        return (
+          <a
+            class="chapter_eyes_slot"
+            data-thread-key={slot_thread_key}
+            data-thread-locked="false"
+            aria-current={is_active ? "page" : undefined}
+            href={is_active ? undefined : slot_href}
+            hx-get={is_active ? undefined : slot_href}
+            hx-target={is_active ? undefined : "#content"}
+            hx-select={is_active ? undefined : "#content"}
+            hx-swap={is_active ? undefined : "morph swap:240ms settle:240ms"}
+            hx-push-url={is_active ? undefined : "true"}
+          >
+            {slot_thread_key}
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  <div id="chapter_thread_content" data-thread-key={thread_key}>
+    {
+      thread_scene?.scene_title && (
+        <p class="thread_scene_label">{thread_scene.scene_title}</p>
+      )
+    }
+    {
+      ResolvedSceneComponent ? (
+        <ResolvedSceneComponent />
+      ) : thread_scene?.scene_lines?.length ? (
+        thread_scene.scene_lines.map((scene_line) => <p>{scene_line}</p>)
+      ) : (
+        <p class="thread_scene_empty">
+          No scene found for thread <code>{thread_key}</code>.
+        </p>
+      )
+    }
+  </div>
+
+  <p>
+    <a
+      href={timeline_href}
+      hx-get={timeline_href}
+      hx-target="#content"
+      hx-select="#content"
+      hx-swap="morph swap:240ms settle:240ms"
+      hx-push-url="true"
+    >
+      Back to {book_entry?.title ?? book_slug} constellation
+    </a>
+  </p>
+</ChapterLayout>

@@ -1,5 +1,10 @@
 const window_any = /** @type {any} */ (globalThis);
 
+// Module-scoped cache: keyed by book_slug. Stores fetched timeline JSON
+// so hover previews render from memory — no server roundtrip per hover.
+// Populated on first constellation init for a given book.
+const timeline_cache = {};
+
 const MAX_DPR = 2;
 const HOVER_INTENT_MS = 280;
 const INACTIVITY_TIMEOUT_MS = 900;
@@ -33,10 +38,12 @@ const HOVER_PREVIEW_OFFSET_X = 20;
 const HOVER_PREVIEW_OFFSET_Y = 18;
 const HOVER_PREVIEW_MARGIN = 10;
 
+// Thread identity RGB values — mirror of --color-thread-* in base.css.
+// cinza = divine light (warm near-white), suul = abyssal green, alvorada = dawn coral-gold.
 const THREAD_RGB = {
-  cinza: [242, 246, 255],
-  suul: [77, 214, 107],
-  alvorada: [255, 159, 46],
+  cinza: [241, 235, 222],
+  suul: [0, 149, 51],
+  alvorada: [237, 143, 96],
 };
 
 const clamp = (value, min_value, max_value) => {
@@ -1011,6 +1018,72 @@ const dispatch_map_navigation = (node_entry) => {
   }
 };
 
+// Renders the hover preview card from the cached timeline JSON.
+// No server roundtrip — data is already in memory after the initial fetch.
+const render_hover_preview_from_cache = (node_entry, book_slug, base_path) => {
+  const preview_node = document.getElementById("rubedo_timeline_hover_preview");
+
+  if (!(preview_node instanceof HTMLElement)) {
+    return;
+  }
+
+  const book_data = timeline_cache[book_slug];
+
+  if (!book_data) {
+    return;
+  }
+
+  const chapter = (book_data.chapters ?? []).find((chapter_entry) => {
+    return chapter_entry.chapter_id === node_entry.chapter_id;
+  });
+
+  if (!chapter) {
+    preview_node.innerHTML = "";
+    return;
+  }
+
+  const chapter_href = `${base_path}/rubedo/${book_slug}/${chapter.chapter_slug}`;
+
+  const excerpt =
+    chapter.scene_excerpts?.[node_entry.thread_key] ??
+    chapter.scene_excerpts?.["cinza"] ??
+    null;
+
+  const branch_labels = (chapter.branch_edges ?? [])
+    .map((edge) => {
+      return `→ ${edge.to_chapter_id}${edge.condition_label ? ` (${edge.condition_label})` : ""}`;
+    })
+    .join(", ");
+
+  preview_node.innerHTML = `
+    <h3 class="timeline-hover-title">${chapter.title ?? chapter.chapter_id}</h3>
+    ${chapter.description ? `<p class="timeline-hover-description">${chapter.description}</p>` : ""}
+    ${chapter.snippet ? `<p class="timeline-hover-snippet">${chapter.snippet}</p>` : ""}
+    ${excerpt ? `<p class="timeline-hover-excerpt">${excerpt}</p>` : ""}
+    ${branch_labels ? `<p class="timeline-hover-branches">${branch_labels}</p>` : ""}
+    <p class="timeline-hover-action">
+      <a
+        href="${chapter_href}"
+        hx-get="${chapter_href}"
+        hx-target="#content"
+        hx-select="#content"
+        hx-swap="morph swap:240ms settle:240ms"
+        hx-push-url="true"
+        class="timeline-hover-go"
+      >Read chapter</a>
+    </p>
+  `;
+
+  // Re-process the new anchor so HTMX picks it up.
+  const htmx_api = window_any.htmx;
+
+  if (htmx_api?.process) {
+    htmx_api.process(preview_node);
+  }
+};
+
+// Legacy HTMX-based hover dispatch — kept as unreachable fallback.
+// New architecture renders hover from cache via render_hover_preview_from_cache.
 const dispatch_hover_preview = (node_entry) => {
   if (!node_entry?.hover_preview) {
     return;
@@ -1037,20 +1110,419 @@ const dispatch_hover_preview = (node_entry) => {
   }
 };
 
-const init_constellation = async (root_node) => {
+const default_map_thread_keys = ["cinza", "suul", "alvorada"];
+
+const thread_image_src_map_base = {
+  cinza: "/images/eyes/cinza.jpg",
+  suul: "/images/eyes/suul.jpg",
+  alvorada: "/images/eyes/alvorada.jpg",
+};
+
+const thread_trail_rotation_map = {
+  cinza: 334,
+  suul: 312,
+  alvorada: 348,
+};
+
+// Mirrors THREAD_RGB above — used as CSS rgb() space-separated values for WebGL shaders.
+const thread_neon_rgb_map = {
+  cinza: "241 235 222",
+  suul: "0 149 51",
+  alvorada: "237 143 96",
+};
+
+const center_x_vb = 50;
+const side_lane_step = 18;
+const vertical_step = 18;
+const base_y_vb = 12;
+const side_lane_y_nudge = 2.6;
+
+// Builds the constellation payload from fetched timeline JSON.
+// Ports the logic that was previously in rubedo_timeline_constellation.astro.
+// Called once per init — result stored in timeline_cache alongside raw book data.
+const build_constellation_payload_from_json = (
+  book_data,
+  base_path,
+  active_chapter_slug,
+) => {
+  const chapters = [...(book_data.chapters ?? [])].sort(
+    (left_chapter, right_chapter) =>
+      left_chapter.timeline_position - right_chapter.timeline_position,
+  );
+
+  // Resolve active chapter from slug.
+  const active_chapter =
+    chapters.find((chapter_entry) => {
+      return chapter_entry.chapter_slug === active_chapter_slug;
+    }) ??
+    chapters[0] ??
+    null;
+
+  const active_chapter_id = active_chapter?.chapter_id ?? "";
+  const active_thread_key = "cinza";
+
+  // Collect all thread keys across the book.
+  const map_thread_key_set = new Set(default_map_thread_keys);
+
+  for (const chapter_entry of chapters) {
+    for (const thread_key of chapter_entry.thread_keys ?? []) {
+      if (typeof thread_key === "string" && thread_key.trim()) {
+        map_thread_key_set.add(thread_key);
+      }
+    }
+  }
+
+  const map_thread_keys = [
+    ...default_map_thread_keys.filter((key) => map_thread_key_set.has(key)),
+    ...[...map_thread_key_set]
+      .filter((key) => !default_map_thread_keys.includes(key))
+      .sort((left_key, right_key) => left_key.localeCompare(right_key)),
+  ];
+
+  const side_thread_keys = map_thread_keys.filter((key) => key !== "cinza");
+
+  const side_lane_x_map = new Map();
+
+  for (const [side_index, thread_key] of side_thread_keys.entries()) {
+    const lane_rank = Math.floor(side_index / 2) + 1;
+    const lane_direction = side_index % 2 === 0 ? -1 : 1;
+    side_lane_x_map.set(
+      thread_key,
+      center_x_vb + lane_direction * lane_rank * side_lane_step,
+    );
+  }
+
+  const row_entries = chapters.map((chapter_entry, row_index) => {
+    const thread_key_set = new Set(chapter_entry.thread_keys ?? []);
+
+    return {
+      chapter: chapter_entry,
+      row_index,
+      row_y: base_y_vb + row_index * vertical_step,
+      has_cinza: thread_key_set.has("cinza"),
+      thread_keys: [...thread_key_set],
+    };
+  });
+
+  const viewbox_height = Math.max(
+    44,
+    base_y_vb + row_entries.length * vertical_step + 10,
+  );
+
+  const row_anchor_nodes = row_entries.map((row_entry) => ({
+    node_id: row_entry.has_cinza
+      ? `${row_entry.chapter.chapter_id}:cinza`
+      : `${row_entry.chapter.chapter_id}:cinza:phantom`,
+    chapter_id: row_entry.chapter.chapter_id,
+    chapter_slug: row_entry.chapter.chapter_slug,
+    thread_key: "cinza",
+    node_kind: row_entry.has_cinza ? "real" : "phantom",
+    x: center_x_vb,
+    y: row_entry.row_y,
+    row_index: row_entry.row_index,
+    timeline_position: row_entry.chapter.timeline_position,
+  }));
+
+  const real_nodes = row_entries.flatMap((row_entry) =>
+    row_entry.thread_keys.flatMap((thread_key) => {
+      if (thread_key === "cinza") {
+        return [
+          {
+            node_id: `${row_entry.chapter.chapter_id}:${thread_key}`,
+            chapter_id: row_entry.chapter.chapter_id,
+            chapter_slug: row_entry.chapter.chapter_slug,
+            thread_key,
+            node_kind: "real",
+            x: center_x_vb,
+            y: row_entry.row_y,
+            row_index: row_entry.row_index,
+            timeline_position: row_entry.chapter.timeline_position,
+          },
+        ];
+      }
+
+      const lane_x = side_lane_x_map.get(thread_key) ?? center_x_vb;
+
+      return [
+        {
+          node_id: `${row_entry.chapter.chapter_id}:${thread_key}`,
+          chapter_id: row_entry.chapter.chapter_id,
+          chapter_slug: row_entry.chapter.chapter_slug,
+          thread_key,
+          node_kind: "real",
+          x: lane_x,
+          y: row_entry.row_y + side_lane_y_nudge,
+          row_index: row_entry.row_index,
+          timeline_position: row_entry.chapter.timeline_position,
+        },
+      ];
+    }),
+  );
+
+  const cinza_trunk_edges = row_anchor_nodes.flatMap(
+    (anchor_node, row_index) => {
+      const next_anchor = row_anchor_nodes[row_index + 1] ?? null;
+
+      if (!next_anchor) return [];
+
+      return [
+        {
+          edge_key: `${anchor_node.node_id}->${next_anchor.node_id}`,
+          from_node_id: anchor_node.node_id,
+          to_node_id: next_anchor.node_id,
+          from_chapter_id: anchor_node.chapter_id,
+          to_chapter_id: next_anchor.chapter_id,
+          x1: anchor_node.x,
+          y1: anchor_node.y,
+          x2: next_anchor.x,
+          y2: next_anchor.y,
+        },
+      ];
+    },
+  );
+
+  const canonical_edges_by_thread = side_thread_keys.map((thread_key) => {
+    const thread_nodes = real_nodes.filter(
+      (node_entry) => node_entry.thread_key === thread_key,
+    );
+
+    return {
+      thread_key,
+      edges: thread_nodes.flatMap((thread_node, node_index) => {
+        const next_node = thread_nodes[node_index + 1] ?? null;
+
+        if (!next_node) return [];
+
+        return [
+          {
+            edge_key: `${thread_node.node_id}->${next_node.node_id}`,
+            thread_key,
+            from_chapter_id: thread_node.chapter_id,
+            to_chapter_id: next_node.chapter_id,
+            x1: thread_node.x,
+            y1: thread_node.y,
+            x2: next_node.x,
+            y2: next_node.y,
+          },
+        ];
+      }),
+    };
+  });
+
+  const row_connector_edges = real_nodes.flatMap((node_entry) => {
+    if (node_entry.thread_key === "cinza") return [];
+
+    const anchor_node = row_anchor_nodes[node_entry.row_index] ?? null;
+
+    if (!anchor_node) return [];
+
+    return [
+      {
+        edge_key: `${anchor_node.node_id}->${node_entry.node_id}`,
+        thread_key: node_entry.thread_key,
+        x1: anchor_node.x,
+        y1: anchor_node.y,
+        x2: node_entry.x,
+        y2: node_entry.y,
+      },
+    ];
+  });
+
+  const canonical_edge_key_set = new Set([
+    ...cinza_trunk_edges.map(
+      (edge_entry) =>
+        `${edge_entry.from_chapter_id}:${edge_entry.to_chapter_id}`,
+    ),
+    ...canonical_edges_by_thread.flatMap((thread_entry) =>
+      thread_entry.edges.map(
+        (edge_entry) =>
+          `${edge_entry.from_chapter_id}:${edge_entry.to_chapter_id}`,
+      ),
+    ),
+  ]);
+
+  const chapter_index_map = new Map(
+    row_entries.map((row_entry) => [
+      row_entry.chapter.chapter_id,
+      row_entry.row_index,
+    ]),
+  );
+
+  const branch_edges = row_entries.flatMap((row_entry, row_index) => {
+    return (row_entry.chapter.branch_edges ?? []).flatMap((branch_edge) => {
+      const target_row_index = chapter_index_map.get(
+        branch_edge?.to_chapter_id,
+      );
+
+      if (typeof target_row_index !== "number") return [];
+
+      const source_anchor = row_anchor_nodes[row_index] ?? null;
+      const target_anchor = row_anchor_nodes[target_row_index] ?? null;
+
+      if (!source_anchor || !target_anchor) return [];
+
+      const edge_key = `${source_anchor.chapter_id}:${target_anchor.chapter_id}`;
+
+      if (canonical_edge_key_set.has(edge_key)) return [];
+
+      return [
+        {
+          edge_key,
+          condition_label: branch_edge?.condition_label ?? "optional_path",
+          x1: source_anchor.x,
+          y1: source_anchor.y,
+          x2: target_anchor.x,
+          y2: target_anchor.y,
+        },
+      ];
+    });
+  });
+
+  const all_nodes = [
+    ...row_anchor_nodes.filter(
+      (anchor_node) => anchor_node.node_kind === "phantom",
+    ),
+    ...real_nodes,
+  ];
+
+  const map_nodes_with_links = all_nodes.map((node_entry) => {
+    const is_clickable = node_entry.node_kind === "real";
+    const core_radius = node_entry.thread_key === "cinza" ? 2.7 : 1.95;
+    const highlight_radius = core_radius + 0.22;
+    const halo_radius = highlight_radius + 0.04;
+    const neon_rgb =
+      thread_neon_rgb_map[node_entry.thread_key] ?? "214 217 226";
+    const trail_rotation =
+      thread_trail_rotation_map[node_entry.thread_key] ?? 18;
+    const image_src_rel =
+      thread_image_src_map_base[node_entry.thread_key] ?? null;
+    const image_src = image_src_rel ? `${base_path}${image_src_rel}` : null;
+
+    if (!is_clickable) {
+      return {
+        ...node_entry,
+        is_clickable: false,
+        link: null,
+        image_src: null,
+        neon_rgb,
+        trail_rotation,
+        core_radius: 2,
+        highlight_radius: 2.2,
+        halo_radius: 2.34,
+        label: node_entry.chapter_id,
+        hover_preview: null,
+      };
+    }
+
+    const chapter_href = `${base_path}/rubedo/${book_data.book_slug}/${node_entry.chapter_slug}`;
+
+    return {
+      ...node_entry,
+      is_clickable: true,
+      link: {
+        href: chapter_href,
+        hx_get: chapter_href,
+        hx_target: "#content",
+        hx_select: "#content",
+        hx_swap: "morph swap:240ms settle:240ms",
+        hx_push_url: "true",
+      },
+      // hover_preview is null — rendering handled client-side from cache,
+      // not via HTMX fetch. See render_hover_preview_from_cache().
+      hover_preview: null,
+      image_src,
+      neon_rgb,
+      trail_rotation,
+      core_radius,
+      highlight_radius,
+      halo_radius,
+      label: node_entry.chapter_id,
+    };
+  });
+
+  return {
+    viewbox_width: 100,
+    viewbox_height,
+    active_chapter_id,
+    active_thread_key,
+    nodes: map_nodes_with_links,
+    edges: {
+      branch: branch_edges,
+      trunk: cinza_trunk_edges,
+      connectors: row_connector_edges,
+      canonical: canonical_edges_by_thread.flatMap((thread_entry) =>
+        thread_entry.edges.map((edge_entry) => ({
+          ...edge_entry,
+          thread_key: thread_entry.thread_key,
+        })),
+      ),
+    },
+  };
+};
+
+// init_constellation now accepts the #rubedo_timeline_interactive wrapper.
+// It reads data-timeline-data-href and data-book-slug from that element,
+// fetches the timeline JSON once (caching in timeline_cache by book_slug),
+// builds the constellation payload client-side, then initializes the canvas.
+const init_constellation = async (interactive_section) => {
   if (
-    !(root_node instanceof HTMLElement) ||
-    root_node.dataset.canvasBound === "true"
+    !(interactive_section instanceof HTMLElement) ||
+    interactive_section.dataset.constellationBound === "true"
   ) {
     return;
   }
 
-  const canvas = root_node.querySelector(
-    ".rubedo-constellation-canvas-surface",
+  const book_slug = interactive_section.dataset.bookSlug ?? "";
+  const data_href = interactive_section.dataset.timelineDataHref ?? "";
+
+  if (!book_slug || !data_href) {
+    return;
+  }
+
+  interactive_section.dataset.constellationBound = "true";
+
+  // Fetch JSON once and cache. Subsequent hovers read from timeline_cache[book_slug].
+  if (!timeline_cache[book_slug]) {
+    try {
+      const response = await fetch(data_href);
+
+      if (!response.ok) {
+        console.warn(
+          `[rubedo-constellation] Failed to fetch ${data_href}: ${response.status}`,
+        );
+        return;
+      }
+
+      timeline_cache[book_slug] = await response.json();
+    } catch (fetch_error) {
+      console.warn(
+        `[rubedo-constellation] Fetch error for ${data_href}:`,
+        fetch_error,
+      );
+      return;
+    }
+  }
+
+  const book_data = timeline_cache[book_slug];
+
+  // Derive base_path from the data_href (strip trailing /rubedo/data/... part).
+  const base_path = data_href.replace(/\/rubedo\/data\/[^/]+\.json$/, "");
+
+  const payload = build_constellation_payload_from_json(
+    book_data,
+    base_path,
+    null,
   );
-  const payload_script = root_node.querySelector(
-    ".rubedo-constellation-payload",
-  );
+
+  // Now find the canvas inside the interactive section.
+  // The canvas is a direct child of #rubedo_timeline_interactive in the new template.
+  const root_node = interactive_section;
+  const canvas = root_node.querySelector("#rubedo_timeline_canvas");
+
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    return;
+  }
+
   const zoom_in_button = root_node.querySelector('[data-map-action="zoom_in"]');
   const zoom_out_button = root_node.querySelector(
     '[data-map-action="zoom_out"]',
@@ -1066,14 +1538,6 @@ const init_constellation = async (root_node) => {
     return root_node.querySelector("#rubedo_timeline_hover_preview");
   };
 
-  if (
-    !(canvas instanceof HTMLCanvasElement) ||
-    !(payload_script instanceof HTMLScriptElement)
-  ) {
-    return;
-  }
-
-  const payload = JSON.parse(payload_script.textContent || "{}");
   const active_node_id = `${payload.active_chapter_id}:${payload.active_thread_key}`;
   const world_bounds = compute_world_bounds(payload);
   const payload_map = new Map(
@@ -1209,7 +1673,7 @@ const init_constellation = async (root_node) => {
     }
 
     last_hover_preview_node_id = hovered_node.node_id;
-    dispatch_hover_preview(hovered_node);
+    render_hover_preview_from_cache(hovered_node, book_slug, base_path);
   };
 
   const update_size = () => {
@@ -1347,8 +1811,14 @@ const init_constellation = async (root_node) => {
   await renderer.load_textures();
   update_size();
 
+  // Observe the canvas's parent container — NOT root_node and NOT the canvas itself.
+  // Observing root_node causes a feedback loop: writing canvas.width/height inflates
+  // the section (no CSS size constraint), the observer fires, writes again, inflates
+  // again — until the canvas hits the browser's 2^25 pixel ceiling.
+  // The parent container is CSS-sized independently of the canvas pixel buffer,
+  // so this only fires on genuine layout changes.
   const resize_observer = new ResizeObserver(update_size);
-  resize_observer.observe(root_node);
+  resize_observer.observe(canvas.parentElement ?? root_node);
 
   canvas.style.touchAction = "none";
   root_node.dataset.canvasBound = "true";
@@ -1747,28 +2217,24 @@ const init_rubedo_constellation = () => {
     return;
   }
 
-  const map_nodes = document.querySelectorAll(
-    '#rubedo_constellation_map[data-renderer="canvas"]',
+  // Target the interactive section wrapper which carries the data-timeline-data-href.
+  // The new architecture has one #rubedo_timeline_interactive per timeline page.
+  const interactive_sections = document.querySelectorAll(
+    "#rubedo_timeline_interactive[data-timeline-data-href]",
   );
 
-  map_nodes.forEach((map_node) => {
-    init_constellation(map_node);
+  interactive_sections.forEach((section) => {
+    init_constellation(section);
   });
 };
 
 init_rubedo_constellation();
 
 if (!window_any.__rubedo_constellation_after_swap_bound) {
-  document.body?.addEventListener("htmx:afterSwap", (event) => {
-    const target_node = event.target;
-
-    if (!(target_node instanceof HTMLElement)) {
-      return;
-    }
-
-    if (target_node.closest("#rubedo_timeline_interactive")) {
-      init_rubedo_constellation();
-    }
+  document.body?.addEventListener("htmx:afterSwap", () => {
+    // Re-check for timeline sections after any HTMX swap.
+    // Handles navigation back to the timeline page via HTMX.
+    init_rubedo_constellation();
   });
 
   window_any.__rubedo_constellation_after_swap_bound = true;

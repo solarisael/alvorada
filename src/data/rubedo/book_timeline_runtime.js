@@ -4,7 +4,9 @@ import {
   validate_scene_identity_consistency,
 } from "./scene_identity.js";
 
-const scene_module_map = import.meta.glob("./scenes/**/*.md", { eager: true });
+const scene_module_map = import.meta.glob("../../content/rubedo/**/*.md", {
+  eager: true,
+});
 
 const resolve_identity_value = ({
   field_label,
@@ -251,32 +253,70 @@ const rubedo_book_slugs = Object.freeze(
   }),
 );
 
-const to_serializable_scene = (scene = {}) => {
-  return {
-    thread_key: scene.thread_key,
-    thread_modifier: scene.thread_modifier,
-    scene_title: scene.scene_title,
-    scene_excerpt: scene.scene_excerpt,
-    chapter_title_override: scene.chapter_title_override,
-    chapter_description_override: scene.chapter_description_override,
-    chapter_snippet_override: scene.chapter_snippet_override,
-  };
+// Derives a zero-padded chapter slug from timeline_position.
+// Position 0 -> "000", 1 -> "001", 42 -> "042", 100 -> "100".
+// Minimum 3 digits — purely numeric, stable regardless of title changes.
+const derive_chapter_slug = (timeline_position = 0) => {
+  return String(Math.max(0, Math.floor(timeline_position))).padStart(3, "0");
 };
 
-const to_serializable_chapter = (chapter = {}) => {
+// Collects the distinct thread keys present in a chapter's scenes,
+// with the default cinza thread always first when present.
+const collect_chapter_thread_keys = (scenes = [], default_key = "cinza") => {
+  const key_set = new Set();
+
+  for (const scene of scenes) {
+    if (typeof scene?.thread_key === "string" && scene.thread_key.trim()) {
+      key_set.add(scene.thread_key.trim());
+    }
+  }
+
+  const sorted = [...key_set].sort((left_key, right_key) => {
+    if (left_key === default_key) return -1;
+    if (right_key === default_key) return 1;
+
+    return left_key.localeCompare(right_key);
+  });
+
+  return sorted;
+};
+
+// Timeline-specific serializer — chapter-level only, no scene prose.
+// Purpose: feed the constellation map with everything it needs to render
+// nodes, edges, hover previews, and thread color coding.
+// Does NOT include scene body content — chapters own their own content.
+const to_timeline_chapter = (chapter = {}) => {
+  const thread_keys = collect_chapter_thread_keys(chapter.scenes ?? []);
+
   return {
     chapter_id: chapter.chapter_id,
+    chapter_slug: derive_chapter_slug(chapter.timeline_position),
     timeline_position: chapter.timeline_position,
     title: chapter.title,
-    chapter_description: chapter.chapter_description,
-    chapter_snippet: chapter.chapter_snippet,
+    description: chapter.chapter_description,
+    snippet: chapter.chapter_snippet,
     branch_edges: [...(chapter.branch_edges ?? [])],
-    scenes: (chapter.scenes ?? []).map((scene) => {
-      return to_serializable_scene(scene);
-    }),
+    thread_keys,
+    has_branches:
+      Array.isArray(chapter.branch_edges) && chapter.branch_edges.length > 0,
+    // Per-thread scene excerpts for hover popup — keyed by thread_key.
+    // The default cinza/core excerpt is the fallback when no thread is active.
+    scene_excerpts: Object.fromEntries(
+      (chapter.scenes ?? []).map((scene) => {
+        return [scene.thread_key, scene.scene_excerpt ?? null];
+      }),
+    ),
   };
 };
 
+// rubedo_book_json_map — timeline-ready, slim, serializable.
+// Consumed by /rubedo/data/[book_slug].json and fetched by the timeline page
+// on load. Cached client-side in the constellation module — hover preview
+// reads from this cache, no per-hover server roundtrip.
+//
+// FUTURE: add free_chapter_limit field when paywall is implemented.
+// e.g. free_chapter_limit: 50 — client can gate reader access without
+// a server roundtrip by checking chapter index against this value.
 const rubedo_book_json_map = Object.freeze(
   Object.fromEntries(
     Object.entries(rubedo_book_map).map(([book_slug, book_entry]) => {
@@ -287,7 +327,7 @@ const rubedo_book_json_map = Object.freeze(
           title: book_entry.title,
           synopsis: book_entry.synopsis,
           chapters: (book_entry.chapters ?? []).map((chapter) => {
-            return to_serializable_chapter(chapter);
+            return to_timeline_chapter(chapter);
           }),
         },
       ];
@@ -295,4 +335,27 @@ const rubedo_book_json_map = Object.freeze(
   ),
 );
 
-export { rubedo_book_map, rubedo_book_json_map, rubedo_book_slugs };
+// Derives chapter slugs for all chapters in a book — used by getStaticPaths
+// in chapter pages to generate one page per chapter.
+const derive_chapter_slug_map = (book_slug = "") => {
+  const book_entry = rubedo_book_map[book_slug];
+
+  if (!book_entry) return {};
+
+  return Object.fromEntries(
+    (book_entry.chapters ?? []).map((chapter) => {
+      return [
+        derive_chapter_slug(chapter.timeline_position),
+        chapter.chapter_id,
+      ];
+    }),
+  );
+};
+
+export {
+  rubedo_book_map,
+  rubedo_book_json_map,
+  rubedo_book_slugs,
+  derive_chapter_slug,
+  derive_chapter_slug_map,
+};

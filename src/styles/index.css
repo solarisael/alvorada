@@ -57,7 +57,7 @@ Ownership Matrix
   --cinza_tune_rails_in_stage: 0;
 }
 
-:root[data-site-theme="cinza"] {
+:root[data-site-theme="solarisael"] {
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
   --site_style_shell_mix: 48%;
@@ -130,7 +130,7 @@ Ownership Matrix
   --cinza_bw_contrast: 1.16;
 }
 
-:root[data-site-theme="cinza"][data-site-shell="subtle"] {
+:root[data-site-theme="solarisael"][data-site-shell="subtle"] {
   --site_style_deco_opacity: 0.38;
   --cinza_reliquary_opacity: 0.74;
   --cinza_reliquary_line_mix: 30%;
@@ -144,7 +144,7 @@ Ownership Matrix
   --cinza_bw_contrast: 1.08;
 }
 
-:root[data-site-theme="cinza"][data-site-shell="medium"] {
+:root[data-site-theme="solarisael"][data-site-shell="medium"] {
   --site_style_border_mix: 52%;
   --site_style_halo_mix: 31%;
   --site_style_edge_mix: 42%;
@@ -162,7 +162,7 @@ Ownership Matrix
   --cinza_bw_contrast: 1.26;
 }
 
-:root[data-site-theme="cinza"][data-site-shell="strong"] {
+:root[data-site-theme="solarisael"][data-site-shell="strong"] {
   --site_style_border_mix: 62%;
   --site_style_halo_mix: 37%;
   --site_style_edge_mix: 50%;

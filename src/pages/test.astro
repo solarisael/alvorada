@@ -1091,7 +1091,7 @@
     </div>
 
     <script>
-      const $ = (id) => document.getElementById(id)
+      const $ = (id) => document.getElementById(id);
 
       const el = {
         txt: $("txt"),
@@ -1138,7 +1138,7 @@
         letterAnim: $("letterAnim"),
         jitVal: $("jitVal"),
         lanVal: $("lanVal"),
-      }
+      };
 
       const EFFECTS = [
         { id: "fx-neon", label: "Neon" },
@@ -1161,9 +1161,9 @@
         { id: "fx-tight", label: "Tight" },
         { id: "crt", label: "CRT Overlay (container)", target: "shell" },
         { id: "fx-perletter", label: "Per-letter Colors" }, // NEW
-      ]
+      ];
 
-      const DEFAULT_ON = new Set(["fx-neon", "fx-glow", "crt"])
+      const DEFAULT_ON = new Set(["fx-neon", "fx-glow", "crt"]);
 
       const PALETTES = {
         "qud-emerald": { fg: "#d8f2e1", accent: "#37e5a3", bg: "#0b0f10" },
@@ -1176,7 +1176,7 @@
         blood: { fg: "#ffe2e2", accent: "#ff3d3d", bg: "#120606" },
         void: { fg: "#d6d6ff", accent: "#9b5de5", bg: "#07060e" },
         custom: null,
-      }
+      };
 
       const SWATCHES = [
         "#37e5a3",
@@ -1195,7 +1195,7 @@
         "#ffe2b4",
         "#d7fbff",
         "#ffe0ff",
-      ]
+      ];
 
       // Array-of-palettes (each entry is an array of colors) for per-letter effect
       const LETTER_PALETTES = {
@@ -1273,101 +1273,101 @@
             "#ffe0ff",
           ],
         ],
-      }
+      };
 
       function setCSSVar(k, v) {
-        document.documentElement.style.setProperty(k, v)
+        document.documentElement.style.setProperty(k, v);
       }
       function clamp(n, a, b) {
-        return Math.max(a, Math.min(b, n))
+        return Math.max(a, Math.min(b, n));
       }
 
       function initEffectsUI() {
-        const frag = document.createDocumentFragment()
+        const frag = document.createDocumentFragment();
         EFFECTS.forEach((fx) => {
-          const wrap = document.createElement("label")
-          wrap.className = "check"
-          const input = document.createElement("input")
-          input.type = "checkbox"
-          input.value = fx.id
+          const wrap = document.createElement("label");
+          wrap.className = "check";
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.value = fx.id;
           input.checked =
-            DEFAULT_ON.has(fx.id) || fx.id === "fx-perletter" ? false : false
-          if (fx.id === "fx-perletter") input.checked = false
-          input.addEventListener("change", applyAll)
+            DEFAULT_ON.has(fx.id) || fx.id === "fx-perletter" ? false : false;
+          if (fx.id === "fx-perletter") input.checked = false;
+          input.addEventListener("change", applyAll);
 
-          const span = document.createElement("span")
-          span.textContent = fx.label
+          const span = document.createElement("span");
+          span.textContent = fx.label;
 
-          wrap.appendChild(input)
-          wrap.appendChild(span)
-          frag.appendChild(wrap)
-        })
-        el.effects.appendChild(frag)
+          wrap.appendChild(input);
+          wrap.appendChild(span);
+          frag.appendChild(wrap);
+        });
+        el.effects.appendChild(frag);
       }
 
       function initSwatches() {
-        const frag = document.createDocumentFragment()
+        const frag = document.createDocumentFragment();
         SWATCHES.forEach((hex) => {
-          const b = document.createElement("button")
-          b.className = "swatch"
-          b.type = "button"
-          b.style.background = hex
-          b.title = hex
+          const b = document.createElement("button");
+          b.className = "swatch";
+          b.type = "button";
+          b.style.background = hex;
+          b.title = hex;
           b.addEventListener("click", () => {
-            el.accent.value = hex
-            applyAll()
-          })
-          frag.appendChild(b)
-        })
-        el.swatches.appendChild(frag)
+            el.accent.value = hex;
+            applyAll();
+          });
+          frag.appendChild(b);
+        });
+        el.swatches.appendChild(frag);
       }
 
       function getChecked() {
-        const inputs = el.effects.querySelectorAll('input[type="checkbox"]')
-        const out = { preview: [], shell: [] }
+        const inputs = el.effects.querySelectorAll('input[type="checkbox"]');
+        const out = { preview: [], shell: [] };
         inputs.forEach((i) => {
-          if (!i.checked) return
-          const fx = EFFECTS.find((x) => x.id === i.value)
-          if (fx && fx.target === "shell") out.shell.push(i.value)
-          else out.preview.push(i.value)
-        })
-        return out
+          if (!i.checked) return;
+          const fx = EFFECTS.find((x) => x.id === i.value);
+          if (fx && fx.target === "shell") out.shell.push(i.value);
+          else out.preview.push(i.value);
+        });
+        return out;
       }
 
       function applyPalette(key) {
-        const p = PALETTES[key]
-        if (!p) return
-        el.fg.value = p.fg
-        el.accent.value = p.accent
-        el.bg.value = p.bg
+        const p = PALETTES[key];
+        if (!p) return;
+        el.fg.value = p.fg;
+        el.accent.value = p.accent;
+        el.bg.value = p.bg;
       }
 
       function escapeHtml(s) {
         return String(s)
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
+          .replaceAll(">", "&gt;");
       }
       function escapeAttr(s) {
         return String(s)
           .replaceAll("&", "&amp;")
           .replaceAll('"', "&quot;")
           .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
+          .replaceAll(">", "&gt;");
       }
 
       function randInt(a, b) {
-        return Math.floor(Math.random() * (b - a + 1)) + a
+        return Math.floor(Math.random() * (b - a + 1)) + a;
       }
       function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)]
+        return arr[Math.floor(Math.random() * arr.length)];
       }
 
       function lerp(a, b, t) {
-        return a + (b - a) * t
+        return a + (b - a) * t;
       }
       function hexToRgb(hex) {
-        const h = hex.replace("#", "").trim()
+        const h = hex.replace("#", "").trim();
         const n = parseInt(
           h.length === 3
             ? h
@@ -1376,98 +1376,98 @@
                 .join("")
             : h,
           16,
-        )
-        return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
+        );
+        return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
       }
       function rgbToHex({ r, g, b }) {
-        const to = (x) => x.toString(16).padStart(2, "0")
+        const to = (x) => x.toString(16).padStart(2, "0");
         return (
           "#" +
           to(clamp(Math.round(r), 0, 255)) +
           to(clamp(Math.round(g), 0, 255)) +
           to(clamp(Math.round(b), 0, 255))
-        )
+        );
       }
       function mixHex(a, b, t) {
         const A = hexToRgb(a),
-          B = hexToRgb(b)
+          B = hexToRgb(b);
         return rgbToHex({
           r: lerp(A.r, B.r, t),
           g: lerp(A.g, B.g, t),
           b: lerp(A.b, B.b, t),
-        })
+        });
       }
 
       function buildPerLetterHTML(text, paletteKey, mode, jitterPx, animAmt) {
-        const key = paletteKey
-        if (key === "none" || !LETTER_PALETTES[key]) return null
+        const key = paletteKey;
+        if (key === "none" || !LETTER_PALETTES[key]) return null;
 
-        const paletteChoices = LETTER_PALETTES[key]
-        const chosenPalette = pick(paletteChoices)
+        const paletteChoices = LETTER_PALETTES[key];
+        const chosenPalette = pick(paletteChoices);
 
-        const isRandomChar = key === "randomPerChar"
-        const isRandomWord = key === "randomPerWord"
+        const isRandomChar = key === "randomPerChar";
+        const isRandomWord = key === "randomPerWord";
 
         // For random per word, assign a color per word index
-        const words = text.split(/(\s+)/) // keep whitespace segments
-        let wordColorMap = []
+        const words = text.split(/(\s+)/); // keep whitespace segments
+        let wordColorMap = [];
         if (isRandomWord) {
           wordColorMap = words.map((seg) => {
-            if (/^\s+$/.test(seg)) return null
-            return pick(chosenPalette)
-          })
+            if (/^\s+$/.test(seg)) return null;
+            return pick(chosenPalette);
+          });
         }
 
-        let globalIndex = 0
-        let wordIdx = 0
+        let globalIndex = 0;
+        let wordIdx = 0;
 
-        const spans = []
-        const totalChars = Math.max(1, text.replace(/\r/g, "").length)
+        const spans = [];
+        const totalChars = Math.max(1, text.replace(/\r/g, "").length);
 
         const nextColor = (charIndex, withinWord) => {
-          if (isRandomChar) return pick(chosenPalette)
+          if (isRandomChar) return pick(chosenPalette);
           if (isRandomWord) {
-            const c = wordColorMap[wordIdx] || pick(chosenPalette)
-            return c
+            const c = wordColorMap[wordIdx] || pick(chosenPalette);
+            return c;
           }
 
           if (mode === "gradient") {
             // Smooth-ish: map across chosenPalette endpoints
-            if (chosenPalette.length === 1) return chosenPalette[0]
-            const t = totalChars <= 1 ? 0 : charIndex / (totalChars - 1)
-            const seg = t * (chosenPalette.length - 1)
-            const i = Math.floor(seg)
-            const f = seg - i
-            const c1 = chosenPalette[i]
-            const c2 = chosenPalette[Math.min(i + 1, chosenPalette.length - 1)]
-            return mixHex(c1, c2, f)
+            if (chosenPalette.length === 1) return chosenPalette[0];
+            const t = totalChars <= 1 ? 0 : charIndex / (totalChars - 1);
+            const seg = t * (chosenPalette.length - 1);
+            const i = Math.floor(seg);
+            const f = seg - i;
+            const c1 = chosenPalette[i];
+            const c2 = chosenPalette[Math.min(i + 1, chosenPalette.length - 1)];
+            return mixHex(c1, c2, f);
           }
 
           // Cycle
-          return chosenPalette[charIndex % chosenPalette.length]
-        }
+          return chosenPalette[charIndex % chosenPalette.length];
+        };
 
         // Animation: optional subtle per-letter float using inline style delay
-        const useAnim = animAmt > 0.001
-        const maxJ = Math.max(0, jitterPx)
+        const useAnim = animAmt > 0.001;
+        const maxJ = Math.max(0, jitterPx);
 
         for (let i = 0; i < words.length; i++) {
-          const seg = words[i]
+          const seg = words[i];
           if (/^\s+$/.test(seg)) {
-            spans.push(escapeHtml(seg))
-            continue
+            spans.push(escapeHtml(seg));
+            continue;
           }
 
-          const chars = Array.from(seg)
+          const chars = Array.from(seg);
           for (const ch of chars) {
-            const color = nextColor(globalIndex, true)
+            const color = nextColor(globalIndex, true);
 
             // jitter: tiny random offsets (static)
-            const jx = maxJ ? (Math.random() * 2 - 1) * maxJ : 0
-            const jy = maxJ ? (Math.random() * 2 - 1) * maxJ : 0
+            const jx = maxJ ? (Math.random() * 2 - 1) * maxJ : 0;
+            const jy = maxJ ? (Math.random() * 2 - 1) * maxJ : 0;
 
             // anim: sinusoidal bobble via CSS keyframes on span? (we'll inline animation with delay)
-            const delay = (globalIndex * 0.03) % 1.2
+            const delay = (globalIndex * 0.03) % 1.2;
 
             const styleParts = [
               `--lc:${color};`,
@@ -1488,97 +1488,97 @@
                 : "",
             ]
               .filter(Boolean)
-              .join(" ")
+              .join(" ");
 
             spans.push(
               `<span class="ql" style="${styleParts}">${escapeHtml(ch)}</span>`,
-            )
-            globalIndex++
+            );
+            globalIndex++;
           }
-          wordIdx++
+          wordIdx++;
         }
 
-        return spans.join("")
+        return spans.join("");
       }
 
       // Per-letter animation keyframes injected once
-      ;(function ensureLetterAnimCSS() {
-        const s = document.createElement("style")
+      (function ensureLetterAnimCSS() {
+        const s = document.createElement("style");
         s.textContent = `
         @keyframes lBob{
           0%,100%{ transform: translate(var(--tx,0px), var(--ty,0px)) translateY(0); }
           50%{ transform: translate(var(--tx,0px), var(--ty,0px)) translateY(calc(-6px * var(--intensity))); }
         }
-      `
-        document.head.appendChild(s)
-      })()
+      `;
+        document.head.appendChild(s);
+      })();
 
       function applyAll() {
-        const text = el.txt.value ?? ""
+        const text = el.txt.value ?? "";
 
         // Vars
-        const intensity = parseFloat(el.intensity.value)
-        const speed = parseFloat(el.speed.value)
-        const glitch = parseInt(el.glitch.value, 10)
-        const blur = parseFloat(el.blur.value)
-        const spread = parseInt(el.spread.value, 10)
+        const intensity = parseFloat(el.intensity.value);
+        const speed = parseFloat(el.speed.value);
+        const glitch = parseInt(el.glitch.value, 10);
+        const blur = parseFloat(el.blur.value);
+        const spread = parseInt(el.spread.value, 10);
 
-        setCSSVar("--intensity", intensity)
-        setCSSVar("--speed", speed)
-        setCSSVar("--glitch", glitch + "px")
-        setCSSVar("--blur", blur + "px")
-        setCSSVar("--spread", spread + "px")
+        setCSSVar("--intensity", intensity);
+        setCSSVar("--speed", speed);
+        setCSSVar("--glitch", glitch + "px");
+        setCSSVar("--blur", blur + "px");
+        setCSSVar("--spread", spread + "px");
 
-        el.intVal.textContent = intensity.toFixed(2)
-        el.spdVal.textContent = speed.toFixed(2) + "×"
-        el.glVal.textContent = glitch + "px"
-        el.blVal.textContent = blur.toFixed(2) + "px"
-        el.spVal.textContent = spread + "px"
+        el.intVal.textContent = intensity.toFixed(2);
+        el.spdVal.textContent = speed.toFixed(2) + "×";
+        el.glVal.textContent = glitch + "px";
+        el.blVal.textContent = blur.toFixed(2) + "px";
+        el.spVal.textContent = spread + "px";
 
-        const jitter = parseFloat(el.letterJitter.value)
-        const animAmt = parseFloat(el.letterAnim.value)
-        el.jitVal.textContent = jitter.toFixed(2) + "px"
-        el.lanVal.textContent = animAmt.toFixed(2)
+        const jitter = parseFloat(el.letterJitter.value);
+        const animAmt = parseFloat(el.letterAnim.value);
+        el.jitVal.textContent = jitter.toFixed(2) + "px";
+        el.lanVal.textContent = animAmt.toFixed(2);
 
         // Colors
-        const fg = el.fg.value
-        const accent = el.accent.value
-        const bg = el.bg.value
+        const fg = el.fg.value;
+        const accent = el.accent.value;
+        const bg = el.bg.value;
 
-        setCSSVar("--fg", fg)
-        setCSSVar("--accent", accent)
-        setCSSVar("--bg2", bg)
+        setCSSVar("--fg", fg);
+        setCSSVar("--accent", accent);
+        setCSSVar("--bg2", bg);
 
-        el.fgHex.textContent = fg.toLowerCase()
-        el.acHex.textContent = accent.toLowerCase()
-        el.bgHex.textContent = bg.toLowerCase()
+        el.fgHex.textContent = fg.toLowerCase();
+        el.acHex.textContent = accent.toLowerCase();
+        el.bgHex.textContent = bg.toLowerCase();
 
         // Apply bg
-        el.shell.style.background = `linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.32)), radial-gradient(800px 480px at 50% 20%, ${accent}22, transparent 60%), ${bg}`
+        el.shell.style.background = `linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.32)), radial-gradient(800px 480px at 50% 20%, ${accent}22, transparent 60%), ${bg}`;
 
         // Classes
-        const checked = getChecked()
+        const checked = getChecked();
 
         // Ensure fx-perletter toggle follows dropdown (if dropdown != none)
-        const perLetterOn = el.letterPalette.value !== "none"
+        const perLetterOn = el.letterPalette.value !== "none";
         const perLetterInput = el.effects.querySelector(
           `input[value="fx-perletter"]`,
-        )
-        if (perLetterInput) perLetterInput.checked = perLetterOn
+        );
+        if (perLetterInput) perLetterInput.checked = perLetterOn;
 
         // Preview classes
-        const basePreview = ["preview", "fx-smooth"]
-        el.preview.className = [...basePreview, ...checked.preview].join(" ")
+        const basePreview = ["preview", "fx-smooth"];
+        el.preview.className = [...basePreview, ...checked.preview].join(" ");
 
         // Shell classes
-        el.shell.className = ["preview-shell", ...checked.shell].join(" ")
+        el.shell.className = ["preview-shell", ...checked.shell].join(" ");
 
         // Glitch pseudo layers need data-text (plain text)
-        el.preview.setAttribute("data-text", text)
+        el.preview.setAttribute("data-text", text);
 
         // Render: per-letter HTML or plain text
-        const paletteKey = el.letterPalette.value
-        const mode = el.letterMode.value
+        const paletteKey = el.letterPalette.value;
+        const mode = el.letterMode.value;
 
         if (perLetterOn) {
           const html = buildPerLetterHTML(
@@ -1587,42 +1587,42 @@
             mode,
             jitter,
             animAmt,
-          )
-          el.preview.innerHTML = html ?? escapeHtml(text)
+          );
+          el.preview.innerHTML = html ?? escapeHtml(text);
           // store per-letter in data-text anyway
         } else {
-          el.preview.textContent = text
+          el.preview.textContent = text;
         }
 
         // Fix lBob jitter transform composition: store random offsets in CSS vars so animation keeps them
         if (perLetterOn && jitter > 0) {
           el.preview.querySelectorAll(".ql").forEach((span) => {
-            const t = span.style.transform || ""
+            const t = span.style.transform || "";
             // parse translate(x,y) if present; stash in vars
-            const m = t.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/)
-            const x = m ? m[1] : "0"
-            const y = m ? m[2] : "0"
-            span.style.setProperty("--tx", x + "px")
-            span.style.setProperty("--ty", y + "px")
+            const m = t.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
+            const x = m ? m[1] : "0";
+            const y = m ? m[2] : "0";
+            span.style.setProperty("--tx", x + "px");
+            span.style.setProperty("--ty", y + "px");
             // remove direct transform so keyframes controls it (but keeps tx/ty)
-            span.style.transform = ""
-          })
+            span.style.transform = "";
+          });
         } else if (perLetterOn) {
           el.preview.querySelectorAll(".ql").forEach((span) => {
-            span.style.setProperty("--tx", "0px")
-            span.style.setProperty("--ty", "0px")
-          })
+            span.style.setProperty("--tx", "0px");
+            span.style.setProperty("--ty", "0px");
+          });
         }
 
         // Typewriter chars estimation
-        const chars = Math.max(1, text.replace(/\s+/g, " ").trim().length)
-        el.preview.style.setProperty("--chars", String(clamp(chars, 6, 120)))
+        const chars = Math.max(1, text.replace(/\s+/g, " ").trim().length);
+        el.preview.style.setProperty("--chars", String(clamp(chars, 6, 120)));
 
         // Info
         el.classList.textContent =
-          "classes: " + [...checked.shell, ...checked.preview].join(" ")
-        el.themeInfo.textContent = `${fg.toLowerCase()} / ${accent.toLowerCase()} / ${bg.toLowerCase()}`
-        el.charInfo.textContent = text.length + " chars"
+          "classes: " + [...checked.shell, ...checked.preview].join(" ");
+        el.themeInfo.textContent = `${fg.toLowerCase()} / ${accent.toLowerCase()} / ${bg.toLowerCase()}`;
+        el.charInfo.textContent = text.length + " chars";
 
         // Snippet
         const htmlSnippet = `<div class="preview-shell ${checked.shell.join(
@@ -1633,53 +1633,53 @@
       text,
     )}">${perLetterOn ? "[per-letter spans...]" : escapeHtml(text)}</div>
   </div>
-</div>`
+</div>`;
 
         const note = `/* Per-letter colors:
    - Turn on fx-perletter and render spans in JS (see buildPerLetterHTML).
    - LETTER_PALETTES is an array-of-palettes (palettes[] -> colors[]).
-*/`
+*/`;
 
-        el.snippet.textContent = htmlSnippet + "\n\n" + note
+        el.snippet.textContent = htmlSnippet + "\n\n" + note;
       }
 
       async function copy(text) {
         try {
-          await navigator.clipboard.writeText(text)
-          el.copied.style.display = "inline-flex"
-          el.copied.textContent = "Copied"
-          clearTimeout(copy._t)
-          copy._t = setTimeout(() => (el.copied.style.display = "none"), 900)
+          await navigator.clipboard.writeText(text);
+          el.copied.style.display = "inline-flex";
+          el.copied.textContent = "Copied";
+          clearTimeout(copy._t);
+          copy._t = setTimeout(() => (el.copied.style.display = "none"), 900);
         } catch {
-          el.copied.style.display = "inline-flex"
-          el.copied.textContent = "Copy failed"
-          clearTimeout(copy._t)
-          copy._t = setTimeout(() => (el.copied.style.display = "none"), 1100)
+          el.copied.style.display = "inline-flex";
+          el.copied.textContent = "Copy failed";
+          clearTimeout(copy._t);
+          copy._t = setTimeout(() => (el.copied.style.display = "none"), 1100);
         }
       }
 
       function exportHTMLOnly() {
-        const checked = getChecked()
-        const text = el.txt.value ?? ""
+        const checked = getChecked();
+        const text = el.txt.value ?? "";
         const fg = el.fg.value,
           accent = el.accent.value,
-          bg = el.bg.value
-        const intensity = parseFloat(el.intensity.value)
-        const speed = parseFloat(el.speed.value)
-        const glitch = parseInt(el.glitch.value, 10)
-        const blur = parseFloat(el.blur.value)
-        const spread = parseInt(el.spread.value, 10)
+          bg = el.bg.value;
+        const intensity = parseFloat(el.intensity.value);
+        const speed = parseFloat(el.speed.value);
+        const glitch = parseInt(el.glitch.value, 10);
+        const blur = parseFloat(el.blur.value);
+        const spread = parseInt(el.spread.value, 10);
 
-        const perLetterOn = el.letterPalette.value !== "none"
-        const paletteKey = el.letterPalette.value
-        const mode = el.letterMode.value
-        const jitter = parseFloat(el.letterJitter.value)
-        const animAmt = parseFloat(el.letterAnim.value)
+        const perLetterOn = el.letterPalette.value !== "none";
+        const paletteKey = el.letterPalette.value;
+        const mode = el.letterMode.value;
+        const jitter = parseFloat(el.letterJitter.value);
+        const animAmt = parseFloat(el.letterAnim.value);
 
         const inner = perLetterOn
           ? (buildPerLetterHTML(text, paletteKey, mode, jitter, animAmt) ??
             escapeHtml(text))
-          : escapeHtml(text)
+          : escapeHtml(text);
 
         return `<div class="preview-shell ${checked.shell.join(
           " ",
@@ -1689,75 +1689,75 @@
       text,
     )}">${inner}</div>
   </div>
-</div>`
+</div>`;
       }
 
       function exportCSSAll() {
-        const css = document.querySelector("style").textContent || ""
-        return css.trim()
+        const css = document.querySelector("style").textContent || "";
+        return css.trim();
       }
 
       function randFrom(arr) {
-        return arr[Math.floor(Math.random() * arr.length)]
+        return arr[Math.floor(Math.random() * arr.length)];
       }
 
       function randomize() {
-        const paletteKeys = Object.keys(PALETTES).filter((k) => k !== "custom")
-        const p = PALETTES[randFrom(paletteKeys)]
-        el.fg.value = p.fg
-        el.accent.value = p.accent
-        el.bg.value = p.bg
+        const paletteKeys = Object.keys(PALETTES).filter((k) => k !== "custom");
+        const p = PALETTES[randFrom(paletteKeys)];
+        el.fg.value = p.fg;
+        el.accent.value = p.accent;
+        el.bg.value = p.bg;
 
-        el.intensity.value = (Math.random() * 0.9 + 0.1).toFixed(2)
-        el.speed.value = (Math.random() * 2.2 + 0.4).toFixed(2)
-        el.glitch.value = Math.floor(Math.random() * 26)
-        el.blur.value = (Math.random() * 5).toFixed(2)
-        el.spread.value = Math.floor(Math.random() * 34)
+        el.intensity.value = (Math.random() * 0.9 + 0.1).toFixed(2);
+        el.speed.value = (Math.random() * 2.2 + 0.4).toFixed(2);
+        el.glitch.value = Math.floor(Math.random() * 26);
+        el.blur.value = (Math.random() * 5).toFixed(2);
+        el.spread.value = Math.floor(Math.random() * 34);
 
         // random per-letter settings
-        const letterKeys = ["none", ...Object.keys(LETTER_PALETTES)]
-        el.letterPalette.value = randFrom(letterKeys)
-        el.letterMode.value = randFrom(["cycle", "gradient"])
-        el.letterJitter.value = (Math.random() * 3).toFixed(2)
-        el.letterAnim.value = (Math.random() * 0.8).toFixed(2)
+        const letterKeys = ["none", ...Object.keys(LETTER_PALETTES)];
+        el.letterPalette.value = randFrom(letterKeys);
+        el.letterMode.value = randFrom(["cycle", "gradient"]);
+        el.letterJitter.value = (Math.random() * 3).toFixed(2);
+        el.letterAnim.value = (Math.random() * 0.8).toFixed(2);
 
         // Random effect toggles
-        const inputs = el.effects.querySelectorAll('input[type="checkbox"]')
-        inputs.forEach((i) => (i.checked = false))
+        const inputs = el.effects.querySelectorAll('input[type="checkbox"]');
+        inputs.forEach((i) => (i.checked = false));
 
         // Choose 3-7 effects
-        const fxPool = EFFECTS.map((x) => x.id)
-        const keep = new Set()
-        keep.add("crt")
-        const count = Math.floor(Math.random() * 5) + 3
+        const fxPool = EFFECTS.map((x) => x.id);
+        const keep = new Set();
+        keep.add("crt");
+        const count = Math.floor(Math.random() * 5) + 3;
         while (keep.size < count) {
-          keep.add(randFrom(fxPool))
+          keep.add(randFrom(fxPool));
         }
 
         // Keep per-letter consistent with dropdown
-        if (el.letterPalette.value !== "none") keep.add("fx-perletter")
+        if (el.letterPalette.value !== "none") keep.add("fx-perletter");
         keep.forEach((id) => {
           const input = el.effects.querySelector(
             `input[value="${CSS.escape(id)}"]`,
-          )
-          if (input) input.checked = true
-        })
+          );
+          if (input) input.checked = true;
+        });
 
-        applyAll()
+        applyAll();
       }
 
       // Palette changes
       el.paletteSelect.addEventListener("change", (e) => {
-        const key = e.target.value
-        applyPalette(key)
-        applyAll()
-      })
+        const key = e.target.value;
+        applyPalette(key);
+        applyAll();
+      });
 
       // Bind inputs
-      ;["input", "change", "keyup"].forEach((evt) =>
+      ["input", "change", "keyup"].forEach((evt) =>
         el.txt.addEventListener(evt, applyAll),
-      )
-      ;[
+      );
+      [
         el.fg,
         el.accent,
         el.bg,
@@ -1767,64 +1767,61 @@
         el.blur,
         el.spread,
       ].forEach((x) => {
-        x.addEventListener("input", applyAll)
-        x.addEventListener("change", applyAll)
-      })
-      ;[
-        el.letterPalette,
-        el.letterMode,
-        el.letterJitter,
-        el.letterAnim,
-      ].forEach((x) => {
-        x.addEventListener("input", applyAll)
-        x.addEventListener("change", applyAll)
-      })
+        x.addEventListener("input", applyAll);
+        x.addEventListener("change", applyAll);
+      });
+      [el.letterPalette, el.letterMode, el.letterJitter, el.letterAnim].forEach(
+        (x) => {
+          x.addEventListener("input", applyAll);
+          x.addEventListener("change", applyAll);
+        },
+      );
 
-      el.copyCss.addEventListener("click", () => copy(exportCSSAll()))
-      el.copyHtml.addEventListener("click", () => copy(exportHTMLOnly()))
-      el.randomize.addEventListener("click", randomize)
+      el.copyCss.addEventListener("click", () => copy(exportCSSAll()));
+      el.copyHtml.addEventListener("click", () => copy(exportHTMLOnly()));
+      el.randomize.addEventListener("click", randomize);
 
       // Init UI
-      ;(function initEffectsUI() {
-        const frag = document.createDocumentFragment()
+      (function initEffectsUI() {
+        const frag = document.createDocumentFragment();
         EFFECTS.forEach((fx) => {
-          const wrap = document.createElement("label")
-          wrap.className = "check"
-          const input = document.createElement("input")
-          input.type = "checkbox"
-          input.value = fx.id
-          input.checked = DEFAULT_ON.has(fx.id)
-          if (fx.id === "fx-perletter") input.checked = false
-          input.addEventListener("change", applyAll)
+          const wrap = document.createElement("label");
+          wrap.className = "check";
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.value = fx.id;
+          input.checked = DEFAULT_ON.has(fx.id);
+          if (fx.id === "fx-perletter") input.checked = false;
+          input.addEventListener("change", applyAll);
 
-          const span = document.createElement("span")
-          span.textContent = fx.label
+          const span = document.createElement("span");
+          span.textContent = fx.label;
 
-          wrap.appendChild(input)
-          wrap.appendChild(span)
-          frag.appendChild(wrap)
-        })
-        el.effects.appendChild(frag)
-      })()
-      ;(function initSwatches() {
-        const frag = document.createDocumentFragment()
+          wrap.appendChild(input);
+          wrap.appendChild(span);
+          frag.appendChild(wrap);
+        });
+        el.effects.appendChild(frag);
+      })();
+      (function initSwatches() {
+        const frag = document.createDocumentFragment();
         SWATCHES.forEach((hex) => {
-          const b = document.createElement("button")
-          b.className = "swatch"
-          b.type = "button"
-          b.style.background = hex
-          b.title = hex
+          const b = document.createElement("button");
+          b.className = "swatch";
+          b.type = "button";
+          b.style.background = hex;
+          b.title = hex;
           b.addEventListener("click", () => {
-            el.accent.value = hex
-            applyAll()
-          })
-          frag.appendChild(b)
-        })
-        el.swatches.appendChild(frag)
-      })()
+            el.accent.value = hex;
+            applyAll();
+          });
+          frag.appendChild(b);
+        });
+        el.swatches.appendChild(frag);
+      })();
 
-      applyPalette("qud-emerald")
-      applyAll()
+      applyPalette("qud-emerald");
+      applyAll();
     </script>
   </body>
 </html>

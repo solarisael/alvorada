@@ -1,0 +1,206 @@
+---
+// Chapter shell page — no thread baked in.
+// Delegates immediately to the cinza thread via hx-trigger="load" on
+// #chapter_thread_content. The cinza route renders the full scene body.
+// Other threads are accessible via the Eyes nav, which navigates to
+// /rubedo/:book_slug/:thread_key/:chapter_slug as full content swaps.
+
+import ChapterLayout from "../../../layouts/chapter.astro";
+import {
+  rubedo_book_map,
+  rubedo_book_slugs,
+  derive_chapter_slug,
+} from "../../../data/rubedo/book_timeline_runtime.js";
+
+const default_thread_key = "cinza";
+
+export const getStaticPaths = () => {
+  return rubedo_book_slugs.flatMap((book_slug) => {
+    const book_entry = rubedo_book_map[book_slug] ?? null;
+
+    if (!book_entry) return [];
+
+    return (book_entry.chapters ?? []).map((chapter) => {
+      return {
+        params: {
+          book_slug,
+          chapter_slug: derive_chapter_slug(chapter.timeline_position),
+        },
+        props: { chapter, book_entry },
+      };
+    });
+  });
+};
+
+const { chapter, book_entry } = Astro.props;
+const { book_slug, chapter_slug } = Astro.params;
+
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+  return `${base_path}/${normalized_path}`;
+};
+
+// All thread keys for this chapter — drives the Eyes nav slots.
+const chapter_thread_keys = [
+  ...new Set(
+    (chapter?.scenes ?? []).map((scene) => scene.thread_key).filter(Boolean),
+  ),
+].sort((left_key, right_key) => {
+  if (left_key === default_thread_key) return -1;
+  if (right_key === default_thread_key) return 1;
+  return left_key.localeCompare(right_key);
+});
+
+// Sorted chapters for prev/next pager.
+const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
+  (left_chapter, right_chapter) =>
+    left_chapter.timeline_position - right_chapter.timeline_position,
+);
+
+const chapter_index = sorted_chapters.findIndex(
+  (candidate) => candidate.chapter_id === chapter?.chapter_id,
+);
+
+const previous_chapter =
+  chapter_index > 0 ? sorted_chapters[chapter_index - 1] : null;
+const next_chapter =
+  chapter_index >= 0 && chapter_index < sorted_chapters.length - 1
+    ? sorted_chapters[chapter_index + 1]
+    : null;
+
+// Shell pager links go to the bare chapter slug (no thread prefix).
+const build_chapter_href = (target_chapter) => {
+  if (!target_chapter) return null;
+  return with_base(
+    `/rubedo/${book_slug}/${derive_chapter_slug(target_chapter.timeline_position)}`,
+  );
+};
+
+const build_hx_link = (href) => {
+  if (!href) return null;
+  return {
+    href,
+    hx_get: href,
+    hx_target: "#content",
+    hx_select: "#content",
+    hx_swap: "morph swap:240ms settle:240ms",
+    hx_push_url: "true",
+  };
+};
+
+const previous_chapter_link = build_hx_link(
+  build_chapter_href(previous_chapter),
+);
+const next_chapter_link = build_hx_link(build_chapter_href(next_chapter));
+
+const timeline_href = with_base(`/rubedo/${book_slug}/timeline`);
+
+// The cinza thread route this shell immediately delegates to on load.
+const cinza_thread_href = with_base(
+  `/rubedo/${book_slug}/${default_thread_key}/${chapter_slug}`,
+);
+
+// Explicit breadcrumb trail for the shell — no thread segment in the URL.
+const crumbs = [
+  { label: "home", href: with_base("/") },
+  { label: "rubedo", href: with_base("/rubedo") },
+  {
+    label: book_entry?.title ?? book_slug,
+    href: with_base(`/rubedo/${book_slug}`),
+  },
+  {
+    label: chapter?.title ?? chapter_slug,
+    href: with_base(`/rubedo/${book_slug}/${chapter_slug}`),
+  },
+];
+---
+
+<ChapterLayout
+  body_class="pov_cinza"
+  previous_chapter_link={previous_chapter_link}
+  next_chapter_link={next_chapter_link}
+  crumbs={crumbs}
+>
+  <header>
+    <h1>{chapter?.title ?? "Unknown chapter"}</h1>
+  </header>
+
+  {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
+
+  {
+    chapter?.chapter_snippet && (
+      <p class="chapter_snippet">{chapter.chapter_snippet}</p>
+    )
+  }
+
+  {
+    /*
+      Eyes nav — each slot navigates to /book/thread/chapter as a full
+      content swap. No active slot on the shell — cinza is loaded on demand.
+      FUTURE: locked slots for codex-gated threads.
+    */
+  }
+  <nav
+    class="chapter_eyes_nav"
+    data-chapter-slug={chapter_slug}
+    data-book-slug={book_slug}
+    data-active-thread={default_thread_key}
+  >
+    {
+      chapter_thread_keys.map((slot_thread_key) => {
+        const slot_href = with_base(
+          `/rubedo/${book_slug}/${slot_thread_key}/${chapter_slug}`,
+        );
+
+        return (
+          <a
+            class="chapter_eyes_slot"
+            data-thread-key={slot_thread_key}
+            data-thread-locked="false"
+            href={slot_href}
+            hx-get={slot_href}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true"
+          >
+            {slot_thread_key}
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  {
+    /*
+      Empty content container — HTMX fetches the cinza thread on load
+      and swaps the scene body in via innerHTML. No scene content is
+      baked into this shell page.
+      FUTURE: skeleton loader element for the flash-of-empty state.
+    */
+  }
+  <div
+    id="chapter_thread_content"
+    hx-get={cinza_thread_href}
+    hx-trigger="load"
+    hx-target="#chapter_thread_content"
+    hx-select="#chapter_thread_content"
+    hx-swap="innerHTML"
+  >
+  </div>
+
+  <p>
+    <a
+      href={timeline_href}
+      hx-get={timeline_href}
+      hx-target="#content"
+      hx-select="#content"
+      hx-swap="morph swap:240ms settle:240ms"
+      hx-push-url="true"
+    >
+      Back to {book_entry?.title ?? book_slug} constellation
+    </a>
+  </p>
+</ChapterLayout>

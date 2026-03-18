@@ -11,6 +11,7 @@ Use canonical markers in notes:
 - Stack mode is text-effects only; block effects remain single-effect wrappers.
 - Blacklisted pairings are auto-sanitized with build/dev warnings.
 - Soft line breaks are enabled globally, so single newlines render as `<br>`.
+- **Block effects require blank lines** around the open and close markers so each lands on its own paragraph in the Markdown AST. Content lines inside a block also need blank lines between them if they should be separate paragraphs.
 
 ## Effects
 

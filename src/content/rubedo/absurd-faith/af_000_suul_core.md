@@ -21,6 +21,29 @@ tags:
 
 From the high watch, Suul sees a small figure rise from the cave mouth.
 
-The moment that feels gentle to Cinza arrives to Suul as a narrow procedural alert. Too many signatures align, too early, too clean.
+The moment that feels {{fx:etch:1.2}}gentle{{/fx}} to Cinza arrives to Suul as a narrow procedural alert. Too many signatures align. Too early. Too clean.
+
+{{fx:admin_trace:1.05}}
+
+TRACE // subject_id=unknown :: emergence_vector=cave_mouth_north
+
+TRACE // {{fx:etch:1.1}}identity_confidence=0.04{{/fx}} :: flag=anomalous
+
+TRACE // cross_ref=nil :: escalation_threshold=not_yet_met
+
+{{/fx}}
 
 The log entry is brief. The implication is not.
+
+{{fx:stat_screen:1.1}}
+
+**Subject Observed — Unregistered**
+
+- Mobility: functional
+- Threat index: {{fx:glow:1.2}}indeterminate{{/fx}}
+- Identity match: none on record
+- Recommended action: continue observation
+
+{{/fx}}
+
+Suul marks the file with two contradictory labels — unacceptable risk, viable opening — and does not resolve the contradiction. The trendline has shifted. For now that is enough to keep watching.

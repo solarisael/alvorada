@@ -5,10 +5,18 @@ const {
   body_class = "pov_cinza",
   previous_chapter_link = null,
   next_chapter_link = null,
+  crumb_label_overrides = {},
+  crumbs = null,
+  theme_color = null,
 } = Astro.props;
 ---
 
-<IndexLayout body_class={body_class}>
+<IndexLayout
+  body_class={body_class}
+  crumbs={crumbs}
+  crumb_label_overrides={crumb_label_overrides}
+  theme_color={theme_color}
+>
   <section class="chapter_shell">
     <article class="chapter_shell_article">
       <div class="chapter_content">
