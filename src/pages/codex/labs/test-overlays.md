@@ -1,6 +1,7 @@
 ---
 layout: ../../../layouts/index.astro
 title: Overlay Sandbox
+phase: codex
 tags:
   - codex/labs
   - sandbox/overlay

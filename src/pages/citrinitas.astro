@@ -1,47 +1,30 @@
 ---
 import IndexLayout from "../layouts/index.astro";
-
-const sample_post_slugs = ["sun-archive", "golden-fragments", "glass-garden"];
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
 ---
 
-<IndexLayout>
+<IndexLayout phase="citrinitas">
   <section>
     <article>
       <header>
-        <p>~/ citrinitas</p>
+        <p class="text_kicker">~/ citrinitas</p>
+        <p class="text_kicker">03</p>
         <h1>Citrinitas</h1>
       </header>
 
       <div>
         <p>
-          Scaffold page for <code>/citrinitas</code>. Choose a sample child post
-          to validate transition and breadcrumb depth.
+          Archives of things that landed. Moments, photos, records. The
+          collection of what I am actually proud of.
         </p>
-
-        {
-          sample_post_slugs.map((post_slug) => (
-            <p>
-              <a
-                href={with_base(`/citrinitas/${post_slug}`)}
-                hx-get={with_base(`/citrinitas/${post_slug}`)}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open post: {post_slug}
-              </a>
-            </p>
-          ))
-        }
       </div>
+    </article>
+
+    <article>
+      <header>
+        <h2>Archives &amp; Moments</h2>
+      </header>
+
+      <p class="text_fine">Nothing archived yet.</p>
     </article>
   </section>
 </IndexLayout>

@@ -1,33 +1,30 @@
 ---
 import IndexLayout from "../layouts/index.astro";
-
-const base_url = import.meta.env.BASE_URL;
 ---
 
-<IndexLayout>
+<IndexLayout phase="nigredo">
   <section>
     <article>
       <header>
-        <p>~/ nigredo</p>
+        <p class="text_kicker">~/ nigredo</p>
+        <p class="text_kicker">01</p>
         <h1>Nigredo</h1>
       </header>
 
       <div>
         <p>
-          Scaffold page for <code>/nigredo</code>. This route exists to validate
-          direct navigation and HTMX swaps separately from <code>/</code>.
-        </p>
-        <p>
-          <a
-            href={base_url}
-            hx-get={base_url}
-            hx-target="#content"
-            hx-select="#content"
-            hx-swap="morph swap:240ms settle:240ms"
-            hx-push-url="true">Return to Home</a
-          >
+          This is where the unformed things live. No performance, no edit, no
+          audience. Just the uncut thought before it becomes something.
         </p>
       </div>
+    </article>
+
+    <article>
+      <header>
+        <h2>Rants &amp; Fragments</h2>
+      </header>
+
+      <p class="text_fine">Nothing written yet. The void is patient.</p>
     </article>
   </section>
 </IndexLayout>

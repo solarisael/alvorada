@@ -5,7 +5,6 @@ import {
   derive_chapter_slug,
 } from "../data/rubedo/book_timeline_runtime.js";
 
-const sample_book_slugs = ["absurd-faith"];
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
@@ -24,7 +23,9 @@ const build_hx_link_attrs = (href) => {
   };
 };
 
-const sample_book_links = sample_book_slugs.map((book_slug) => {
+const book_slugs = Object.keys(rubedo_book_map);
+
+const book_links = book_slugs.map((book_slug) => {
   const book_entry = rubedo_book_map[book_slug] ?? null;
   const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
     (left_chapter, right_chapter) =>
@@ -42,86 +43,87 @@ const sample_book_links = sample_book_slugs.map((book_slug) => {
   return {
     book_slug,
     book_title: book_entry?.title ?? book_slug,
-    book_link: {
-      href: book_href,
-      ...build_hx_link_attrs(book_href),
-    },
+    book_link: { href: book_href, ...build_hx_link_attrs(book_href) },
     reader_link: reader_href
-      ? {
-          href: reader_href,
-          ...build_hx_link_attrs(reader_href),
-        }
+      ? { href: reader_href, ...build_hx_link_attrs(reader_href) }
       : null,
-    timeline_link: {
-      href: timeline_href,
-      ...build_hx_link_attrs(timeline_href),
-    },
+    timeline_link: { href: timeline_href, ...build_hx_link_attrs(timeline_href) },
   };
 });
 ---
 
-<IndexLayout body_class="pov_cinza">
+<IndexLayout phase="rubedo" body_class="pov_cinza">
   <section>
     <article>
       <header>
-        <p>~/ rubedo</p>
+        <p class="text_kicker">~/ rubedo</p>
+        <p class="text_kicker">04</p>
         <h1>Rubedo</h1>
       </header>
 
       <div>
         <p>
-          Rubedo now includes a timeline/thread prototype. Canonical chapter
-          order is deterministic, while thread view remains optional and
-          reader-controlled.
+          Finished work. Writing I am willing to put my name on, projects I
+          consider my main goals. This is the seal.
         </p>
+      </div>
+    </article>
 
-        {
-          sample_book_links.map((sample_book) => (
+    <article>
+      <header>
+        <h2>Works</h2>
+      </header>
+
+      {
+        book_links.length === 0 ? (
+          <p class="text_fine">No works published yet.</p>
+        ) : (
+          book_links.map((book) => (
             <div>
               <p>
                 <a
-                  href={sample_book.book_link.href}
-                  hx-get={sample_book.book_link.hx_get}
-                  hx-target={sample_book.book_link.hx_target}
-                  hx-select={sample_book.book_link.hx_select}
-                  hx-swap={sample_book.book_link.hx_swap}
-                  hx-push-url={sample_book.book_link.hx_push_url}
+                  href={book.book_link.href}
+                  hx-get={book.book_link.hx_get}
+                  hx-target={book.book_link.hx_target}
+                  hx-select={book.book_link.hx_select}
+                  hx-swap={book.book_link.hx_swap}
+                  hx-push-url={book.book_link.hx_push_url}
                 >
-                  Open book: {sample_book.book_title}
+                  {book.book_title}
                 </a>
               </p>
-              {sample_book.reader_link && (
+              {book.reader_link && (
                 <p>
                   <a
-                    href={sample_book.reader_link.href}
-                    hx-get={sample_book.reader_link.hx_get}
-                    hx-target={sample_book.reader_link.hx_target}
-                    hx-select={sample_book.reader_link.hx_select}
-                    hx-swap={sample_book.reader_link.hx_swap}
-                    hx-push-url={sample_book.reader_link.hx_push_url}
+                    href={book.reader_link.href}
+                    hx-get={book.reader_link.hx_get}
+                    hx-target={book.reader_link.hx_target}
+                    hx-select={book.reader_link.hx_select}
+                    hx-swap={book.reader_link.hx_swap}
+                    hx-push-url={book.reader_link.hx_push_url}
                   >
-                    Open reader at first canonical chapter
+                    Read from first chapter
                   </a>
                 </p>
               )}
-              {sample_book.timeline_link && (
+              {book.timeline_link && (
                 <p>
                   <a
-                    href={sample_book.timeline_link.href}
-                    hx-get={sample_book.timeline_link.hx_get}
-                    hx-target={sample_book.timeline_link.hx_target}
-                    hx-select={sample_book.timeline_link.hx_select}
-                    hx-swap={sample_book.timeline_link.hx_swap}
-                    hx-push-url={sample_book.timeline_link.hx_push_url}
+                    href={book.timeline_link.href}
+                    hx-get={book.timeline_link.hx_get}
+                    hx-target={book.timeline_link.hx_target}
+                    hx-select={book.timeline_link.hx_select}
+                    hx-swap={book.timeline_link.hx_swap}
+                    hx-push-url={book.timeline_link.hx_push_url}
                   >
-                    Open constellation timeline
+                    Constellation timeline
                   </a>
                 </p>
               )}
             </div>
           ))
-        }
-      </div>
+        )
+      }
     </article>
   </section>
 </IndexLayout>

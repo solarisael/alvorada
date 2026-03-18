@@ -1,15 +1,18 @@
 ---
 import IndexLayout from "../layouts/index.astro";
 
-const sample_entry_paths = [
-  "characters/sol",
-  "characters/luna",
-  "factions/order-of-dawn",
-  "places/astral-garden",
-  "relics/first-lantern",
+const categories = [
+  { slug: "characters", label: "Characters" },
+  { slug: "factions", label: "Factions" },
+  { slug: "places", label: "Places" },
+  { slug: "relics", label: "Relics" },
 ];
 
-const sample_category_paths = ["characters", "factions", "places", "relics"];
+const labs = [
+  { slug: "labs/test-texts", label: "Text Effects Sandbox" },
+  { slug: "labs/test-overlays", label: "Overlay Sandbox" },
+];
+
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
@@ -19,54 +22,68 @@ const with_base = (path_value) => {
 };
 ---
 
-<IndexLayout>
+<IndexLayout phase="codex">
   <section>
     <article>
       <header>
-        <p>~/ codex</p>
+        <p class="text_kicker">~/ codex</p>
+        <p class="text_kicker">05</p>
         <h1>Codex</h1>
       </header>
 
       <div>
         <p>
-          Scaffold page for <code>/codex</code>. Choose a sample entry path to
-          test variable-depth codex routing.
+          The lore index. Everything on this site that has a name, a category,
+          or a definition lives here. Entries can be cross-referenced by any
+          page — hover a reference to see the entry inline.
         </p>
-
-        {
-          sample_category_paths.map((category_path) => (
-            <p>
-              <a
-                href={with_base(`/codex/${category_path}`)}
-                hx-get={with_base(`/codex/${category_path}`)}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open category: {category_path}
-              </a>
-            </p>
-          ))
-        }
-
-        {
-          sample_entry_paths.map((entry_path) => (
-            <p>
-              <a
-                href={with_base(`/codex/${entry_path}`)}
-                hx-get={with_base(`/codex/${entry_path}`)}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open entry: {entry_path}
-              </a>
-            </p>
-          ))
-        }
       </div>
+    </article>
+
+    <article>
+      <header>
+        <h2>Categories</h2>
+      </header>
+
+      {
+        categories.map((category) => (
+          <p>
+            <a
+              href={with_base(`/codex/${category.slug}`)}
+              hx-get={with_base(`/codex/${category.slug}`)}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              {category.label}
+            </a>
+          </p>
+        ))
+      }
+    </article>
+
+    <article>
+      <header>
+        <h2>Labs</h2>
+      </header>
+
+      {
+        labs.map((lab) => (
+          <p>
+            <a
+              href={with_base(`/codex/${lab.slug}`)}
+              hx-get={with_base(`/codex/${lab.slug}`)}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              {lab.label}
+            </a>
+          </p>
+        ))
+      }
     </article>
   </section>
 </IndexLayout>

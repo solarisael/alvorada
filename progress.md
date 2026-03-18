@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-03-18 05:30
+- Updated_utc: 2026-03-18 21:10
 - Updated_by: Kodo (Claude Code)
 - preferred_start_style: conversational
-- next_session: co-pilot
-- primary_outcome: redo timeline, eyes, and chapter reader — rethink how they are structured, navigated, and displayed
-- priority: architecture
-- edit_breadth: broad
-- first_task: read current rubedo timeline, eyes component, and chapter layout in full; map what exists; propose redesign before touching anything
+- next_session: sprint
+- primary_outcome: give Nigredo real identity — visual mood, layout, and purpose that reflects its role as the raw/unfiltered phase
+- priority: polish
+- edit_breadth: targeted
+- first_task: read nigredo.astro and all CSS currently affecting it; audit what data-phase="nigredo" actually drives visually; plan targeted identity changes
 - commit_intent: after_review
-- notes: timeline + eyes are currently scaffold-level; chapter navigation via next/prev is functional but raw; the goal is to make this system feel intentional and coherent, not just wired up
+- notes: pov\_\* is character-scoped only; phase identity is now carried via data-phase on body; nigredo color token is oklch(55.1% 0.027 264.364) — dark grey-blue
 
 ## Alias Ledger
 
@@ -53,23 +53,22 @@
 - State: handoff_ready
 - Branch: master
 - Head: (pending_commit)
-- Scope_in: typography system rebuilt, spacing architecture corrected, HTMX routing stabilized
-- Scope_out: timeline/eyes/chapter redesign — reserved for next session
+- Scope_in: phase identity system, pillar landing pages, codex labs wiring
+- Scope_out: nigredo visual identity, rubedo timeline/eyes/chapter redesign
 
 ## Next (Top 3)
 
-1. [ ] Redesign Rubedo timeline — structure, interaction model, and display (eyes, constellation, state panel)
-2. [ ] Redesign Eyes component — currently dead code; needs a real role in the POV/thread switching model
-3. [ ] Redesign chapter reader — next/prev navigation, thread switching, layout feel
+1. [ ] Nigredo identity — visual mood, layout character, and purpose-driven design
+2. [ ] Redesign Rubedo timeline — structure, interaction model, and display (eyes, constellation, state panel)
+3. [ ] Redesign Eyes component — currently dead code; needs a real role in the POV/thread switching model
 
 ## Blockers
 
-- None. Foundation is clean after this session's typography and routing work.
+- None.
 
 ## Validation (latest)
 
 - Build: pass (`bun run build`) — 2026-03-18
-- Format_touched: pass (`bunx prettier --write` on touched files) — 2026-03-18
 - CSS_hard_gates: pass (`bun run css:hard-gates:check`) — 2026-03-18
 - Rubedo_scene_identity: not run (scope unchanged)
 
@@ -84,6 +83,27 @@
 1. [ ] Lock Eyes + Timeline data contracts before implementing storage/rendering behavior.
 2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
+
+## Session Delta (2026-03-18, evening)
+
+### Phase identity system
+
+- Established `data-phase` on `<body>` as the canonical phase-theming hook — clean, orthogonal to `pov_*` (which remains character-scoped only).
+- Added `phase` prop to `src/layouts/index.astro`; also reads `frontmatter.phase` as fallback so Markdown pages can set phase via frontmatter.
+- Added `/* OVERRIDES: PHASE */` block in `typography.css`: five rules (`nigredo`, `albedo`, `citrinitas`, `rubedo`, `codex`) each redirecting `--site_style_accent` to the matching phase color token.
+- Codex gets `oklch(62% 0.08 290)` — arcane purple-grey, only new color value introduced.
+
+### Pillar landing pages (all five)
+
+- Replaced all scaffold content across `nigredo.astro`, `albedo.astro`, `citrinitas.astro`, `rubedo.astro`, `codex.astro`.
+- Each page now has: phase kicker + number, heading, declaration of intent, and an entry section with empty state.
+- Rubedo now uses `Object.keys(rubedo_book_map)` instead of a hardcoded slug array — expands automatically as books are added.
+- All five pages pass `phase` prop to layout.
+
+### Codex labs
+
+- Added `phase: codex` frontmatter to `test-texts.md` and `test-overlays.md` — both lab pages now receive the codex accent.
+- Added Labs section to `codex.astro` landing — linked by name, separate `<article>` from Categories.
 
 ## Session Delta (2026-03-18)
 

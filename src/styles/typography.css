@@ -254,6 +254,27 @@ body.pov_cinza {
   --cadence_color_mix: 30%;
 }
 
+/* OVERRIDES: PHASE */
+body[data-phase="nigredo"] {
+  --site_style_accent: var(--color-nigredo);
+}
+
+body[data-phase="albedo"] {
+  --site_style_accent: var(--color-albedo);
+}
+
+body[data-phase="citrinitas"] {
+  --site_style_accent: var(--color-citrinitas);
+}
+
+body[data-phase="rubedo"] {
+  --site_style_accent: var(--color-rubedo);
+}
+
+body[data-phase="codex"] {
+  --site_style_accent: oklch(62% 0.08 290);
+}
+
 /* CONSUMERS: CADENCE */
 :where(
     #main_reading_container,

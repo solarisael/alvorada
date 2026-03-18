@@ -1,51 +1,31 @@
 ---
 import IndexLayout from "../layouts/index.astro";
-
-const sample_post_slugs = [
-  "first-lantern",
-  "midnight-notes",
-  "ritual-of-clarity",
-];
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
 ---
 
-<IndexLayout>
+<IndexLayout phase="albedo">
   <section>
     <article>
       <header>
-        <p>~/ albedo</p>
+        <p class="text_kicker">~/ albedo</p>
+        <p class="text_kicker">02</p>
         <h1>Albedo</h1>
       </header>
 
       <div>
         <p>
-          Scaffold page for <code>/albedo</code>. Choose a sample child post to
-          test nested breadcrumb hierarchy.
+          The place for thoughts that reached the other side. Clearer, still
+          honest, occasionally hopeful. Progress is documented here before it
+          calcifies into something finished.
         </p>
-
-        {
-          sample_post_slugs.map((post_slug) => (
-            <p>
-              <a
-                href={with_base(`/albedo/${post_slug}`)}
-                hx-get={with_base(`/albedo/${post_slug}`)}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open post: {post_slug}
-              </a>
-            </p>
-          ))
-        }
       </div>
+    </article>
+
+    <article>
+      <header>
+        <h2>Notes &amp; Progress</h2>
+      </header>
+
+      <p class="text_fine">No entries yet. Keep going.</p>
     </article>
   </section>
 </IndexLayout>

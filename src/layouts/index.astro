@@ -13,10 +13,13 @@ import StyleSwitcher from "../components/style_switcher.astro";
 
 const {
   body_class = "",
+  phase: phase_prop = "",
+  frontmatter = {},
   crumb_label_overrides = {},
   crumbs = null,
   theme_color = null,
 } = Astro.props;
+const phase = phase_prop || frontmatter.phase || "";
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
 const with_base = (path_value) => {
@@ -60,6 +63,7 @@ const resolved_body_classes = Array.from(
   </head>
   <body
     class:list={resolved_body_classes}
+    data-phase={phase || undefined}
     hx-ext="morph,head-support,preload,sse"
     hx-target="#content"
     hx-select="#content"

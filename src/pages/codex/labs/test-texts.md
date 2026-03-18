@@ -1,6 +1,7 @@
 ---
 layout: ../../../layouts/index.astro
 title: Text Effects Sandbox
+phase: codex
 tags:
   - codex/labs
   - sandbox/text-fx
