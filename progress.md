@@ -8,12 +8,12 @@
 - Updated_by: Kintsu (opencode)
 - preferred_start_style: conversational
 - next_session: co-pilot
-- primary_outcome: finalize Rubedo timeline + map behavior, tune text/overlay presentation for the new WebGL map context, and start GitHub Pages implementation groundwork
-- priority: architecture
+- primary_outcome: audit and correct typography system and navigation behavior for consistency and rule compliance
+- priority: polish
 - edit_breadth: focused
-- first_task: audit current timeline/map UX and list remaining polish gaps plus concrete GitHub Pages deployment prerequisites
+- first_task: read typography.css and all nav component CSS/JS, identify violations and inconsistencies, present findings before touching anything
 - commit_intent: after_review
-- notes: keep map-first interaction local via HTMX, preserve current WebGL/canvas fallback behavior, and prioritize low-risk deployment scaffolding for GitHub Pages
+- notes: scope is typography (scale, leading, measure, token usage) and navigation (desktop + mobile — interaction feel, state correctness, sizing); do not drift into layout or feature work
 
 ## Alias Ledger
 
