@@ -71,7 +71,7 @@ const phase_cards = [
     <article id="home_gate_intro">
       <header id="home_gate_header">
         <p id="home_gate_kicker" class="text_kicker">~/ threshold</p>
-        <h1 id="home_gate_title" class="text_step_4">Choose your phase</h1>
+        <h1 id="home_gate_title" class="text_large">Choose your phase</h1>
       </header>
 
       <div id="home_gate_body">
@@ -88,6 +88,11 @@ const phase_cards = [
           <a
             class={`phase_card_link phase_card_${phase_card.phase_slug}`}
             href={with_base(phase_card.phase_slug)}
+            hx-get={with_base(phase_card.phase_slug)}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true"
           >
             <span class="phase-card-layer phase-card-layer-surface" />
             <span class="phase-card-layer phase-card-layer-stars" />
@@ -155,9 +160,7 @@ const phase_cards = [
               <p class="phase_card_symbol text_caption">
                 {phase_card.phase_symbol}
               </p>
-              <h2 class="phase_card_title text_step_2">
-                {phase_card.phase_name}
-              </h2>
+              <h2 class="phase_card_title text_mid">{phase_card.phase_name}</h2>
               <p class="phase_card_blurb text_body">{phase_card.phase_blurb}</p>
               <p class="phase_card_cta text_kicker">enter phase</p>
             </div>

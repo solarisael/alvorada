@@ -194,7 +194,7 @@
   @apply pointer-events-none absolute;
 
   color: color-mix(in oklch, var(--site_style_accent) 52%, white);
-  font-size: 0.64rem;
+  font-size: var(--text_nano);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;

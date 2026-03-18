@@ -132,4 +132,12 @@ const init_reading_plane_motion = () => {
 
 init_reading_plane_motion();
 
+if (!window_any.__reading_plane_htmx_reset_bound) {
+  document.body?.addEventListener("htmx:beforeRequest", () => {
+    reset_shift();
+  });
+
+  window_any.__reading_plane_htmx_reset_bound = true;
+}
+
 export { init_reading_plane_motion };

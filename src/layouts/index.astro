@@ -23,15 +23,6 @@ const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const normalized_pathname = pathname.startsWith(base_path)
   ? pathname.slice(base_path.length) || "/"
   : pathname;
-const auto_body_classes = [];
-
-if (
-  normalized_pathname === "/rubedo" ||
-  normalized_pathname.startsWith("/rubedo/")
-) {
-  auto_body_classes.push("route_rubedo");
-}
-
 const manual_body_classes = String(body_class).split(/\s+/).filter(Boolean);
 
 const resolved_body_classes = Array.from(
@@ -39,7 +30,6 @@ const resolved_body_classes = Array.from(
     "body_grid",
     "compound_body_grid",
     "page-transition-breath-noticeable",
-    ...auto_body_classes,
     ...manual_body_classes,
   ]),
 );
@@ -65,11 +55,9 @@ const resolved_body_classes = Array.from(
   </head>
   <body
     class:list={resolved_body_classes}
-    hx-boost="true"
     hx-ext="morph,head-support,preload,sse"
     hx-target="#content"
     hx-select="#content"
-    hx-select-oob="#content"
     hx-swap="morph swap:240ms settle:240ms"
     hx-push-url="true"
   >
@@ -163,9 +151,9 @@ const resolved_body_classes = Array.from(
               <div id="content_footer_lane">
                 <slot name="footer">
                   <footer id="footer">
-                    <a href=""
+                    <span
                       >Made with pure hatred <br />
-                      You should all die</a
+                      You should all die</span
                     >
                   </footer>
                 </slot>

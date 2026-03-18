@@ -32,7 +32,16 @@ const with_base = (path_value) => {
           Scaffold child page for <code>/albedo/{post_slug}</code>. Use this to
           verify nested breadcrumbs and HTMX transition behavior.
         </p>
-        <p><a href={with_base("/albedo")}>Back to Albedo index</a></p>
+        <p>
+          <a
+            href={with_base("/albedo")}
+            hx-get={with_base("/albedo")}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true">Back to Albedo index</a
+          >
+        </p>
       </div>
     </article>
   </section>

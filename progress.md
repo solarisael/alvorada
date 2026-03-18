@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
-- Updated_utc: 2026-02-26 01:39
-- Updated_by: Kintsu (opencode)
+- Updated_utc: 2026-03-18 05:30
+- Updated_by: Kodo (Claude Code)
 - preferred_start_style: conversational
 - next_session: co-pilot
-- primary_outcome: audit and correct typography system and navigation behavior for consistency and rule compliance
-- priority: polish
-- edit_breadth: focused
-- first_task: read typography.css and all nav component CSS/JS, identify violations and inconsistencies, present findings before touching anything
+- primary_outcome: redo timeline, eyes, and chapter reader — rethink how they are structured, navigated, and displayed
+- priority: architecture
+- edit_breadth: broad
+- first_task: read current rubedo timeline, eyes component, and chapter layout in full; map what exists; propose redesign before touching anything
 - commit_intent: after_review
-- notes: scope is typography (scale, leading, measure, token usage) and navigation (desktop + mobile — interaction feel, state correctness, sizing); do not drift into layout or feature work
+- notes: timeline + eyes are currently scaffold-level; chapter navigation via next/prev is functional but raw; the goal is to make this system feel intentional and coherent, not just wired up
 
 ## Alias Ledger
 
@@ -24,8 +24,8 @@
   - `implementation_impact`:
 - Current session aliases:
   - `term`: Kintsu
-    `sol_meaning`: assistant's name in this collaboration
-    `implementation_impact`: use "Kintsu" when self-identifying to Sol in user-facing replies
+    `sol_meaning`: assistant's name in this collaboration (GPT model)
+    `implementation_impact`: use "Kintsu" when self-identifying to Sol in user-facing replies (GPT); use "Kodo" for Claude
   - `term`: `golden_mystical_tarot` <-> `gilded_arcane`
     `sol_meaning`: ornate black-gold tarot framing language
     `implementation_impact`: map both names to the `gilded_arcane` site theme key
@@ -51,51 +51,27 @@
 ## Active Scope
 
 - State: handoff_ready
-- Branch: feat/compound-grid-body-composition-4plus6
+- Branch: master
 - Head: (pending_commit)
-- Scope_in: timeline/map core is implemented; next focus is final interaction polish, text/overlay optimization around map UX, and deployment pipeline prep for GitHub Pages.
-- Scope_out: broad visual-system rewrites not directly tied to timeline/map finalization or deployment readiness.
+- Scope_in: typography system rebuilt, spacing architecture corrected, HTMX routing stabilized
+- Scope_out: timeline/eyes/chapter redesign — reserved for next session
 
 ## Next (Top 3)
 
-1. [ ] Finalize timeline + map interactions (edge return feel, hover preview ergonomics, and final mobile/desktop behavior parity).
-2. [ ] Optimize text and overlay presentation to complement map-first WebGL runtime without reducing readability.
-3. [ ] Start GitHub Pages implementation: define deploy workflow, static output constraints, and first end-to-end deployment check.
+1. [ ] Redesign Rubedo timeline — structure, interaction model, and display (eyes, constellation, state panel)
+2. [ ] Redesign Eyes component — currently dead code; needs a real role in the POV/thread switching model
+3. [ ] Redesign chapter reader — next/prev navigation, thread switching, layout feel
 
 ## Blockers
 
-- No hard blocker; main risks are over-tuning interaction feel and introducing regressions while preparing deployment wiring.
-
-## GitHub Pages Constraints (next session)
-
-- Treat deployment target as static hosting first; avoid introducing server-only runtime requirements.
-- Confirm Astro `site` + `base` strategy early (repo subpath deployment by default unless custom domain is confirmed).
-- Verify all critical links/assets/scripts remain base-aware under non-root paths.
-- Keep Bun-only workflow in deployment automation and local verification.
-- Validate HTMX navigation + deep-link refresh behavior under the final GitHub Pages base path.
-
-## Possibilities
-
-- Combat token tiers for higher-stakes logs (`MEGA_CRIT`, `OVERKILL`,
-  `TRUE_DAMAGE`, `GUARD_BREAK`, `EXECUTE`).
-- Per-POV overlay presets so the same overlay class family can shift tone by
-  narrator profile.
-- Overlay state modifiers (`calm`, `urgent`, `corrupted`) to avoid effect-name
-  explosion while keeping semantic control.
-- Semantic helpers inside overlays for percentages, durations, rarity labels,
-  and key-value stat lines.
-- Authoring ergonomics bundles/snippets for common scene patterns (combat beat,
-  quest acceptance, checkpoint summary).
-- Dedicated visual QA lab route to review all text and block effects quickly at
-  multiple intensities.
+- None. Foundation is clean after this session's typography and routing work.
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) - 2026-03-17
-- Format_touched: pass (`bunx prettier --write` on touched files) - 2026-03-17
-- CSS_hard_gates: pass (`bun run css:hard-gates:check`) - 2026-03-17
-- CSS_tunables: pass (`bun run css:tunables:check`) - 2026-03-17
-- Rubedo_scene_identity: not run in this pass (unchanged scope)
+- Build: pass (`bun run build`) — 2026-03-18
+- Format_touched: pass (`bunx prettier --write` on touched files) — 2026-03-18
+- CSS_hard_gates: pass (`bun run css:hard-gates:check`) — 2026-03-18
+- Rubedo_scene_identity: not run (scope unchanged)
 
 ## Notes
 
@@ -109,27 +85,43 @@
 2. [ ] Validate POV/path resolution with at least one branched chapter example.
 3. [ ] Preserve hard-gate compliance (`css:hard-gates:check`) as a required pre-merge validation.
 
+## Session Delta (2026-03-18)
+
+### Typography overhaul
+
+- Removed fluid typography machinery entirely (`--type_fluid_ratio`, `--type_viewport_*`, all `clamp()` on font sizes).
+- Collapsed two parallel type scales (`--type_ui_*` and `--type_reading_*`) into one unified scale.
+- New scale: Septimal Minor Third (7/6 ≈ 1.1667), base 14px. Tokens: `--text_nano` (9px) through `--text_display` (41px).
+- New leading tokens from Pythagorean just intonation: `--leading_display` (1.067, minor second) through `--leading_relaxed` (1.5, perfect fifth).
+- Renamed all utility classes: `text_step_*` → `text_display`, `text_large`, `text_main`, `text_mid`, `text_sub`, `text_fine`, `text_body`.
+- Updated `rubedo-timeline.css` constellation label from `0.64rem` to `var(--text_nano)`.
+- Updated `src/pages/index.astro` class references.
+
+### Spacing architecture
+
+- Removed `display: grid` + `row-gap` workaround from reading container.
+- New spacing tokens from Pythagorean em multiples: `--space_prose` (1em, unison), `--space_heading_top` (1.5em, perfect fifth), `--space_heading_bottom` (0.667em, fifth below), `--space_section` (2em, octave).
+- Wired tokens to actual margin rules on headings and prose elements inside reading containers.
+- Added `:last-child { margin-bottom: 0 }` scoped to reading containers.
+- Removed `row-gap: 2rem` from `.reading-layer-body` and `.chapter_content` in `content-shell.css`.
+- Removed all POV and route spacing/leading overrides — unified single values throughout.
+
+### HTMX routing fixes
+
+- Removed `hx-boost="true"` from `<body>` — all HTMX-enabled links are now explicit and auditable.
+- Removed `hx-select-oob="#content"` from `<body>` — was a redundant double-swap added during morph migration.
+- Removed stale `route_rubedo` body class injection from layout — class was never updated on HTMX navigation.
+- Fixed footer `<a href="">` — replaced with `<span>` to prevent accidental HTMX interception.
+- Added full explicit HTMX attributes (`hx-get`, `hx-target`, `hx-select`, `hx-swap`, `hx-push-url`) to all nav links (desktop + mobile), all home phase card links, and all bare-href links across nigredo, albedo, citrinitas, codex pages.
+- Fixed `reading_plane_motion.js` — added `htmx:beforeRequest` listener that resets the Y shift before navigation, preventing reading container from arriving offset from a previous page's scroll state.
+
 ## Session Delta (2026-03-17)
 
 - Light CSS audit pass across all component stylesheets.
-- Removed 5 orphaned legacy canvas variables from `rubedo-timeline.css` (superseded by WebGL `THREAD_RGB` constants).
-- Restructured `filter` transitions off host elements onto `::before` pseudo-elements in `rubedo-timeline.css`; removed `filter` from `transition-property` in `breadcrumbs.css` (saturate cannot delegate to pseudo-element).
+- Removed 5 orphaned legacy canvas variables from `rubedo-timeline.css`.
+- Restructured `filter` transitions off host elements onto `::before` pseudo-elements in `rubedo-timeline.css`; removed `filter` from `transition-property` in `breadcrumbs.css`.
 - Moved `block_fx_skill_popup` box-shadow animation to `::before` in `text-effects.css`.
-- Lifted 13 combat token raw oklch literals into a named `--combat_*` Quick Tune variable block; introduced `--block_fx_warning_color` token for system_warning amber.
-- Added doc comments to rainbow and chroma aberration intentional fixed-color values.
+- Lifted 13 combat token raw oklch literals into named `--combat_*` Quick Tune variables; introduced `--block_fx_warning_color` token.
 - Converted 6 forbidden `px` sizing values to `rem` across desktop-nav, mobile-nav, home-card-gate, content-shell.
-- Fixed `@apply` grouping violations in footer, desktop-nav, mobile-nav, style-switcher; removed no-op `px-0 py-0` from style-switcher.
-- Added `/* Quick Tune Variables (edit here first) */` labels to desktop-nav, home-card-gate, breadcrumbs, rubedo-timeline.
-- Documented `clamp()` reading-measure exception in typography.css; marked fog.css as DRAFT.
-- Pre-flight HTML/JS audit confirmed zero JS or markup changes required.
-
-## Session Delta (2026-02-21)
-
-- Rebuilt desktop composition around class-driven body contracts (`body_grid`, `compound_body_grid`) and aligned nav/content on shared grid intent.
-- Moved footer into `#content` transition scope with a dedicated full-width lane and footer-slot override support.
-- Rebalanced shell lighting response by shell intensity: top-light capped and bottom-light boosted for subtle/medium/strong.
-- Added shared center-axis controls to align nav center and content line/sigil ornaments to one visual spine.
-- Removed logical CSS properties, removed reduced-motion branches, and migrated runtime aria-state behavior to classes/data attributes.
-- Reduced non-typography clamp usage and simplified spacing/sizing values while preserving container-proportional percentages where composition-critical.
-- Converted text effect animation offsets from percentages to `em` constants with stronger motion amplitude.
-- Updated project/rules docs to codify new constraints and prevent regression.
+- Fixed `@apply` grouping violations in footer, desktop-nav, mobile-nav, style-switcher.
+- Added Quick Tune Variable labels and doc comments across components.

@@ -564,14 +564,9 @@
 
 .reading-layer-body {
   @apply relative z-10;
-
-  display: grid;
-  row-gap: 2rem;
 }
 
 .chapter_content {
-  display: grid;
-  row-gap: 2rem;
 }
 
 @media (max-width: 768px) {

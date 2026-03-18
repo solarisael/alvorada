@@ -32,7 +32,16 @@ const with_base = (path_value) => {
           Scaffold child page for <code>/citrinitas/{post_slug}</code>. Use this
           to verify nested breadcrumbs and HTMX transitions.
         </p>
-        <p><a href={with_base("/citrinitas")}>Back to Citrinitas index</a></p>
+        <p>
+          <a
+            href={with_base("/citrinitas")}
+            hx-get={with_base("/citrinitas")}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true">Back to Citrinitas index</a
+          >
+        </p>
       </div>
     </article>
   </section>

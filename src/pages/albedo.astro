@@ -32,7 +32,14 @@ const with_base = (path_value) => {
         {
           sample_post_slugs.map((post_slug) => (
             <p>
-              <a href={with_base(`/albedo/${post_slug}`)}>
+              <a
+                href={with_base(`/albedo/${post_slug}`)}
+                hx-get={with_base(`/albedo/${post_slug}`)}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
                 Open post: {post_slug}
               </a>
             </p>

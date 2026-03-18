@@ -71,7 +71,14 @@ const sibling_entry_label =
         {
           sibling_entry_href && (
             <p>
-              <a href={sibling_entry_href}>
+              <a
+                href={sibling_entry_href}
+                hx-get={sibling_entry_href}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
                 Open sibling character: {sibling_entry_label}
               </a>
             </p>
@@ -80,13 +87,29 @@ const sibling_entry_label =
         {
           category_index_href && (
             <p>
-              <a href={category_index_href}>
+              <a
+                href={category_index_href}
+                hx-get={category_index_href}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
                 Back to category: {entry_category}
               </a>
             </p>
           )
         }
-        <p><a href={with_base("/codex")}>Back to Codex index</a></p>
+        <p>
+          <a
+            href={with_base("/codex")}
+            hx-get={with_base("/codex")}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true">Back to Codex index</a
+          >
+        </p>
       </div>
     </article>
   </section>

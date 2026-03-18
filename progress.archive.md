@@ -4,6 +4,17 @@
 
 Historical session log moved out of `progress.md` to keep active context concise.
 
+## Session Delta (2026-02-21)
+
+- Rebuilt desktop composition around class-driven body contracts (`body_grid`, `compound_body_grid`) and aligned nav/content on shared grid intent.
+- Moved footer into `#content` transition scope with a dedicated full-width lane and footer-slot override support.
+- Rebalanced shell lighting response by shell intensity: top-light capped and bottom-light boosted for subtle/medium/strong.
+- Added shared center-axis controls to align nav center and content line/sigil ornaments to one visual spine.
+- Removed logical CSS properties, removed reduced-motion branches, and migrated runtime aria-state behavior to classes/data attributes.
+- Reduced non-typography clamp usage and simplified spacing/sizing values while preserving container-proportional percentages where composition-critical.
+- Converted text effect animation offsets from percentages to `em` constants with stronger motion amplitude.
+- Updated project/rules docs to codify new constraints and prevent regression.
+
 ## Archived Snapshot (2026-02-08)
 
 - Source: prior `progress.md` before compacting active memory.

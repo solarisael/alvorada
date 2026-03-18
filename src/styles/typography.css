@@ -1,106 +1,57 @@
 /* TYPOGRAPHY TOKENS MAP
- * 01) VIEWPORT FLUID RATIO
- * 02) TYPE SCALE
- * 03) LEADING (LINE-HEIGHT)
- * 04) MEASURE
- * 05) SPACING RHYTHM
- * 06) WEIGHT
- * 07) FONTS + CADENCE
- * 08) OVERRIDES: POV
- * 09) OVERRIDES: ROUTE
- * 10) CONSUMERS + UTILITIES
+ * 01) TYPE SCALE
+ * 02) LEADING (LINE-HEIGHT)
+ * 03) MEASURE
+ * 04) SPACING RHYTHM
+ * 05) WEIGHT
+ * 06) FONTS + CADENCE
+ * 07) OVERRIDES: POV
+ * 08) OVERRIDES: ROUTE
+ * 09) CONSUMERS + UTILITIES
  */
 
 :root {
-  /* VIEWPORT FLUID RATIO */
-  --type_viewport_min: 768;
-  --type_viewport_max: 1440;
-  --type_viewport_span: calc(
-    var(--type_viewport_max) - var(--type_viewport_min)
-  );
-  --type_fluid_ratio: clamp(
-    0,
-    calc(
-      (100vw - (var(--type_viewport_min) * 1px)) /
-        (var(--type_viewport_span) * 1px)
-    ),
-    1
-  );
+  /* TYPE SCALE — Septimal Minor Third (7/6 ≈ 1.1667), base 14px
+   * nano → micro → fine → base → body → lead → sub → mid → main → large → display
+   */
+  --text_nano: 9px;
+  --text_micro: 10px;
+  --text_fine: 12px;
+  --text_base: 14px;
+  --text_body: 16px;
+  --text_lead: 19px;
+  --text_sub: 22px;
+  --text_mid: 26px;
+  --text_main: 30px;
+  --text_large: 35px;
+  --text_display: 41px;
 
-  /* TYPE SCALE */
-  --type_ui_base_min_px: 10;
-  --type_ui_base_max_px: 12;
-  --type_ui_body: clamp(
-    calc(var(--type_ui_base_min_px) * 1px),
-    calc(
-      (var(--type_ui_base_min_px) * 1px) +
-        (
-          (var(--type_ui_base_max_px) - var(--type_ui_base_min_px)) *
-            var(--type_fluid_ratio) * 1px
-        )
-    ),
-    calc(var(--type_ui_base_max_px) * 1px)
-  );
-  --type_ui_n2: clamp(8px, calc(8px + (1px * var(--type_fluid_ratio))), 9px);
-  --type_ui_n1: clamp(9px, calc(9px + (1px * var(--type_fluid_ratio))), 10px);
-  --type_ui_0: var(--type_ui_body);
-  --type_ui_1: clamp(12px, calc(12px + (2px * var(--type_fluid_ratio))), 14px);
-  --type_ui_2: clamp(14px, calc(14px + (4px * var(--type_fluid_ratio))), 18px);
-  --type_ui_3: clamp(18px, calc(18px + (6px * var(--type_fluid_ratio))), 24px);
-  --type_ui_4: clamp(24px, calc(24px + (8px * var(--type_fluid_ratio))), 32px);
-  --type_ui_5: clamp(30px, calc(30px + (10px * var(--type_fluid_ratio))), 40px);
-
-  --type_reading_0: clamp(
-    14px,
-    calc(14px + (2px * var(--type_fluid_ratio))),
-    16px
-  );
-  --type_reading_1: clamp(
-    16px,
-    calc(16px + (3px * var(--type_fluid_ratio))),
-    19px
-  );
-  --type_reading_2: clamp(
-    20px,
-    calc(20px + (4px * var(--type_fluid_ratio))),
-    24px
-  );
-  --type_reading_3: clamp(
-    24px,
-    calc(24px + (6px * var(--type_fluid_ratio))),
-    30px
-  );
-  --type_reading_4: clamp(
-    30px,
-    calc(30px + (8px * var(--type_fluid_ratio))),
-    38px
-  );
-  --type_reading_5: clamp(
-    38px,
-    calc(38px + (12px * var(--type_fluid_ratio))),
-    50px
-  );
-  --type_reading_caption: clamp(
-    12px,
-    calc(12px + (1px * var(--type_fluid_ratio))),
-    13px
-  );
-
-  /* LEADING (LINE-HEIGHT) */
-  --leading_ui_body: 1.28;
-  --leading_relaxed: 1.7;
-  --leading_reading_body: 1.24;
-  --leading_reading_heading: 1.06;
-  --leading_reading_subheading: 1.12;
+  /* LEADING — Pythagorean just intonation intervals
+   * display  → minor second  16:15 ≈ 1.067
+   * heading  → major second   9:8  = 1.125
+   * body     → perfect fourth 4:3  ≈ 1.333
+   * ui       → major third    5:4  = 1.25
+   * relaxed  → perfect fifth  3:2  = 1.5
+   */
+  --leading_display: 1.067;
+  --leading_heading: 1.125;
+  --leading_body: 1.333;
+  --leading_ui: 1.25;
+  --leading_relaxed: 1.5;
 
   /* MEASURE — reading-measure exception: clamp() permitted for ch-based column width */
   --measure_reading_body: clamp(40ch, 88%, 68ch);
 
-  /* SPACING RHYTHM */
-  --space_reading_paragraph: 1.18em;
-  --space_reading_section: 1.38em;
-  --space_reading_heading_top: 1.44em;
-  --space_reading_heading_bottom: 0.54em;
+  /* SPACING RHYTHM — Pythagorean ratios as em multiples
+   * prose          → 1:1   unison
+   * heading_bottom → 2:3   perfect fifth below
+   * heading_top    → 3:2   perfect fifth
+   * section        → 2:1   octave
+   */
+  --space_prose: 1em;
+  --space_heading_top: 1.5em;
+  --space_heading_bottom: 0.667em;
+  --space_section: 2em;
 
   /* WEIGHT */
   --weight_reading_body: 430;
@@ -118,13 +69,13 @@
 }
 
 html {
-  font-size: var(--type_ui_body);
-  line-height: var(--leading_ui_body);
+  font-size: var(--text_base);
+  line-height: var(--leading_ui);
 }
 
 body {
-  font-size: var(--type_ui_0);
-  line-height: var(--leading_ui_body);
+  font-size: var(--text_base);
+  line-height: var(--leading_ui);
 }
 
 :where(
@@ -155,10 +106,9 @@ body {
   [data-reading-container="true"]
 ) {
   display: grid;
-  row-gap: var(--space_reading_paragraph);
   font-family: var(--font_reading_body);
-  font-size: var(--type_reading_0);
-  line-height: var(--leading_reading_body);
+  font-size: var(--text_body);
+  line-height: var(--leading_body);
   font-weight: var(--weight_reading_body);
 }
 
@@ -168,10 +118,10 @@ body {
     [data-reading-container="true"]
   )
   :where(h1),
-.text_step_5 {
+.text_display {
   font-family: var(--font_reading_heading);
-  font-size: var(--type_reading_5);
-  line-height: var(--leading_reading_heading);
+  font-size: var(--text_display);
+  line-height: var(--leading_display);
   font-weight: var(--weight_reading_heading);
 }
 
@@ -181,10 +131,10 @@ body {
     [data-reading-container="true"]
   )
   :where(h2),
-.text_step_4 {
+.text_large {
   font-family: var(--font_reading_heading);
-  font-size: var(--type_reading_4);
-  line-height: var(--leading_reading_subheading);
+  font-size: var(--text_large);
+  line-height: var(--leading_heading);
   font-weight: var(--weight_reading_heading);
 }
 
@@ -194,10 +144,10 @@ body {
     [data-reading-container="true"]
   )
   :where(h3),
-.text_step_3 {
+.text_main {
   font-family: var(--font_reading_heading);
-  font-size: var(--type_reading_3);
-  line-height: var(--leading_reading_subheading);
+  font-size: var(--text_main);
+  line-height: var(--leading_heading);
   font-weight: var(--weight_reading_heading);
 }
 
@@ -207,10 +157,10 @@ body {
     [data-reading-container="true"]
   )
   :where(h4),
-.text_step_2 {
+.text_mid {
   font-family: var(--font_reading_heading);
-  font-size: var(--type_reading_2);
-  line-height: var(--leading_reading_subheading);
+  font-size: var(--text_mid);
+  line-height: var(--leading_heading);
   font-weight: var(--weight_reading_heading);
 }
 
@@ -220,9 +170,9 @@ body {
     [data-reading-container="true"]
   )
   :where(h5),
-.text_step_1 {
-  font-size: var(--type_reading_1);
-  line-height: 1.35;
+.text_sub {
+  font-size: var(--text_sub);
+  line-height: var(--leading_body);
   font-weight: var(--weight_reading_heading);
 }
 
@@ -232,15 +182,15 @@ body {
     [data-reading-container="true"]
   )
   :where(h6),
-.text_step_0,
+.text_body,
 :where(
     #main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, th, td, a, blockquote) {
-  font-size: var(--type_reading_0);
-  line-height: var(--leading_reading_body);
+  font-size: var(--text_body);
+  line-height: var(--leading_body);
 }
 
 :where(
@@ -249,8 +199,8 @@ body {
     [data-reading-container="true"]
   )
   :where(small),
-.text_step_n1 {
-  font-size: var(--type_reading_caption);
+.text_fine {
+  font-size: var(--text_fine);
   line-height: 1.4;
 }
 
@@ -261,6 +211,26 @@ body {
   )
   :where(p, li, dt, dd, blockquote, pre, table, dl) {
   max-width: var(--measure_reading_body);
+  margin-bottom: var(--space_prose);
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--space_heading_top);
+  margin-bottom: var(--space_heading_bottom);
+}
+
+:where(
+    #main_reading_container,
+    .reading_container,
+    [data-reading-container="true"]
+  )
+  :where(*:last-child) {
+  margin-bottom: 0;
 }
 
 :where(
@@ -281,33 +251,7 @@ body.pov_cinza {
     "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
   --font_reading_body:
     "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
-  --type_reading_0: clamp(
-    15px,
-    calc(15px + (2px * var(--type_fluid_ratio))),
-    17px
-  );
-  --leading_reading_body: 1.28;
-  --measure_reading_body: clamp(39ch, 88%, 66ch);
-  --space_reading_paragraph: 1.24em;
-  --space_reading_section: 1.46em;
-  --space_reading_heading_top: 1.52em;
-  --space_reading_heading_bottom: 0.58em;
   --cadence_color_mix: 30%;
-}
-
-/* OVERRIDES: ROUTE */
-body.route_rubedo {
-  --type_reading_0: clamp(
-    16px,
-    calc(16px + (3px * var(--type_fluid_ratio))),
-    19px
-  );
-  --leading_reading_heading: 1.04;
-  --leading_reading_subheading: 1.1;
-  --leading_reading_body: 1.3;
-  --measure_reading_body: clamp(37ch, 84%, 62ch);
-  --space_reading_paragraph: 1.3em;
-  --space_reading_section: 1.54em;
 }
 
 /* CONSUMERS: CADENCE */
@@ -333,78 +277,73 @@ body.route_rubedo {
 }
 
 /* CONSUMERS + UTILITIES */
-.text_step_n2 {
-  font-size: var(--type_reading_caption);
-  line-height: 1.35;
-}
-
-.text_body {
-  font-size: var(--type_reading_0);
-  line-height: var(--leading_reading_body);
-}
-
 .text_lead {
-  font-size: var(--type_reading_1);
+  font-size: var(--text_lead);
   line-height: var(--leading_relaxed);
 }
 
 .text_kicker {
-  font-size: var(--type_ui_n1);
+  font-size: var(--text_fine);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .text_caption {
-  font-size: var(--type_reading_caption);
+  font-size: var(--text_fine);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
 @utility text_body {
-  font-size: var(--type_reading_0);
-  line-height: var(--leading_reading_body);
+  font-size: var(--text_body);
+  line-height: var(--leading_body);
 }
 
 @utility text_lead {
-  font-size: var(--type_reading_1);
+  font-size: var(--text_lead);
   line-height: var(--leading_relaxed);
 }
 
 @utility text_kicker {
-  font-size: var(--type_ui_n1);
+  font-size: var(--text_fine);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 @utility text_caption {
-  font-size: var(--type_reading_caption);
+  font-size: var(--text_fine);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
-@utility text_step_1 {
-  font-size: var(--type_reading_1);
-  line-height: 1.35;
+@utility text_fine {
+  font-size: var(--text_fine);
+  line-height: 1.4;
 }
 
-@utility text_step_2 {
-  font-size: var(--type_reading_2);
-  line-height: var(--leading_reading_subheading);
+@utility text_sub {
+  font-size: var(--text_sub);
+  line-height: var(--leading_body);
 }
 
-@utility text_step_3 {
-  font-size: var(--type_reading_3);
-  line-height: var(--leading_reading_subheading);
+@utility text_mid {
+  font-size: var(--text_mid);
+  line-height: var(--leading_heading);
 }
 
-@utility text_step_4 {
-  font-size: var(--type_reading_4);
-  line-height: var(--leading_reading_subheading);
+@utility text_main {
+  font-size: var(--text_main);
+  line-height: var(--leading_heading);
 }
 
-@utility text_step_5 {
-  font-size: var(--type_reading_5);
-  line-height: var(--leading_reading_heading);
+@utility text_large {
+  font-size: var(--text_large);
+  line-height: var(--leading_heading);
+}
+
+@utility text_display {
+  font-size: var(--text_display);
+  line-height: var(--leading_display);
 }

@@ -36,7 +36,14 @@ const with_base = (path_value) => {
         {
           sample_category_paths.map((category_path) => (
             <p>
-              <a href={with_base(`/codex/${category_path}`)}>
+              <a
+                href={with_base(`/codex/${category_path}`)}
+                hx-get={with_base(`/codex/${category_path}`)}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
                 Open category: {category_path}
               </a>
             </p>
@@ -46,7 +53,14 @@ const with_base = (path_value) => {
         {
           sample_entry_paths.map((entry_path) => (
             <p>
-              <a href={with_base(`/codex/${entry_path}`)}>
+              <a
+                href={with_base(`/codex/${entry_path}`)}
+                hx-get={with_base(`/codex/${entry_path}`)}
+                hx-target="#content"
+                hx-select="#content"
+                hx-swap="morph swap:240ms settle:240ms"
+                hx-push-url="true"
+              >
                 Open entry: {entry_path}
               </a>
             </p>
