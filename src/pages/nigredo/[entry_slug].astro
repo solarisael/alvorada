@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from "astro:content";
+import IndexLayout from "../../layouts/index.astro";
+import NigredoPill from "../../components/nigredo_pill.astro";
+import "../../styles/components/nigredo-page.css";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("nigredo", ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { entry_slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const primary_state = entry.data.states[0];
+const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
+
+function redact_length(slug) {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+  }
+  return 4 + (hash % 9);
+}
+
+const display_title = entry.data.title
+  ? entry.data.title
+  : "■".repeat(redact_length(entry.data.slug));
+---
+
+<IndexLayout
+  phase="nigredo"
+  crumbs={[
+    { label: "home", href: `${base_path}/` },
+    { label: "nigredo", href: `${base_path}/nigredo` },
+    { label: display_title, href: null },
+  ]}
+>
+  <section>
+    <article class="nigredo-detail">
+      <header class="nigredo-detail-header">
+        <div class="nigredo-detail-meta">
+          <NigredoPill state={primary_state} />
+          <time class="nigredo-entry-date" datetime={entry.data.published_at}>
+            {entry.data.published_at}
+          </time>
+        </div>
+        <h1 class="nigredo-detail-title" data-redacted={!entry.data.title}>
+          {display_title}
+        </h1>
+      </header>
+
+      <div class="nigredo-detail-body chapter_content">
+        <Content />
+      </div>
+    </article>
+  </section>
+</IndexLayout>
+
+<style>
+  .nigredo-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .nigredo-detail-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid
+      color-mix(in oklch, var(--site_style_accent) 16%, transparent);
+  }
+
+  .nigredo-detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .nigredo-detail-title {
+    font-size: var(--text_h1, 1.75rem);
+    font-family: var(--font_reading_heading);
+    font-weight: 500;
+    line-height: 1.2;
+    color: oklch(88% 0.014 258);
+    margin: 0;
+  }
+
+  .nigredo-detail-title[data-redacted="true"] {
+    letter-spacing: 0.08em;
+    color: oklch(36% 0.01 258);
+    font-family: monospace;
+  }
+
+  .nigredo-detail-body {
+    max-width: 62ch;
+  }
+</style>

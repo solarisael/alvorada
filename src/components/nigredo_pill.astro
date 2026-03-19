@@ -1,0 +1,23 @@
+---
+const { state } = Astro.props;
+
+const inward_states = [
+  "grief",
+  "dread",
+  "shame",
+  "guilt",
+  "ache",
+  "numb",
+  "doubt",
+  "loneliness",
+  "exhaustion",
+  "panic",
+  "ruin",
+  "hunger",
+];
+
+const family = inward_states.includes(state) ? "ash" : "ember";
+---
+
+<span class="nigredo-pill" data-state={state} data-family={family}>{state}</span
+>

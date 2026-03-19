@@ -53,6 +53,31 @@ Historical session log moved out of `progress.md` to keep active context concise
 - For full granular history, use git history on `progress.md` before this archive split.
 - Add detailed decision logs here when they stop being active but remain useful for future context.
 
+## Archived Snapshot (2026-03-18)
+
+- Source: Nigredo archive/content build-out and stabilization pass.
+- Scope covered: Astro content collection wiring, Nigredo archive route/component build, entry page generation, seed tooling, and TanStack virtualization measurement cleanup.
+
+### Completed Work (high level)
+
+- Added `nigredo` collection to `src/content.config.js` with state validation and frontmatter schema.
+- Introduced Nigredo archive component stack:
+  - `src/components/nigredo_list.astro`
+  - `src/components/nigredo_entry.astro`
+  - `src/components/nigredo_pill.astro`
+- Reworked `src/pages/nigredo.astro` to build archive data from content and render the new archive shell.
+- Added static Nigredo entry route in `src/pages/nigredo/[entry_slug].astro`.
+- Added archive runtime in `src/scripts/nigredo_archive.js` using `@tanstack/virtual-core` with row pooling, filtering, and measurement scheduling.
+- Added Nigredo-specific page styling in `src/styles/components/nigredo-page.css`.
+- Added Nigredo content files and seed support in `scripts/nigredo_seed.js`.
+- Reduced redundant initial measurement scheduling after overlap reports; current state is good enough to continue, but further browser polish remains.
+
+### Validation Highlights
+
+- Build passed (`bun run build`).
+- CSS hard gates passed (`bun run css:hard-gates:check`).
+- Touched-file formatting passed (`bunx prettier --check src/scripts/nigredo_archive.js`).
+
 ## Archived Snapshot (2026-02-13)
 
 - Source: session sequence that completed cinza visual refactor + governance hardening.

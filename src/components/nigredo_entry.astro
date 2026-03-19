@@ -1,0 +1,87 @@
+---
+import NigredoPill from "./nigredo_pill.astro";
+
+/**
+ * Derives a redaction string length from a slug deterministically.
+ * Range: 4–12 squares.
+ */
+function redact_length(slug) {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+  }
+  return 4 + (hash % 9); // 4–12
+}
+
+const {
+  slug,
+  title,
+  published_at,
+  state,
+  excerpt,
+  variant = "quiet",
+  base_path = "",
+} = Astro.props;
+
+const display_title = title ? title : "■".repeat(redact_length(slug));
+
+const href = `${base_path}/nigredo/${slug}`;
+---
+
+<article class="nigredo-entry" data-variant={variant}>
+  <a class="nigredo-entry-link" href={href}>
+    <!-- Layer stack mirrors home-card architecture -->
+    <span class="nigredo-entry-layer nigredo-entry-layer-surface"></span>
+    <span class="nigredo-entry-layer nigredo-entry-layer-ash"></span>
+    <span class="nigredo-entry-layer nigredo-entry-layer-frame"></span>
+    <div class="nigredo-entry-layer nigredo-entry-layer-ornament">
+      <img
+        class="nigredo-entry-ornament nigredo-entry-ornament-corner-tl"
+        src={`${base_path}/ornaments/cinza/card_corner_a.svg`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+      <img
+        class="nigredo-entry-ornament nigredo-entry-ornament-corner-tr"
+        src={`${base_path}/ornaments/cinza/card_corner_b.svg`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+      <img
+        class="nigredo-entry-ornament nigredo-entry-ornament-corner-bl"
+        src={`${base_path}/ornaments/cinza/card_corner_c.svg`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+      <img
+        class="nigredo-entry-ornament nigredo-entry-ornament-corner-br"
+        src={`${base_path}/ornaments/cinza/card_corner_d.svg`}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <div class="nigredo-entry-layer-body">
+      <header class="nigredo-entry-header">
+        <span class="nigredo-entry-title" data-redacted={!title}
+          >{display_title}</span
+        >
+        <NigredoPill state={state} />
+        <time class="nigredo-entry-date" datetime={published_at}
+          >{published_at}</time
+        >
+      </header>
+      {
+        excerpt && (
+          <div class="nigredo-entry-excerpt">
+            <p>{excerpt}</p>
+          </div>
+        )
+      }
+    </div>
+  </a>
+</article>
