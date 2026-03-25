@@ -1,0 +1,11 @@
+{
+  "projectName": "alvorada",
+  "runtimeDir": ".opencode/runtime/sol-orchestrator",
+  "repos": [
+    {
+      "id": "alvorada",
+      "path": ".",
+      "keywords": []
+    }
+  ]
+}
