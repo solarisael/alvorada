@@ -8,6 +8,7 @@ Use `sol_orchestrator_dispatch` to launch worker lanes only when the operator ex
 Requirements:
 
 - orchestration stays dormant unless the operator explicitly calls `orchestrator`
+- after dispatch returns, stop and wait for explicit operator instruction before running `orchestrator-status`, `orchestrator-continue`, `orchestrator-adjudicate`, or any new child process
 - infer the operator automatically from the current repository branch when possible
 - infer the best topology for the scenario (`single`, `relay`, or `isolate`)
 - prefer `hybrid` as the sane default for write-capable multi-lane work
@@ -37,3 +38,4 @@ After the tool returns:
 - list each lane with model, repo, branch, worktree directory, and session id
 - mention return-chain continuation via `sol_orchestrator_continue` when relevant
 - if write mode is enabled, remind the operator that no auto-merge or auto-promotion occurs
+- do not auto-run follow-up orchestration tools unless the operator explicitly asks

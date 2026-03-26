@@ -5,6 +5,8 @@ agent: build
 
 Use `sol_orchestrator_status` to inspect a previously dispatched job.
 
+Only run this when the operator explicitly asks for status or inspection.
+
 Report:
 
 - execution mode

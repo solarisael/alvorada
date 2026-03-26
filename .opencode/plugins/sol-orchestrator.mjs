@@ -2003,6 +2003,13 @@ export async function SolOrchestratorPlugin({
               requestedExecutionMode: args.executionMode,
               preparedReturnChain,
               resultMap,
+              operatorActionRequired: true,
+              nextActionPolicy: "wait_for_operator",
+              allowedFollowups: [
+                "sol_orchestrator_status",
+                "sol_orchestrator_continue",
+                "sol_orchestrator_adjudicate",
+              ],
               lanes: laneRecords.map((lane) => ({
                 laneID: lane.laneID,
                 providerID: lane.providerID,
@@ -2031,7 +2038,8 @@ export async function SolOrchestratorPlugin({
         },
       }),
       sol_orchestrator_status: tool({
-        description: "Inspect a dispatched sol-orchestrator job",
+        description:
+          "Inspect a dispatched sol-orchestrator job when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
@@ -2117,6 +2125,8 @@ export async function SolOrchestratorPlugin({
               executedReturnChain: job.executedReturnChain || [],
               resultMap: job.resultMap || {},
               adjudication: job.adjudication || null,
+              operatorActionRequired: true,
+              nextActionPolicy: "wait_for_operator",
               lanes,
             },
             null,
@@ -2126,7 +2136,7 @@ export async function SolOrchestratorPlugin({
       }),
       sol_orchestrator_continue: tool({
         description:
-          "Advance a dispatched sol-orchestrator job using its prepared return chain",
+          "Advance a dispatched sol-orchestrator job using its prepared return chain when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
@@ -2220,6 +2230,8 @@ export async function SolOrchestratorPlugin({
               asyncMode: args.asyncMode,
               remainingSteps: preparedReturnChain.length - executionRecord.step,
               preparedReturnChain,
+              operatorActionRequired: true,
+              nextActionPolicy: "wait_for_operator",
             },
             null,
             2,
@@ -2228,7 +2240,7 @@ export async function SolOrchestratorPlugin({
       }),
       sol_orchestrator_adjudicate: tool({
         description:
-          "Compare lane outputs/diffs and optionally promote safe lane changes into the parent repo",
+          "Compare lane outputs/diffs and optionally promote safe lane changes into the parent repo when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
@@ -2444,6 +2456,8 @@ export async function SolOrchestratorPlugin({
               overlaps,
               laneInfos,
               promotion,
+              operatorActionRequired: true,
+              nextActionPolicy: "wait_for_operator",
             },
             null,
             2,
