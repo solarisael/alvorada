@@ -242,6 +242,150 @@ function abbreviate(text, max = 280) {
   return `${clean.slice(0, max - 3)}...`;
 }
 
+function normalizeReturnChain(input) {
+  if (!input) {
+    return [];
+  }
+
+  if (Array.isArray(input)) {
+    return input.map((item) => String(item || "").trim()).filter(Boolean);
+  }
+
+  const text = String(input || "").trim();
+  return text ? [text] : [];
+}
+
+function sanitizeLaneTask(task, returnChain) {
+  let cleaned = String(task || "").trim();
+  const normalizedChain = normalizeReturnChain(returnChain);
+
+  for (const item of normalizedChain) {
+    if (!item) {
+      continue;
+    }
+    cleaned = cleaned.replace(item, "").trim();
+  }
+
+  cleaned = cleaned
+    .replace(/\buse return chain\s*:/i, "")
+    .replace(/\breturn chain\s*:/i, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+
+  return cleaned || String(task || "").trim();
+}
+
+function extractLaneTaskSegments(task) {
+  const source = String(task || "");
+  const pattern = /lane\s+(\d+)\b\s*[:\-)]?/gi;
+  const matches = [...source.matchAll(pattern)];
+  if (!matches.length) {
+    return {};
+  }
+
+  const segments = {};
+  for (let index = 0; index < matches.length; index += 1) {
+    const match = matches[index];
+    const laneNumber = Number(match[1]);
+    const start = match.index;
+    const end =
+      index + 1 < matches.length ? matches[index + 1].index : source.length;
+    const slice = source.slice(start, end).trim();
+    if (laneNumber && slice) {
+      segments[laneNumber] = slice;
+    }
+  }
+
+  return segments;
+}
+
+function cleanLaneAssignmentText(text) {
+  const source = String(text || "").trim();
+  if (!source) {
+    return "";
+  }
+
+  const orchestrationMarker =
+    /(?:\n\s*|\s+)(use repo|use write|use executionmode|use two |use return chain)\b/i;
+  const matched = source.match(orchestrationMarker);
+  const trimmed =
+    matched?.index != null ? source.slice(0, matched.index) : source;
+  return trimmed.replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function selectLaneTask(task, returnChain, laneIndex) {
+  const cleanedTask = sanitizeLaneTask(task, returnChain);
+  const segments = extractLaneTaskSegments(cleanedTask);
+  return cleanLaneAssignmentText(segments[laneIndex + 1] || cleanedTask);
+}
+
+function buildResultMap(lanes) {
+  const entries = [];
+  for (const lane of lanes || []) {
+    const value = String(lane.resultText || lane.resultPreview || "").trim();
+    if (!value) {
+      continue;
+    }
+
+    if (lane.resultKey) {
+      entries.push([lane.resultKey, value]);
+    }
+    if (lane.laneID) {
+      entries.push([lane.laneID, value]);
+    }
+    if (lane.role) {
+      entries.push([lane.role, value]);
+    }
+  }
+
+  return Object.fromEntries(entries);
+}
+
+function resolveResultTokens(text, resultMap) {
+  return String(text || "").replace(/\$RESULT\[([^\]]+)\]/g, (_match, key) => {
+    const lookup = slugifySegment(key, key);
+    return resultMap[lookup] || resultMap[key] || `[Result '${key}' not found]`;
+  });
+}
+
+function parseProposedFiles(text, rootDirectory) {
+  const source = String(text || "");
+  const pattern =
+    /`([^`]+)`\s*\r?\n```(?:[a-z0-9_-]+)?\r?\n([\s\S]*?)\r?\n```/gi;
+  const proposals = [];
+
+  for (const match of source.matchAll(pattern)) {
+    const rawPath = match[1].trim();
+    const content = match[2];
+    const normalized = rawPath.replace(/\\/g, "/");
+    const rootNormalized = rootDirectory.replace(/\\/g, "/").replace(/\/$/, "");
+    let relativePath = null;
+
+    if (normalized.startsWith(rootNormalized + "/")) {
+      relativePath = normalized.slice(rootNormalized.length + 1);
+    } else if (!path.isAbsolute(rawPath)) {
+      relativePath = rawPath;
+    }
+
+    if (!relativePath) {
+      continue;
+    }
+
+    const safeRelative = relativePath.replace(/^\.\//, "").replace(/\\/g, "/");
+    if (safeRelative.startsWith("../") || safeRelative.includes("/../")) {
+      continue;
+    }
+
+    proposals.push({
+      file: safeRelative,
+      content,
+    });
+  }
+
+  return proposals;
+}
+
 async function pathExists(target) {
   try {
     await stat(target);
@@ -591,6 +735,10 @@ function chooseTopology({ goal, repos, write, lanes }) {
     return "isolate";
   }
 
+  if (write && lanes.length > 1) {
+    return "isolate";
+  }
+
   if (goal === "review") {
     return "relay";
   }
@@ -599,11 +747,23 @@ function chooseTopology({ goal, repos, write, lanes }) {
     return "relay";
   }
 
-  if (write && lanes.length > 1) {
-    return "isolate";
+  return "single";
+}
+
+function chooseExecutionMode({ executionMode, topology, write, lanes }) {
+  if (executionMode && executionMode !== "auto") {
+    return executionMode;
   }
 
-  return "single";
+  if (write) {
+    return "hybrid";
+  }
+
+  if (lanes.length > 1) {
+    return "hybrid";
+  }
+
+  return "subtask";
 }
 
 function getLaneDefaults(rawLanes) {
@@ -617,6 +777,7 @@ function getLaneDefaults(rawLanes) {
       providerID: lane.providerID,
       modelID: lane.modelID,
       role: lane.role || (index === 0 ? "implementer" : "reviewer"),
+      as: lane.as,
       modelSlug,
       laneID: `${modelSlug}-${index + 1}`,
     };
@@ -685,9 +846,14 @@ function decorateLane(lane, index) {
     providerID: lane.providerID,
     modelID: lane.modelID,
     role: lane.role || (index === 0 ? "implementer" : "reviewer"),
+    as: lane.as,
     modelSlug,
     laneID: `${modelSlug}-${index + 1}`,
     laneSlug,
+    resultKey: slugifySegment(
+      lane.as || `${modelSlug}-${index + 1}`,
+      `lane-${index + 1}`,
+    ),
     temperament: profile.temperament || "unknown",
     strengths: profile.strengths || [],
     risks: profile.risks || [],
@@ -713,7 +879,16 @@ function getWorktreeSegments(branch) {
   return normalizedBranch.split(BRANCH_PART_DELIMITER).filter(Boolean);
 }
 
-function buildPrompt({ task, lane, topology, repos, branch, operator, write }) {
+function buildPrompt({
+  task,
+  lane,
+  topology,
+  repos,
+  branch,
+  operator,
+  write,
+  laneAssignment,
+}) {
   const repoList = repos.join(", ");
   const sentences = [
     `You are lane ${lane.laneID}.`,
@@ -745,6 +920,13 @@ function buildPrompt({ task, lane, topology, repos, branch, operator, write }) {
   } else {
     sentences.push(
       "Work independently and emit crisp artifacts suitable for orchestrator relay.",
+    );
+  }
+
+  if (laneAssignment) {
+    sentences.push(
+      `Your lane-specific assignment is: ${laneAssignment}`,
+      "Answer only your own lane-specific assignment. Do not solve, summarize, or repeat sibling lane assignments.",
     );
   }
 
@@ -781,41 +963,241 @@ async function ensureWorktree({ $, root, repo, repoDir, branch }) {
 }
 
 async function createSession(client, directory, title) {
-  const created = await client.session.create({ directory, title });
+  const created = await client.session.create({
+    query: { directory },
+    body: { title },
+  });
   if (created.error || !created.data?.id) {
-    throw new Error(`Failed to create session for ${directory}`);
+    const detail = created.error
+      ? typeof created.error === "string"
+        ? created.error
+        : JSON.stringify(created.error)
+      : "missing session id";
+    throw new Error(`Failed to create session for ${directory}: ${detail}`);
   }
   return created.data;
 }
 
 async function promptSession(client, lane, prompt, asyncMode = true) {
   const payload = {
-    sessionID: lane.sessionID,
-    directory: lane.directory,
-    model: {
-      providerID: lane.providerID,
-      modelID: lane.modelID,
+    path: {
+      id: lane.sessionID,
     },
-    parts: [
-      {
-        type: "text",
-        text: prompt,
+    query: {
+      directory: lane.directory,
+    },
+    body: {
+      model: {
+        providerID: lane.providerID,
+        modelID: lane.modelID,
       },
-    ],
+      parts: [
+        {
+          type: "text",
+          text: prompt,
+        },
+      ],
+    },
   };
 
   if (asyncMode) {
     const result = await client.session.promptAsync(payload);
     if (result.error) {
-      throw new Error(`Failed to start async prompt for ${lane.sessionID}`);
+      const detail =
+        typeof result.error === "string"
+          ? result.error
+          : JSON.stringify(result.error);
+      throw new Error(
+        `Failed to start async prompt for ${lane.sessionID}: ${detail}`,
+      );
     }
     return;
   }
 
   const result = await client.session.prompt(payload);
   if (result.error) {
-    throw new Error(`Failed to send prompt for ${lane.sessionID}`);
+    const detail =
+      typeof result.error === "string"
+        ? result.error
+        : JSON.stringify(result.error);
+    throw new Error(`Failed to send prompt for ${lane.sessionID}: ${detail}`);
   }
+}
+
+async function listChildSessions(
+  client,
+  parentSessionID,
+  directory,
+  serverUrl,
+) {
+  if (serverUrl) {
+    try {
+      const url = new URL(`/session/${parentSessionID}/children`, serverUrl);
+      url.searchParams.set("directory", directory);
+      const response = await fetch(url);
+      if (response.ok) {
+        const payload = await response.json();
+        if (Array.isArray(payload?.data)) {
+          return payload.data;
+        }
+        if (Array.isArray(payload)) {
+          return payload;
+        }
+      }
+    } catch {
+      // fall through to SDK path
+    }
+  }
+
+  const result = await client.session.children({
+    sessionID: parentSessionID,
+    directory,
+  });
+
+  if (result.error || !Array.isArray(result.data)) {
+    return [];
+  }
+
+  return result.data;
+}
+
+function pickLaneAgent(role) {
+  return role === "reviewer" ? "explore" : "general";
+}
+
+function buildLaneSubtask({
+  task,
+  lane,
+  topology,
+  repo,
+  branch,
+  operator,
+  write,
+  laneAssignment,
+}) {
+  const prompt = buildPrompt({
+    task: `${task}\nRuntime note: this lane is running as a native managed subagent under a lane-local parent session. Do not hand work back to the parent; complete the lane task inside the subagent and keep the output crisp for orchestrator synthesis.`,
+    lane,
+    topology,
+    repos: [repo],
+    branch,
+    operator,
+    write,
+    laneAssignment,
+  });
+  const agent = pickLaneAgent(lane.role);
+  return {
+    description: `[${lane.laneID}] ${lane.role} :: ${repo}`,
+    prompt,
+    agent,
+    providerID: lane.providerID,
+    modelID: lane.modelID,
+    command: "orchestrator-inline-lane",
+  };
+}
+
+function buildLaneParentInstruction({
+  task,
+  lane,
+  topology,
+  repo,
+  branch,
+  operator,
+  write,
+  laneAssignment,
+}) {
+  const agent = pickLaneAgent(lane.role);
+  const lanePrompt = buildPrompt({
+    task,
+    lane,
+    topology,
+    repos: [repo],
+    branch,
+    operator,
+    write,
+    laneAssignment,
+  });
+
+  return [
+    `You must use the ${agent} subagent for this task and must not do it yourself.`,
+    `Launch exactly one ${agent} subagent, let it complete the lane work, and then return only the subagent's final useful result in a compact form.`,
+    lanePrompt,
+  ].join("\n\n");
+}
+
+function createLaneParentTitle(taskSlug, lane) {
+  return `[sol-orchestrator:${taskSlug}] ${lane.laneID} parent`;
+}
+
+async function waitForNewChildSession(
+  client,
+  parentSessionID,
+  directory,
+  serverUrl,
+  previousChildren,
+  matcher,
+  attempts = 24,
+  delayMs = 500,
+) {
+  const previousIDs = new Set(previousChildren.map((child) => child.id));
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const children = await listChildSessions(
+      client,
+      parentSessionID,
+      directory,
+      serverUrl,
+    );
+    const created =
+      children.find((child) => !previousIDs.has(child.id) && matcher(child)) ||
+      children.find((child) => matcher(child));
+
+    if (created) {
+      return created;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+
+  return null;
+}
+
+async function promptInlineSubtask(client, context, directory, subtask) {
+  const payload = {
+    path: {
+      id: context.sessionID,
+    },
+    query: {
+      directory,
+    },
+    body: {
+      noReply: true,
+      parts: [
+        {
+          type: "subtask",
+          description: subtask.description,
+          prompt: subtask.prompt,
+          agent: subtask.agent,
+          model: {
+            providerID: subtask.providerID,
+            modelID: subtask.modelID,
+          },
+          command: subtask.command,
+        },
+      ],
+    },
+  };
+
+  const result = await client.session.prompt(payload);
+  if (result.error) {
+    const detail =
+      typeof result.error === "string"
+        ? result.error
+        : JSON.stringify(result.error);
+    throw new Error(`Failed to launch inline subtask: ${detail}`);
+  }
+
+  return result;
 }
 
 function extractLastAssistantText(messages) {
@@ -839,12 +1221,244 @@ function extractLastAssistantText(messages) {
   return "";
 }
 
+async function readSessionAssistantText(
+  client,
+  sessionID,
+  directory,
+  limit = 12,
+) {
+  if (!sessionID) {
+    return "";
+  }
+
+  const messagesResult = await client.session.messages({
+    path: { id: sessionID },
+    query: {
+      directory,
+      limit,
+    },
+  });
+
+  if (messagesResult.error) {
+    return "";
+  }
+
+  return extractLastAssistantText(messagesResult.data);
+}
+
+async function hydrateLaneResults(client, lanes) {
+  for (const lane of lanes || []) {
+    const targetSessionID =
+      lane.resultSessionID || lane.sessionID || lane.parentSessionID || null;
+    const targetDirectory = lane.childSessionDirectory || lane.directory;
+    const resultText = await readSessionAssistantText(
+      client,
+      targetSessionID,
+      targetDirectory,
+      20,
+    );
+
+    lane.resultSessionID = targetSessionID;
+    lane.resultText = resultText || lane.resultText || "";
+    lane.resultPreview = abbreviate(
+      lane.resultText || lane.resultPreview || "",
+      360,
+    );
+  }
+
+  return lanes;
+}
+
+async function promptTextIntoSession(
+  client,
+  sessionID,
+  directory,
+  text,
+  asyncMode,
+) {
+  const payload = {
+    path: {
+      id: sessionID,
+    },
+    query: {
+      directory,
+    },
+    body: {
+      parts: [
+        {
+          type: "text",
+          text,
+        },
+      ],
+    },
+  };
+
+  if (asyncMode) {
+    const result = await client.session.promptAsync(payload);
+    if (result.error) {
+      const detail =
+        typeof result.error === "string"
+          ? result.error
+          : JSON.stringify(result.error);
+      throw new Error(
+        `Failed to queue continuation for ${sessionID}: ${detail}`,
+      );
+    }
+    return { async: true };
+  }
+
+  const result = await client.session.prompt(payload);
+  if (result.error) {
+    const detail =
+      typeof result.error === "string"
+        ? result.error
+        : JSON.stringify(result.error);
+    throw new Error(`Failed to continue session ${sessionID}: ${detail}`);
+  }
+
+  return { async: false };
+}
+
 async function readGitStatus($, directory) {
   const result = await $`git -C ${directory} status --short`.nothrow().quiet();
   if (result.exitCode !== 0) {
     return "";
   }
   return result.text().trim();
+}
+
+async function readChangedFiles($, directory) {
+  const result =
+    await $`git -C ${directory} status --short --untracked-files=all`
+      .nothrow()
+      .quiet();
+  if (result.exitCode !== 0) {
+    return [];
+  }
+  return unique(
+    result
+      .text()
+      .split(/\r?\n/)
+      .map((line) => line.trimEnd())
+      .filter(Boolean)
+      .map((line) => line.slice(3).trim())
+      .filter(Boolean),
+  );
+}
+
+async function readStatusEntries($, directory) {
+  const result =
+    await $`git -C ${directory} status --short --untracked-files=all`
+      .nothrow()
+      .quiet();
+  if (result.exitCode !== 0) {
+    return [];
+  }
+
+  return result
+    .text()
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter(Boolean)
+    .map((line) => ({
+      status: line.slice(0, 2),
+      file: line.slice(3).trim(),
+    }))
+    .filter((entry) => entry.file);
+}
+
+async function readDiffStat($, directory) {
+  const result = await $`git -C ${directory} diff --stat --relative HEAD`
+    .nothrow()
+    .quiet();
+  if (result.exitCode !== 0) {
+    return "";
+  }
+  return result.text().trim();
+}
+
+async function readDiffPatch($, directory, files = []) {
+  const fileArgs = files.filter(Boolean);
+  const result = fileArgs.length
+    ? await $`git -C ${directory} diff --binary --relative HEAD -- ${fileArgs}`
+        .nothrow()
+        .quiet()
+    : await $`git -C ${directory} diff --binary --relative HEAD`
+        .nothrow()
+        .quiet();
+
+  if (result.exitCode !== 0) {
+    return "";
+  }
+
+  return result.text();
+}
+
+async function readScopedGitStatus($, directory, files = []) {
+  const fileArgs = files.filter(Boolean);
+  const result = fileArgs.length
+    ? await $`git -C ${directory} status --short -- ${fileArgs}`
+        .nothrow()
+        .quiet()
+    : await $`git -C ${directory} status --short`.nothrow().quiet();
+  if (result.exitCode !== 0) {
+    return "";
+  }
+  return result.text().trim();
+}
+
+function buildOverlapMap(laneInfos) {
+  const owners = new Map();
+  const overlaps = new Map();
+
+  for (const lane of laneInfos) {
+    for (const file of lane.changedFiles || []) {
+      const list = owners.get(file) || [];
+      list.push(lane.laneID);
+      owners.set(file, list);
+    }
+  }
+
+  for (const [file, laneIDs] of owners.entries()) {
+    if (laneIDs.length > 1) {
+      overlaps.set(file, laneIDs);
+    }
+  }
+
+  return overlaps;
+}
+
+async function applyPatchText($, targetDirectory, patchText) {
+  if (!patchText.trim()) {
+    return;
+  }
+
+  const tempPath = path.join(
+    os.tmpdir(),
+    `sol-orchestrator-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.patch`,
+  );
+
+  try {
+    await writeFile(tempPath, patchText, "utf8");
+    const result =
+      await $`git -C ${targetDirectory} apply --3way --whitespace=nowarn ${tempPath}`
+        .nothrow()
+        .quiet();
+    if (result.exitCode !== 0) {
+      throw new Error(result.text().trim() || "git apply failed");
+    }
+  } finally {
+    await rm(tempPath, { force: true }).catch(() => {});
+  }
+}
+
+async function promoteNewFiles(sourceDirectory, targetDirectory, files) {
+  for (const file of files) {
+    const source = path.join(sourceDirectory, file);
+    const target = path.join(targetDirectory, file);
+    await ensureDirectory(path.dirname(target));
+    await copyFile(source, target);
+  }
 }
 
 async function collectSoundFiles(directory) {
@@ -974,16 +1588,32 @@ export async function SolOrchestratorPlugin({
             .boolean()
             .default(true)
             .describe("Send worker prompts asynchronously"),
+          executionMode: tool.schema
+            .enum(["auto", "session", "subtask", "hybrid"])
+            .default("auto")
+            .describe(
+              "Execution backend: auto-select, separate sessions, inline subtasks, or isolated parent sessions plus managed subagents",
+            ),
           lanes: tool.schema
             .array(
               tool.schema.object({
                 providerID: tool.schema.string(),
                 modelID: tool.schema.string(),
                 role: tool.schema.string().optional(),
+                as: tool.schema.string().optional(),
               }),
             )
             .optional()
             .describe("Optional lane model definitions"),
+          returnChain: tool.schema
+            .union([
+              tool.schema.string(),
+              tool.schema.array(tool.schema.string()),
+            ])
+            .optional()
+            .describe(
+              "Optional follow-up prompts prepared from lane results using $RESULT[name] tokens",
+            ),
         },
         async execute(args, context) {
           const operator = await inferOperator($, directory);
@@ -1031,66 +1661,294 @@ export async function SolOrchestratorPlugin({
                 ? "review"
                 : "parallel"
               : args.goal;
+          const resolvedExecutionMode = chooseExecutionMode({
+            executionMode: args.executionMode,
+            topology,
+            write: args.write,
+            lanes,
+          });
+          const laneTask = sanitizeLaneTask(args.task, args.returnChain);
+
+          if (
+            resolvedExecutionMode === "subtask" &&
+            args.write &&
+            lanes.length > 1
+          ) {
+            throw new Error(
+              "Inline subtask mode does not support multi-lane write runs because native subtasks share the parent workspace. Use `hybrid` or `session` instead.",
+            );
+          }
+
           const jobID = createJobId(taskSlug);
           const runtimeDir = adapter.runtimeDir;
           const jobPath = path.join(runtimeDir, `${jobID}.json`);
           const laneRecords = [];
 
-          for (let index = 0; index < lanes.length; index += 1) {
-            const lane = lanes[index];
-            const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
-            const repoDir = adapter.repoDirs[repo] || adapter.root;
-            const branch = args.write
-              ? buildLaneBranch(operator, taskSlug, lane.laneSlug)
-              : null;
-            const laneDirectory =
-              topology === "isolate" && args.write
-                ? await ensureWorktree({
-                    $,
-                    root: adapter.root,
-                    repo,
-                    repoDir,
-                    branch,
-                  })
-                : repoDir;
-            const title = `[sol-orchestrator] ${taskSlug} :: ${lane.modelID}`;
-            const session = await createSession(client, laneDirectory, title);
-            const prompt = buildPrompt({
-              task: args.task,
-              lane,
-              topology,
-              repos: [repo],
-              branch,
-              operator,
-              write: args.write,
-            });
+          if (resolvedExecutionMode === "subtask") {
+            for (let index = 0; index < lanes.length; index += 1) {
+              const lane = lanes[index];
+              const laneAssignment = selectLaneTask(
+                args.task,
+                args.returnChain,
+                index,
+              );
+              const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
+              const laneDirectory = adapter.repoDirs[repo] || adapter.root;
+              const prompt = buildPrompt({
+                task: `${laneTask}\nRuntime note: this lane is running as an inline managed subtask attached to the parent session, not a separate worktree session.`,
+                lane,
+                topology,
+                repos: [repo],
+                branch: null,
+                operator,
+                write: args.write,
+                laneAssignment,
+              });
+              const agent = lane.role === "reviewer" ? "explore" : "general";
+              const subtask = {
+                description: `[${lane.laneID}] ${lane.role} :: ${repo}`,
+                prompt,
+                agent,
+                providerID: lane.providerID,
+                modelID: lane.modelID,
+                command: "orchestrator-inline-lane",
+              };
+              const beforeChildren = await listChildSessions(
+                client,
+                context.sessionID,
+                directory,
+                serverUrl,
+              );
 
-            await promptSession(
-              client,
-              {
-                ...lane,
-                sessionID: session.id,
+              await promptInlineSubtask(client, context, directory, subtask);
+
+              const afterChildren = await listChildSessions(
+                client,
+                context.sessionID,
+                directory,
+                serverUrl,
+              );
+              const createdChild =
+                (await waitForNewChildSession(
+                  client,
+                  context.sessionID,
+                  directory,
+                  serverUrl,
+                  afterChildren.length ? afterChildren : beforeChildren,
+                  (child) =>
+                    child.title ===
+                    `${subtask.description} (@${agent} subagent)`,
+                )) ||
+                afterChildren.find(
+                  (child) =>
+                    child.title ===
+                    `${subtask.description} (@${agent} subagent)`,
+                ) ||
+                null;
+
+              laneRecords.push({
+                laneID: lane.laneID,
+                laneAssignment,
+                providerID: lane.providerID,
+                modelID: lane.modelID,
+                role: lane.role,
+                resultKey: lane.resultKey,
+                laneAssignment: lane.laneAssignment || null,
+                temperament: lane.temperament,
+                strengths: lane.strengths,
+                risks: lane.risks,
+                repo,
+                branch: null,
                 directory: laneDirectory,
-              },
-              prompt,
-              args.asyncMode,
-            );
+                sessionID: createdChild?.id || null,
+                executionMode: "subtask",
+                agent,
+                prompt,
+                childSessionDirectory: createdChild?.directory || null,
+                childWorkspaceID: createdChild?.workspaceID || null,
+              });
+            }
+          } else if (resolvedExecutionMode === "hybrid") {
+            for (let index = 0; index < lanes.length; index += 1) {
+              const lane = lanes[index];
+              const laneAssignment = selectLaneTask(
+                args.task,
+                args.returnChain,
+                index,
+              );
+              const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
+              const repoDir = adapter.repoDirs[repo] || adapter.root;
+              const branch = args.write
+                ? buildLaneBranch(operator, taskSlug, lane.laneSlug)
+                : null;
+              const laneDirectory =
+                topology === "isolate" && args.write
+                  ? await ensureWorktree({
+                      $,
+                      root: adapter.root,
+                      repo,
+                      repoDir,
+                      branch,
+                    })
+                  : repoDir;
+              const parentSession = await createSession(
+                client,
+                laneDirectory,
+                createLaneParentTitle(taskSlug, lane),
+              );
+              const subtask = buildLaneSubtask({
+                task: laneTask,
+                lane,
+                topology,
+                repo,
+                branch,
+                operator,
+                write: args.write,
+                laneAssignment,
+              });
+              const parentInstruction = buildLaneParentInstruction({
+                task: laneTask,
+                lane,
+                topology,
+                repo,
+                branch,
+                operator,
+                write: args.write,
+                laneAssignment,
+              });
+              const beforeChildren = await listChildSessions(
+                client,
+                parentSession.id,
+                laneDirectory,
+                serverUrl,
+              );
 
-            laneRecords.push({
-              laneID: lane.laneID,
-              providerID: lane.providerID,
-              modelID: lane.modelID,
-              role: lane.role,
-              temperament: lane.temperament,
-              strengths: lane.strengths,
-              risks: lane.risks,
-              repo,
-              branch,
-              directory: laneDirectory,
-              sessionID: session.id,
-              prompt,
-            });
+              await promptSession(
+                client,
+                {
+                  ...lane,
+                  sessionID: parentSession.id,
+                  directory: laneDirectory,
+                },
+                parentInstruction,
+                false,
+              );
+
+              const createdChild = await waitForNewChildSession(
+                client,
+                parentSession.id,
+                laneDirectory,
+                serverUrl,
+                beforeChildren,
+                (child) =>
+                  child.title ===
+                  `${subtask.description} (@${subtask.agent} subagent)`,
+              );
+              const parentResult = await readSessionAssistantText(
+                client,
+                parentSession.id,
+                laneDirectory,
+                20,
+              );
+
+              laneRecords.push({
+                laneID: lane.laneID,
+                laneAssignment,
+                providerID: lane.providerID,
+                modelID: lane.modelID,
+                role: lane.role,
+                resultKey: lane.resultKey,
+                temperament: lane.temperament,
+                strengths: lane.strengths,
+                risks: lane.risks,
+                repo,
+                branch,
+                directory: laneDirectory,
+                parentSessionID: parentSession.id,
+                parentSessionTitle: createLaneParentTitle(taskSlug, lane),
+                sessionID: createdChild?.id || null,
+                executionMode: "hybrid",
+                agent: subtask.agent,
+                prompt: subtask.prompt,
+                resultSessionID: parentSession.id,
+                resultPreview: abbreviate(parentResult, 360),
+                childSessionDirectory: createdChild?.directory || null,
+                childWorkspaceID: createdChild?.workspaceID || null,
+              });
+            }
+          } else {
+            for (let index = 0; index < lanes.length; index += 1) {
+              const lane = lanes[index];
+              const laneAssignment = selectLaneTask(
+                args.task,
+                args.returnChain,
+                index,
+              );
+              const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
+              const repoDir = adapter.repoDirs[repo] || adapter.root;
+              const branch = args.write
+                ? buildLaneBranch(operator, taskSlug, lane.laneSlug)
+                : null;
+              const laneDirectory =
+                topology === "isolate" && args.write
+                  ? await ensureWorktree({
+                      $,
+                      root: adapter.root,
+                      repo,
+                      repoDir,
+                      branch,
+                    })
+                  : repoDir;
+              const title = `[sol-orchestrator] ${taskSlug} :: ${lane.modelID}`;
+              const session = await createSession(client, laneDirectory, title);
+              const prompt = buildPrompt({
+                task: laneTask,
+                lane,
+                topology,
+                repos: [repo],
+                branch,
+                operator,
+                write: args.write,
+                laneAssignment,
+              });
+
+              await promptSession(
+                client,
+                {
+                  ...lane,
+                  sessionID: session.id,
+                  directory: laneDirectory,
+                },
+                prompt,
+                args.asyncMode,
+              );
+
+              laneRecords.push({
+                laneID: lane.laneID,
+                laneAssignment,
+                providerID: lane.providerID,
+                modelID: lane.modelID,
+                role: lane.role,
+                resultKey: lane.resultKey,
+                temperament: lane.temperament,
+                strengths: lane.strengths,
+                risks: lane.risks,
+                repo,
+                branch,
+                directory: laneDirectory,
+                sessionID: session.id,
+                executionMode: "session",
+                prompt,
+              });
+            }
           }
+
+          await hydrateLaneResults(client, laneRecords);
+          const returnChain = normalizeReturnChain(args.returnChain);
+          const resultMap = buildResultMap(laneRecords);
+          const preparedReturnChain = returnChain.map((item) =>
+            resolveResultTokens(item, resultMap),
+          );
 
           const jobRecord = {
             id: jobID,
@@ -1115,6 +1973,11 @@ export async function SolOrchestratorPlugin({
             repos,
             write: args.write,
             asyncMode: args.asyncMode,
+            executionMode: resolvedExecutionMode,
+            requestedExecutionMode: args.executionMode,
+            returnChain,
+            preparedReturnChain,
+            resultMap,
             source: {
               directory,
               worktree,
@@ -1136,16 +1999,26 @@ export async function SolOrchestratorPlugin({
               goal: effectiveGoal,
               topology,
               preset: jobRecord.preset,
+              executionMode: resolvedExecutionMode,
+              requestedExecutionMode: args.executionMode,
+              preparedReturnChain,
+              resultMap,
               lanes: laneRecords.map((lane) => ({
                 laneID: lane.laneID,
                 providerID: lane.providerID,
                 modelID: lane.modelID,
                 role: lane.role,
+                resultKey: lane.resultKey,
                 temperament: lane.temperament,
                 repo: lane.repo,
                 branch: lane.branch,
                 directory: lane.directory,
+                parentSessionID: lane.parentSessionID || null,
+                resultSessionID: lane.resultSessionID || null,
                 sessionID: lane.sessionID,
+                executionMode: lane.executionMode,
+                agent: lane.agent || null,
+                resultPreview: lane.resultPreview || "",
               })),
               operatorPrompt:
                 adapter.kind === "generic"
@@ -1174,25 +2047,52 @@ export async function SolOrchestratorPlugin({
 
           const lanes = [];
           for (const lane of job.lanes || []) {
-            const messagesResult = await client.session.messages({
-              sessionID: lane.sessionID,
-              directory: lane.directory,
-              limit: 12,
-            });
-            const assistantText = messagesResult.error
-              ? ""
-              : extractLastAssistantText(messagesResult.data);
             const gitStatus = await readGitStatus($, lane.directory);
+            let lastAssistantText =
+              lane.executionMode === "subtask"
+                ? "Inline subtask lane attached to source session; inspect the live parent transcript."
+                : "";
+
+            if (lane.executionMode === "hybrid") {
+              const targetSessionID =
+                lane.resultSessionID || lane.sessionID || lane.parentSessionID;
+              const targetDirectory =
+                lane.childSessionDirectory || lane.directory;
+              lastAssistantText =
+                (await readSessionAssistantText(
+                  client,
+                  targetSessionID,
+                  targetDirectory,
+                  20,
+                )) ||
+                lane.resultPreview ||
+                "";
+            } else if (lane.executionMode !== "subtask") {
+              lastAssistantText = await readSessionAssistantText(
+                client,
+                lane.sessionID,
+                lane.directory,
+                12,
+              );
+            }
+
             lanes.push({
               laneID: lane.laneID,
               sessionID: lane.sessionID,
               modelID: lane.modelID,
               role: lane.role,
+              resultKey: lane.resultKey || null,
+              laneAssignment: lane.laneAssignment || null,
               temperament: lane.temperament,
               repo: lane.repo,
               branch: lane.branch,
               directory: lane.directory,
-              lastAssistantText: abbreviate(assistantText, 360),
+              parentSessionID: lane.parentSessionID || null,
+              resultSessionID: lane.resultSessionID || null,
+              executionMode: lane.executionMode || "session",
+              agent: lane.agent || null,
+              lastAssistantText: abbreviate(lastAssistantText, 360),
+              resultPreview: abbreviate(lane.resultPreview || "", 360),
               gitStatus,
             });
           }
@@ -1211,7 +2111,339 @@ export async function SolOrchestratorPlugin({
               goal: job.goal,
               preset: job.preset,
               task: job.task,
+              executionMode: job.executionMode || "session",
+              requestedExecutionMode: job.requestedExecutionMode || null,
+              preparedReturnChain: job.preparedReturnChain || [],
+              executedReturnChain: job.executedReturnChain || [],
+              resultMap: job.resultMap || {},
+              adjudication: job.adjudication || null,
               lanes,
+            },
+            null,
+            2,
+          );
+        },
+      }),
+      sol_orchestrator_continue: tool({
+        description:
+          "Advance a dispatched sol-orchestrator job using its prepared return chain",
+        args: {
+          jobID: tool.schema
+            .string()
+            .min(1)
+            .describe("Job identifier returned by sol_orchestrator_dispatch"),
+          step: tool.schema
+            .number()
+            .int()
+            .min(1)
+            .optional()
+            .describe(
+              "1-based prepared return step to execute; defaults to next pending step",
+            ),
+          asyncMode: tool.schema
+            .boolean()
+            .default(false)
+            .describe(
+              "Queue continuation asynchronously instead of waiting for completion",
+            ),
+        },
+        async execute(args) {
+          const jobPath = path.join(adapter.runtimeDir, `${args.jobID}.json`);
+          const job = await readJson(jobPath, null);
+          if (!job) {
+            throw new Error(`Job not found: ${args.jobID}`);
+          }
+
+          await hydrateLaneResults(client, job.lanes || []);
+
+          const resultMap = buildResultMap(job.lanes || []);
+          const preparedReturnChain = normalizeReturnChain(
+            job.returnChain || job.preparedReturnChain,
+          ).map((item) => resolveResultTokens(item, resultMap));
+
+          if (!preparedReturnChain.length) {
+            throw new Error(`Job ${args.jobID} has no prepared return chain`);
+          }
+
+          const alreadyExecuted = Array.isArray(job.executedReturnChain)
+            ? job.executedReturnChain
+            : [];
+          const nextIndex =
+            args.step != null ? args.step - 1 : alreadyExecuted.length;
+
+          if (nextIndex < 0 || nextIndex >= preparedReturnChain.length) {
+            throw new Error(
+              `Requested return step ${args.step || nextIndex + 1} is out of range for job ${args.jobID}`,
+            );
+          }
+
+          const prompt = preparedReturnChain[nextIndex];
+          const targetSessionID = job.source?.sessionID;
+          const targetDirectory = job.source?.directory || directory;
+
+          if (!targetSessionID) {
+            throw new Error(`Job ${args.jobID} is missing a source session ID`);
+          }
+
+          await promptTextIntoSession(
+            client,
+            targetSessionID,
+            targetDirectory,
+            prompt,
+            args.asyncMode,
+          );
+
+          const executionRecord = {
+            step: nextIndex + 1,
+            prompt,
+            executedAt: nowStamp(),
+            asyncMode: args.asyncMode,
+          };
+
+          const executedReturnChain = [...alreadyExecuted];
+          executedReturnChain[nextIndex] = executionRecord;
+
+          job.resultMap = resultMap;
+          job.preparedReturnChain = preparedReturnChain;
+          job.executedReturnChain = executedReturnChain;
+          job.lastContinuedAt = executionRecord.executedAt;
+
+          await writeJson(jobPath, job);
+
+          return JSON.stringify(
+            {
+              jobID: job.id,
+              sourceSessionID: targetSessionID,
+              sourceDirectory: targetDirectory,
+              executedStep: executionRecord.step,
+              prompt,
+              asyncMode: args.asyncMode,
+              remainingSteps: preparedReturnChain.length - executionRecord.step,
+              preparedReturnChain,
+            },
+            null,
+            2,
+          );
+        },
+      }),
+      sol_orchestrator_adjudicate: tool({
+        description:
+          "Compare lane outputs/diffs and optionally promote safe lane changes into the parent repo",
+        args: {
+          jobID: tool.schema
+            .string()
+            .min(1)
+            .describe("Job identifier returned by sol_orchestrator_dispatch"),
+          promote: tool.schema
+            .boolean()
+            .default(false)
+            .describe(
+              "Apply safe non-conflicting lane diffs into the parent repo",
+            ),
+          lanes: tool.schema
+            .array(tool.schema.string())
+            .optional()
+            .describe("Optional lane IDs or result keys to adjudicate"),
+        },
+        async execute(args) {
+          const jobPath = path.join(adapter.runtimeDir, `${args.jobID}.json`);
+          const job = await readJson(jobPath, null);
+          if (!job) {
+            throw new Error(`Job not found: ${args.jobID}`);
+          }
+
+          await hydrateLaneResults(client, job.lanes || []);
+
+          const selected = (job.lanes || []).filter((lane) => {
+            if (!args.lanes?.length) {
+              return true;
+            }
+            const wanted = new Set(
+              args.lanes.map((item) => slugifySegment(item, item)),
+            );
+            return (
+              wanted.has(slugifySegment(lane.laneID, lane.laneID)) ||
+              wanted.has(
+                slugifySegment(lane.resultKey || "", lane.resultKey || ""),
+              )
+            );
+          });
+
+          if (!selected.length) {
+            throw new Error(`No matching lanes found for job ${args.jobID}`);
+          }
+
+          const laneInfos = [];
+          for (const lane of selected) {
+            const changedFiles = await readChangedFiles($, lane.directory);
+            const statusEntries = await readStatusEntries($, lane.directory);
+            const diffStat = await readDiffStat($, lane.directory);
+            const proposedFiles = parseProposedFiles(
+              lane.resultText || lane.resultPreview || "",
+              lane.directory,
+            );
+            laneInfos.push({
+              laneID: lane.laneID,
+              resultKey: lane.resultKey || null,
+              branch: lane.branch || null,
+              directory: lane.directory,
+              changedFiles,
+              statusEntries,
+              diffStat,
+              resultPreview: lane.resultPreview || "",
+              proposedFiles,
+            });
+          }
+
+          const overlapMap = buildOverlapMap(laneInfos);
+          const overlaps = [...overlapMap.entries()].map(([file, laneIDs]) => ({
+            file,
+            laneIDs,
+          }));
+
+          const promotion = {
+            attempted: args.promote,
+            promotedFiles: [],
+            skippedFiles: overlaps.map((item) => ({
+              file: item.file,
+              reason: `overlap:${item.laneIDs.join(",")}`,
+            })),
+            blockedByParentStatus: [],
+          };
+
+          const overlapFiles = new Set(overlaps.map((item) => item.file));
+
+          if (args.promote) {
+            for (const lane of laneInfos) {
+              const promotableFiles = lane.changedFiles.filter(
+                (file) => !overlapFiles.has(file),
+              );
+              const proposedFiles = (lane.proposedFiles || []).filter(
+                (item) => !overlapFiles.has(item.file),
+              );
+
+              if (!promotableFiles.length && !proposedFiles.length) {
+                continue;
+              }
+
+              const parentStatus = promotableFiles.length
+                ? await readScopedGitStatus(
+                    $,
+                    job.source?.directory || directory,
+                    promotableFiles,
+                  )
+                : "";
+
+              if (parentStatus) {
+                promotion.blockedByParentStatus.push({
+                  laneID: lane.laneID,
+                  files: promotableFiles,
+                  status: parentStatus,
+                });
+                if (!proposedFiles.length) {
+                  continue;
+                }
+              }
+
+              const untrackedFiles = (lane.statusEntries || [])
+                .filter(
+                  (entry) =>
+                    entry.status === "??" &&
+                    promotableFiles.includes(entry.file),
+                )
+                .map((entry) => entry.file);
+              const trackedFiles = promotableFiles.filter(
+                (file) => !untrackedFiles.includes(file),
+              );
+
+              const parentDir = job.source?.directory || directory;
+              const newFileConflicts = [];
+              for (const file of untrackedFiles) {
+                if (await pathExists(path.join(parentDir, file))) {
+                  newFileConflicts.push(file);
+                }
+              }
+
+              for (const proposal of proposedFiles) {
+                if (await pathExists(path.join(parentDir, proposal.file))) {
+                  newFileConflicts.push(proposal.file);
+                }
+              }
+
+              if (newFileConflicts.length) {
+                promotion.blockedByParentStatus.push({
+                  laneID: lane.laneID,
+                  files: newFileConflicts,
+                  status: "target file already exists in parent repo",
+                });
+              }
+
+              const promotableNewFiles = untrackedFiles.filter(
+                (file) => !newFileConflicts.includes(file),
+              );
+              const promotableProposals = proposedFiles.filter(
+                (item) => !newFileConflicts.includes(item.file),
+              );
+              const patchText = await readDiffPatch(
+                $,
+                lane.directory,
+                trackedFiles,
+              );
+
+              if (patchText.trim()) {
+                await applyPatchText($, parentDir, patchText);
+              }
+
+              if (promotableNewFiles.length) {
+                await promoteNewFiles(
+                  lane.directory,
+                  parentDir,
+                  promotableNewFiles,
+                );
+              }
+
+              for (const proposal of promotableProposals) {
+                const target = path.join(parentDir, proposal.file);
+                await ensureDirectory(path.dirname(target));
+                await writeFile(target, proposal.content, "utf8");
+              }
+
+              if (
+                !patchText.trim() &&
+                !promotableNewFiles.length &&
+                !promotableProposals.length
+              ) {
+                continue;
+              }
+
+              promotion.promotedFiles.push({
+                laneID: lane.laneID,
+                files: [
+                  ...trackedFiles,
+                  ...promotableNewFiles,
+                  ...promotableProposals.map((item) => item.file),
+                ],
+              });
+            }
+          }
+
+          job.adjudication = {
+            adjudicatedAt: nowStamp(),
+            selectedLanes: selected.map((lane) => lane.laneID),
+            overlaps,
+            laneInfos,
+            promotion,
+          };
+
+          await writeJson(jobPath, job);
+
+          return JSON.stringify(
+            {
+              jobID: job.id,
+              selectedLanes: selected.map((lane) => lane.laneID),
+              overlaps,
+              laneInfos,
+              promotion,
             },
             null,
             2,

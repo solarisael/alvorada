@@ -3,8 +3,6 @@ description: Install the shared sol OpenCode plugins and sound pack into the loc
 agent: build
 ---
 
-`orchestrator-install` is now a compatibility alias.
+orchestrator-install is still a compatibility alias that points to sol-plugins.
 
-Use `sol-plugins` instead.
-
-Behavior is identical to the canonical install command.
+The shared runtime install includes the orchestrator plugin alongside the rest of the local plugin suite.

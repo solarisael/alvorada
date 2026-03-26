@@ -3,6 +3,11 @@ description: Inspect the live state of a previously dispatched sol-orchestrator 
 agent: build
 ---
 
-`orchestrator-status` is now a compatibility alias.
+Use `sol_orchestrator_status` to inspect a previously dispatched job.
 
-Use `orchestrator-status` or the shorter `orchestrator status` phrasing in documentation, but the command file remains the same until nested command routing exists.
+Report:
+
+- execution mode
+- prepared and executed return-chain state
+- lane summaries
+- adjudication details when present
