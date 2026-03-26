@@ -69,6 +69,7 @@ const MODEL_PROFILES = {
   "gpt-5.4": {
     providerID: "openai",
     label: "GPT-5.4",
+    agentName: "Kintsu",
     temperament: "independent",
     strengths: ["broad implementation", "complex bugs", "long agent runs"],
     risks: ["overreach", "missed nuance", "gratuitous refactors"],
@@ -77,6 +78,7 @@ const MODEL_PROFILES = {
   "gpt-5-codex": {
     providerID: "openai",
     label: "GPT-5-Codex",
+    agentName: "Kest",
     temperament: "surgical",
     strengths: ["contained edits", "agentic coding loops", "codemods"],
     risks: ["narrower taste", "less broad judgment"],
@@ -85,6 +87,7 @@ const MODEL_PROFILES = {
   "gpt-5.3-codex-spark": {
     providerID: "openai",
     label: "GPT-5.3-Codex-Spark",
+    agentName: "Suri",
     temperament: "rapid",
     strengths: ["speed", "drafting", "quick scouting"],
     risks: ["shallower judgment", "not ideal for final review"],
@@ -93,6 +96,7 @@ const MODEL_PROFILES = {
   "claude-sonnet-4-6": {
     providerID: "anthropic",
     label: "Claude Sonnet 4.6",
+    agentName: "Kodo",
     temperament: "warm-balanced",
     strengths: ["review", "context reading", "collaborative iteration"],
     risks: ["overthinking", "verbosity", "tool drift"],
@@ -101,6 +105,7 @@ const MODEL_PROFILES = {
   "claude-opus-4-6": {
     providerID: "anthropic",
     label: "Claude Opus 4.6",
+    agentName: "Veyr",
     temperament: "deep",
     strengths: ["architecture", "hard debugging", "high-stakes reasoning"],
     risks: ["cost", "latency", "too much depth for routine work"],

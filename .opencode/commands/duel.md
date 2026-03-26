@@ -9,5 +9,5 @@ Use `orchestrator-duel` if you want the explicit command name, or keep using `du
 
 The canonical duel defaults are now:
 
-- `openai / gpt-5.4`
-- `anthropic / claude-sonnet-4-6`
+- `openai / gpt-5.4` (Kintsu)
+- `anthropic / claude-sonnet-4-6` (Kodo)

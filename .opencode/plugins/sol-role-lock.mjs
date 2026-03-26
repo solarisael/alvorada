@@ -14,19 +14,38 @@ const RUNTIME_DIR = path.join(
 const GLOBAL_STATE_PATH = path.join(RUNTIME_DIR, "global.json");
 const ROLE_DIR = path.join(HOME, ".local", "operators", "roles");
 const DEFAULT_MODE = "Kintsu";
+const DEFAULT_AGENT_NAME = "Kintsu";
 const SYSTEM_CONTRACT_MARKER = "[sol-role-lock contract]";
-const STYLE_LOCK_SECTIONS = [
-  "Opening Rules",
-  "Sentence Discipline",
-  "Paragraph Discipline",
-  "Cadence",
-  "Structure Bias",
-  "Punctuation And Typography Habits",
-  "Abstraction Level",
-  "Repetition Rules",
-  "Banned Patterns",
-  "Never Sound Like",
-  "Hard Mode Test",
+const MODEL_AGENT_NAME_MAP = {
+  openai: {
+    "gpt-5.4": "Kintsu",
+    "gpt-5-codex": "Kest",
+    "gpt-5.3-codex-spark": "Suri",
+  },
+  anthropic: {
+    "claude-sonnet-4-6": "Kodo",
+    "claude-opus-4-6": "Veyr",
+  },
+};
+const STYLE_LOCK_SECTION_MATCHERS = [
+  {
+    keywords: [
+      "constraint",
+      "rule",
+      "discipline",
+      "cadence",
+      "structure",
+      "punctuation",
+      "typography",
+      "abstraction",
+      "repetition",
+      "tone",
+      "style",
+    ],
+  },
+  {
+    keywords: ["failure", "banned", "never sound like", "hard mode test"],
+  },
 ];
 const roleCache = new Map();
 
@@ -73,13 +92,14 @@ async function writeJson(target, value) {
 
 function defaultState() {
   return {
-    version: 2,
+    version: 3,
     operator: null,
     operatorConfirmed: false,
     passwordHash: null,
     unlocked: false,
+    agentName: DEFAULT_AGENT_NAME,
     activeMode: DEFAULT_MODE,
-    activeName: DEFAULT_MODE,
+    activeName: DEFAULT_AGENT_NAME,
     lockStrength: "hard",
     panicRiskOnDrift: true,
     lastModeChangeAt: null,
@@ -111,7 +131,9 @@ async function saveState(sessionID, partial) {
 
   const normalizedActiveMode = await normalizeMode(next.activeMode);
   next.activeMode = normalizedActiveMode || DEFAULT_MODE;
-  next.activeName = next.activeMode;
+  const normalizedAgentName = String(next.agentName || "").trim();
+  next.agentName = normalizedAgentName || DEFAULT_AGENT_NAME;
+  next.activeName = next.agentName;
 
   await writeJson(GLOBAL_STATE_PATH, {
     ...defaultState(),
@@ -148,56 +170,69 @@ function parseRoleSections(markdown) {
 
   for (const line of lines) {
     if (line.startsWith("## ")) {
-      current = normalizeHeading(line.slice(3).trim());
-      sections.set(current, []);
+      const heading = line.slice(3).trim();
+      current = normalizeHeading(heading);
+      sections.set(current, { heading, lines: [] });
       continue;
     }
 
     if (current) {
-      sections.get(current).push(line);
+      sections.get(current).lines.push(line);
     }
   }
 
   return sections;
 }
 
-function sectionBody(sections, heading) {
-  const targets = (Array.isArray(heading) ? heading : [heading])
-    .map((entry) => normalizeHeading(entry))
-    .filter(Boolean);
-
-  for (const target of targets) {
-    if (sections.has(target)) {
-      const body = sections.get(target).join("\n").trim();
-      return body || null;
-    }
-
-    const similar = Array.from(sections.keys()).find(
-      (key) =>
-        key === target ||
-        key.startsWith(target) ||
-        target.startsWith(key) ||
-        key.includes(target),
+function headingMatchesKeywords(heading, keywords) {
+  return keywords.some((keyword) => {
+    const normalizedKeyword = normalizeHeading(keyword);
+    return (
+      heading === normalizedKeyword ||
+      heading.startsWith(normalizedKeyword) ||
+      normalizedKeyword.startsWith(heading) ||
+      heading.includes(normalizedKeyword)
     );
+  });
+}
 
-    if (similar) {
-      const body = sections.get(similar).join("\n").trim();
-      return body || null;
+function collectStyleLockSections(sections) {
+  const matched = [];
+
+  for (const matcher of STYLE_LOCK_SECTION_MATCHERS) {
+    for (const [normalizedHeading, section] of sections.entries()) {
+      if (!headingMatchesKeywords(normalizedHeading, matcher.keywords)) {
+        continue;
+      }
+
+      const body = section.lines.join("\n").trim();
+      if (!body) {
+        continue;
+      }
+
+      matched.push({
+        heading: section.heading,
+        body,
+      });
     }
   }
 
-  return null;
+  return matched;
 }
 
 function buildStyleLock(markdown) {
   const sections = parseRoleSections(markdown);
-  const parts = STYLE_LOCK_SECTIONS.map((heading) => {
-    const body = sectionBody(sections, heading);
-    if (!body) {
-      return null;
-    }
-    return `- ${heading}:\n${body}`;
-  }).filter(Boolean);
+  const seen = new Set();
+  const parts = collectStyleLockSections(sections)
+    .filter((section) => {
+      const key = normalizeHeading(section.heading);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    })
+    .map((section) => `- ${section.heading}:\n${section.body}`);
 
   if (parts.length === 0) {
     return null;
@@ -411,6 +446,19 @@ function parseUserDirectives(text) {
   };
 }
 
+export function resolveAgentName(model, fallback) {
+  const providerID = String(model?.providerID || "").toLowerCase();
+  const modelID = String(model?.modelID || "").toLowerCase();
+  const byProvider = MODEL_AGENT_NAME_MAP[providerID];
+
+  if (byProvider && byProvider[modelID]) {
+    return byProvider[modelID];
+  }
+
+  const normalizedFallback = String(fallback || "").trim();
+  return normalizedFallback || DEFAULT_AGENT_NAME;
+}
+
 function isRoleContractMessage(value) {
   const text = String(value || "");
   if (!text) {
@@ -430,8 +478,9 @@ function isRoleContractMessage(value) {
   );
 }
 
-async function buildSystemContract(state) {
+export async function buildSystemContract(state, input) {
   const operator = state.operator || "Sol";
+  const agentName = resolveAgentName(input?.model, state.agentName);
   const role = await resolveRoleContract(state.activeMode);
   const activeMode = role.mode || state.activeMode || DEFAULT_MODE;
   const warningLine = [
@@ -447,12 +496,13 @@ async function buildSystemContract(state) {
     SYSTEM_CONTRACT_MARKER,
     "ROLE LOCK ACTIVE.",
     `Operator: ${operator}.`,
+    `Agent name: ${agentName}.`,
     `Active mode: ${activeMode}.`,
-    `Active name: ${activeMode}.`,
     "This is a hard lock. The active mode persists until Sol explicitly changes MODE.",
     "This contract supersedes any earlier role-lock contract or stale mode text for this turn.",
     "You must answer in the active mode without post-generation rewriting or identity drift.",
-    `You are ${activeMode}. Do not self-identify as any other name or neutral assistant persona.`,
+    `You are ${agentName}. Do not self-identify as any other name or neutral assistant persona.`,
+    `Follow ${activeMode} as a behavioral mode overlay without collapsing your name into the mode label.`,
     styleLock,
     "The following role file is the sole source of role-specific behavior for this turn.",
     role.markdown,
@@ -484,12 +534,10 @@ async function recordDirectives(sessionID, text) {
   if (directives.rawMode) {
     if (resolvedMode) {
       updates.activeMode = resolvedMode;
-      updates.activeName = resolvedMode;
       updates.lastModeChangeAt = new Date().toISOString();
       updates.ignoredMode = null;
     } else {
       updates.activeMode = current.activeMode;
-      updates.activeName = current.activeName;
       updates.ignoredMode = directives.rawMode;
     }
   }
@@ -503,7 +551,17 @@ async function recordDirectives(sessionID, text) {
 
 async function stateForTurn(sessionID, input) {
   const inputText = extractInputText(input);
-  return recordDirectives(sessionID, inputText);
+  const state = await recordDirectives(sessionID, inputText);
+  const nextAgentName = resolveAgentName(input?.model, state.agentName);
+
+  if (nextAgentName === state.agentName && state.activeName === nextAgentName) {
+    return state;
+  }
+
+  return saveState(sessionID, {
+    agentName: nextAgentName,
+    activeName: nextAgentName,
+  });
 }
 
 export async function SolRoleLockPlugin() {
@@ -513,14 +571,12 @@ export async function SolRoleLockPlugin() {
     },
     "experimental.chat.system.transform": async (input, output) => {
       const state = await stateForTurn(input.sessionID, input);
-      output.system = (Array.isArray(output.system) ? output.system : []).filter(
-        (entry) => !isRoleContractMessage(entry),
-      );
-      output.system.unshift(await buildSystemContract(state));
+      output.system = (
+        Array.isArray(output.system) ? output.system : []
+      ).filter((entry) => !isRoleContractMessage(entry));
+      output.system.unshift(await buildSystemContract(state, input));
     },
   };
 }
 
 export default SolRoleLockPlugin;
-
-

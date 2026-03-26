@@ -5,7 +5,7 @@
 - Project: alvorada
 - Repo: C:\laragon\www\alvorada
 - Updated_utc: 2026-03-18 23:18
-- Updated_by: Kintsu (GPT)
+- Updated_by: Kintsu (`openai / gpt-5.4`)
 - preferred_start_style: conversational
 - next_session: co-pilot
 - primary_outcome: polish the Nigredo archive and every Nigredo page for layout, motion, spacing, and consistency
@@ -17,7 +17,7 @@
 
 ## Alias Ledger
 
-- `Kintsu`: assistant name for GPT sessions.
+- `Kintsu`: assistant name for `openai / gpt-5.4` sessions.
 - Theme alias mappings remain unchanged from prior sessions.
 
 ## Active Scope

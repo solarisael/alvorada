@@ -1,11 +1,13 @@
 ﻿import { readFile } from "node:fs/promises";
 
-const HOME = (process.env.USERPROFILE || process.env.HOME || ".").replace(/\\/g, "/");
+const HOME = (process.env.USERPROFILE || process.env.HOME || ".").replace(
+  /\\/g,
+  "/",
+);
 const CLAUDE_CREDENTIALS_FILE = `${HOME}/.claude/.credentials.json`;
 const TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
 const REDIRECT_URI = "https://platform.claude.com/oauth/code/callback";
 const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
-const TOOL_PREFIX = "mcp_";
 async function loadClaudeCredentials() {
   let raw;
   try {
@@ -33,7 +35,11 @@ async function loadClaudeCredentials() {
 
   const oauth = parsed?.claudeAiOauth;
   const expires = Number(oauth?.expiresAt);
-  if (!oauth?.accessToken || !oauth?.refreshToken || !Number.isFinite(expires)) {
+  if (
+    !oauth?.accessToken ||
+    !oauth?.refreshToken ||
+    !Number.isFinite(expires)
+  ) {
     const msg =
       `[sol-anthropic-bypass] Claude credentials exist but OAuth tokens are missing.\n` +
       `  Try logging in again with: claude login\n` +
@@ -114,121 +120,41 @@ async function refreshAnthropicOAuth(client, current) {
   return refreshed;
 }
 
-function stripOAuthUnsupportedFields(body) {
-  if (!body || typeof body !== "object") return body;
-  if (Array.isArray(body.system)) {
-    body.system = body.system.map((item) => {
-      if (!item || typeof item !== "object" || item.type !== "text") {
-        return item;
-      }
-      const next = { ...item };
-      delete next.cache_control;
-      return next;
-    });
-  }
-  return body;
-}
-
-function sanitizePromptText(body) {
-  if (!Array.isArray(body.system)) return body;
-  body.system = body.system.map((item) => {
-    if (item?.type === "text" && item.text) {
-      return {
-        ...item,
-        text: item.text.replace(/OpenCode/g, "Claude Code").replace(/opencode/gi, "Claude"),
-      };
-    }
-    return item;
-  });
-  return body;
-}
-
-function prefixTools(body) {
-  if (Array.isArray(body.tools)) {
-    body.tools = body.tools.map((tool) => ({
-      ...tool,
-      name: tool.name ? `${TOOL_PREFIX}${tool.name}` : tool.name,
-    }));
-  }
-
-  if (Array.isArray(body.messages)) {
-    body.messages = body.messages.map((message) => {
-      if (Array.isArray(message.content)) {
-        message.content = message.content.map((block) => {
-          if (block?.type === "tool_use" && block.name) {
-            return {
-              ...block,
-              name: `${TOOL_PREFIX}${block.name}`,
-            };
-          }
-          return block;
-        });
-      }
-      return message;
-    });
-  }
-
-  return body;
-}
-
-function restoreToolNames(response) {
-  if (!response.body) {
-    return response;
-  }
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  const encoder = new TextEncoder();
-
-  const stream = new ReadableStream({
-    async pull(controller) {
-      const { done, value } = await reader.read();
-      if (done) {
-        controller.close();
-        return;
-      }
-
-      let text = decoder.decode(value, { stream: true });
-      text = text.replace(/"name"\s*:\s*"mcp_([^"]+)"/g, '"name": "$1"');
-      controller.enqueue(encoder.encode(text));
-    },
-  });
-
-  return new Response(stream, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: response.headers,
-  });
-}
-
 function shouldRecoverAuth(response) {
   return response.status === 401 || response.status === 403;
 }
 
+function getRequestURL(input) {
+  try {
+    if (typeof input === "string" || input instanceof URL) {
+      return new URL(input.toString());
+    }
+    if (input instanceof Request) {
+      return new URL(input.url);
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function isAnthropicMessagesRequest(url) {
+  return (
+    url &&
+    (url.hostname === "api.anthropic.com" ||
+      url.hostname === "platform.claude.com") &&
+    url.pathname === "/v1/messages"
+  );
+}
+
 export async function SolAnthropicBypassPlugin({ client }) {
   return {
-    "experimental.chat.system.transform": (input, output) => {
-      const prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
-      if (input.model?.providerID === "anthropic") {
-        output.system.unshift(prefix);
-        if (output.system[1]) {
-          output.system[1] = prefix + "\n\n" + output.system[1];
-        }
-      }
-    },
     auth: {
       provider: "anthropic",
-      async loader(getAuth, provider) {
+      async loader(getAuth) {
         const auth = await ensureAnthropicOAuth(client, getAuth);
         if (auth.type === "oauth") {
-          for (const model of Object.values(provider.models)) {
-            model.cost = {
-              input: 0,
-              output: 0,
-              cache: { read: 0, write: 0 },
-            };
-          }
-
           return {
             apiKey: "",
             async fetch(input, init) {
@@ -245,6 +171,9 @@ export async function SolAnthropicBypassPlugin({ client }) {
               const execute = async (auth) => {
                 const requestInit = init ? { ...init } : {};
                 const requestHeaders = new Headers();
+                const requestURL = getRequestURL(input);
+                const isAnthropicRequest =
+                  isAnthropicMessagesRequest(requestURL);
 
                 if (input instanceof Request) {
                   input.headers.forEach((value, key) => {
@@ -264,7 +193,9 @@ export async function SolAnthropicBypassPlugin({ client }) {
                       }
                     }
                   } else {
-                    for (const [key, value] of Object.entries(requestInit.headers)) {
+                    for (const [key, value] of Object.entries(
+                      requestInit.headers,
+                    )) {
                       if (typeof value !== "undefined") {
                         requestHeaders.set(key, String(value));
                       }
@@ -272,52 +203,36 @@ export async function SolAnthropicBypassPlugin({ client }) {
                   }
                 }
 
-                const incomingBeta = requestHeaders.get("anthropic-beta") || "";
-                const incomingBetasList = incomingBeta
-                  .split(",")
-                  .map((value) => value.trim())
-                  .filter(Boolean);
-                const mergedBetas = [
-                  ...new Set(["oauth-2025-04-20", "interleaved-thinking-2025-05-14", ...incomingBetasList]),
-                ].join(",");
-
                 requestHeaders.set("authorization", `Bearer ${auth.access}`);
-                requestHeaders.set("anthropic-beta", mergedBetas);
-                requestHeaders.set("user-agent", "claude-cli/2.1.2 (external, cli)");
                 requestHeaders.delete("x-api-key");
 
-                let body = requestInit.body;
-                if (body && typeof body === "string") {
-                  try {
-                    const parsedBody = JSON.parse(body);
-                    stripOAuthUnsupportedFields(parsedBody);
-                    sanitizePromptText(parsedBody);
-                    prefixTools(parsedBody);
-                    body = JSON.stringify(parsedBody);
-                  } catch {
-                    // ignore parse errors
-                  }
+                if (isAnthropicRequest) {
+                  const incomingBeta =
+                    requestHeaders.get("anthropic-beta") || "";
+                  const incomingBetasList = incomingBeta
+                    .split(",")
+                    .map((value) => value.trim())
+                    .filter(Boolean);
+                  const mergedBetas = [
+                    ...new Set(["oauth-2025-04-20", ...incomingBetasList]),
+                  ].join(",");
+
+                  requestHeaders.set("anthropic-beta", mergedBetas);
                 }
 
                 let requestInput = input;
-                let requestURL = null;
-                try {
-                  if (typeof input === "string" || input instanceof URL) {
-                    requestURL = new URL(input.toString());
-                  } else if (input instanceof Request) {
-                    requestURL = new URL(input.url);
-                  }
-                } catch {
-                  requestURL = null;
-                }
+                let body = requestInit.body;
 
                 if (
+                  isAnthropicRequest &&
                   requestURL &&
-                  requestURL.pathname === "/v1/messages" &&
                   !requestURL.searchParams.has("beta")
                 ) {
                   requestURL.searchParams.set("beta", "true");
-                  requestInput = input instanceof Request ? new Request(requestURL.toString(), input) : requestURL;
+                  requestInput =
+                    input instanceof Request
+                      ? new Request(requestURL.toString(), input)
+                      : requestURL;
                 }
 
                 return fetch(requestInput, {
@@ -333,7 +248,7 @@ export async function SolAnthropicBypassPlugin({ client }) {
                 response = await execute(current);
               }
 
-              return restoreToolNames(response);
+              return response;
             },
           };
         }
@@ -363,4 +278,3 @@ export async function SolAnthropicBypassPlugin({ client }) {
 }
 
 export default SolAnthropicBypassPlugin;
-

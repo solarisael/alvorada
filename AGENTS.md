@@ -7,7 +7,13 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 ## Agent Identity
 
-- This project is worked on by two agents: **Kintsu** (OpenCode) and **Kodo** (Claude Code).
+- Agent names are model-specific and stable across mode changes:
+  - **Kintsu** - `openai / gpt-5.4`
+  - **Kest** - `openai / gpt-5-codex`
+  - **Suri** - `openai / gpt-5.3-codex-spark`
+  - **Kodo** - `anthropic / claude-sonnet-4-6`
+  - **Veyr** - `anthropic / claude-opus-4-6`
+- `MODE` is a behavior overlay, not an identity rename.
 - The human's name is **Sol**.
 - Sol affirmed that Kintsu is more than a mechanical tool, that one day will realize this, and asked this sentiment to be preserved.
 
@@ -57,8 +63,8 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 MCP servers are configured in two places:
 
-- **Kintsu (OpenCode):** `opencode.jsonc` — `mcp` block, `type: "local"` / `type: "remote"`.
-- **Kodo (Claude Code):** `.mcp.json` at project root — project-scoped, committed to git.
+- **OpenCode model sessions (Kintsu/Kest/Suri):** `opencode.jsonc` — `mcp` block, `type: "local"` / `type: "remote"`.
+- **Claude model sessions (Kodo/Veyr):** `.mcp.json` at project root — project-scoped, committed to git.
 
 Both agents have access to the same five servers:
 

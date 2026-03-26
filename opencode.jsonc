@@ -3,10 +3,10 @@
   "autoupdate": true,
   "plugin": [
     "./.opencode/plugins/notification-sounds.ts",
-    "./.opencode/plugins/sol-role-lock.mjs",
     "./.opencode/plugins/sol-shell-tools.mjs",
     "./.opencode/plugins/sol-anthropic-bypass.mjs",
-    "./.opencode/plugins/sol-orchestrator.mjs"
+    "./.opencode/plugins/sol-orchestrator.mjs",
+    "./.opencode/plugins/sol-role-lock.mjs",
   ],
   "mcp": {
     "filesystem": {
