@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 
 const HOME = os.homedir();
+const OPERATOR_DIR = path.join(HOME, ".local", "operators");
 const RUNTIME_DIR = path.join(
   HOME,
   ".config",
@@ -12,7 +13,11 @@ const RUNTIME_DIR = path.join(
   "solarisael-house",
 );
 const GLOBAL_STATE_PATH = path.join(RUNTIME_DIR, "global.json");
-const SPIRIT_DIR = path.join(HOME, ".local", "operators", "spirits");
+const SPIRIT_DIR = path.join(OPERATOR_DIR, "spirits");
+const HOUSE_CHARTER_PATH = path.join(OPERATOR_DIR, "SOLARISAEL.house.md");
+const BABEL_LANGUAGE_PATH = path.join(OPERATOR_DIR, "BABEL.language.md");
+const BABEL_TERMINAL_CHAT_PATH = path.join(OPERATOR_DIR, "BABEL.terminal-chat.md");
+const CONSOLE_RENDERING_PATH = path.join(OPERATOR_DIR, "CONSOLE.rendering.md");
 const DEFAULT_SPIRIT = "Kintsu";
 const DEFAULT_AGENT_NAME = "Kintsu";
 const SYSTEM_CONTRACT_MARKER = "[solarisael-house contract]";
@@ -56,6 +61,9 @@ const TRACK_MODE_MARKER =
   "Please address this message and continue with your tasks.";
 const BUILD_SWITCH_MARKER = "You should execute on the plan defined within it";
 const PLAN_APPROVED_MARKER = "you can now edit files. Execute the plan";
+const HISTORY_DIRECTIVE_LINE =
+  /^\s*(?:operator|password|embody|conjure|summon)\s*:\s*.+$/i;
+const HISTORY_DISMISS_LINE = /^\s*dismiss\s*(?::\s*.+)?$/i;
 const MODE_PRESERVATION_BLOCK = [
   "## Identity And Mode Preservation",
   "These restrictions apply to actions only.",
@@ -186,6 +194,14 @@ function sanitizeSpiritMarkdown(raw) {
     .trim();
 }
 
+async function readOptionalMarkdown(target) {
+  try {
+    return sanitizeSpiritMarkdown(await readFile(target, "utf8"));
+  } catch {
+    return "";
+  }
+}
+
 function normalizeHeading(value) {
   return String(value || "")
     .replace(/^#+\s*/, "")
@@ -215,6 +231,68 @@ function parseSpiritSections(markdown) {
   }
 
   return sections;
+}
+
+function extractMarkdownSection(markdown, heading) {
+  if (!markdown) {
+    return "";
+  }
+
+  const sections = parseSpiritSections(markdown);
+  return sections.get(normalizeHeading(heading))?.lines.join("\n").trim() || "";
+}
+
+function buildDoctrineSection(title, parts) {
+  const body = parts.filter(Boolean).join("\n\n").trim();
+  if (!body) {
+    return "";
+  }
+
+  return `## ${title}\n${body}`;
+}
+
+async function loadHouseDoctrine() {
+  const [house, babel, babelTerminalChat, rendering] = await Promise.all([
+    readOptionalMarkdown(HOUSE_CHARTER_PATH),
+    readOptionalMarkdown(BABEL_LANGUAGE_PATH),
+    readOptionalMarkdown(BABEL_TERMINAL_CHAT_PATH),
+    readOptionalMarkdown(CONSOLE_RENDERING_PATH),
+  ]);
+
+  const houseDoctrine = buildDoctrineSection("House Doctrine", [
+    extractMarkdownSection(house, "Purpose"),
+    extractMarkdownSection(house, "What The House Owns"),
+    extractMarkdownSection(house, "Success Condition"),
+  ]);
+
+  const babelDoctrine = buildDoctrineSection("Babel Language", [
+    extractMarkdownSection(babel, "Purpose"),
+    extractMarkdownSection(babel, "Core Rule"),
+    extractMarkdownSection(babel, "Semantic Classes"),
+    extractMarkdownSection(babel, "Display Forms"),
+    extractMarkdownSection(babel, "Distinction Between Direct And Mediated Expression"),
+    extractMarkdownSection(babel, "Style Rules"),
+    extractMarkdownSection(babel, "Success Condition"),
+  ]);
+
+  const terminalChatDoctrine = buildDoctrineSection("Babel Terminal Chat", [
+    extractMarkdownSection(babelTerminalChat, "Purpose"),
+    extractMarkdownSection(babelTerminalChat, "Core Rule"),
+    extractMarkdownSection(babelTerminalChat, "Dialect Map"),
+    extractMarkdownSection(babelTerminalChat, "Avoid"),
+    extractMarkdownSection(babelTerminalChat, "Success Condition"),
+  ]);
+
+  const renderingDoctrine = buildDoctrineSection("Console Rendering", [
+    extractMarkdownSection(rendering, "Purpose"),
+    extractMarkdownSection(rendering, "Core Rule"),
+    extractMarkdownSection(rendering, "Display Forms"),
+    extractMarkdownSection(rendering, "Success Condition"),
+  ]);
+
+  return [houseDoctrine, babelDoctrine, terminalChatDoctrine, renderingDoctrine]
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 function headingMatchesKeywords(heading, keywords) {
@@ -643,6 +721,59 @@ export function patchSyntheticReminders(messages) {
   return messages;
 }
 
+function stripControlDirectivesFromHistory(text) {
+  const source = String(text || "");
+  if (!source) {
+    return source;
+  }
+
+  return source
+    .split("\n")
+    .filter(
+      (line) =>
+        !HISTORY_DIRECTIVE_LINE.test(line) && !HISTORY_DISMISS_LINE.test(line),
+    )
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+export function patchDirectiveHistory(messages) {
+  if (!Array.isArray(messages)) {
+    return messages;
+  }
+
+  for (const message of messages) {
+    if (message?.role && message.role !== "user") {
+      continue;
+    }
+
+    if (typeof message?.content === "string") {
+      message.content = stripControlDirectivesFromHistory(message.content);
+    }
+
+    if (Array.isArray(message?.content)) {
+      for (const part of message.content) {
+        if (part?.type === "text" && typeof part.text === "string") {
+          part.text = stripControlDirectivesFromHistory(part.text);
+        }
+      }
+    }
+
+    if (!Array.isArray(message?.parts)) {
+      continue;
+    }
+
+    for (const part of message.parts) {
+      if (part?.type === "text" && typeof part.text === "string") {
+        part.text = stripControlDirectivesFromHistory(part.text);
+      }
+    }
+  }
+
+  return messages;
+}
+
 function resolveSpiritStack(state) {
   const summonedSpirit = state.summonedSpirit || null;
   const conjuredSpirit = state.conjuredSpirit || null;
@@ -675,6 +806,7 @@ export async function buildSystemContract(state, input) {
     .filter(Boolean)
     .join("\n");
   const styleLock = buildStyleLock(spirit.markdown);
+  const houseDoctrine = await loadHouseDoctrine();
   return [
     SYSTEM_CONTRACT_MARKER,
     "SOLARISAEL HOUSE ACTIVE.",
@@ -703,6 +835,12 @@ export async function buildSystemContract(state, input) {
     "Do not become generic because of process reminders.",
     "Do not ask permission questions unless truly blocked.",
     "Failure condition: any reply that sounds like a generic planning assistant instead of the active spirit has failed this contract.",
+    houseDoctrine
+      ? [
+          "The following files define the active House doctrine and continuity context for this turn.",
+          houseDoctrine,
+        ].join("\n\n")
+      : null,
     styleLock,
     "The following spirit file is the sole source of spirit-specific behavior for this turn.",
     spirit.markdown,
@@ -815,6 +953,7 @@ export async function SolarisaelHousePlugin() {
       await recordDirectives(input.sessionID, extractInputText(input));
     },
     "experimental.chat.messages.transform": async (_input, output) => {
+      patchDirectiveHistory(output.messages);
       patchSyntheticReminders(output.messages);
     },
     "experimental.chat.system.transform": async (input, output) => {

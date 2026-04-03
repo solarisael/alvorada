@@ -1,10 +1,10 @@
 ---
-description: Dispatch a task through sol-orchestrator with automatic topology selection
+description: Dispatch a task through solarisael-orchestra with automatic topology selection
 agent: build
 ---
 
-`delegate` is now a compatibility alias.
+`delegate` is now a shorthand alias.
 
-Use `orchestrator` instead.
+Use `orchestra` instead.
 
-Behavior is identical to the canonical `orchestrator` command: explicit invocation, automatic topology selection, adapter-aware routing when available, and no orchestration unless the operator deliberately calls for it.
+Behavior is identical to the canonical `orchestra` command: explicit invocation, automatic topology selection, adapter-aware routing when available, and no orchestration unless the operator deliberately calls for it.

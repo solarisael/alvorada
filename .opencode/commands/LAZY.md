@@ -13,18 +13,21 @@ Explicit invocation forms:
 - `invoke command <name>`
 - `/<name>`
 
-## Orchestration Commands
+## Orchestra Commands
 
-- `orchestrator` — canonical entrypoint for explicit `sol-orchestrator` dispatch
-- `orchestrator-duel` — canonical side-by-side competition entrypoint
-- `orchestrator-status` — inspect a previously dispatched `sol-orchestrator` job by `jobID`
-- `sol-plugins` — install the shared sol plugins and sound pack into the local OpenCode runtime and scaffold new-repo orchestrator files when requested
-- `delegate`, `duel`, `orchestrator-install`, and `install-sol-runtime` remain compatibility aliases
+- `orchestra` — canonical entrypoint for explicit `solarisael-orchestra` dispatch
+- `orchestra-duel` — canonical side-by-side competition entrypoint
+- `orchestra-status` — inspect a previously dispatched `solarisael-orchestra` job by `jobID`
+- `sol-plugins` — install shared runtime plugins/sounds plus neutral operator baseline files
+- `scaffold-setup` — scaffold generic local `.opencode/commands/*` templates
+- `orchestra-setup` — scaffold `.opencode/solarisael-orchestra.json` and, by default, generic command scaffolding
+- `delegate` and `duel` remain shorthand aliases
 
 ## Quick Picks
 
 - Install shared plugins and sounds locally — `sol-plugins`
-- Scaffold a new repo for orchestrator use — `sol-plugins` with `projectConfig: true`
-- Dispatch worker lanes for a task — `orchestrator`
-- Run GPT vs Claude on one task — `orchestrator-duel`
-- Check a worker job later — `orchestrator-status`
+- Scaffold generic project command files — `scaffold-setup`
+- Bootstrap orchestra in the current repo — `orchestra-setup`
+- Dispatch worker lanes for a task — `orchestra`
+- Run GPT vs Claude on one task — `orchestra-duel`
+- Check a worker job later — `orchestra-status`

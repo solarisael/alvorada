@@ -3,7 +3,7 @@ description: Launch isolated worker lanes on the same task for side-by-side comp
 agent: build
 ---
 
-Use `sol_orchestrator_dispatch` in competition mode.
+Use `solarisael_orchestra_dispatch` in competition mode.
 
 Rules:
 

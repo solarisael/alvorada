@@ -1,10 +1,10 @@
 ---
-description: Install the shared sol OpenCode plugins and sound pack into the local operator runtime
+description: Legacy alias retained for runtime installation
 agent: build
 ---
 
-`install-sol-runtime` is now a compatibility alias.
+`install-sol-runtime` is deprecated.
 
-Use `sol-plugins` instead.
+Use `sol-plugins` for runtime installation.
 
-Behavior is identical to the canonical install command.
+Use `scaffold-setup` or `orchestra-setup` for project-local scaffolding.

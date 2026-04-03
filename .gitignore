@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 
 # Local visual references
 inspiration/
+vessel/state/
+vessel/backups/
+vessel/venvs/

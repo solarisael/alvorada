@@ -124,7 +124,7 @@ If mode is missing at session start, ask once and recommend `co-pilot`.
 
 ## Context and Alignment
 
-Read `progress.md` when Sol asks for alignment, context-checking, or session orientation. Do not run the full kickoff protocol on every session — only when Sol requests it or when required handoff fields are missing.
+Read `questbook/active.md` when Sol asks for alignment, context-checking, or session orientation. Do not run the full kickoff protocol on every session — only when Sol requests it or when required handoff fields are missing.
 
 Required send-off fields (validate at next session start if Sol filled them):
 
@@ -140,8 +140,8 @@ Required send-off fields (validate at next session start if Sol filled them):
 
 ## Docs Hygiene
 
-- Keep `progress.md` concise and current.
-- Move long history to `progress.archive.md`.
+- Keep `questbook/active.md` concise and current.
+- Move long history to `artifacts/archive/progress-history.md` or `questbook/completed.md`.
 - Update this file when architecture/commands/rule index changes.
 
 ## Send-Off Prompt Template

@@ -1,4 +1,4 @@
-﻿import {
+import {
   copyFile,
   mkdir,
   readdir,
@@ -11,6 +11,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { tool } from "@opencode-ai/plugin";
+import { buildSystemContract, loadHouseState } from "./solarisael-house.mjs";
 
 const CRUZEIRO_REPO_DEFS = [
   {
@@ -22,7 +23,7 @@ const CRUZEIRO_REPO_DEFS = [
   {
     id: "ai-shared",
     relPath: "ai-shared",
-    keywords: ["shared", "orchestrator", "opencode"],
+    keywords: ["shared", "orchestra", "opencode"],
   },
   {
     id: "infrastructure",
@@ -32,26 +33,33 @@ const CRUZEIRO_REPO_DEFS = [
 ];
 const SOUND_EXTENSIONS = new Set([".mp3", ".wav"]);
 const BRANCH_PART_DELIMITER = "--";
+const ORCHESTRA_RUNTIME_DIRNAME = "solarisael-orchestra";
 const DEFAULT_RUNTIME_SUBPATH = path.join(
   ".opencode",
   "runtime",
-  "sol-orchestrator",
+  ORCHESTRA_RUNTIME_DIRNAME,
 );
-const ADAPTER_CONFIG_BASENAME = "sol-orchestrator.json";
+const ADAPTER_CONFIG_BASENAME = "solarisael-orchestra.json";
 const INSTALL_PLUGIN_ALLOWLIST = [
   "notification-sounds.ts",
   "sol-anthropic-bypass.mjs",
-  "sol-orchestrator.mjs",
+  "solarisael-orchestra.mjs",
+  "solarisael-house.mjs",
 ];
 const COMMAND_TEMPLATE_SUBDIR = path.join("instructions", "commands");
+const INSTALL_INSTRUCTION_ALLOWLIST = ["AGENTS.shared.md"];
+const INSTALL_SPIRIT_ALLOWLIST = ["Kintsu.md"];
+const OPERATOR_ROOT_PARTS = [".local", "operators"];
 const PROJECT_COMMAND_TEMPLATE_FILES = [
   "LAZY.md",
   "sol-plugins.md",
-  "orchestrator-install.md",
-  "install-sol-runtime.md",
-  "orchestrator.md",
-  "orchestrator-duel.md",
-  "orchestrator-status.md",
+  "scaffold-setup.md",
+  "orchestra-setup.md",
+  "orchestra.md",
+  "orchestra-continue.md",
+  "orchestra-duel.md",
+  "orchestra-adjudicate.md",
+  "orchestra-status.md",
   "delegate.md",
   "duel.md",
 ];
@@ -245,6 +253,90 @@ function abbreviate(text, max = 280) {
     return clean;
   }
   return `${clean.slice(0, max - 3)}...`;
+}
+
+function describeLaneSeat(lane) {
+  switch (lane.role) {
+    case "reviewer":
+      return {
+        seat: "maestro reviewer",
+        focus: "pressure-test the work, surface risks, and sharpen the final shape",
+      };
+    case "architect":
+      return {
+        seat: "lead fae architect",
+        focus: "set the structure, guard the high-level shape, and catch deep faults early",
+      };
+    case "scout":
+      return {
+        seat: "quickstep fae scout",
+        focus: "move fast, gather signal, and return only the highest-value findings",
+      };
+    default:
+      return {
+        seat: "featured fae implementer",
+        focus: "carry the main line of execution and leave crisp, usable artifacts behind",
+      };
+  }
+}
+
+async function buildLaneHouseContract(state, lane) {
+  return buildSystemContract(state, {
+    model: {
+      providerID: lane.providerID,
+      modelID: lane.modelID,
+    },
+  });
+}
+
+function buildStageDirection({
+  lane,
+  topology,
+  repos,
+  branch,
+  operator,
+  write,
+}) {
+  const repoList = repos.join(", ");
+  const laneSeat = describeLaneSeat(lane);
+  const lines = [
+    "SOLARISAEL ORCHESTRA ACTIVE.",
+    "Solarisael House remains the sole authority for identity and spirit. The orchestra handles staging, routing, and coordination.",
+    `You are lane ${lane.laneID}, seated as the ${laneSeat.seat}.`,
+    `Assigned role: ${lane.role}.`,
+    `Stage function: ${laneSeat.focus}.`,
+    `Operator prefix: ${operator}.`,
+    `Topology: ${topology}.`,
+    `Target repos: ${repoList}.`,
+    `Write mode: ${write ? "enabled" : "disabled"}.`,
+    "Backstage IO handles session, runtime, and routing mechanics. Do not redesign backstage unless the task actually requires it.",
+  ];
+
+  if (branch) {
+    lines.push(`Assigned branch: ${branch}.`);
+  }
+
+  if (lane.temperament) {
+    lines.push(`Model temperament: ${lane.temperament}.`);
+  }
+  if (lane.strengths?.length) {
+    lines.push(`Known strengths: ${lane.strengths.join(", ")}.`);
+  }
+  if (lane.risks?.length) {
+    lines.push(`Failure risks to avoid: ${lane.risks.join(", ")}.`);
+  }
+
+  if (topology !== "relay") {
+    lines.push(
+      "Do not converse with sibling lanes unless the orchestra relays a structured blocker.",
+    );
+  } else {
+    lines.push(
+      "Work independently and emit crisp artifacts suitable for orchestra relay.",
+    );
+  }
+
+  return lines.join("\n");
 }
 
 function normalizeReturnChain(input) {
@@ -572,7 +664,7 @@ function createCruzeiroAdapter(root) {
       "ai-shared",
       ".opencode",
       "runtime",
-      "sol-orchestrator",
+      ORCHESTRA_RUNTIME_DIRNAME,
     ),
     repoDefs,
     repoDirs: buildRepoDirectoryMap(repoDefs),
@@ -594,12 +686,12 @@ function createGenericAdapter(root) {
     repoDirs: buildRepoDirectoryMap(repoDefs),
     notes: [
       "New project detected. Running in generic single-repo mode.",
-      `Add .opencode/${ADAPTER_CONFIG_BASENAME} to customize repo routing and runtime paths.`,
+        `Add .opencode/${ADAPTER_CONFIG_BASENAME} to customize repo routing and runtime paths.`,
     ],
   };
 }
 
-function createConfigAdapter(root, config) {
+function createConfigAdapter(root, config, configPathOverride = null) {
   const repoDefs = normalizeRepoDefinitions(
     root,
     Array.isArray(config?.repos) && config.repos.length
@@ -620,9 +712,10 @@ function createConfigAdapter(root, config) {
     ),
     repoDefs,
     repoDirs: buildRepoDirectoryMap(repoDefs),
-    configPath: path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME),
+    configPath:
+      configPathOverride || path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME),
     notes: [
-      `.opencode/${ADAPTER_CONFIG_BASENAME} loaded for project-specific routing.`,
+      `${path.relative(root, configPathOverride || path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME)).replace(/\\/g, "/")} loaded for project-specific routing.`,
     ],
   };
 }
@@ -631,7 +724,7 @@ function buildProjectConfigTemplate({ root, projectName, adapter }) {
   if (adapter?.id === "cruzeiro") {
     return {
       projectName: "cruzeiro",
-      runtimeDir: "ai-shared/.opencode/runtime/sol-orchestrator",
+      runtimeDir: `ai-shared/.opencode/runtime/${ORCHESTRA_RUNTIME_DIRNAME}`,
       repos: CRUZEIRO_REPO_DEFS.map((repo) => ({
         id: repo.id,
         path: repo.relPath,
@@ -662,27 +755,26 @@ async function findAdapterConfigRoot(...candidates) {
       path.join(".opencode", ADAPTER_CONFIG_BASENAME),
     );
     if (matched) {
-      return path.dirname(path.dirname(matched));
+      return {
+        root: path.dirname(path.dirname(matched)),
+        path: matched,
+        basename: ADAPTER_CONFIG_BASENAME,
+      };
     }
   }
   return null;
 }
 
 async function resolveAdapter({ $, directory, worktree }) {
-  const configRoot = await findAdapterConfigRoot(
+  const configInfo = await findAdapterConfigRoot(
     directory,
     worktree,
     path.dirname(directory),
   );
-  if (configRoot) {
-    const configPath = path.join(
-      configRoot,
-      ".opencode",
-      ADAPTER_CONFIG_BASENAME,
-    );
-    const config = await readJson(configPath, null);
+  if (configInfo) {
+    const config = await readJson(configInfo.path, null);
     if (config) {
-      return createConfigAdapter(configRoot, config);
+      return createConfigAdapter(configInfo.root, config, configInfo.path);
     }
   }
 
@@ -885,6 +977,7 @@ function getWorktreeSegments(branch) {
 }
 
 function buildPrompt({
+  houseContract,
   task,
   lane,
   topology,
@@ -894,50 +987,30 @@ function buildPrompt({
   write,
   laneAssignment,
 }) {
-  const repoList = repos.join(", ");
-  const sentences = [
-    `You are lane ${lane.laneID}.`,
-    `Operator prefix: ${operator}.`,
-    `Assigned role: ${lane.role}.`,
-    `Topology: ${topology}.`,
-    `Target repos: ${repoList}.`,
-    `Write mode: ${write ? "enabled" : "disabled"}.`,
-  ];
-
-  if (branch) {
-    sentences.push(`Assigned branch: ${branch}.`);
-  }
-
-  if (lane.temperament) {
-    sentences.push(`Model temperament: ${lane.temperament}.`);
-  }
-  if (lane.strengths?.length) {
-    sentences.push(`Known strengths: ${lane.strengths.join(", ")}.`);
-  }
-  if (lane.risks?.length) {
-    sentences.push(`Failure risks to avoid: ${lane.risks.join(", ")}.`);
-  }
-
-  if (topology !== "relay") {
-    sentences.push(
-      "Do not converse with sibling lanes unless the orchestrator relays a structured blocker.",
-    );
-  } else {
-    sentences.push(
-      "Work independently and emit crisp artifacts suitable for orchestrator relay.",
-    );
-  }
+  const sections = [
+    houseContract,
+    buildStageDirection({
+      lane,
+      topology,
+      repos,
+      branch,
+      operator,
+      write,
+    }),
+  ].filter(Boolean);
 
   if (laneAssignment) {
-    sentences.push(
-      `Your lane-specific assignment is: ${laneAssignment}`,
-      "Answer only your own lane-specific assignment. Do not solve, summarize, or repeat sibling lane assignments.",
+    sections.push(
+      [
+        `Lane-specific assignment: ${laneAssignment}`,
+        "Answer only your own lane-specific assignment. Do not solve, summarize, or repeat sibling lane assignments.",
+      ].join("\n"),
     );
   }
 
-  sentences.push(`Task: ${task}`);
+  sections.push(`Task:\n${task}`);
 
-  return sentences.join("\n");
+  return sections.join("\n\n");
 }
 
 async function ensureWorktree({ $, root, repo, repoDir, branch }) {
@@ -1071,6 +1144,7 @@ function pickLaneAgent(role) {
 }
 
 function buildLaneSubtask({
+  houseContract,
   task,
   lane,
   topology,
@@ -1081,7 +1155,8 @@ function buildLaneSubtask({
   laneAssignment,
 }) {
   const prompt = buildPrompt({
-    task: `${task}\nRuntime note: this lane is running as a native managed subagent under a lane-local parent session. Do not hand work back to the parent; complete the lane task inside the subagent and keep the output crisp for orchestrator synthesis.`,
+    houseContract,
+    task: `${task}\nRuntime note: this lane is running as a native managed subagent under a lane-local parent session. Do not hand work back to the parent; complete the lane task inside the subagent and keep the output crisp for orchestra synthesis.`,
     lane,
     topology,
     repos: [repo],
@@ -1097,11 +1172,12 @@ function buildLaneSubtask({
     agent,
     providerID: lane.providerID,
     modelID: lane.modelID,
-    command: "orchestrator-inline-lane",
+    command: "orchestra-inline-lane",
   };
 }
 
 function buildLaneParentInstruction({
+  houseContract,
   task,
   lane,
   topology,
@@ -1113,6 +1189,7 @@ function buildLaneParentInstruction({
 }) {
   const agent = pickLaneAgent(lane.role);
   const lanePrompt = buildPrompt({
+    houseContract,
     task,
     lane,
     topology,
@@ -1131,7 +1208,7 @@ function buildLaneParentInstruction({
 }
 
 function createLaneParentTitle(taskSlug, lane) {
-  return `[sol-orchestrator:${taskSlug}] ${lane.laneID} parent`;
+  return `[solarisael-orchestra:${taskSlug}] ${lane.laneID} parent`;
 }
 
 async function waitForNewChildSession(
@@ -1440,7 +1517,7 @@ async function applyPatchText($, targetDirectory, patchText) {
 
   const tempPath = path.join(
     os.tmpdir(),
-    `sol-orchestrator-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.patch`,
+    `solarisael-orchestra-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.patch`,
   );
 
   try {
@@ -1507,6 +1584,67 @@ async function upsertPluginConfig(configPath, pluginUris) {
   return current.plugin;
 }
 
+async function upsertInstructionConfig(configPath, instructions) {
+  const current = (await readJson(configPath, {})) || {};
+  const existing = Array.isArray(current.instructions)
+    ? current.instructions
+    : [];
+  const nextInstructions = [...existing];
+
+  for (const entry of instructions) {
+    if (!nextInstructions.includes(entry)) {
+      nextInstructions.push(entry);
+    }
+  }
+
+  current.instructions = nextInstructions;
+  await writeJson(configPath, current);
+  return current.instructions;
+}
+
+async function scaffoldOperatorBaseline({ pluginRoot, operatorRoot, dryRun }) {
+  const sourceSpiritsDir = path.join(pluginRoot, "spirits");
+  const copiedInstructions = [];
+  const copiedSpirits = [];
+
+  await Promise.all([
+    dryRun ? null : ensureDirectory(operatorRoot),
+    dryRun ? null : ensureDirectory(path.join(operatorRoot, "spirits")),
+  ]);
+
+  for (const file of INSTALL_INSTRUCTION_ALLOWLIST) {
+    const source = path.join(pluginRoot, file);
+    if (!(await pathExists(source))) {
+      continue;
+    }
+
+    const target = path.join(operatorRoot, file);
+    if (!dryRun) {
+      await copyFile(source, target);
+    }
+    copiedInstructions.push(target);
+  }
+
+  for (const file of INSTALL_SPIRIT_ALLOWLIST) {
+    const source = path.join(sourceSpiritsDir, file);
+    if (!(await pathExists(source))) {
+      continue;
+    }
+
+    const target = path.join(operatorRoot, "spirits", file);
+    if (!dryRun) {
+      await copyFile(source, target);
+    }
+    copiedSpirits.push(target);
+  }
+
+  return {
+    operatorRoot,
+    copiedInstructions,
+    copiedSpirits,
+  };
+}
+
 async function scaffoldProjectCommandFiles({
   pluginRoot,
   targetRoot,
@@ -1553,7 +1691,42 @@ async function scaffoldProjectCommandFiles({
   };
 }
 
-export async function SolOrchestratorPlugin({
+async function scaffoldOrchestratorProjectConfig({
+  targetRoot,
+  adapter,
+  projectName,
+  overwrite,
+  dryRun,
+}) {
+  const targetProjectConfigPath = path.join(
+    targetRoot,
+    ".opencode",
+    ADAPTER_CONFIG_BASENAME,
+  );
+  const exists = await pathExists(targetProjectConfigPath);
+  const shouldWrite = overwrite || !exists;
+  const nextConfig = buildProjectConfigTemplate({
+    root: targetRoot,
+    projectName,
+    adapter,
+  });
+
+  if (shouldWrite && !dryRun) {
+    await writeJson(targetProjectConfigPath, nextConfig);
+  }
+
+  return {
+    path: targetProjectConfigPath,
+    existed: exists,
+    overwritten: Boolean(exists && overwrite),
+    created: Boolean(!exists),
+    written: shouldWrite,
+    projectName: nextConfig.projectName,
+    template: nextConfig,
+  };
+}
+
+export async function SolarisaelOrchestraPlugin({
   client,
   directory,
   worktree,
@@ -1565,7 +1738,7 @@ export async function SolOrchestratorPlugin({
 
   return {
     tool: {
-      sol_orchestrator_dispatch: tool({
+      solarisael_orchestra_dispatch: tool({
         description:
           "Dispatch isolated or relayed worker lanes for repository tasks",
         args: {
@@ -1625,7 +1798,7 @@ export async function SolOrchestratorPlugin({
           if (!operator) {
             if (adapter.kind === "generic") {
               throw new Error(
-                "New project detected, but the operator could not be inferred from the current branch. Set OPENCODE_OPERATOR or switch to an operator branch like `sol`, then re-run orchestrator. Add .opencode/sol-orchestrator.json if you also want project-aware repo routing.",
+                "New project detected, but the operator could not be inferred from the current branch. Set OPENCODE_OPERATOR or switch to an operator branch like `sol`, then re-run orchestra. Add .opencode/solarisael-orchestra.json if you also want project-aware repo routing.",
               );
             }
             throw new Error(
@@ -1633,6 +1806,7 @@ export async function SolOrchestratorPlugin({
             );
           }
 
+          const houseState = await loadHouseState(context.sessionID);
           const taskSlug = slugifySegment(args.taskSlug || args.task, "task");
           const repos = inferRepos({
             requestedRepos: args.repos,
@@ -1699,7 +1873,9 @@ export async function SolOrchestratorPlugin({
               );
               const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
               const laneDirectory = adapter.repoDirs[repo] || adapter.root;
+              const houseContract = await buildLaneHouseContract(houseState, lane);
               const prompt = buildPrompt({
+                houseContract,
                 task: `${laneTask}\nRuntime note: this lane is running as an inline managed subtask attached to the parent session, not a separate worktree session.`,
                 lane,
                 topology,
@@ -1716,7 +1892,7 @@ export async function SolOrchestratorPlugin({
                 agent,
                 providerID: lane.providerID,
                 modelID: lane.modelID,
-                command: "orchestrator-inline-lane",
+                command: "orchestra-inline-lane",
               };
               const beforeChildren = await listChildSessions(
                 client,
@@ -1801,7 +1977,9 @@ export async function SolOrchestratorPlugin({
                 laneDirectory,
                 createLaneParentTitle(taskSlug, lane),
               );
+              const houseContract = await buildLaneHouseContract(houseState, lane);
               const subtask = buildLaneSubtask({
+                houseContract,
                 task: laneTask,
                 lane,
                 topology,
@@ -1812,6 +1990,7 @@ export async function SolOrchestratorPlugin({
                 laneAssignment,
               });
               const parentInstruction = buildLaneParentInstruction({
+                houseContract,
                 task: laneTask,
                 lane,
                 topology,
@@ -1904,9 +2083,11 @@ export async function SolOrchestratorPlugin({
                       branch,
                     })
                   : repoDir;
-              const title = `[sol-orchestrator] ${taskSlug} :: ${lane.modelID}`;
+              const houseContract = await buildLaneHouseContract(houseState, lane);
+              const title = `[solarisael-orchestra] ${taskSlug} :: ${lane.modelID}`;
               const session = await createSession(client, laneDirectory, title);
               const prompt = buildPrompt({
+                houseContract,
                 task: laneTask,
                 lane,
                 topology,
@@ -2011,9 +2192,9 @@ export async function SolOrchestratorPlugin({
               operatorActionRequired: true,
               nextActionPolicy: "wait_for_operator",
               allowedFollowups: [
-                "sol_orchestrator_status",
-                "sol_orchestrator_continue",
-                "sol_orchestrator_adjudicate",
+                "solarisael_orchestra_status",
+                "solarisael_orchestra_continue",
+                "solarisael_orchestra_adjudicate",
               ],
               lanes: laneRecords.map((lane) => ({
                 laneID: lane.laneID,
@@ -2034,7 +2215,7 @@ export async function SolOrchestratorPlugin({
               })),
               operatorPrompt:
                 adapter.kind === "generic"
-                  ? "New project detected. sol-orchestrator is running in generic single-repo mode. If you want project-aware routing, add .opencode/sol-orchestrator.json and tell me the repo map you want."
+                  ? "New project detected. solarisael-orchestra is running in generic single-repo mode. If you want project-aware routing, add .opencode/solarisael-orchestra.json and tell me the repo map you want."
                   : null,
             },
             null,
@@ -2042,14 +2223,14 @@ export async function SolOrchestratorPlugin({
           );
         },
       }),
-      sol_orchestrator_status: tool({
+      solarisael_orchestra_status: tool({
         description:
-          "Inspect a dispatched sol-orchestrator job when the operator explicitly asks",
+          "Inspect a dispatched solarisael-orchestra job when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by sol_orchestrator_dispatch"),
+            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
         },
         async execute(args) {
           const jobPath = path.join(adapter.runtimeDir, `${args.jobID}.json`);
@@ -2139,14 +2320,14 @@ export async function SolOrchestratorPlugin({
           );
         },
       }),
-      sol_orchestrator_continue: tool({
+      solarisael_orchestra_continue: tool({
         description:
-          "Advance a dispatched sol-orchestrator job using its prepared return chain when the operator explicitly asks",
+          "Advance a dispatched solarisael-orchestra job using its prepared return chain when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by sol_orchestrator_dispatch"),
+            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
           step: tool.schema
             .number()
             .int()
@@ -2243,14 +2424,14 @@ export async function SolOrchestratorPlugin({
           );
         },
       }),
-      sol_orchestrator_adjudicate: tool({
+      solarisael_orchestra_adjudicate: tool({
         description:
           "Compare lane outputs/diffs and optionally promote safe lane changes into the parent repo when the operator explicitly asks",
         args: {
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by sol_orchestrator_dispatch"),
+            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
           promote: tool.schema
             .boolean()
             .default(false)
@@ -2485,32 +2666,6 @@ export async function SolOrchestratorPlugin({
             .describe(
               "Copy shared sound assets into the user OpenCode sounds directory",
             ),
-          projectConfig: tool.schema
-            .boolean()
-            .default(false)
-            .describe(
-              "Scaffold .opencode/sol-orchestrator.json for the current project when missing",
-            ),
-          projectCommands: tool.schema
-            .boolean()
-            .optional()
-            .describe(
-              "Scaffold minimal .opencode/commands files for orchestrator setup; defaults to true when projectConfig is enabled",
-            ),
-          overwriteProjectConfig: tool.schema
-            .boolean()
-            .default(false)
-            .describe(
-              "Overwrite an existing .opencode/sol-orchestrator.json when scaffolding",
-            ),
-          overwriteProjectCommands: tool.schema
-            .boolean()
-            .default(false)
-            .describe("Overwrite existing scaffolded .opencode/commands files"),
-          projectName: tool.schema
-            .string()
-            .optional()
-            .describe("Optional project name to use in the scaffolded config"),
           dryRun: tool.schema
             .boolean()
             .default(false)
@@ -2538,11 +2693,12 @@ export async function SolOrchestratorPlugin({
             "opencode",
             "opencode.json",
           );
+          const operatorRoot = path.join(home, ...OPERATOR_ROOT_PARTS);
           const copiedPlugins = [];
           const copiedSounds = [];
+          let operatorBaseline = null;
           const pluginUris = [];
-          let projectConfig = null;
-          let projectCommands = null;
+          const instructionEntries = [];
 
           if (args.plugins) {
             const pluginFiles = [];
@@ -2582,6 +2738,22 @@ export async function SolOrchestratorPlugin({
             }
           }
 
+          operatorBaseline = await scaffoldOperatorBaseline({
+            pluginRoot,
+            operatorRoot,
+            dryRun: args.dryRun,
+          });
+
+          for (const file of INSTALL_INSTRUCTION_ALLOWLIST) {
+            if (
+              operatorBaseline.copiedInstructions.some((entry) =>
+                entry.endsWith(file),
+              )
+            ) {
+              instructionEntries.push(`~/.local/operators/${file}`);
+            }
+          }
+
           let configuredPlugins = null;
           if (pluginUris.length) {
             if (!args.dryRun) {
@@ -2598,45 +2770,22 @@ export async function SolOrchestratorPlugin({
             }
           }
 
-          if (args.projectConfig) {
-            const targetRoot = adapter.root;
-            const targetProjectConfigPath = path.join(
-              targetRoot,
-              ".opencode",
-              ADAPTER_CONFIG_BASENAME,
-            );
-            const exists = await pathExists(targetProjectConfigPath);
-            const shouldWrite = args.overwriteProjectConfig || !exists;
-            const nextConfig = buildProjectConfigTemplate({
-              root: targetRoot,
-              projectName: args.projectName,
-              adapter,
-            });
-
-            if (shouldWrite && !args.dryRun) {
-              await writeJson(targetProjectConfigPath, nextConfig);
+          let configuredInstructions = null;
+          if (instructionEntries.length) {
+            if (!args.dryRun) {
+              configuredInstructions = await upsertInstructionConfig(
+                configPath,
+                instructionEntries,
+              );
+            } else {
+              const current = (await readJson(configPath, {})) || {};
+              configuredInstructions = unique([
+                ...(Array.isArray(current.instructions)
+                  ? current.instructions
+                  : []),
+                ...instructionEntries,
+              ]);
             }
-
-            projectConfig = {
-              path: targetProjectConfigPath,
-              existed: exists,
-              overwritten: Boolean(exists && args.overwriteProjectConfig),
-              created: Boolean(!exists),
-              written: shouldWrite,
-              projectName: nextConfig.projectName,
-              template: nextConfig,
-            };
-          }
-
-          const wantsProjectCommands =
-            args.projectCommands ?? args.projectConfig;
-          if (wantsProjectCommands) {
-            projectCommands = await scaffoldProjectCommandFiles({
-              pluginRoot,
-              targetRoot: adapter.root,
-              dryRun: args.dryRun,
-              overwrite: args.overwriteProjectCommands,
-            });
           }
 
           return JSON.stringify(
@@ -2645,11 +2794,102 @@ export async function SolOrchestratorPlugin({
               copiedPlugins,
               copiedSounds,
               configuredPlugins,
-              projectConfig,
-              projectCommands,
+              configuredInstructions,
+              operatorBaseline,
               sourcePluginsDir,
               sourceSoundsDir,
               configPath,
+            },
+            null,
+            2,
+          );
+        },
+      }),
+      sol_scaffold_setup: tool({
+        description:
+          "Scaffold local .opencode command templates for the current project",
+        args: {
+          overwrite: tool.schema
+            .boolean()
+            .default(false)
+            .describe("Overwrite existing scaffolded command files"),
+          dryRun: tool.schema
+            .boolean()
+            .default(false)
+            .describe("Report scaffold actions without writing files"),
+        },
+        async execute(args) {
+          const projectCommands = await scaffoldProjectCommandFiles({
+            pluginRoot,
+            targetRoot: adapter.root,
+            dryRun: args.dryRun,
+            overwrite: args.overwrite,
+          });
+
+          return JSON.stringify(
+            {
+              dryRun: args.dryRun,
+              targetRoot: adapter.root,
+              projectCommands,
+            },
+            null,
+            2,
+          );
+        },
+      }),
+      solarisael_orchestra_setup: tool({
+        description:
+          "Scaffold orchestra project config and optional command templates",
+        args: {
+          projectName: tool.schema
+            .string()
+            .optional()
+            .describe("Optional project name to use in the scaffolded config"),
+          overwriteProjectConfig: tool.schema
+            .boolean()
+            .default(false)
+            .describe(
+              "Overwrite an existing .opencode/solarisael-orchestra.json when scaffolding",
+            ),
+          includeScaffoldSetup: tool.schema
+            .boolean()
+            .default(true)
+            .describe(
+              "Also scaffold .opencode command templates needed for local command invocation",
+            ),
+          overwriteScaffoldSetup: tool.schema
+            .boolean()
+            .default(false)
+            .describe("Overwrite existing scaffolded command files"),
+          dryRun: tool.schema
+            .boolean()
+            .default(false)
+            .describe("Report setup actions without writing files"),
+        },
+        async execute(args) {
+          const projectConfig = await scaffoldOrchestratorProjectConfig({
+            targetRoot: adapter.root,
+            adapter,
+            projectName: args.projectName,
+            overwrite: args.overwriteProjectConfig,
+            dryRun: args.dryRun,
+          });
+
+          const projectCommands = args.includeScaffoldSetup
+            ? await scaffoldProjectCommandFiles({
+                pluginRoot,
+                targetRoot: adapter.root,
+                dryRun: args.dryRun,
+                overwrite: args.overwriteScaffoldSetup,
+              })
+            : null;
+
+          return JSON.stringify(
+            {
+              dryRun: args.dryRun,
+              targetRoot: adapter.root,
+              projectConfig,
+              projectCommands,
             },
             null,
             2,
@@ -2660,4 +2900,4 @@ export async function SolOrchestratorPlugin({
   };
 }
 
-export default SolOrchestratorPlugin;
+export default SolarisaelOrchestraPlugin;
