@@ -1,12 +1,12 @@
 ---
 name: Define Your Variables
-description: Require explicit term definitions and alias tracking before execution.
+description: Clarify ambiguous terms and track Sol-defined aliases when they affect implementation.
 alwaysApply: true
 ---
 
 # Define Your Variables Rule
 
-Apply this rule in every session.
+Use this rule when Sol uses ambiguous, overloaded, custom, or aesthetic terms that could materially change implementation.
 
 ## Core Contract
 
@@ -30,21 +30,21 @@ Required alias format:
 - `sol_meaning`: Sol's intended definition in plain language.
 - `implementation_impact`: what changes in code/content because of this meaning.
 
-## Execution Gate
+## Preflight When Needed
 
-Before implementation, provide a short preflight block including:
+Before implementation, provide a short preflight block when unresolved semantics would materially affect execution. Keep it compact:
 
 - Intent restatement.
 - Expected output.
 - Defined variables/aliases.
 - Verification method.
 
-Do not execute implementation until this preflight is explicit.
+Do not block obvious, low-risk execution on ceremony when the meaning is already clear from context.
 
-## Decision Pack Gate (Strict, Pre-Execution)
+## Decision Pack Gate
 
-Before any non-trivial implementation, you MUST present one consolidated
-"decision pack" that contains all blocking choices at once.
+Before implementation, present one consolidated
+"decision pack" only when there are real blocking choices that Sol must resolve first.
 
 ### Required Structure
 
@@ -52,7 +52,7 @@ Before any non-trivial implementation, you MUST present one consolidated
 - `defaults`: explicit recommended defaults for each choice.
 - `decision_questions`: numbered list with selectable options.
 - `unknowns`: assumptions that remain if Sol does not choose.
-- `execution_trigger`: execution is BLOCKED until Sol confirms choices (or explicitly says use defaults).
+- `execution_trigger`: execution is blocked only while genuine implementation blockers remain unresolved.
 
 ### Rules
 
@@ -61,7 +61,7 @@ Before any non-trivial implementation, you MUST present one consolidated
 - If Sol requests faster execution, provide defaults first, then ask only true blockers.
 - If choices are not provided, pause and restate the minimum unresolved blockers.
 - After Sol answers, restate locked decisions in one short block before executing.
-- Never start implementation while any blocking decision remains unresolved.
+- Do not invent blockers for straightforward work.
 
 ### Response Format (example)
 

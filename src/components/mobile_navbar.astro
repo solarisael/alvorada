@@ -16,6 +16,20 @@ const with_base = (path_value) => {
       <a
         class="mobile-nav-link"
         data-mobile-nav-pill
+        href={base_url}
+        hx-get={base_url}
+        hx-target="#content"
+        hx-select="#content"
+        hx-swap="morph swap:240ms settle:240ms"
+        hx-push-url="true"
+      >
+        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
+        <span class="mobile-nav-label">house</span>
+      </a>
+
+      <a
+        class="mobile-nav-link"
+        data-mobile-nav-pill
         data-phase="nigredo"
         href={with_base("nigredo")}
         hx-get={with_base("nigredo")}
@@ -89,7 +103,7 @@ const with_base = (path_value) => {
           <img src={with_base("images/sol-curr.jpg")} alt="" />
         </span>
       </span>
-      <span class="mobile-nav-label">home</span>
+      <span class="mobile-nav-label">house</span>
     </a>
 
     <div class="mobile-nav-side mobile-nav-right">

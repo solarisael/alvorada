@@ -29,8 +29,8 @@ Default model references:
 - `openai / gpt-5.4` - Kintsu
 - `openai / gpt-5-codex` - Kest
 - `openai / gpt-5.3-codex-spark` - Suri
-- `anthropic / claude-opus-4-6` - Veyr
-- `anthropic / claude-sonnet-4-6` - Kodo
+- `anthropic / claude-opus-4-6` - Kodo
+- `anthropic / claude-sonnet-4-6` - Veyr
 
 After the tool returns:
 

@@ -4,15 +4,12 @@ const MOTION_MEDIA_QUERY = "(prefers-reduced-motion: reduce)";
 const SHIFT_MAX_PX = 5;
 const SHIFT_TRIGGER_PX = 2;
 const SHIFT_VELOCITY_FACTOR = 0.16;
-const SHIFT_EASE_FACTOR = 0.18;
-const SHIFT_DAMPING_FACTOR = 0.9;
-const SCROLL_THROTTLE_MS = 16;
+const SCROLL_THROTTLE_MS = 8;
+const SHIFT_RESET_DELAY_MS = 80;
 
-let current_shift_px = 0;
-let target_shift_px = 0;
-let raf_id = 0;
 let last_scroll_y = 0;
 let last_scroll_handle_at = 0;
+let reset_timeout_id = 0;
 
 const clamp_value = (value, min_value, max_value) => {
   return Math.min(max_value, Math.max(min_value, value));
@@ -26,36 +23,23 @@ const set_shift_css_var = (value_px) => {
 };
 
 const reset_shift = () => {
-  current_shift_px = 0;
-  target_shift_px = 0;
-
-  if (raf_id) {
-    window.cancelAnimationFrame(raf_id);
-    raf_id = 0;
+  if (reset_timeout_id) {
+    window.clearTimeout(reset_timeout_id);
+    reset_timeout_id = 0;
   }
 
   set_shift_css_var(0);
 };
 
-const animate_shift = () => {
-  current_shift_px += (target_shift_px - current_shift_px) * SHIFT_EASE_FACTOR;
-  target_shift_px *= SHIFT_DAMPING_FACTOR;
-
-  if (Math.abs(current_shift_px) < 0.02 && Math.abs(target_shift_px) < 0.02) {
-    reset_shift();
-    return;
+const queue_reset = () => {
+  if (reset_timeout_id) {
+    window.clearTimeout(reset_timeout_id);
   }
 
-  set_shift_css_var(current_shift_px);
-  raf_id = window.requestAnimationFrame(animate_shift);
-};
-
-const queue_animation = () => {
-  if (raf_id) {
-    return;
-  }
-
-  raf_id = window.requestAnimationFrame(animate_shift);
+  reset_timeout_id = window.setTimeout(() => {
+    reset_timeout_id = 0;
+    set_shift_css_var(0);
+  }, SHIFT_RESET_DELAY_MS);
 };
 
 const handle_scroll = () => {
@@ -74,13 +58,8 @@ const handle_scroll = () => {
     SHIFT_MAX_PX,
   );
 
-  target_shift_px = clamp_value(
-    target_shift_px + directional_target,
-    -SHIFT_MAX_PX,
-    SHIFT_MAX_PX,
-  );
-
-  queue_animation();
+  set_shift_css_var(directional_target);
+  queue_reset();
 };
 
 const init_reading_plane_motion = () => {

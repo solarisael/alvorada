@@ -14,7 +14,7 @@ const absurd_faith_timeline = {
     {
       chapter_id: "af_000",
       timeline_position: 0,
-      title: "Awakening",
+      title: "00__ A Squall",
       chapter_description:
         "Cinza opens his eyes inside stone silence, with no memory and too much unease.",
       chapter_snippet:
@@ -90,6 +90,8 @@ const absurd_faith_timeline = {
 };
 
 describe("timeline thread resolver", () => {
+  const first_chapter = absurd_faith_timeline.chapters[0];
+
   test("falls back to first chapter and cinza/core on invalid input", () => {
     const resolved_state = resolve_book_view_state(absurd_faith_timeline, {
       chapter_id: "missing_chapter",
@@ -164,12 +166,12 @@ describe("timeline thread resolver", () => {
       thread_modifier: "core",
     });
 
-    expect(resolved_state.resolved_chapter_title).toBe("Awakening");
+    expect(resolved_state.resolved_chapter_title).toBe(first_chapter.title);
     expect(resolved_state.resolved_chapter_description).toBe(
-      "Cinza opens his eyes inside stone silence, with no memory and too much unease.",
+      first_chapter.chapter_description,
     );
     expect(resolved_state.resolved_chapter_snippet).toBe(
-      "Morning arrives carefully, as if the world is afraid to startle him.",
+      first_chapter.chapter_snippet,
     );
   });
 

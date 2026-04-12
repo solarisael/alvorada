@@ -51,6 +51,7 @@
 
   li {
     @apply flex items-center;
+    @apply mb-0;
     @apply min-w-0;
   }
 

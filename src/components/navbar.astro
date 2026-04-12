@@ -18,6 +18,19 @@ const with_base = (path_value) => {
       <a
         class="nav-pill"
         data-nav-pill
+        href={base_url}
+        hx-get={base_url}
+        hx-target="#content"
+        hx-select="#content"
+        hx-swap="morph swap:240ms settle:240ms"
+        hx-push-url="true"
+      >
+        <span class="nav-pill-layer nav-pill-layer-ring"></span>
+        house
+      </a>
+      <a
+        class="nav-pill"
+        data-nav-pill
         data-phase="nigredo"
         href={with_base("nigredo")}
         hx-get={with_base("nigredo")}

@@ -50,7 +50,7 @@ Use this document as a strict rule for all text styles.
 
 - Do not apply neon/glow effects to large body text blocks.
 - Keep heading embellishments subtle and optional.
-- Respect `prefers-reduced-motion` when text effects involve animation.
+- If text effects involve animation, keep motion restrained and readable; do not add separate `prefers-reduced-motion` branches unless project policy changes.
 - Preserve strong contrast for all interactive and narrative text.
 
 ## Do / Do Not

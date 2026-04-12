@@ -45,12 +45,14 @@ const with_base = (path_value) => {
 // All thread keys for this chapter — drives the Eyes nav slots.
 const chapter_thread_keys = [
   ...new Set(
-    (chapter?.scenes ?? []).map((scene) => scene.thread_key).filter(Boolean),
+    (chapter?.scenes ?? [])
+      .map((scene) => scene.thread_key)
+      .filter((thread_key) => typeof thread_key === "string" && thread_key),
   ),
 ].sort((left_key, right_key) => {
   if (left_key === default_thread_key) return -1;
   if (right_key === default_thread_key) return 1;
-  return left_key.localeCompare(right_key);
+  return String(left_key).localeCompare(String(right_key));
 });
 
 // Sorted chapters for prev/next pager.
@@ -123,17 +125,27 @@ const crumbs = [
   next_chapter_link={next_chapter_link}
   crumbs={crumbs}
 >
-  <header>
-    <h1>{chapter?.title ?? "Unknown chapter"}</h1>
+  <header class="chapter_title_block">
+    <h1 class="chapter_title">{chapter?.title ?? "Unknown chapter"}</h1>
   </header>
 
-  {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
-
   {
-    chapter?.chapter_snippet && (
-      <p class="chapter_snippet">{chapter.chapter_snippet}</p>
-    )
+    /*
+      Empty content container — HTMX fetches the cinza thread on load
+      and swaps the scene body in via innerHTML. No scene content is
+      baked into this shell page.
+      FUTURE: skeleton loader element for the flash-of-empty state.
+    */
   }
+  <div
+    id="chapter_thread_content"
+    hx-get={cinza_thread_href}
+    hx-trigger="load"
+    hx-target="#chapter_thread_content"
+    hx-select="#chapter_thread_content"
+    hx-swap="innerHTML"
+  >
+  </div>
 
   {
     /*
@@ -172,24 +184,6 @@ const crumbs = [
       })
     }
   </nav>
-
-  {
-    /*
-      Empty content container — HTMX fetches the cinza thread on load
-      and swaps the scene body in via innerHTML. No scene content is
-      baked into this shell page.
-      FUTURE: skeleton loader element for the flash-of-empty state.
-    */
-  }
-  <div
-    id="chapter_thread_content"
-    hx-get={cinza_thread_href}
-    hx-trigger="load"
-    hx-target="#chapter_thread_content"
-    hx-select="#chapter_thread_content"
-    hx-swap="innerHTML"
-  >
-  </div>
 
   <p>
     <a

@@ -21,10 +21,10 @@ This is a personal website built with Astro, with these specifications:
 
 ## Coding Standards
 
-- When generating HTML, create a separate CSS with the @apply rules, don't insert the classes directly into the HTML.
+- For new UI markup, prefer component CSS with `@apply` over long inline utility strings in HTML.
 - When inserting new dependencies, always ask for permission and always use bun, never utilize yarn or npm.
 - Always use snake_case for all cases.
-- Do not use classes.
+- Do not introduce JS/OOP classes for project logic.
 - Purely functional paradigm code structure.
 - Avoid OOP.
 - Do not use logical CSS properties (`inline-size`, `block-size`, `padding-inline`, `margin-block`, `border-inline-*`, etc.). Use physical properties instead.

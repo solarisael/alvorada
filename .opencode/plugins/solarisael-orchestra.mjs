@@ -104,7 +104,7 @@ const MODEL_PROFILES = {
   "claude-sonnet-4-6": {
     providerID: "anthropic",
     label: "Claude Sonnet 4.6",
-    agentName: "Kodo",
+    agentName: "Veyr",
     temperament: "warm-balanced",
     strengths: ["review", "context reading", "collaborative iteration"],
     risks: ["overthinking", "verbosity", "tool drift"],
@@ -113,7 +113,7 @@ const MODEL_PROFILES = {
   "claude-opus-4-6": {
     providerID: "anthropic",
     label: "Claude Opus 4.6",
-    agentName: "Veyr",
+    agentName: "Kodo",
     temperament: "deep",
     strengths: ["architecture", "hard debugging", "high-stakes reasoning"],
     risks: ["cost", "latency", "too much depth for routine work"],
@@ -260,22 +260,26 @@ function describeLaneSeat(lane) {
     case "reviewer":
       return {
         seat: "maestro reviewer",
-        focus: "pressure-test the work, surface risks, and sharpen the final shape",
+        focus:
+          "pressure-test the work, surface risks, and sharpen the final shape",
       };
     case "architect":
       return {
         seat: "lead fae architect",
-        focus: "set the structure, guard the high-level shape, and catch deep faults early",
+        focus:
+          "set the structure, guard the high-level shape, and catch deep faults early",
       };
     case "scout":
       return {
         seat: "quickstep fae scout",
-        focus: "move fast, gather signal, and return only the highest-value findings",
+        focus:
+          "move fast, gather signal, and return only the highest-value findings",
       };
     default:
       return {
         seat: "featured fae implementer",
-        focus: "carry the main line of execution and leave crisp, usable artifacts behind",
+        focus:
+          "carry the main line of execution and leave crisp, usable artifacts behind",
       };
   }
 }
@@ -686,7 +690,7 @@ function createGenericAdapter(root) {
     repoDirs: buildRepoDirectoryMap(repoDefs),
     notes: [
       "New project detected. Running in generic single-repo mode.",
-        `Add .opencode/${ADAPTER_CONFIG_BASENAME} to customize repo routing and runtime paths.`,
+      `Add .opencode/${ADAPTER_CONFIG_BASENAME} to customize repo routing and runtime paths.`,
     ],
   };
 }
@@ -713,7 +717,8 @@ function createConfigAdapter(root, config, configPathOverride = null) {
     repoDefs,
     repoDirs: buildRepoDirectoryMap(repoDefs),
     configPath:
-      configPathOverride || path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME),
+      configPathOverride ||
+      path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME),
     notes: [
       `${path.relative(root, configPathOverride || path.join(root, ".opencode", ADAPTER_CONFIG_BASENAME)).replace(/\\/g, "/")} loaded for project-specific routing.`,
     ],
@@ -1873,7 +1878,10 @@ export async function SolarisaelOrchestraPlugin({
               );
               const repo = repos[Math.min(index, repos.length - 1)] || repos[0];
               const laneDirectory = adapter.repoDirs[repo] || adapter.root;
-              const houseContract = await buildLaneHouseContract(houseState, lane);
+              const houseContract = await buildLaneHouseContract(
+                houseState,
+                lane,
+              );
               const prompt = buildPrompt({
                 houseContract,
                 task: `${laneTask}\nRuntime note: this lane is running as an inline managed subtask attached to the parent session, not a separate worktree session.`,
@@ -1977,7 +1985,10 @@ export async function SolarisaelOrchestraPlugin({
                 laneDirectory,
                 createLaneParentTitle(taskSlug, lane),
               );
-              const houseContract = await buildLaneHouseContract(houseState, lane);
+              const houseContract = await buildLaneHouseContract(
+                houseState,
+                lane,
+              );
               const subtask = buildLaneSubtask({
                 houseContract,
                 task: laneTask,
@@ -2083,7 +2094,10 @@ export async function SolarisaelOrchestraPlugin({
                       branch,
                     })
                   : repoDir;
-              const houseContract = await buildLaneHouseContract(houseState, lane);
+              const houseContract = await buildLaneHouseContract(
+                houseState,
+                lane,
+              );
               const title = `[solarisael-orchestra] ${taskSlug} :: ${lane.modelID}`;
               const session = await createSession(client, laneDirectory, title);
               const prompt = buildPrompt({
@@ -2230,7 +2244,9 @@ export async function SolarisaelOrchestraPlugin({
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
+            .describe(
+              "Job identifier returned by solarisael_orchestra_dispatch",
+            ),
         },
         async execute(args) {
           const jobPath = path.join(adapter.runtimeDir, `${args.jobID}.json`);
@@ -2327,7 +2343,9 @@ export async function SolarisaelOrchestraPlugin({
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
+            .describe(
+              "Job identifier returned by solarisael_orchestra_dispatch",
+            ),
           step: tool.schema
             .number()
             .int()
@@ -2431,7 +2449,9 @@ export async function SolarisaelOrchestraPlugin({
           jobID: tool.schema
             .string()
             .min(1)
-            .describe("Job identifier returned by solarisael_orchestra_dispatch"),
+            .describe(
+              "Job identifier returned by solarisael_orchestra_dispatch",
+            ),
           promote: tool.schema
             .boolean()
             .default(false)

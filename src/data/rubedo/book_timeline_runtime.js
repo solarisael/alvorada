@@ -174,21 +174,26 @@ const build_markdown_book_map = () => {
 
     const active_chapter_entry = active_book_entry.chapter_map.get(chapter_id);
 
-    if (active_chapter_entry.title == null && frontmatter?.chapter_title) {
+    const is_canonical_thread = thread_key === "cinza";
+
+    if (
+      frontmatter?.chapter_title &&
+      (active_chapter_entry.title == null || is_canonical_thread)
+    ) {
       active_chapter_entry.title = frontmatter.chapter_title;
     }
 
     if (
-      active_chapter_entry.chapter_description == null &&
-      frontmatter?.chapter_description
+      frontmatter?.chapter_description &&
+      (active_chapter_entry.chapter_description == null || is_canonical_thread)
     ) {
       active_chapter_entry.chapter_description =
         frontmatter.chapter_description;
     }
 
     if (
-      active_chapter_entry.chapter_snippet == null &&
-      frontmatter?.chapter_snippet
+      frontmatter?.chapter_snippet &&
+      (active_chapter_entry.chapter_snippet == null || is_canonical_thread)
     ) {
       active_chapter_entry.chapter_snippet = frontmatter.chapter_snippet;
     }

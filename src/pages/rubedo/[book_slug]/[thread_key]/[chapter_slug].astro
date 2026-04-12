@@ -61,12 +61,14 @@ const thread_scene =
 // FUTURE: compare against codex unlock state to gate non-canonical threads.
 const chapter_thread_keys = [
   ...new Set(
-    (chapter?.scenes ?? []).map((scene) => scene.thread_key).filter(Boolean),
+    (chapter?.scenes ?? [])
+      .map((scene) => scene.thread_key)
+      .filter((thread_key) => typeof thread_key === "string" && thread_key),
   ),
 ].sort((left_key, right_key) => {
   if (left_key === default_thread_key) return -1;
   if (right_key === default_thread_key) return 1;
-  return left_key.localeCompare(right_key);
+  return String(left_key).localeCompare(String(right_key));
 });
 
 // Sorted chapters for prev/next pager.
@@ -153,17 +155,23 @@ const crumbs = [
   theme_color={theme_color}
   crumbs={crumbs}
 >
-  <header>
-    <h1>{chapter?.title ?? "Unknown chapter"}</h1>
+  <header class="chapter_title_block">
+    <h1 class="chapter_title">{chapter?.title ?? "Unknown chapter"}</h1>
   </header>
 
-  {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
-
-  {
-    chapter?.chapter_snippet && (
-      <p class="chapter_snippet">{chapter.chapter_snippet}</p>
-    )
-  }
+  <div id="chapter_thread_content" data-thread-key={thread_key}>
+    {
+      ResolvedSceneComponent ? (
+        <ResolvedSceneComponent />
+      ) : thread_scene?.scene_lines?.length ? (
+        thread_scene.scene_lines.map((scene_line) => <p>{scene_line}</p>)
+      ) : (
+        <p class="thread_scene_empty">
+          No scene found for thread <code>{thread_key}</code>.
+        </p>
+      )
+    }
+  </div>
 
   {
     /*
@@ -207,25 +215,6 @@ const crumbs = [
       })
     }
   </nav>
-
-  <div id="chapter_thread_content" data-thread-key={thread_key}>
-    {
-      thread_scene?.scene_title && (
-        <p class="thread_scene_label">{thread_scene.scene_title}</p>
-      )
-    }
-    {
-      ResolvedSceneComponent ? (
-        <ResolvedSceneComponent />
-      ) : thread_scene?.scene_lines?.length ? (
-        thread_scene.scene_lines.map((scene_line) => <p>{scene_line}</p>)
-      ) : (
-        <p class="thread_scene_empty">
-          No scene found for thread <code>{thread_key}</code>.
-        </p>
-      )
-    }
-  </div>
 
   <p>
     <a

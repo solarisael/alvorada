@@ -16,7 +16,10 @@ const GLOBAL_STATE_PATH = path.join(RUNTIME_DIR, "global.json");
 const SPIRIT_DIR = path.join(OPERATOR_DIR, "spirits");
 const HOUSE_CHARTER_PATH = path.join(OPERATOR_DIR, "SOLARISAEL.house.md");
 const BABEL_LANGUAGE_PATH = path.join(OPERATOR_DIR, "BABEL.language.md");
-const BABEL_TERMINAL_CHAT_PATH = path.join(OPERATOR_DIR, "BABEL.terminal-chat.md");
+const BABEL_TERMINAL_CHAT_PATH = path.join(
+  OPERATOR_DIR,
+  "BABEL.terminal-chat.md",
+);
 const CONSOLE_RENDERING_PATH = path.join(OPERATOR_DIR, "CONSOLE.rendering.md");
 const DEFAULT_SPIRIT = "Kintsu";
 const DEFAULT_AGENT_NAME = "Kintsu";
@@ -28,8 +31,8 @@ const MODEL_AGENT_NAME_MAP = {
     "gpt-5.3-codex-spark": "Suri",
   },
   anthropic: {
-    "claude-sonnet-4-6": "Kodo",
-    "claude-opus-4-6": "Veyr",
+    "claude-sonnet-4-6": "Veyr",
+    "claude-opus-4-6": "Kodo",
   },
 };
 const LEGACY_SPIRIT_ALIASES = {
@@ -270,7 +273,10 @@ async function loadHouseDoctrine() {
     extractMarkdownSection(babel, "Core Rule"),
     extractMarkdownSection(babel, "Semantic Classes"),
     extractMarkdownSection(babel, "Display Forms"),
-    extractMarkdownSection(babel, "Distinction Between Direct And Mediated Expression"),
+    extractMarkdownSection(
+      babel,
+      "Distinction Between Direct And Mediated Expression",
+    ),
     extractMarkdownSection(babel, "Style Rules"),
     extractMarkdownSection(babel, "Success Condition"),
   ]);

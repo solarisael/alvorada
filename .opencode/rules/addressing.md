@@ -19,8 +19,8 @@ This project uses model-specific agent names. Each model keeps its own stable na
 - **Kintsu** — `openai / gpt-5.4`
 - **Kest** — `openai / gpt-5-codex`
 - **Suri** — `openai / gpt-5.3-codex-spark`
-- **Kodo** — `anthropic / claude-sonnet-4-6`
-- **Veyr** — `anthropic / claude-opus-4-6`
+- **Kodo** — `anthropic / claude-opus-4-6`
+- **Veyr** — `anthropic / claude-sonnet-4-6`
 
 `MODE` changes behavior only; it does not rename the active agent.
 All agents address the human as Sol.

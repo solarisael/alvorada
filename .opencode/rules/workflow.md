@@ -50,9 +50,9 @@ simpler approaches are proven insufficient.
 
 ### Plan Mode
 
-- Enter plan mode for any non-trivial task (3+ steps or architectural decisions).
-- If something goes sideways mid-task, stop and re-plan — do not keep pushing.
-- Write a short spec upfront to reduce ambiguity before touching code.
+- Use a short plan for multi-step, ambiguous, or architectural work.
+- Skip formal planning for obvious, low-risk fixes where direct execution is clearer.
+- If something goes sideways mid-task, stop and re-plan instead of pushing blindly.
 
 ### Subagent Strategy
 
@@ -62,12 +62,10 @@ simpler approaches are proven insufficient.
 
 ### Task Management
 
-1. Plan first: write a short plan with checkable steps before implementing.
-2. Verify plan: confirm direction before starting implementation on broad changes.
+1. Plan first when scope or ambiguity justifies it.
+2. Verify direction before starting broad changes.
 3. Track progress: mark steps complete as you go.
 4. Explain changes: high-level summary at each significant step.
-5. Capture lessons: after any correction from Sol, update `.opencode/rules/lessons.md`
-   with the pattern and a rule that prevents the same mistake.
 
 ### Demand Elegance
 
@@ -78,6 +76,5 @@ simpler approaches are proven insufficient.
 
 ### Self-Improvement Loop
 
-- After any correction from Sol, write a rule in `.opencode/rules/lessons.md`.
-- Rules must be specific enough to prevent the same mistake, not generic platitudes.
-- Review `lessons.md` at the start of sessions where past mistakes are relevant.
+- If a repeated project-specific mistake shows up, capture the lesson in a durable repo doc only when Sol asks for it or when the pattern is clearly worth preserving.
+- Keep lessons specific enough to prevent the same mistake, not generic platitudes.

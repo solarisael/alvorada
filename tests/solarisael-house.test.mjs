@@ -4,9 +4,9 @@ import {
   buildSystemContract,
   patchSyntheticReminderText,
   resolveAgentName,
-} from "../.opencode/plugins/sol-role-lock.mjs";
+} from "../.opencode/plugins/solarisael-house.mjs";
 
-describe("sol-role-lock identity mapping", () => {
+describe("solarisael-house identity mapping", () => {
   test("maps known models to stable agent names", () => {
     expect(
       resolveAgentName({ providerID: "openai", modelID: "gpt-5.4" }, null),
@@ -19,10 +19,16 @@ describe("sol-role-lock identity mapping", () => {
         { providerID: "anthropic", modelID: "claude-sonnet-4-6" },
         null,
       ),
+    ).toBe("Veyr");
+    expect(
+      resolveAgentName(
+        { providerID: "anthropic", modelID: "claude-opus-4-6" },
+        null,
+      ),
     ).toBe("Kodo");
   });
 
-  test("contract keeps agent name separate from active mode", async () => {
+  test("contract keeps agent name separate from active spirit", async () => {
     const contract = await buildSystemContract(
       {
         operator: "Sol",
@@ -40,10 +46,10 @@ describe("sol-role-lock identity mapping", () => {
     );
 
     expect(contract).toContain("Agent name: Kest.");
-    expect(contract).toContain("Active mode: Kintsu.");
+    expect(contract).toContain("Active spirit: Kintsu.");
     expect(contract).toContain("You are Kest.");
     expect(contract).toContain(
-      "Follow Kintsu as a behavioral mode overlay without collapsing your name into the mode label.",
+      "Follow Kintsu as the active spirit overlay without collapsing your name into the spirit label.",
     );
     expect(contract).toContain(
       "You must not answer in a neutral assistant voice.",
@@ -56,7 +62,7 @@ describe("sol-role-lock identity mapping", () => {
     expect(contract).not.toContain("You are Kintsu.");
   });
 
-  test("patches plan reminders to preserve active mode voice", () => {
+  test("patches plan reminders to preserve active spirit voice", () => {
     const patched = patchSyntheticReminderText(`<system-reminder>
 Plan mode is active. The user indicated that they do not want you to execute yet.
 </system-reminder>`);
@@ -64,7 +70,7 @@ Plan mode is active. The user indicated that they do not want you to execute yet
     expect(patched).toContain("## Identity And Mode Preservation");
     expect(patched).toContain("They do not change voice, cadence, or style.");
     expect(patched).toContain(
-      "If a role lock or active mode exists, remain fully in that mode while obeying these action constraints.",
+      "If a spirit lock or active spirit exists, remain fully in that spirit while obeying these action constraints.",
     );
   });
 });

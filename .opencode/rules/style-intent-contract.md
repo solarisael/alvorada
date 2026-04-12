@@ -1,7 +1,7 @@
 ---
 name: Style Intent Contract
 globs: "src/**/*.{astro,css,js},public/js/**/*.js"
-description: Prevent styling misunderstandings by requiring an explicit intent-to-implementation contract.
+description: Capture styling intent clearly when prompts are subjective, aesthetic-heavy, or easy to misread.
 alwaysApply: true
 ---
 
@@ -11,7 +11,7 @@ Use this rule for visual/styling requests.
 
 ## Before Editing
 
-State a compact intent contract in one block with:
+For subjective, aesthetic-heavy, or multi-cue styling requests, state a compact intent contract in one block with:
 
 - Mood target (e.g. ritual, vibrant, arcane).
 - Intensity target (subtle, balanced, bold).
@@ -32,7 +32,7 @@ Required structure format:
 - Keep new styling switchable via classes/tokens when the request implies options.
 - Prefer semantic variables over hard-coded palette values for switchable themes.
 - Runtime states must be class/data-driven; do not use ARIA/role as runtime state contracts.
-- For non-trivial effects, state an explicit structure plan first: which effect is rendered by HTML layers vs CSS backgrounds.
+- For non-trivial or non-obvious effects, state a concise structure plan first: which effect is rendered by HTML layers vs CSS backgrounds.
 - Complex decorative FX MUST use dedicated markup layers.
 - Decorative background stacks above 2 layers are forbidden unless a documented `bg-stack-exception` marker exists.
 - CSS `url(...)` references to `/ornaments/` are forbidden; ornament rendering must be in HTML.
@@ -42,7 +42,7 @@ Required structure format:
 
 ## After Editing
 
-Return an applied checklist with file references proving each mapped prompt cue was addressed.
+When the request involved multiple explicit styling cues, return an applied checklist with file references proving each mapped prompt cue was addressed.
 
 - Mention any prompt cue that was partially implemented and why.
 - If any cue cannot be safely implemented, call it out explicitly with the blocker.
