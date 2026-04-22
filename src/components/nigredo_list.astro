@@ -111,7 +111,11 @@ const { archive_index = [], base_path = "" } = Astro.props;
 />
 
 <!-- Entry template — cloned per virtual row.
-     Ornament srcs use data-ornament-src so RowPool can set them at runtime. -->
+     Ornament srcs use data-ornament-src so RowPool can set them at runtime.
+     The read-more kicker is the explicit expand-trigger; click handler in
+     nigredo_archive.js intercepts its clicks, preventDefault on the wrapping
+     <a>, and toggles the row's data-expanded. Clicking elsewhere on the row
+     (title / excerpt / padding) navigates via the anchor as normal. -->
 <template id="nigredo-entry-template">
   <li class="nigredo-entry-row" data-align="left">
     <article class="nigredo-entry" data-variant="quiet">
@@ -160,6 +164,17 @@ const { archive_index = [], base_path = "" } = Astro.props;
             <time class="nigredo-entry-date"></time>
           </header>
           <div class="nigredo-entry-excerpt"><p></p></div>
+          <span
+            class="nigredo-entry-readmore text_kicker"
+            data-nigredo-readmore
+            role="button"
+            tabindex="0"
+            aria-label="Expand this entry inline"
+            ><span class="nigredo-entry-readmore-label">read more</span><span
+              class="nigredo-entry-readmore-chevron"
+              aria-hidden="true">↓</span
+            ></span
+          >
         </div>
       </a>
     </article>

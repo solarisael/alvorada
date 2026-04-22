@@ -307,16 +307,105 @@ body[data-phase="nigredo"] {
 
 /* Deterministic row heights by variant. The virtualizer estimates sizes
    from these; if real measurement matches the estimate exactly, the size
-   cache is stable and the track doesn't oscillate under scroll. Values
-   calibrated to match the actual rendered heights (header-only rows sit
-   at ~64px; with-excerpt rows with the 2-line clamp + padding sit at
-   ~112px). JS sets [data-excerpt-present] in nigredo_archive.js _fill. */
+   cache is stable and the track doesn't oscillate under scroll.
+   Three variants:
+     - header-only (no excerpt): 64px
+     - with-excerpt, fits in 2 lines (no kicker): 112px
+     - with-excerpt, overflows 2 lines (kicker shown): 140px
+   JS stamps data-excerpt-present + data-excerpt-overflows in _fill and
+   refines the overflow flag in the ResizeObserver callback based on a
+   real scrollHeight > clientHeight check. */
 .nigredo-entry-row[data-excerpt-present="false"] {
   height: 64px;
 }
 
-.nigredo-entry-row[data-excerpt-present="true"] {
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="false"] {
   height: 112px;
+}
+
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="true"] {
+  height: 140px;
+}
+
+/* Expanded row: click-to-expand on the excerpt releases the fixed height
+   and the clamp, letting the row grow to its natural content height. The
+   virtualizer's ResizeObserver picks up the new height and repositions
+   neighbors. Collapsed rows stay deterministic; only the clicked rows
+   become variable.
+
+   Double-attribute selector on the expanded rule (excerpt-present AND
+   expanded) wins specificity against the collapsed [excerpt-present="true"]
+   height: 112px rule — same source order alone wasn't overriding cleanly
+   in the compiled CSS. */
+.nigredo-entry-row[data-excerpt-present="true"][data-expanded="true"] {
+  height: auto;
+  min-height: 112px;
+}
+
+.nigredo-entry-row[data-excerpt-present="true"][data-expanded="true"]
+  .nigredo-entry-excerpt {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  display: block;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* ============================================================
+   Read-more kicker — explicit expand affordance
+   ============================================================
+   Small Twitter-style "read more ↓" link at the bottom of the entry body,
+   matching the text_kicker aesthetic used elsewhere (afflictions, fragments,
+   date). Acts as the sole click-to-expand surface — the excerpt text itself
+   is no longer a click target, so clicking the excerpt navigates via the
+   wrapping <a> like any other part of the row. */
+
+.nigredo-entry-readmore {
+  /* Default: hidden. Only shows on COLLAPSED rows whose excerpt actually
+     overflows the 2-line clamp; header-only rows, short-excerpt rows
+     that fit in 2 lines, and already-expanded rows all keep it hidden. */
+  display: none;
+}
+
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="true"]:not(
+    [data-expanded="true"]
+  )
+  .nigredo-entry-readmore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  align-self: flex-start;
+  opacity: 0.55;
+  cursor: pointer;
+  transition:
+    opacity 120ms ease,
+    transform 180ms ease;
+}
+
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="true"]:not(
+    [data-expanded="true"]
+  )
+  .nigredo-entry-readmore:hover,
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="true"]:not(
+    [data-expanded="true"]
+  )
+  .nigredo-entry-readmore:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+.nigredo-entry-readmore-chevron {
+  display: inline-block;
+  transition: transform 180ms ease;
+}
+
+.nigredo-entry-row[data-excerpt-present="true"][data-excerpt-overflows="true"]:not(
+    [data-expanded="true"]
+  )
+  .nigredo-entry-readmore:hover
+  .nigredo-entry-readmore-chevron {
+  transform: translateY(1px);
 }
 
 /* Lane alignment — the row is already full-width.

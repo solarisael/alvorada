@@ -48,8 +48,22 @@ const OVERSCAN = 4;
 // virtualizer replaced estimates with real measurements on a per-row basis.
 // Matching the estimate to the likely variant keeps the delta near zero,
 // so the total stays stable and the archive doesn't stutter under scroll.
-const ESTIMATED_HEIGHT_WITH_EXCERPT = 112;
+//
+// Three variants today (post read-more kicker addition):
+// - header-only (no excerpt):  64px
+// - with-excerpt, fits in 2 lines (no kicker):  112px
+// - with-excerpt, overflows 2 lines (kicker shown):  140px
+//
+// estimateSize uses a character-count heuristic to predict which variant an
+// entry lands in; the ResizeObserver path confirms real overflow and stamps
+// data-excerpt-overflows so CSS picks the exact variant. Heuristic tuned to
+// the current font-size / column-width (at ~0.8125rem × 1.7 line-height in
+// the archive's reading-container, roughly ~75-85 chars per line, so >110
+// chars almost always overflows 2 lines).
 const ESTIMATED_HEIGHT_HEADER_ONLY = 64;
+const ESTIMATED_HEIGHT_WITH_EXCERPT_FITS = 112;
+const ESTIMATED_HEIGHT_WITH_EXCERPT_OVERFLOWS = 140;
+const EXCERPT_OVERFLOW_CHAR_HEURISTIC = 110;
 
 function measure_row(node) {
   return node.getBoundingClientRect().height;
@@ -74,11 +88,12 @@ function derive_align(entry, index) {
 // Avoids constant createElement/destroy cycles that break measurement caching.
 
 class RowPool {
-  constructor(template, base_path, on_remove = null) {
+  constructor(template, base_path, on_remove = null, expanded_slugs = null) {
     this._template = template;
     this._base_path = base_path;
     this._pool = new Map(); // key (index) -> li element
     this._on_remove = on_remove;
+    this._expanded_slugs = expanded_slugs; // Set<string> of slugs
   }
 
   _make_node() {
@@ -108,6 +123,24 @@ class RowPool {
     // internal text-wrap or short-excerpt padding quirks. Stabilizes the
     // virtualizer's size cache and eliminates scroll stutter.
     row.dataset.excerptPresent = entry.excerpt ? "true" : "false";
+
+    // Initial overflow guess via character-count heuristic. ResizeObserver
+    // confirms with a real scrollHeight > clientHeight check post-layout;
+    // if the guess was wrong the attribute flips and CSS picks the other
+    // row-height variant. Doing the heuristic here avoids an initial-render
+    // visual pop for rows that clearly will (or won't) overflow.
+    const guess_overflows =
+      entry.excerpt &&
+      entry.excerpt.length > 110; // matches EXCERPT_OVERFLOW_CHAR_HEURISTIC
+    row.dataset.excerptOverflows = guess_overflows ? "true" : "false";
+
+    // Persistent expanded state (Twitter-style click-to-expand on excerpts).
+    // The expanded-slug set survives virtualizer prune/re-add so scrolling
+    // an expanded row out of view and back keeps it expanded.
+    row.dataset.expanded =
+      this._expanded_slugs && this._expanded_slugs.has(entry.slug)
+        ? "true"
+        : "false";
 
     // Variant
     if (article) {
@@ -268,18 +301,59 @@ export function init_nigredo_archive() {
   const row_resize_observer = new ResizeObserver((entries) => {
     if (!virtualizer) return;
 
+    // Per-row cache update only. measureElement internally calls
+    // resizeItem(index, new_size) which updates the size for that item and
+    // fires notify() → onChange → render_items. Neighbors reposition
+    // automatically.
+    //
+    // DO NOT chain into request_layout_measure() here — that path calls
+    // virtualizer.measure() which WIPES the entire itemSizeCache every
+    // time it runs (see @tanstack/virtual-core source:
+    //   this.measure = () => { this.itemSizeCache = new Map(); ... notify(false); }
+    // ). Wiping the cache on every per-row resize destroys every previously
+    // measured size, forces a re-render from estimates, and re-measures
+    // from scratch on the next cycle. That was a major contributor to the
+    // earlier scroll stutter AND the cause of click-to-expand snapping back
+    // to collapsed layout a frame after the expand resizeItem was applied.
     for (const entry of entries) {
-      virtualizer.measureElement(entry.target);
-    }
+      const row = entry.target;
 
-    request_layout_measure();
+      // Confirm (or correct) the heuristic-based overflow guess stamped in
+      // _fill. Real check: excerpt's scrollHeight vs clientHeight with the
+      // 2-line clamp active. If natural content exceeds the clamp, kicker
+      // shows and row jumps to the 140px variant via CSS. If the guess was
+      // right this attribute-set is a no-op; if it was wrong the CSS-driven
+      // height changes, which ResizeObserver catches on the next cycle.
+      // Skip for expanded rows (no clamp in effect, kicker hidden anyway).
+      if (row.dataset.expanded !== "true") {
+        const excerpt = row.querySelector(".nigredo-entry-excerpt");
+        if (excerpt) {
+          const overflows = excerpt.scrollHeight > excerpt.clientHeight + 1;
+          const next = overflows ? "true" : "false";
+          if (row.dataset.excerptOverflows !== next) {
+            row.dataset.excerptOverflows = next;
+          }
+        }
+      }
+
+      virtualizer.measureElement(row);
+    }
   });
+
+  // ── Expanded entries (Twitter-style click-to-expand on excerpts) ──────────
+  // Keyed by entry.slug so state survives virtualizer prune/re-add.
+  const expanded_slugs = new Set();
 
   // ── Row pool ──────────────────────────────────────────────────────────────
-  const pool = new RowPool(entry_template, base_path, (node) => {
-    row_resize_observer.unobserve(node);
-    pool?.clear_observed?.(node);
-  });
+  const pool = new RowPool(
+    entry_template,
+    base_path,
+    (node) => {
+      row_resize_observer.unobserve(node);
+      pool?.clear_observed?.(node);
+    },
+    expanded_slugs,
+  );
 
   // ── Render visible items ───────────────────────────────────────────────────
   let rendering = false;
@@ -357,9 +431,12 @@ export function init_nigredo_archive() {
       getScrollElement: () => window,
       estimateSize: (index) => {
         const entry = filtered[index];
-        return entry?.excerpt
-          ? ESTIMATED_HEIGHT_WITH_EXCERPT
-          : ESTIMATED_HEIGHT_HEADER_ONLY;
+        if (!entry?.excerpt) return ESTIMATED_HEIGHT_HEADER_ONLY;
+        // Heuristic guess — refined by post-render overflow measurement in
+        // the ResizeObserver callback.
+        return entry.excerpt.length > EXCERPT_OVERFLOW_CHAR_HEURISTIC
+          ? ESTIMATED_HEIGHT_WITH_EXCERPT_OVERFLOWS
+          : ESTIMATED_HEIGHT_WITH_EXCERPT_FITS;
       },
       measureElement: (el) => {
         return measure_row(el);
@@ -417,6 +494,70 @@ export function init_nigredo_archive() {
       apply_filters();
     });
   }
+
+  // ── Click-to-expand (Twitter-style) ───────────────────────────────────────
+  // Delegation: a click on the .nigredo-entry-readmore kicker intercepts the
+  // row's anchor navigation and toggles the row into the expanded state
+  // (full excerpt text, released from the 2-line clamp, row height driven
+  // by content). Clicks elsewhere on the row — title, pill, date, excerpt
+  // body, padding — still navigate to /nigredo/[slug] via the wrapping <a>.
+  // Complementary, not a replacement, for the entry-detail page.
+  //
+  // Keyboard: Enter / Space on the focused kicker activates the expand via
+  // a separate keydown branch (role="button" + tabindex=0 in the template).
+  //
+  // Expanded state persists via the expanded_slugs Set, keyed by entry.slug,
+  // so scrolling an expanded row out of view + back preserves its state.
+  function trigger_expand(readmore_el) {
+    const row = readmore_el.closest(".nigredo-entry-row");
+    if (!row) return;
+
+    const index = Number(row.dataset.index);
+    const entry = filtered[index];
+    if (!entry) return;
+
+    // Expand only (no close for v1 per design decision). If already expanded,
+    // clicking the kicker is a no-op.
+    if (expanded_slugs.has(entry.slug)) return;
+
+    expanded_slugs.add(entry.slug);
+    row.dataset.expanded = "true";
+
+    // Force the virtualizer to pick up the row's new height on the NEXT
+    // frame with the real measured size. Calling virtualizer.measureElement
+    // synchronously reads offsetHeight before the CSS-driven layout commits
+    // (still the old 112), so the cache doesn't update and neighbors stay
+    // stuck. Using rAF + a forced getBoundingClientRect lets layout commit,
+    // then resizeItem tells the virtualizer the new size directly — which
+    // triggers onChange and repositions neighbors on the same next frame.
+    requestAnimationFrame(() => {
+      const new_size = row.getBoundingClientRect().height;
+      virtualizer?.resizeItem?.(index, new_size);
+    });
+  }
+
+  root.addEventListener("click", (e) => {
+    const readmore = e.target.closest("[data-nigredo-readmore]");
+    if (!readmore) return;
+
+    // Block the wrapping <a>'s navigation — the user wants to expand, not
+    // jump to the detail page.
+    e.preventDefault();
+    e.stopPropagation();
+
+    trigger_expand(readmore);
+  });
+
+  root.addEventListener("keydown", (e) => {
+    const readmore = e.target.closest("[data-nigredo-readmore]");
+    if (!readmore) return;
+    if (e.key !== "Enter" && e.key !== " ") return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    trigger_expand(readmore);
+  });
 
   // ── Boot ──────────────────────────────────────────────────────────────────
   make_virtualizer();
