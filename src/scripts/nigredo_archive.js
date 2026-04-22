@@ -43,7 +43,13 @@ const INWARD = new Set([
 const EXTREME_STATES = new Set(["rage", "panic", "ruin", "grief"]);
 
 const OVERSCAN = 4;
-const ESTIMATED_SIZE = 88;
+// Per-variant estimates calibrated against real render heights. Uniform 88
+// average was causing visible total-size oscillation during scroll as the
+// virtualizer replaced estimates with real measurements on a per-row basis.
+// Matching the estimate to the likely variant keeps the delta near zero,
+// so the total stays stable and the archive doesn't stutter under scroll.
+const ESTIMATED_HEIGHT_WITH_EXCERPT = 112;
+const ESTIMATED_HEIGHT_HEADER_ONLY = 64;
 
 function measure_row(node) {
   return node.getBoundingClientRect().height;
@@ -97,6 +103,12 @@ class RowPool {
     const align = derive_align(entry, index);
     row.dataset.align = align;
 
+    // Size-class for deterministic row heights. Paired with CSS rules keyed
+    // off this attribute so each variant has a fixed height regardless of
+    // internal text-wrap or short-excerpt padding quirks. Stabilizes the
+    // virtualizer's size cache and eliminates scroll stutter.
+    row.dataset.excerptPresent = entry.excerpt ? "true" : "false";
+
     // Variant
     if (article) {
       article.dataset.variant = entry.featured ? "rupture" : "quiet";
@@ -147,16 +159,27 @@ class RowPool {
   get(v_item, filtered) {
     const entry = filtered[v_item.index];
     let node = this._pool.get(v_item.key);
+    const is_new = !node;
 
-    if (!node) {
+    if (is_new) {
       node = this._make_node();
       this._pool.set(v_item.key, node);
     }
 
-    node.dataset.index = String(v_item.index);
-    this._fill(node, entry, v_item.index);
+    // Only rebuild content when the node is freshly pooled OR when this key
+    // has been remapped to a different entry-index (rare — happens on filter
+    // changes if the pool survives a transition, which currently it doesn't
+    // because apply_filters prunes empty). _fill() being called on every
+    // render was generating constant textContent/dataset writes that layout-
+    // thrashed the virtualizer and kept invalidating its size cache.
+    const next_index_str = String(v_item.index);
+    if (is_new || node.dataset.index !== next_index_str) {
+      node.dataset.index = next_index_str;
+      this._fill(node, entry, v_item.index);
+    }
 
-    // Absolute positioning inside inner track
+    // Absolute positioning inside inner track — the ONLY field that must be
+    // updated every render (scroll moves rows through virtual space).
     node.style.position = "absolute";
     node.style.top = "0";
     node.style.left = "0";
@@ -165,6 +188,20 @@ class RowPool {
     node.style.transform = `translateY(${v_item.start}px)`;
 
     return node;
+  }
+
+  is_new_to_dom(node) {
+    // Helper for render_items to know whether a node needs first-time
+    // observation / measurement.
+    return !node.__observed;
+  }
+
+  mark_observed(node) {
+    node.__observed = true;
+  }
+
+  clear_observed(node) {
+    delete node.__observed;
   }
 
   prune(active_keys) {
@@ -241,6 +278,7 @@ export function init_nigredo_archive() {
   // ── Row pool ──────────────────────────────────────────────────────────────
   const pool = new RowPool(entry_template, base_path, (node) => {
     row_resize_observer.unobserve(node);
+    pool?.clear_observed?.(node);
   });
 
   // ── Render visible items ───────────────────────────────────────────────────
@@ -281,8 +319,18 @@ export function init_nigredo_archive() {
         list_el.appendChild(node);
       }
 
-      virtualizer?.measureElement?.(node);
-      row_resize_observer.observe(node);
+      // Only observe + measure on the FIRST render for this node. ResizeObserver
+      // fires synchronously on first observe with the initial size, so the
+      // virtualizer gets its real measurement immediately. Subsequent size
+      // changes (image lazy-load, font swap, window resize) are handled by the
+      // ResizeObserver callback — no need to force re-measure every frame.
+      // The previous unconditional measureElement call here was the core of
+      // the stutter feedback loop: measured → cache updated → total changed →
+      // onChange fired → render_items again → measure again.
+      if (pool.is_new_to_dom(node)) {
+        row_resize_observer.observe(node);
+        pool.mark_observed(node);
+      }
     }
 
     rendering = false;
@@ -307,7 +355,12 @@ export function init_nigredo_archive() {
       // cause innerHeight/scrollY to be undefined and the virtualizer to
       // render nothing.
       getScrollElement: () => window,
-      estimateSize: () => ESTIMATED_SIZE,
+      estimateSize: (index) => {
+        const entry = filtered[index];
+        return entry?.excerpt
+          ? ESTIMATED_HEIGHT_WITH_EXCERPT
+          : ESTIMATED_HEIGHT_HEADER_ONLY;
+      },
       measureElement: (el) => {
         return measure_row(el);
       },
