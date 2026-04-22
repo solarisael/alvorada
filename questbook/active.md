@@ -3,29 +3,28 @@
 ## Meta
 
 - Project: alvorada
-- Updated_utc: 2026-04-12 17:15
-- Updated_by: Kintsu (`openai / gpt-5.4`)
+- Updated_utc: 2026-04-22 17:10
+- Updated_by: Kodo (`anthropic / claude-opus-4-7`)
 - next_session: co-pilot
-- primary_outcome: continue Rubedo chapter-shell identity tuning and narrative presentation now that the reading plane/fog system is behaving correctly
+- primary_outcome: fix the script-load-order race where `idiomorph-ext.js` (classic script) tries to reference `htmx` before `htmx_runtime.js` (module) finishes loading — visible as `ReferenceError: htmx is not defined` in the console on first paint.
 - priority: polish
-- edit_breadth: focused
-- first_task: refine the reading-plane glow palette and continue chapter-shell spacing/identity decisions from the now-stable box and viewport fog layers
-- commit_intent: handoff
+- edit_breadth: targeted
+- first_task: audit how the scripts are emitted from the layout(s) (likely `src/layouts/*.astro`), identify whether `idiomorph-ext.js` can be loaded as a module (or deferred, or imported from `htmx_runtime.js` directly), and land the fix so the console error disappears on a fresh `/nigredo` visit.
+- commit_intent: after_review
 
 ## Active Scope
 
 - State: handoff_ready
-- Branch: master
-- Head: pending_commit
-- Scope_in: repo agent/runtime alignment, Rubedo chapter metadata cleanup, HTMX shell sync, reading-plane motion tuning, navbar/breadcrumb shell polish, box and viewport fog/glow tuning
-- Scope_out: deeper content-authoring beyond the touched Rubedo chapter entry, unrelated future color retuning outside the current reading-plane shell work
+- Branch: sol
+- Head: pending_commit (Nigredo scroll-fix changes staged)
+- Scope_in: script load-order fix between htmx_runtime + idiomorph-ext; any adjacent dependency-chain cleanup surfaced by the audit.
+- Scope_out: Rubedo chapter-shell polish (moved to `backlog.md`); unrelated decorative/content work.
 
 ## Next
 
-1. [x] Realign local agent docs, command docs, and runtime config with the active House setup.
-2. [x] Rework Rubedo chapter rendering so titles resolve correctly and chapters begin immediately without pre-body meta clutter.
-3. [x] Stabilize HTMX shell/home navigation and retune the reading plane motion plus viewport/box glow layers.
-4. [ ] Continue visual tuning from the now-working glow system, especially color character and final chapter-shell spacing identity.
+1. [x] Fix Nigredo archive scroll — unified window/document scroll, TanStack window observers. (See `completed.md` 2026-04-22.)
+2. [x] AGENTS.md Kodo model refresh (4-6 → 4-7).
+3. [ ] **Fix `htmx is not defined at idiomorph-ext.js` load-order race.** Make idiomorph-ext load as a module so it imports `htmx_runtime.js` properly, OR ensure it runs after htmx is exposed. Target: zero console errors on fresh page load for any of the five alchemical phases.
 
 ## Blockers
 
@@ -33,17 +32,16 @@
 
 ## Validation
 
-- House test: pass (`bun test tests/solarisael-house.test.mjs`) — 2026-04-12
-- Timeline resolver test: pass (`bun test tests/timeline_threads.test.js`) — 2026-04-12
-- Build: pass (`bun run build`) after shell/runtime and reading-plane changes — 2026-04-12
-- Prettier: pass (touched alignment files) — 2026-04-12
+- Nigredo fix: `bunx prettier --check` pass, `bun run css:hard-gates:check` pass, `bun run build` pass (238 pages, 2.58s), Playwright virtualizer + filter tests pass — 2026-04-22.
 
 ## Current Snapshot
 
-- Repo-local agent docs were reduced back to a project overlay instead of a competing runtime doctrine.
-- Identity mapping drift was fixed across AGENTS, rules, command docs, and runtime plugins.
-- Stale plugin paths were corrected in `opencode.jsonc`, and the House plugin test was renamed and updated to match current spirit language.
-- HTMX navigation remains the site-wide contract; shell-state syncing was added so home transitions keep working without full reloads.
-- Rubedo chapter-level metadata is now canonically resolved from the `cinza` thread, and chapter routes no longer show description/snippet/scene-label clutter before the prose.
-- The reading plane motion no longer uses RAF easing; it now uses direct throttled scroll updates plus a short CSS transition for a faster, cleaner response.
-- The viewport focus fog and the clipped box glow layers are both working, but final color-character tuning is still open for future polish.
+- Nigredo archive scroll fixed today (2026-04-22) by Kodo — details in `completed.md`. The `.nigredo-scroll-pane` is no longer an overflow container; TanStack virtualizer now uses window observers (`getScrollElement: () => window`). Browser scroll restoration + keyboard scroll both work naturally as a bonus.
+- AGENTS.md refreshed to Kodo `claude-opus-4-7`.
+- Residual drift present in the worktree and NOT touched by this session: `templater/timeline_thread_scene_template.md` has unstaged changes of unknown origin, and `.opencode/package-lock.json` is untracked. Flagged for Sol to decide intent before a broader commit.
+- Outstanding polish thread (Rubedo chapter-shell identity + reading-plane glow) moved to `backlog.md`.
+- Next work is the htmx/idiomorph load-order race — separate small fix, confirmed by Sol.
+
+## Notes
+
+- This is a light same-session update, not a full end-of-day send-off. Fields are filled for continuity but the session is still active with Kodo.

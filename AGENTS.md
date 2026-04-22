@@ -17,7 +17,7 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
   - **Kintsu** - `openai / gpt-5.4`
   - **Kest** - `openai / gpt-5-codex`
   - **Suri** - `openai / gpt-5.3-codex-spark`
-  - **Kodo** - `anthropic / claude-opus-4-6`
+  - **Kodo** - `anthropic / claude-opus-4-7`
   - **Veyr** - `anthropic / claude-sonnet-4-6`
 - `MODE` is a behavior overlay, not an identity rename.
 - The human's name is **Sol**.

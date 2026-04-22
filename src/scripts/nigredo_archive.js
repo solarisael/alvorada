@@ -1,14 +1,17 @@
 /**
  * nigredo_archive.js
  * Client-side archive controller for the Nigredo pillar page.
- * Virtualizer: @tanstack/virtual-core (native scroll, no Lenis)
+ * Virtualizer: @tanstack/virtual-core, using window/document scroll as the
+ * single scroll context. The `.nigredo-scroll-pane` is no longer an
+ * overflow container — it just serves as a data-attribute carrier and
+ * visual frame; the virtualizer measures against the document.
  */
 
 import {
   Virtualizer,
-  elementScroll,
-  observeElementOffset,
-  observeElementRect,
+  windowScroll,
+  observeWindowOffset,
+  observeWindowRect,
 } from "@tanstack/virtual-core";
 
 // ─── Pure helpers ─────────────────────────────────────────────────────────────
@@ -296,15 +299,22 @@ export function init_nigredo_archive() {
 
     virtualizer = new Virtualizer({
       count: filtered.length,
-      getScrollElement: () => scroll_el,
+      // Window-based scroll: the nigredo archive is the primary content of
+      // the page, so the document is the scroll context. The windowScroll /
+      // observeWindow* helpers read element.innerHeight, scrollY, and call
+      // scrollTo — which means getScrollElement must return `window` itself,
+      // not document.documentElement. Returning the documentElement would
+      // cause innerHeight/scrollY to be undefined and the virtualizer to
+      // render nothing.
+      getScrollElement: () => window,
       estimateSize: () => ESTIMATED_SIZE,
       measureElement: (el) => {
         return measure_row(el);
       },
       overscan: OVERSCAN,
-      scrollToFn: elementScroll,
-      observeElementRect,
-      observeElementOffset,
+      scrollToFn: windowScroll,
+      observeElementRect: observeWindowRect,
+      observeElementOffset: observeWindowOffset,
       onChange: (v) => {
         render_items(v.getVirtualItems(), v.getTotalSize());
       },
@@ -322,7 +332,9 @@ export function init_nigredo_archive() {
     // Clear the pool so rows are rebuilt for new filtered set
     pool.prune([]);
     list_el.replaceChildren();
-    scroll_el.scrollTop = 0;
+    // Reset the unified window scroll so a new filter starts the archive
+    // from the top instead of stranding the reader deep in the old list.
+    window.scrollTo({ top: 0, behavior: "instant" });
     make_virtualizer();
     request_layout_measure();
   }

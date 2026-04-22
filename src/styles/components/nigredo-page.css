@@ -51,7 +51,8 @@ body[data-phase="nigredo"] {
   --nigredo_date_size: 0.68rem;
 
   /* archive pane */
-  --nigredo_scroll_height: 62vh;
+  /* --nigredo_scroll_height removed 2026-04-22: archive uses unified
+     document scroll now; pane is a passive visual frame. */
   --nigredo_filter_gap: 0.35rem;
 
   /* lane alignment */
@@ -257,21 +258,18 @@ body[data-phase="nigredo"] {
 }
 
 /* ============================================================
-   Scroll pane — bounded overflow container for TanStack + Lenis
+   Scroll pane — now a passive visual frame, NOT an overflow container.
+   The TanStack virtualizer uses document scroll as its single scroll
+   context; the pane just carries data attributes and composes with the
+   archive's visual framing. Previously this was a nested scroll container
+   (height: 62vh + overflow:auto + overscroll-contain) which created a
+   mouse-position-dependent dual-scroll context that read as "all over
+   the place" when wheel-scrolling. Unified to document scroll on
+   2026-04-22.
    ============================================================ */
 
 .nigredo-scroll-pane {
-  height: var(--nigredo_scroll_height);
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(
-      in oklch,
-      var(--site_style_accent) 28%,
-      transparent
-    )
-    transparent;
+  /* Passive frame — no height, no overflow; document handles scroll. */
 }
 
 /* Inner track — TanStack sets height here.
@@ -622,9 +620,8 @@ body[data-phase="nigredo"] {
    ============================================================ */
 
 @media (max-width: 768px) {
-  body[data-phase="nigredo"] {
-    --nigredo_scroll_height: 70vh;
-  }
+  /* --nigredo_scroll_height override removed 2026-04-22 along with the
+     nested scroll pane; archive now uses unified document scroll. */
 
   .nigredo-filter-rail {
     gap: 0.4rem;
