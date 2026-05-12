@@ -8,7 +8,6 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "bun test",
-    "tailwind": "bunx tailwindcss -i ./assets/css/base.css -o ./assets/css/style.css -w --optimize",
     "css:size:audit": "bun scripts/css_size_audit.js check --scope=priority-a",
     "rubedo:scenes:check": "bun scripts/rubedo_scene_identity_audit.js check",
     "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
@@ -18,22 +17,16 @@
     "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile-nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^6.0.2",
     "@catppuccin/tailwindcss": "^1.0.0",
-    "@splidejs/splide": "^4.1.4",
-    "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/virtual-core": "^3.13.23",
     "astro": "^5.16.11",
     "htmx.org": "^2.0.8",
     "idiomorph": "^0.7.4",
-    "lenis": "^1.3.19",
-    "npm": "^11.7.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "smol-toml": "^1.6.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

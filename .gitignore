@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 
 # Local visual references
 inspiration/
+
+# Debug screenshots / captures at repo root (not under public/ or src/)
+/*.png
