@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\Projects\alvorada
-- Updated_utc: 2026-05-12 20:05
+- Updated_utc: 2026-05-12 20:15
 - Updated_by: Kodo (Claude Opus 4.7)
 - preferred_start_style: conversational
 - next_session: sprint
-- primary_outcome: lean rewrite of alvorada to component-style code with ritualistic custom-element markup, snake_case `.sol__` class prefix, and clean HTML output
-- priority: rewrite
-- edit_breadth: broad
-- first_task: phase 7 — remaining design decisions (footer scope, scaffold pages, gilded ornaments, Catppuccin removal, lessons.md fate, rubedo scenes archive, dead CSS cleanup, `references/` dir)
+- primary_outcome: lean rewrite of alvorada complete. Eight commits in the arc. House lean, conventions locked, design decisions resolved.
+- priority: rules-rewrite
+- edit_breadth: moderate
+- first_task: phase 8 — `.opencode/rules/*` rewrite to reflect new conventions (ritualistic custom elements, `.sol__`/`#sol_` prefixes, snake_case everywhere, drop-landmarks rule, page-identity pattern, phase-prop on footer). Plus: README expand to document the canonical site shape, AGENTS.md dedupe (line 77-78 has duplicate `project.md` entry), CI workflow alignment with AGENTS.md validation baseline.
 - commit_intent: per-phase
-- notes: phases 1-6 SHIPPED COMPLETE. All IDs `#sol_*`, all classes `.sol__*`, zero stragglers anywhere. Architecture already pushes tailwind utilities into `@apply` blocks (no class-soup in markup). Phases 7 + 8 ahead.
+- notes: phases 1-7 SHIPPED COMPLETE. The lean rewrite of alvorada is functionally done. Phase 8 is documentation/rules work to lock in what we built.
 
 ## Alias Ledger
 
@@ -23,24 +23,28 @@
 
 ## Active Scope
 
-- State: phase 6 complete; phase 7 design decisions ahead
+- State: phase 7 complete; phase 8 (rules + docs rewrite) ahead
 - Branch: master
 - Head: pending_next_commit
-- Scope_in: design decisions on remaining open questions (footer, scaffolds, gilded ornaments, etc.); then rules rewrite to reflect new conventions
-- Scope_out: Codex unlock backend (future), Absurd Faith chapter content (3 identity-cores only)
+- Scope_in: rules rewrite + README expand + AGENTS dedupe + CI gate alignment
+- Scope_out: Codex unlock backend (future), Absurd Faith chapter content (3 identity-cores only), `references/` dir (Sol deferred to end-of-rewrite conversation)
 
 ## Next (Top 3)
 
-1. [ ] Phase 7: design decisions, batchable per Sol's call:
-   - **Footer scope** — "Made with pure hatred / You should all die" is global, lands on Absurd Faith reader pages. Phase-scope to nigredo only, or keep global?
-   - **Scaffold pages** — `albedo/[post_slug]`, `citrinitas/[post_slug]`, `codex/[...entry_path]` render placeholder pages live to production. Gate behind build flag, draft them out, or accept public placeholders?
-   - **Gilded ornaments** — 31 unused SVGs (`public/ornaments/gilded*.svg` + `public/ornaments/gilded/`). Delete, or wire into a future theme system?
-   - **Catppuccin** — `styling.md` calls Catppuccin "temporary baseline." Remove now, or keep until palette replacement?
-   - **lessons.md** — `.opencode/rules/workflow.md` references this file but it doesn't exist. Create it or strip references?
-   - **Rubedo scenes archive** — `progress.archive.md` mentions a `src/data/rubedo/scenes/absurd-faith/*` system that no longer exists. Add one-line archive entry explaining the collapse-to-runtime, or leave?
-   - **Dead CSS rule** — `.sol__rubedo_timeline_grid > section` in `rubedo_timeline.css` is orphaned (the class is unused). Delete?
-   - **`references/` dir** — untracked at repo root. Origin?
-2. [ ] Phase 8: rule rewrite (`.opencode/rules/*`) to reflect new conventions + README expand + AGENTS dedupe + CI gate alignment.
+1. [ ] Phase 8a: rewrite `.opencode/rules/*` to reflect new conventions:
+   - `project.md`: ritualistic-tags, drop-landmarks, page-identity-pattern, attribute roles, `.sol__`/`#sol_` prefixes
+   - `styling.md`: snake_case CSS files, ritualistic shells for landmarks, Catppuccin removal
+   - `option-classes.md`: keep — `ui_option_classes.md` registry unchanged
+   - `apply-discipline.md`: keep, possibly add notes on @apply-in-CSS preference
+   - `expose-css-tunables.md`: add YAML frontmatter for consistency
+   - `workflow.md`: already cleaned in phase 7
+   - `commit-message-tail-required.md`: keep
+   - `session-handoff-commit.md`: keep
+   - Others: minor edits
+2. [ ] Phase 8b: README expand + AGENTS.md dedupe (line 77-78 duplicate `project.md`)
+3. [ ] Phase 8c: CI workflow alignment (CI runs only `bun run css:tunables:check` but AGENTS.md validation baseline requires `bun run build`, `bunx prettier --check`, `css:hard-gates:check`, `rubedo:scenes:check`, `bun test`). Decide which gates run in CI.
+
+After phase 8: end-of-rewrite conversation with Sol about `references/` dir + any final polish.
 
 ## Blockers
 
@@ -48,12 +52,10 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.81s, after phase 6d
-- bun install: pass (in phase 2)
+- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.44s, after phase 7
+- bun install: pass (Catppuccin removed, 1 package gone)
 - CSS hard gates: not run this phase
 - Prettier: not run this phase
-- Rubedo scene identity: not changed
-- Verification grep: **0 non-sol__ markup classes anywhere** in the codebase. Rename is 100%.
 
 ## Current Snapshot
 
@@ -65,55 +67,27 @@
 - **Phase 6a**: CSS rename + hygiene. Commit `0aef53c` // `oh nyo... my silly little breadcrumb naming got tagged as unprofessional ;w;`.
 - **Phase 6b**: `sol_` ID prefix sweep. Commit `ca497ac` // `the dragon went door to door with sol_ stickers, all forty of them ;w;`.
 - **Phase 6c**: `.sol__` class prefix sweep (224 classes, omega-1 burned then omega-2 landed). Commit `530728c` // `the dragon labeled 224 classes (after learning not to label the comments) ;w;`.
-- **Phase 6d**: complete the class rename. 28 stragglers found (5 inline-style classes in `[entry_slug].astro` + structural classes I introduced in phase 4/5 that had no CSS targeting them yet). 19 files modified, 62/62 balanced diff. Surprise catches: `src/data/rubedo/book_timeline_runtime.js` + `src/utils/timeline_threads.js` had JS string references to class names that the word-boundary regex caught. **Verification grep: zero non-sol__ classes remaining in markup or inline styles.** Phase 6 is complete.
+- **Phase 6d**: complete the class rename (28 stragglers + inline-style gap). Commit `c1a3e65` // `the dragon found 28 strays hiding in the corners (one was in nigredo's inline style) ;w;`.
+- **Phase 7**: design decisions omega. Dynamic footer (phase prop + content map), Catppuccin removed (`@import` + 10 `@reference` lines + 1 package + define `--color-codex` replacement), `lessons.md` refs stripped from workflow.md, rubedo scenes archive note, dead `.sol__rubedo_timeline_grid` CSS removed, 35 unused gilded ornaments deleted (13 root + 22 subdir), `fog.css` @reference stripped (file is draft/not-imported so dangling `shadow-ctp-red-400` @apply stays as TODO).
 
-## Component Tree (current)
-
-```
-src/components/
-├── aether/
-│   └── fog.astro
-├── mantle/
-│   ├── breadcrumbs.astro
-│   ├── desktop_navbar.astro
-│   ├── footer.astro
-│   ├── mobile_navbar.astro
-│   └── style_switcher.astro
-├── nigredo/
-│   ├── entry.astro
-│   ├── list.astro
-│   └── pill.astro
-├── ornament/
-│   └── content_frame.astro
-└── rubedo/
-    ├── timeline_constellation.astro
-    ├── timeline_hover_preview.astro
-    └── timeline_state_panel.astro
-```
-
-## Conventions (LOCKED — phase 1-6 final)
+## Conventions (LOCKED — phase 1-7 final)
 
 - **Snake_case** for all file/dir/id/class names.
-- **Ritualistic custom elements** for structural/landmark shells: bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>` (no `sol-` prefix on tags; spec-violation accepted since no JS encapsulation needed).
-- **Functional native HTML** kept: `button`, `a`, `input`, `select`, `textarea`, `form`, `img`, `h1-h6`, `ul`/`ol`/`li`, `p`, `strong`/`em`/`code`/`pre`, table family, `video`/`audio`.
+- **Ritualistic custom elements** for structural/landmark shells: bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`.
+- **Functional native HTML** kept: interactives (`button`, `a`, `input`, `select`, `textarea`, `form`), media (`img`, `video`, `audio`), headings (`h1-h6`), text formatting (`p`, `strong`, `em`, `code`, `pre`), list family (`ul`, `ol`, `li`), table family.
 - **Landmark HTML dropped**: `<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>`. Exception: `<container>` (kept by Sol's call).
-- **Page-identity pattern**: every page wraps in `<phase-name data-shape="X">`. ONE ritualistic outer per page. Inner blocks plain `<div>` with semantic classes.
+- **Page-identity pattern**: every page wraps in `<phase-name data-shape="X">`. ONE ritualistic outer per page.
 - **Attribute roles**: `data-shape="X"` (kind, on ritualistic outer); `data-state="X"` (runtime); `data-tone="X"` (flavor); `.sol__foo--bar` class prefix for tasteful modifiers (none in use yet — reserved).
-- **ID prefix**: `#sol_foo_bar` — applied in phase 6b.
-- **Class prefix**: `.sol__foo_bar` — applied in phase 6c+6d. Sol's classes only; Tailwind/Catppuccin classes untouched.
-- **Tailwind utilities** stay inside `@apply` blocks in CSS, not as class-soup in markup (architecture already follows this).
+- **ID prefix**: `#sol_foo_bar`.
+- **Class prefix**: `.sol__foo_bar` (Sol's classes only; Tailwind utilities + Catppuccin-history classes untouched).
+- **Tailwind utilities** stay inside `@apply` blocks in CSS, not as class-soup in markup (architecture follows this).
+- **No more Catppuccin** — removed phase 7. `--color-codex` replaces the only direct variable reference. `fog.css` (draft, unimported) still has a dangling `shadow-ctp-red-400` @apply — flagged TODO.
+- **Footer architecture**: `Footer.astro` accepts `phase` prop. Per-page override via `<Fragment slot="footer">`. Currently nigredo has "Made with pure hatred / You should all die"; other phases empty pending Sol's content.
 - **Internal layout `<div>`** stays `<div>`.
 
 ## Notes
 
 - Component-style shape modeled after multistock (Sol's reference).
-- Dead CSS rule `.sol__rubedo_timeline_grid > section` orphaned. Phase 7 cleanup.
-- Untracked `references/` directory at repo root — Sol deferred discussion.
-- Detailed session history lives in `progress.archive.md`.
+- Untracked `references/` directory at repo root — Sol deferred for end-of-rewrite conversation.
+- Detailed session history lives in `progress.archive.md` (now with 2026-05-12 rubedo scenes note appended).
 - Full-worktree handoff commits per `session-handoff-commit.md`; commit tails required per `commit-message-tail-required.md`.
-- **Script lessons accumulated through phase 6 (worth filing in rules later)**:
-  1. **Comment + directive stripping is critical** for CSS class discovery via regex — comments routinely contain false-positive patterns (file extensions, JS-style property accesses).
-  2. **Word-boundary regex** `(?<![\w-])X(?![\w-])` correctly handles class/id boundaries.
-  3. **Longest-first ordering** in the mapping prevents substring-collision rewrites (e.g. `#mobile-nav` must NOT process before `#mobile-nav-shell`).
-  4. **Discovery scope matters** — phase 6c scanned `src/styles/**/*.css` only; missed the inline `<style>` in `[entry_slug].astro` (caught in 6d). Future discovery sweeps should ALSO scan `<style>` blocks in `.astro` files.
-  5. **Omega-commit + git restore** is the working safety net for ambitious bulk renames. Sol's call from earlier: "if it does we have git history."

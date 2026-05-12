@@ -1,6 +1,5 @@
 @reference "tailwindcss";
 @reference "../utils.css";
-@reference "@catppuccin/tailwindcss/mocha.css";
 
 @property --cursor_x {
   syntax: "<length-percentage>";

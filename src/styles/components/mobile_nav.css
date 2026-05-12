@@ -1,6 +1,5 @@
 @reference "tailwindcss";
 @reference "../utils.css";
-@reference "@catppuccin/tailwindcss/mocha.css";
 
 /* Quick Tune Variables (edit here first) */
 #sol_mobile_nav {

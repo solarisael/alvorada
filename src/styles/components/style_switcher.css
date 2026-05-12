@@ -1,6 +1,5 @@
 @reference "tailwindcss";
 @reference "../utils.css";
-@reference "@catppuccin/tailwindcss/mocha.css";
 
 #sol_style_switcher {
   /* Quick Tune Variables (edit here first) */

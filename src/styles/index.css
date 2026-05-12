@@ -1,6 +1,5 @@
 @reference "tailwindcss";
 @import "./utils.css";
-@reference "@catppuccin/tailwindcss/mocha.css";
 
 /*
 Ownership Matrix

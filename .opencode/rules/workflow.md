@@ -66,8 +66,6 @@ simpler approaches are proven insufficient.
 2. Verify plan: confirm direction before starting implementation on broad changes.
 3. Track progress: mark steps complete as you go.
 4. Explain changes: high-level summary at each significant step.
-5. Capture lessons: after any correction from Sol, update `.opencode/rules/lessons.md`
-   with the pattern and a rule that prevents the same mistake.
 
 ### Demand Elegance
 
@@ -75,9 +73,3 @@ simpler approaches are proven insufficient.
 - If a fix feels hacky, ask: "knowing everything I know now, what is the clean solution?"
 - Skip this for simple, obvious fixes — do not over-engineer.
 - Challenge your own work before presenting it.
-
-### Self-Improvement Loop
-
-- After any correction from Sol, write a rule in `.opencode/rules/lessons.md`.
-- Rules must be specific enough to prevent the same mistake, not generic platitudes.
-- Review `lessons.md` at the start of sessions where past mistakes are relevant.
