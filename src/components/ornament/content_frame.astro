@@ -1,0 +1,74 @@
+---
+// Decorative SVG frame for the content shell — corners, lines, sigils.
+// Preserves the content-layer class so the .content-layer positioning rules still apply.
+
+const base_url = import.meta.env.BASE_URL;
+const base_path = base_url.replace(/\/+$/, "");
+const with_base = (path_value) => {
+  const normalized_path = String(path_value).replace(/^\/+/, "");
+
+  return `${base_path}/${normalized_path}`;
+};
+---
+
+<ornament
+  data-shape="content_frame"
+  class="content-layer content-layer-ornament-svg"
+>
+  <img
+    class="content-ornament content-ornament-corner-tl"
+    src={with_base("ornaments/cinza/frame_corner_tl.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-corner-tr"
+    src={with_base("ornaments/cinza/frame_corner_tr.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-corner-bl"
+    src={with_base("ornaments/cinza/frame_corner_bl.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-corner-br"
+    src={with_base("ornaments/cinza/frame_corner_br.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-line-top"
+    src={with_base("ornaments/cinza/frame_line_top.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-line-bottom"
+    src={with_base("ornaments/cinza/frame_line_bottom.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-sigil-top"
+    src={with_base("ornaments/cinza/sigil_moon_star.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+  <img
+    class="content-ornament content-ornament-sigil-bottom"
+    src={with_base("ornaments/cinza/sigil_eye.svg")}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
+</ornament>

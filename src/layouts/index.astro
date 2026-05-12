@@ -10,6 +10,9 @@ import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
 import Navbar from "../components/mantle/desktop_navbar.astro";
 import StyleSwitcher from "../components/mantle/style_switcher.astro";
+import Footer from "../components/mantle/footer.astro";
+import Fog from "../components/aether/fog.astro";
+import ContentFrame from "../components/ornament/content_frame.astro";
 
 const {
   body_class = "",
@@ -73,78 +76,19 @@ const resolved_body_classes = Array.from(
     <Navbar />
     <MobileNavbar />
     <container>
-      <main id="page-main">
+      <vessel data-shape="page_main" id="page-main">
         <div id="content_stage">
           <div class="content-stage-layer content-stage-layer-fog"></div>
           <div class="content-stage-layer content-stage-layer-rails"></div>
 
-          <div id="content_fog_backdrop">
-            <div class="content-fog-layer content-fog-layer-top"></div>
-            <div class="content-fog-layer content-fog-layer-bottom"></div>
-          </div>
+          <Fog />
 
           <div id="content">
             <div class="content-layer content-layer-surface"></div>
             <div class="content-layer content-layer-noise"></div>
             <div class="content-layer content-layer-deco"></div>
-            <div class="content-layer content-layer-ornament-svg">
-              <img
-                class="content-ornament content-ornament-corner-tl"
-                src={with_base("ornaments/cinza/frame_corner_tl.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-corner-tr"
-                src={with_base("ornaments/cinza/frame_corner_tr.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-corner-bl"
-                src={with_base("ornaments/cinza/frame_corner_bl.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-corner-br"
-                src={with_base("ornaments/cinza/frame_corner_br.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-line-top"
-                src={with_base("ornaments/cinza/frame_line_top.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-line-bottom"
-                src={with_base("ornaments/cinza/frame_line_bottom.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-sigil-top"
-                src={with_base("ornaments/cinza/sigil_moon_star.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="content-ornament content-ornament-sigil-bottom"
-                src={with_base("ornaments/cinza/sigil_eye.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-            </div>
+
+            <ContentFrame />
 
             <div class="content-layer-body">
               <div id="main_reading_container">
@@ -163,19 +107,14 @@ const resolved_body_classes = Array.from(
 
               <div id="content_footer_lane">
                 <slot name="footer">
-                  <footer id="footer">
-                    <span
-                      >Made with pure hatred <br />
-                      You should all die</span
-                    >
-                  </footer>
+                  <Footer />
                 </slot>
               </div>
             </div>
           </div>
         </div>
         <StyleSwitcher />
-      </main>
+      </vessel>
     </container>
   </body>
 </html>
