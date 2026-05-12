@@ -27,9 +27,11 @@ Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 ## Project Snapshot
 
-- Stack: Astro 5 + Tailwind CSS 4 + vanilla JavaScript.
+- Stack: Astro 5 + Tailwind CSS 4 + vanilla JavaScript + HTMX 2 + idiomorph.
 - Runtime/package manager: Bun.
-- Primary dirs: `src/pages`, `src/layouts`, `src/components`, `src/styles`, `public/js`
+- Primary dirs: `src/pages`, `src/layouts`, `src/components/{aether,mantle,nigredo,ornament,rubedo}`, `src/styles`, `public/js/{modules,vendor}`.
+- Markup convention: ritualistic custom elements (`<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`) for structural shells; functional native HTML kept; landmark tags dropped. See `.opencode/rules/project.md` for full details.
+- Naming: snake_case everywhere; `#sol_*` for IDs; `.sol__*` for Sol's classes.
 
 ## Routes (current)
 
@@ -74,7 +76,6 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 
 ## Rule Index
 
-- `.opencode/rules/project.md`
 - `.opencode/rules/project.md`
 - `.opencode/rules/intent-lock.md`
 - `.opencode/rules/style-intent-contract.md`

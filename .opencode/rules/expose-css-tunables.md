@@ -1,3 +1,10 @@
+---
+name: Expose CSS Tunables
+globs: "src/styles/**/*.css"
+description: Keep component-local CSS custom properties grouped at the top of the file for fast visual tuning; forbid single-use alias variables.
+alwaysApply: false
+---
+
 # Expose CSS Tunables
 
 When a component stylesheet has many custom properties, keep all local tuning variables easy to edit from the top of the file.

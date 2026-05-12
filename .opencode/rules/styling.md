@@ -33,27 +33,22 @@ Use this document as a strict aesthetic and layout rule for new UI work.
    - Avoid literal or heavy-handed occult imagery.
    - Atmosphere must support readability, never compete with it.
 
-## Color System (Temporary Baseline)
+## Color System
 
-- Current palette is Catppuccin Mocha and is temporary.
-- Treat Catppuccin tokens as implementation details, not permanent brand truth.
-- Always map colors semantically so future palette swaps are low-friction.
+- **Catppuccin removed 2026-05-12.** Was a "temporary baseline" — replaced with Sol-owned tokens.
+- Phase color tokens live in `src/styles/base.css` `@theme` block:
+  - `--color-nigredo`, `--color-albedo`, `--color-citrinitas`, `--color-rubedo`, `--color-codex`
+- Surface/text/accent semantic groups are defined as `--ui_*` and `--site_*` custom properties in `:root`.
+- Always map colors semantically so future palette tuning is low-friction.
 
 Required semantic groups:
 
 - Surface tokens: page base, elevated surface, glass surface, border.
 - Text tokens: primary, secondary, muted, inverse.
 - Accent tokens: interactive, focus, active, decorative.
-- Status/theme accents: alchemical phase channels.
+- Status/theme accents: alchemical phase channels (`--color-{nigredo,albedo,citrinitas,rubedo,codex}`).
 
-Current thematic accents (keep available):
-
-- `nigredo`
-- `albedo`
-- `citrinitas`
-- `rubedo`
-
-Use those accents sparingly as narrative and interaction highlights.
+Use phase accents sparingly as narrative and interaction highlights.
 
 ## Spacing Rhythm
 
@@ -95,10 +90,14 @@ This project's main reading container should feel stable, centered, and immersiv
 
 ## Layout Contracts
 
-- Body composition must be class-driven.
-- Use `body_grid` for the primary layout contract and `compound_body_grid` for the secondary composition contract.
-- Compound and primary templates must use `fr` tracks in `grid-template-columns`.
+- Body composition must be class-driven via `.sol__body_grid` and `.sol__compound_body_grid`.
+- Primary and compound templates must use `fr` tracks in `grid-template-columns`.
 - Do not use margin-centering as a substitute for grid placement when composition contracts exist.
+
+## Ritualistic Markup
+
+- Structural/landmark shells use bare ritualistic custom elements: `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`. See `project.md` for the full landmark-drop policy.
+- Each ritualistic outer carries `data-shape="X"` as the kind marker. Class styling targets `.sol__foo` classes; ritualistic tags get global `display: block` default from `base.css`.
 
 ## Property Policy
 
