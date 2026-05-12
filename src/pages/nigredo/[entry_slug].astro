@@ -39,33 +39,33 @@ const display_title = entry.data.title
     { label: display_title, href: null },
   ]}
 >
-  <nigredo data-shape="entry_detail" class="nigredo-detail">
-    <div class="nigredo-detail-header">
-      <div class="nigredo-detail-meta">
+  <nigredo data-shape="entry_detail" class="sol__nigredo_detail">
+    <div class="sol__nigredo_detail_header">
+      <div class="sol__nigredo_detail_meta">
         <NigredoPill state={primary_state} />
         <time class="sol__nigredo_entry_date" datetime={entry.data.published_at}>
           {entry.data.published_at}
         </time>
       </div>
-      <h1 class="nigredo-detail-title" data-redacted={!entry.data.title}>
+      <h1 class="sol__nigredo_detail_title" data-redacted={!entry.data.title}>
         {display_title}
       </h1>
     </div>
 
-    <div class="nigredo-detail-body sol__chapter_content">
+    <div class="sol__nigredo_detail_body sol__chapter_content">
       <Content />
     </div>
   </nigredo>
 </IndexLayout>
 
 <style>
-  .nigredo-detail {
+  .sol__nigredo_detail {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .nigredo-detail-header {
+  .sol__nigredo_detail_header {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
@@ -74,13 +74,13 @@ const display_title = entry.data.title
       color-mix(in oklch, var(--site_style_accent) 16%, transparent);
   }
 
-  .nigredo-detail-meta {
+  .sol__nigredo_detail_meta {
     display: flex;
     align-items: center;
     gap: 0.6rem;
   }
 
-  .nigredo-detail-title {
+  .sol__nigredo_detail_title {
     font-size: var(--text_h1, 1.75rem);
     font-family: var(--font_reading_heading);
     font-weight: 500;
@@ -89,13 +89,13 @@ const display_title = entry.data.title
     margin: 0;
   }
 
-  .nigredo-detail-title[data-redacted="true"] {
+  .sol__nigredo_detail_title[data-redacted="true"] {
     letter-spacing: 0.08em;
     color: oklch(36% 0.01 258);
     font-family: monospace;
   }
 
-  .nigredo-detail-body {
+  .sol__nigredo_detail_body {
     max-width: 62ch;
   }
 </style>

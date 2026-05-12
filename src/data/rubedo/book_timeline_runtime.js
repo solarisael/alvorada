@@ -166,7 +166,7 @@ const build_markdown_book_map = () => {
         timeline_position,
         title: frontmatter?.chapter_title ?? null,
         chapter_description: frontmatter?.chapter_description ?? null,
-        chapter_snippet: frontmatter?.chapter_snippet ?? null,
+        sol__chapter_snippet: frontmatter?.sol__chapter_snippet ?? null,
         branch_edges: frontmatter?.branch_edges ?? [],
         scenes: [],
       });
@@ -187,10 +187,10 @@ const build_markdown_book_map = () => {
     }
 
     if (
-      active_chapter_entry.chapter_snippet == null &&
-      frontmatter?.chapter_snippet
+      active_chapter_entry.sol__chapter_snippet == null &&
+      frontmatter?.sol__chapter_snippet
     ) {
-      active_chapter_entry.chapter_snippet = frontmatter.chapter_snippet;
+      active_chapter_entry.sol__chapter_snippet = frontmatter.sol__chapter_snippet;
     }
 
     if (
@@ -229,7 +229,7 @@ const build_markdown_book_map = () => {
           timeline_position: chapter.timeline_position,
           title: chapter.title,
           chapter_description: chapter.chapter_description,
-          chapter_snippet: chapter.chapter_snippet,
+          sol__chapter_snippet: chapter.sol__chapter_snippet,
           branch_edges: Object.freeze([...(chapter.branch_edges ?? [])]),
           scenes: Object.freeze([...chapter.scenes]),
         };
@@ -294,7 +294,7 @@ const to_timeline_chapter = (chapter = {}) => {
     timeline_position: chapter.timeline_position,
     title: chapter.title,
     description: chapter.chapter_description,
-    snippet: chapter.chapter_snippet,
+    snippet: chapter.sol__chapter_snippet,
     branch_edges: [...(chapter.branch_edges ?? [])],
     thread_keys,
     has_branches:

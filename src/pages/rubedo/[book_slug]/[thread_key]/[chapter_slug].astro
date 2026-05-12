@@ -153,15 +153,15 @@ const crumbs = [
   theme_color={theme_color}
   crumbs={crumbs}
 >
-  <div class="chapter-header">
+  <div class="sol__chapter_header">
     <h1>{chapter?.title ?? "Unknown chapter"}</h1>
   </div>
 
   {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
 
   {
-    chapter?.chapter_snippet && (
-      <p class="chapter_snippet">{chapter.chapter_snippet}</p>
+    chapter?.sol__chapter_snippet && (
+      <p class="sol__chapter_snippet">{chapter.sol__chapter_snippet}</p>
     )
   }
 
@@ -177,7 +177,7 @@ const crumbs = [
   }
   <mantle
     data-shape="eyes_nav"
-    class="chapter_eyes_nav"
+    class="sol__chapter_eyes_nav"
     data-chapter-slug={chapter_slug}
     data-book-slug={book_slug}
     data-active-thread={thread_key}
@@ -191,7 +191,7 @@ const crumbs = [
 
         return (
           <a
-            class="chapter_eyes_slot"
+            class="sol__chapter_eyes_slot"
             data-thread-key={slot_thread_key}
             data-thread-locked="false"
             aria-current={is_active ? "page" : undefined}
@@ -212,7 +212,7 @@ const crumbs = [
   <div id="sol_chapter_thread_content" data-thread-key={thread_key}>
     {
       thread_scene?.scene_title && (
-        <p class="thread_scene_label">{thread_scene.scene_title}</p>
+        <p class="sol__thread_scene_label">{thread_scene.scene_title}</p>
       )
     }
     {
@@ -221,7 +221,7 @@ const crumbs = [
       ) : thread_scene?.scene_lines?.length ? (
         thread_scene.scene_lines.map((scene_line) => <p>{scene_line}</p>)
       ) : (
-        <p class="thread_scene_empty">
+        <p class="sol__thread_scene_empty">
           No scene found for thread <code>{thread_key}</code>.
         </p>
       )

@@ -199,8 +199,8 @@ const resolve_chapter_card_metadata = (
     chapter_core_scene?.chapter_description,
   );
   const base_chapter_snippet = get_preferred_text(
-    active_chapter?.chapter_snippet,
-    chapter_core_scene?.chapter_snippet,
+    active_chapter?.sol__chapter_snippet,
+    chapter_core_scene?.sol__chapter_snippet,
   );
 
   return {

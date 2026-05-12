@@ -107,7 +107,7 @@ const apply_constant_crumb_state = (pathname_value) => {
     const is_current = crumb_link_node === current_link_node;
     crumb_item_node.classList.toggle("sol__is_current", is_current);
     crumb_item_node.classList.toggle("sol__is_parent", !is_current);
-    crumb_link_node.classList.toggle("is-current-link", is_current);
+    crumb_link_node.classList.toggle("sol__is_current_link", is_current);
   });
 
   last_applied_pathname = normalized_pathname;
