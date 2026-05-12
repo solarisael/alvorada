@@ -13,7 +13,7 @@ const reader_href = resolved_view_state
 
 <rubedo
   data-shape="timeline_hover_preview"
-  id="rubedo_timeline_hover_preview"
+  id="sol_rubedo_timeline_hover_preview"
   class="rubedo-timeline-hover-preview"
 >
   {
@@ -32,8 +32,8 @@ const reader_href = resolved_view_state
           <a
             href={reader_href}
             hx-get={reader_href}
-            hx-target="#content"
-            hx-select="#content"
+            hx-target="#sol_content"
+            hx-select="#sol_content"
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
             class="rubedo-timeline-go-to-chapter"

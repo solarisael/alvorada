@@ -3,7 +3,7 @@
 @reference "@catppuccin/tailwindcss/mocha.css";
 
 /* Quick Tune Variables (edit here first) */
-#mobile-nav {
+#sol_mobile_nav {
   /* Center home geometry */
   --mobile_home_size: 4.15rem;
   --mobile_home_lift: 1.15rem;
@@ -61,7 +61,7 @@
 }
 
 @media (max-width: 768px) {
-  #mobile-nav {
+  #sol_mobile_nav {
     /* positioning / stacking */
     @apply fixed inset-x-0 bottom-0 z-50;
     /* display */
@@ -98,7 +98,7 @@
     backdrop-filter: blur(var(--mobile_dock_blur));
   }
 
-  #mobile-nav-shell {
+  #sol_mobile_nav_shell {
     @apply relative flex;
     @apply justify-between;
     @apply w-full;
@@ -442,7 +442,7 @@
 }
 
 @media (min-width: 769px) {
-  #mobile-nav {
+  #sol_mobile_nav {
     @apply hidden;
   }
 }

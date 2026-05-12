@@ -68,22 +68,22 @@ const resolved_body_classes = Array.from(
     class:list={resolved_body_classes}
     data-phase={phase || undefined}
     hx-ext="morph,head-support,preload,sse"
-    hx-target="#content"
-    hx-select="#content"
+    hx-target="#sol_content"
+    hx-select="#sol_content"
     hx-swap="morph swap:240ms settle:240ms"
     hx-push-url="true"
   >
     <Navbar />
     <MobileNavbar />
     <container>
-      <vessel data-shape="page_main" id="page-main">
-        <div id="content_stage">
+      <vessel data-shape="page_main" id="sol_page_main">
+        <div id="sol_content_stage">
           <div class="content-stage-layer content-stage-layer-fog"></div>
           <div class="content-stage-layer content-stage-layer-rails"></div>
 
           <Fog />
 
-          <div id="content">
+          <div id="sol_content">
             <div class="content-layer content-layer-surface"></div>
             <div class="content-layer content-layer-noise"></div>
             <div class="content-layer content-layer-deco"></div>
@@ -91,7 +91,7 @@ const resolved_body_classes = Array.from(
             <ContentFrame />
 
             <div class="content-layer-body">
-              <div id="main_reading_container">
+              <div id="sol_main_reading_container">
                 <div class="reading-layer reading-layer-surface"></div>
                 <div class="reading-layer reading-layer-noise"></div>
 
@@ -105,7 +105,7 @@ const resolved_body_classes = Array.from(
                 </div>
               </div>
 
-              <div id="content_footer_lane">
+              <div id="sol_content_footer_lane">
                 <slot name="footer">
                   <Footer />
                 </slot>

@@ -44,7 +44,7 @@ const ensure_action_queuer = () => {
  * @param {string | null} [pathname_override=null]
  */
 const apply_route_active_state = (pathname_override = null) => {
-  const nav_node = document.querySelector("#desktop-nav");
+  const nav_node = document.querySelector("#sol_desktop_nav");
 
   if (!(nav_node instanceof HTMLElement)) {
     return;
@@ -83,7 +83,7 @@ const apply_route_active_state = (pathname_override = null) => {
     pill_node.classList.toggle("is-route-current", is_exact_match);
   });
 
-  const home_node = nav_node.querySelector("#icon-user");
+  const home_node = nav_node.querySelector("#sol_icon_user");
 
   if (!(home_node instanceof HTMLAnchorElement)) {
     return;
@@ -257,7 +257,7 @@ const init_navbar_visibility = () => {
     return;
   }
 
-  const nav_node = document.querySelector("#desktop-nav");
+  const nav_node = document.querySelector("#sol_desktop_nav");
 
   if (!(nav_node instanceof HTMLElement)) {
     return;

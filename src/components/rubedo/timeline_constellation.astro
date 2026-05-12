@@ -347,8 +347,8 @@ const map_nodes_with_links = map_nodes.map((node_entry) => {
     link: {
       href: chapter_link_props.href,
       hx_get: chapter_link_props.hx_get ?? chapter_link_props.href,
-      hx_target: chapter_link_props.hx_target ?? "#rubedo_timeline_interactive",
-      hx_select: chapter_link_props.hx_select ?? "#rubedo_timeline_interactive",
+      hx_target: chapter_link_props.hx_target ?? "#sol_rubedo_timeline_interactive",
+      hx_select: chapter_link_props.hx_select ?? "#sol_rubedo_timeline_interactive",
       hx_swap: chapter_link_props.hx_swap ?? "morph swap:240ms settle:240ms",
       hx_push_url: chapter_link_props.hx_push_url ?? "false",
     },
@@ -359,10 +359,10 @@ const map_nodes_with_links = map_nodes.map((node_entry) => {
             hover_preview_link_props.hx_get ?? hover_preview_link_props.href,
           hx_target:
             hover_preview_link_props.hx_target ??
-            "#rubedo_timeline_hover_preview",
+            "#sol_rubedo_timeline_hover_preview",
           hx_select:
             hover_preview_link_props.hx_select ??
-            "#rubedo_timeline_hover_preview",
+            "#sol_rubedo_timeline_hover_preview",
           hx_swap:
             hover_preview_link_props.hx_swap ?? "morph swap:180ms settle:120ms",
           hx_push_url: hover_preview_link_props.hx_push_url ?? "false",
@@ -402,7 +402,7 @@ const constellation_payload = {
 
 <rubedo
   data-shape="timeline_constellation"
-  id="rubedo_constellation_map"
+  id="sol_rubedo_constellation_map"
   class="rubedo-constellation"
   data-active-thread-key={active_thread_key}
   data-renderer="canvas"

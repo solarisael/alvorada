@@ -47,7 +47,7 @@ const derive_request_pathname = (event) => {
  * @param {string} pathname_value
  */
 const apply_constant_crumb_state = (pathname_value) => {
-  const breadcrumb_node = document.querySelector("#breadcrumbs");
+  const breadcrumb_node = document.querySelector("#sol_breadcrumbs");
 
   if (!(breadcrumb_node instanceof HTMLElement)) {
     return;

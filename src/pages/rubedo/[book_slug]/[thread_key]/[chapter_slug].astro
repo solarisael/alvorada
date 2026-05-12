@@ -98,8 +98,8 @@ const build_hx_link = (href) => {
   return {
     href,
     hx_get: href,
-    hx_target: "#content",
-    hx_select: "#content",
+    hx_target: "#sol_content",
+    hx_select: "#sol_content",
     hx_swap: "morph swap:240ms settle:240ms",
     hx_push_url: "true",
   };
@@ -197,8 +197,8 @@ const crumbs = [
             aria-current={is_active ? "page" : undefined}
             href={is_active ? undefined : slot_href}
             hx-get={is_active ? undefined : slot_href}
-            hx-target={is_active ? undefined : "#content"}
-            hx-select={is_active ? undefined : "#content"}
+            hx-target={is_active ? undefined : "#sol_content"}
+            hx-select={is_active ? undefined : "#sol_content"}
             hx-swap={is_active ? undefined : "morph swap:240ms settle:240ms"}
             hx-push-url={is_active ? undefined : "true"}
           >
@@ -209,7 +209,7 @@ const crumbs = [
     }
   </mantle>
 
-  <div id="chapter_thread_content" data-thread-key={thread_key}>
+  <div id="sol_chapter_thread_content" data-thread-key={thread_key}>
     {
       thread_scene?.scene_title && (
         <p class="thread_scene_label">{thread_scene.scene_title}</p>
@@ -232,8 +232,8 @@ const crumbs = [
     <a
       href={timeline_href}
       hx-get={timeline_href}
-      hx-target="#content"
-      hx-select="#content"
+      hx-target="#sol_content"
+      hx-select="#sol_content"
       hx-swap="morph swap:240ms settle:240ms"
       hx-push-url="true"
     >

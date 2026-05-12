@@ -67,14 +67,14 @@ const phase_cards = [
 ---
 
 <IndexLayout>
-  <vessel data-shape="home_gate" id="home_card_gate">
-    <div id="home_gate_intro">
-      <div id="home_gate_header">
-        <p id="home_gate_kicker" class="text_kicker">~/ threshold</p>
-        <h1 id="home_gate_title" class="text_large">Choose your phase</h1>
+  <vessel data-shape="home_gate" id="sol_home_card_gate">
+    <div id="sol_home_gate_intro">
+      <div id="sol_home_gate_header">
+        <p id="sol_home_gate_kicker" class="text_kicker">~/ threshold</p>
+        <h1 id="sol_home_gate_title" class="text_large">Choose your phase</h1>
       </div>
 
-      <div id="home_gate_body">
+      <div id="sol_home_gate_body">
         <p>
           Four doors, one work. Pick a transmutation path and continue the
           ritual.
@@ -82,15 +82,15 @@ const phase_cards = [
       </div>
     </div>
 
-    <mantle data-shape="phase_grid" id="phase_card_grid">
+    <mantle data-shape="phase_grid" id="sol_phase_card_grid">
       {
         phase_cards.map((phase_card) => (
           <a
             class={`phase_card_link phase_card_${phase_card.phase_slug}`}
             href={with_base(phase_card.phase_slug)}
             hx-get={with_base(phase_card.phase_slug)}
-            hx-target="#content"
-            hx-select="#content"
+            hx-target="#sol_content"
+            hx-select="#sol_content"
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
           >

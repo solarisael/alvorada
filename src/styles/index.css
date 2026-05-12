@@ -240,7 +240,7 @@ Ownership Matrix
   --page_fade_in_ms: 180ms;
 }
 
-#content.htmx-request {
+#sol_content.htmx-request {
   animation-duration: calc(
     (
         var(--page_fade_out_ms) + var(--page_fade_gap_ms) +
@@ -262,7 +262,7 @@ Ownership Matrix
   animation-timing-function: linear;
 }
 
-#content.htmx-swapping {
+#sol_content.htmx-swapping {
   animation-name: page_content_fade_out;
   animation-duration: calc(
     var(--page_fade_out_ms) * var(--site_fx_motion_mult)
@@ -280,7 +280,7 @@ Ownership Matrix
   animation-fill-mode: both;
 }
 
-#content.htmx-added {
+#sol_content.htmx-added {
   animation-name: page_content_fade_in;
   animation-duration: calc(var(--page_fade_in_ms) * var(--site_fx_motion_mult));
   animation-delay: calc(var(--page_fade_gap_ms) * var(--site_fx_motion_mult));

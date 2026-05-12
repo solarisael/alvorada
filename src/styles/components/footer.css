@@ -2,7 +2,7 @@
 @reference "../utils.css";
 @reference "@catppuccin/tailwindcss/mocha.css";
 
-#footer {
+#sol_footer {
   /* layout */
   @apply flex items-center justify-center;
   /* sizing */
@@ -49,6 +49,6 @@
   backdrop-filter: blur(calc(6px * var(--site_shell_blur_mult)));
 }
 
-#footer a {
+#sol_footer a {
   @apply text-center;
 }

@@ -10,8 +10,8 @@ const with_base = (path_value) => {
 };
 ---
 
-<mantle data-shape="desktop_navbar" id="desktop-nav" class="navbar-preset-rich route-active-tone-medium">
-  <div id="nav-user-bar" class="nav-rail" data-nav-rail>
+<mantle data-shape="desktop_navbar" id="sol_desktop_nav" class="navbar-preset-rich route-active-tone-medium">
+  <div id="sol_nav_user_bar" class="nav-rail" data-nav-rail>
     <div class="nav-rail-layer nav-rail-layer-cursor-glow"></div>
 
     <div class="nav-links">
@@ -21,8 +21,8 @@ const with_base = (path_value) => {
         data-phase="nigredo"
         href={with_base("nigredo")}
         hx-get={with_base("nigredo")}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
@@ -35,8 +35,8 @@ const with_base = (path_value) => {
         data-phase="albedo"
         href={with_base("albedo")}
         hx-get={with_base("albedo")}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
@@ -45,28 +45,28 @@ const with_base = (path_value) => {
       >
     </div>
 
-    <div id="middle-guy"></div>
+    <div id="sol_middle_guy"></div>
 
     <a
-      id="icon-user"
+      id="sol_icon_user"
       href={base_url}
       hx-get={base_url}
-      hx-target="#content"
-      hx-select="#content"
+      hx-target="#sol_content"
+      hx-select="#sol_content"
       hx-swap="morph swap:240ms settle:240ms"
       hx-push-url="true"
     >
       <span class="icon-user-layer icon-user-layer-orbit"></span>
 
-      <div id="icon-user-shell">
+      <div id="sol_icon_user_shell">
         <div class="cinza_sun_halo"></div>
         <div class="cinza_sun_highlight"></div>
-        <div id="icon-user-shell-inner"></div>
+        <div id="sol_icon_user_shell_inner"></div>
       </div>
 
-      <div id="icon-user-core">
+      <div id="sol_icon_user_core">
         <img
-          id="icon-user-photo"
+          id="sol_icon_user_photo"
           src={with_base("images/sol-curr.jpg")}
           alt="Sol logo placeholder"
         />
@@ -80,8 +80,8 @@ const with_base = (path_value) => {
         data-phase="citrinitas"
         href={with_base("citrinitas")}
         hx-get={with_base("citrinitas")}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
@@ -94,8 +94,8 @@ const with_base = (path_value) => {
         data-phase="rubedo"
         href={with_base("rubedo")}
         hx-get={with_base("rubedo")}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
@@ -108,8 +108,8 @@ const with_base = (path_value) => {
         data-phase="codex"
         href={with_base("codex")}
         hx-get={with_base("codex")}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >

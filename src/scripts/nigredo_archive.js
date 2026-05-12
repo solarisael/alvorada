@@ -187,7 +187,7 @@ export function init_nigredo_archive() {
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const raw_index = JSON.parse(
-    document.getElementById("nigredo-archive-index")?.textContent ?? "[]",
+    document.getElementById("sol_nigredo_archive_index")?.textContent ?? "[]",
   );
 
   const full_index = [...raw_index].sort((a, b) =>
@@ -208,7 +208,7 @@ export function init_nigredo_archive() {
 
   if (!scroll_el || !inner_track || !list_el) return;
 
-  const entry_template = document.getElementById("nigredo-entry-template");
+  const entry_template = document.getElementById("sol_nigredo_entry_template");
   if (!entry_template) return;
 
   const base_path = scroll_el.dataset.basePath ?? "";

@@ -2,7 +2,7 @@
 @reference "../utils.css";
 @reference "@catppuccin/tailwindcss/mocha.css";
 
-#home_card_gate {
+#sol_home_card_gate {
   /* Quick Tune Variables (edit here first) */
 
   /* Geometry */
@@ -28,17 +28,17 @@
   @apply gap-7 md:gap-9;
 }
 
-#home_gate_intro {
+#sol_home_gate_intro {
   @apply flex flex-col;
   @apply gap-3;
 }
 
-#home_gate_header {
+#sol_home_gate_header {
   @apply flex flex-col;
   @apply gap-2;
 }
 
-#home_gate_kicker {
+#sol_home_gate_kicker {
   margin: 0;
   color: color-mix(
     in oklch,
@@ -47,18 +47,18 @@
   );
 }
 
-#home_gate_title {
+#sol_home_gate_title {
   @apply font-semibold;
 
   margin: 0;
   color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
 }
 
-#home_gate_body {
+#sol_home_gate_body {
   @apply max-w-2xl;
 }
 
-#home_gate_body p {
+#sol_home_gate_body p {
   color: color-mix(
     in oklch,
     var(--ui_text_secondary) 86%,
@@ -66,7 +66,7 @@
   );
 }
 
-#phase_card_grid {
+#sol_phase_card_grid {
   @apply grid;
   @apply gap-3 md:gap-4;
 
@@ -490,7 +490,7 @@
 }
 
 @media (max-width: 768px) {
-  #home_card_gate {
+  #sol_home_card_gate {
     --home_gate_card_min: 13.125rem;
   }
 }

@@ -80,8 +80,8 @@ const crumb_label_overrides = {
       <a
         href={rubedo_index_href}
         hx-get={rubedo_index_href}
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
@@ -95,8 +95,8 @@ const crumb_label_overrides = {
           <a
             href={reader_entry_href}
             hx-get={reader_entry_href}
-            hx-target="#content"
-            hx-select="#content"
+            hx-target="#sol_content"
+            hx-select="#sol_content"
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
           >
@@ -110,7 +110,7 @@ const crumb_label_overrides = {
       book_entry && (
         <rubedo
           data-shape="timeline_interactive"
-          id="rubedo_timeline_interactive"
+          id="sol_rubedo_timeline_interactive"
           class="rubedo-timeline-interactive"
           data-book-slug={book_slug}
           data-timeline-data-href={timeline_data_href}
@@ -119,17 +119,17 @@ const crumb_label_overrides = {
               The module reads data-timeline-data-href, fetches JSON once on init,
               caches result in a module-scoped object, then renders the constellation.
               Hover preview is rendered client-side from that cache — no server roundtrip. */}
-          <canvas id="rubedo_timeline_canvas" class="rubedo-timeline-canvas" />
+          <canvas id="sol_rubedo_timeline_canvas" class="rubedo-timeline-canvas" />
 
           <div
-            id="rubedo_timeline_hover_preview"
+            id="sol_rubedo_timeline_hover_preview"
             class="rubedo-timeline-hover-preview"
           >
             {/* Populated client-side from cached JSON on node hover. */}
           </div>
 
           <div
-            id="rubedo_timeline_state_panel"
+            id="sol_rubedo_timeline_state_panel"
             class="rubedo-timeline-state-panel"
           >
             {/* Populated client-side after JSON fetch completes. */}

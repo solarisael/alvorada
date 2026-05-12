@@ -104,7 +104,7 @@ body {
 }
 
 @media (min-width: 769px) {
-  body.compound_body_grid #desktop-nav {
+  body.compound_body_grid #sol_desktop_nav {
     grid-template-columns: repeat(6, 1fr);
   }
 }
@@ -150,6 +150,6 @@ vessel[data-shape="page_main"] {
   @apply flex grow flex-col gap-1;
 }
 
-#content {
+#sol_content {
   @apply flex grow flex-col;
 }

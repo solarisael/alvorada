@@ -1005,8 +1005,8 @@ const dispatch_map_navigation = (node_entry) => {
 
   if (htmx_api?.ajax) {
     htmx_api.ajax("GET", node_entry.link.hx_get || node_entry.link.href, {
-      target: node_entry.link.hx_target || "#rubedo_timeline_interactive",
-      select: node_entry.link.hx_select || "#rubedo_timeline_interactive",
+      target: node_entry.link.hx_target || "#sol_rubedo_timeline_interactive",
+      select: node_entry.link.hx_select || "#sol_rubedo_timeline_interactive",
       swap: node_entry.link.hx_swap || "morph swap:240ms settle:240ms",
       pushURL: String(node_entry.link.hx_push_url) === "true",
     });
@@ -1065,8 +1065,8 @@ const render_hover_preview_from_cache = (node_entry, book_slug, base_path) => {
       <a
         href="${chapter_href}"
         hx-get="${chapter_href}"
-        hx-target="#content"
-        hx-select="#content"
+        hx-target="#sol_content"
+        hx-select="#sol_content"
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
         class="timeline-hover-go"
@@ -1098,10 +1098,10 @@ const dispatch_hover_preview = (node_entry) => {
       {
         target:
           node_entry.hover_preview.hx_target ||
-          "#rubedo_timeline_hover_preview",
+          "#sol_rubedo_timeline_hover_preview",
         select:
           node_entry.hover_preview.hx_select ||
-          "#rubedo_timeline_hover_preview",
+          "#sol_rubedo_timeline_hover_preview",
         swap:
           node_entry.hover_preview.hx_swap || "morph swap:180ms settle:120ms",
         pushURL: String(node_entry.hover_preview.hx_push_url) === "true",
@@ -1422,8 +1422,8 @@ const build_constellation_payload_from_json = (
       link: {
         href: chapter_href,
         hx_get: chapter_href,
-        hx_target: "#content",
-        hx_select: "#content",
+        hx_target: "#sol_content",
+        hx_select: "#sol_content",
         hx_swap: "morph swap:240ms settle:240ms",
         hx_push_url: "true",
       },
@@ -1460,7 +1460,7 @@ const build_constellation_payload_from_json = (
   };
 };
 
-// init_constellation now accepts the #rubedo_timeline_interactive wrapper.
+// init_constellation now accepts the #sol_rubedo_timeline_interactive wrapper.
 // It reads data-timeline-data-href and data-book-slug from that element,
 // fetches the timeline JSON once (caching in timeline_cache by book_slug),
 // builds the constellation payload client-side, then initializes the canvas.
@@ -1515,9 +1515,9 @@ const init_constellation = async (interactive_section) => {
   );
 
   // Now find the canvas inside the interactive section.
-  // The canvas is a direct child of #rubedo_timeline_interactive in the new template.
+  // The canvas is a direct child of #sol_rubedo_timeline_interactive in the new template.
   const root_node = interactive_section;
-  const canvas = root_node.querySelector("#rubedo_timeline_canvas");
+  const canvas = root_node.querySelector("#sol_rubedo_timeline_canvas");
 
   if (!(canvas instanceof HTMLCanvasElement)) {
     return;
@@ -1535,7 +1535,7 @@ const init_constellation = async (interactive_section) => {
   );
   const zoom_badge = root_node.querySelector('[data-map-action="zoom_badge"]');
   const get_hover_preview_node = () => {
-    return root_node.querySelector("#rubedo_timeline_hover_preview");
+    return root_node.querySelector("#sol_rubedo_timeline_hover_preview");
   };
 
   const active_node_id = `${payload.active_chapter_id}:${payload.active_thread_key}`;
@@ -2131,7 +2131,7 @@ const init_constellation = async (interactive_section) => {
   if (!window_any.__rubedo_constellation_keyboard_bound) {
     window.addEventListener("keydown", (event) => {
       const focused_map = document.querySelector(
-        '#rubedo_constellation_map[data-renderer="canvas"][data-canvas-bound="true"]',
+        '#sol_rubedo_constellation_map[data-renderer="canvas"][data-canvas-bound="true"]',
       );
 
       if (!(focused_map instanceof HTMLElement)) {
@@ -2218,9 +2218,9 @@ const init_rubedo_constellation = () => {
   }
 
   // Target the interactive section wrapper which carries the data-timeline-data-href.
-  // The new architecture has one #rubedo_timeline_interactive per timeline page.
+  // The new architecture has one #sol_rubedo_timeline_interactive per timeline page.
   const interactive_sections = document.querySelectorAll(
-    "#rubedo_timeline_interactive[data-timeline-data-href]",
+    "#sol_rubedo_timeline_interactive[data-timeline-data-href]",
   );
 
   interactive_sections.forEach((section) => {

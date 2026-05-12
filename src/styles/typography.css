@@ -101,7 +101,7 @@ body {
 
 /* CONSUMERS: READING CONTAINERS */
 :where(
-  #main_reading_container,
+  #sol_main_reading_container,
   .reading_container,
   [data-reading-container="true"]
 ) {
@@ -113,7 +113,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -126,7 +126,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -139,7 +139,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -152,7 +152,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -165,7 +165,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -177,14 +177,14 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
   :where(h6),
 .text_body,
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -194,7 +194,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -205,7 +205,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -215,7 +215,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -225,7 +225,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -234,7 +234,7 @@ body {
 }
 
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )
@@ -277,7 +277,7 @@ body[data-phase="codex"] {
 
 /* CONSUMERS: CADENCE */
 :where(
-    #main_reading_container,
+    #sol_main_reading_container,
     .reading_container,
     [data-reading-container="true"]
   )

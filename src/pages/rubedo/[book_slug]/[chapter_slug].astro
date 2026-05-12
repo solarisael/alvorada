@@ -1,7 +1,7 @@
 ---
 // Chapter shell page — no thread baked in.
 // Delegates immediately to the cinza thread via hx-trigger="load" on
-// #chapter_thread_content. The cinza route renders the full scene body.
+// #sol_chapter_thread_content. The cinza route renders the full scene body.
 // Other threads are accessible via the Eyes nav, which navigates to
 // /rubedo/:book_slug/:thread_key/:chapter_slug as full content swaps.
 
@@ -83,8 +83,8 @@ const build_hx_link = (href) => {
   return {
     href,
     hx_get: href,
-    hx_target: "#content",
-    hx_select: "#content",
+    hx_target: "#sol_content",
+    hx_select: "#sol_content",
     hx_swap: "morph swap:240ms settle:240ms",
     hx_push_url: "true",
   };
@@ -162,8 +162,8 @@ const crumbs = [
             data-thread-locked="false"
             href={slot_href}
             hx-get={slot_href}
-            hx-target="#content"
-            hx-select="#content"
+            hx-target="#sol_content"
+            hx-select="#sol_content"
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
           >
@@ -183,11 +183,11 @@ const crumbs = [
     */
   }
   <div
-    id="chapter_thread_content"
+    id="sol_chapter_thread_content"
     hx-get={cinza_thread_href}
     hx-trigger="load"
-    hx-target="#chapter_thread_content"
-    hx-select="#chapter_thread_content"
+    hx-target="#sol_chapter_thread_content"
+    hx-select="#sol_chapter_thread_content"
     hx-swap="innerHTML"
   >
   </div>
@@ -196,8 +196,8 @@ const crumbs = [
     <a
       href={timeline_href}
       hx-get={timeline_href}
-      hx-target="#content"
-      hx-select="#content"
+      hx-target="#sol_content"
+      hx-select="#sol_content"
       hx-swap="morph swap:240ms settle:240ms"
       hx-push-url="true"
     >

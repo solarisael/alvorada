@@ -55,7 +55,7 @@ const derive_request_pathname = (event) => {
  * @param {string | null} [pathname_override=null]
  */
 const apply_mobile_route_active_state = (pathname_override = null) => {
-  const nav_node = document.querySelector("#mobile-nav");
+  const nav_node = document.querySelector("#sol_mobile_nav");
 
   if (!(nav_node instanceof HTMLElement)) {
     return;

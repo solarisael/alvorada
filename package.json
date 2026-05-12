@@ -13,8 +13,8 @@
     "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
     "css:bg-stack:check": "bun scripts/css_background_stack_audit.js check",
     "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check",
-    "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile_nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color",
-    "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile_nav.css --selector=#mobile-nav --prefix=mobile_ --ignore=mobile_neon_color"
+    "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color",
+    "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color"
   },
   "dependencies": {
     "@catppuccin/tailwindcss": "^1.0.0",

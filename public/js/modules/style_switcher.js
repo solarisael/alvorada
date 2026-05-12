@@ -113,7 +113,7 @@ const apply_site_style_state = (site_root, theme_name, shell_name, fx_name) => {
 };
 
 const sync_switcher_controls = (theme_name, shell_name, fx_name) => {
-  const switcher_node = document.querySelector("#style_switcher");
+  const switcher_node = document.querySelector("#sol_style_switcher");
 
   if (!(switcher_node instanceof HTMLElement)) {
     return;
@@ -226,7 +226,7 @@ const bind_switcher_controls = () => {
     return;
   }
 
-  const switcher_node = document.querySelector("#style_switcher");
+  const switcher_node = document.querySelector("#sol_style_switcher");
 
   if (!(switcher_node instanceof HTMLElement)) {
     return;

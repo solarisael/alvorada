@@ -2,13 +2,13 @@
 @reference "../utils.css";
 @reference "@catppuccin/tailwindcss/mocha.css";
 
-#page-main {
+#sol_page_main {
   @apply flex grow flex-col;
   @apply gap-2;
   @apply pt-28 md:pt-32;
 }
 
-#content_stage {
+#sol_content_stage {
   @apply relative isolate;
   @apply flex grow flex-col;
 }
@@ -58,7 +58,7 @@
   filter: blur(0.4px);
 }
 
-#content_fog_backdrop {
+#sol_content_fog_backdrop {
   @apply pointer-events-none absolute;
 
   inset: -3.5rem -2.5rem -5rem -2.5rem;
@@ -75,7 +75,7 @@
   inset: 0;
 }
 
-:root[data-site-theme="solarisael"] #content_fog_backdrop {
+:root[data-site-theme="solarisael"] #sol_content_fog_backdrop {
   opacity: calc(var(--cinza_fog_halo_mix) * 0.014);
 }
 
@@ -100,7 +100,7 @@
   );
 }
 
-#content {
+#sol_content {
   @apply relative isolate overflow-hidden;
   @apply flex grow flex-col;
   @apply justify-start;
@@ -195,14 +195,14 @@
   @apply flex h-full flex-col;
 }
 
-#content_footer_lane {
+#sol_content_footer_lane {
   @apply relative z-10;
   @apply w-full;
   margin-top: auto;
   padding: 1rem 0 1rem;
 }
 
-:root[data-site-theme="solarisael"] #content {
+:root[data-site-theme="solarisael"] #sol_content {
   --content_layer_shadow_stack:
     inset 0 0 0 1px var(--content_layer_edge_stroke),
     inset 0 0 0 2px
@@ -465,7 +465,7 @@
   transform: translateX(-50%);
 }
 
-#main_reading_container {
+#sol_main_reading_container {
   @apply relative isolate;
   @apply w-full;
   @apply mx-auto;
@@ -570,11 +570,11 @@
 }
 
 @media (max-width: 768px) {
-  #page-main {
+  #sol_page_main {
     @apply pb-22;
   }
 
-  #main_reading_container {
+  #sol_main_reading_container {
     min-width: 0;
     width: min(100%, 42.5rem);
   }

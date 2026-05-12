@@ -9,10 +9,10 @@ const {
   build_hx_link_attrs = (href) => {
     return {
       hx_get: href,
-      hx_target: "#content",
+      hx_target: "#sol_content",
       hx_swap: "morph swap:240ms settle:240ms",
       hx_push_url: "true",
-      hx_select: "#content",
+      hx_select: "#sol_content",
     };
   },
   build_canonical_timeline_href = () => "#",
@@ -121,7 +121,7 @@ const modifier_options =
             <span>Eye thread</span>
             <select
               name="thread_key"
-              hx-on:change={`htmx.ajax('GET', this.value, {target: '#rubedo_timeline_interactive', select: '#rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
+              hx-on:change={`htmx.ajax('GET', this.value, {target: '#sol_rubedo_timeline_interactive', select: '#sol_rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
             >
               {thread_options.map((thread_option) => {
                 const is_current_thread =
@@ -144,7 +144,7 @@ const modifier_options =
             <span>Thread modifier</span>
             <select
               name="thread_modifier"
-              hx-on:change={`htmx.ajax('GET', this.value, {target: '#rubedo_timeline_interactive', select: '#rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
+              hx-on:change={`htmx.ajax('GET', this.value, {target: '#sol_rubedo_timeline_interactive', select: '#sol_rubedo_timeline_interactive', swap: 'morph swap:240ms settle:240ms'});`}
             >
               {modifier_options.map((modifier_option) => {
                 const is_current_modifier =

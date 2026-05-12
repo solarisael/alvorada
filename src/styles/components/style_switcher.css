@@ -2,7 +2,7 @@
 @reference "../utils.css";
 @reference "@catppuccin/tailwindcss/mocha.css";
 
-#style_switcher {
+#sol_style_switcher {
   /* Quick Tune Variables (edit here first) */
   /* geometry */
   --style_switcher_radius: 0.875rem;
@@ -67,7 +67,7 @@
   transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-#style_switcher_toggle {
+#sol_style_switcher_toggle {
   @apply flex;
   @apply items-center justify-center;
   @apply h-full min-h-full;
@@ -88,7 +88,7 @@
   cursor: pointer;
 }
 
-#style_switcher_panel {
+#sol_style_switcher_panel {
   @apply flex flex-col;
   @apply gap-2;
   @apply px-3 py-3;
@@ -96,15 +96,15 @@
   width: var(--style_switcher_panel_inline);
 }
 
-#style_switcher[data-style-collapsed="true"] {
+#sol_style_switcher[data-style-collapsed="true"] {
   transform: translateX(var(--style_switcher_panel_inline));
 }
 
-#style_switcher[data-style-collapsed="true"] #style_switcher_panel {
+#sol_style_switcher[data-style-collapsed="true"] #sol_style_switcher_panel {
   visibility: hidden;
 }
 
-#style_switcher_title {
+#sol_style_switcher_title {
   @apply lowercase;
   color: color-mix(
     in oklch,
@@ -123,7 +123,7 @@
   color: color-mix(in oklch, var(--ui_text_muted) 86%, var(--ui_text_primary));
 }
 
-#style_switcher select {
+#sol_style_switcher select {
   @apply w-full;
   @apply rounded-md border;
   @apply px-2 py-1.5;
@@ -142,7 +142,7 @@
   );
 }
 
-#style_switcher select:focus-visible {
+#sol_style_switcher select:focus-visible {
   @apply outline-none;
 
   border-color: color-mix(
@@ -155,7 +155,7 @@
 }
 
 @media (max-width: 768px) {
-  #style_switcher {
+  #sol_style_switcher {
     --style_switcher_bottom: 5.6rem;
     --style_switcher_panel_inline: min(17rem, calc(100vw - 2.4rem));
     --style_switcher_tab_inline: 2rem;
