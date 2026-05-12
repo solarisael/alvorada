@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\Projects\alvorada
-- Updated_utc: 2026-05-12 17:35
+- Updated_utc: 2026-05-12 18:55
 - Updated_by: Kodo (Claude Opus 4.7)
 - preferred_start_style: conversational
 - next_session: sprint
-- primary_outcome: lean rewrite of alvorada to component-style code with snake_case `.sol__` class prefix and clean HTML output (one silhouette per file, composition over monoliths, modeled after the multistock shape)
+- primary_outcome: lean rewrite of alvorada to component-style code with ritualistic custom-element markup, snake_case `.sol__` class prefix, and clean HTML output
 - priority: rewrite
 - edit_breadth: broad
-- first_task: phase 3 — migrate existing components into categorized directory structure (layout/, chrome/, content/, nigredo/, rubedo/, codex/, atmosphere/, ornament/, text_effect/)
+- first_task: phase 4 — decompose `src/layouts/index.astro` monolith into site primitives (extract footer + content-stage into ritualistic components; replace `<main>`/`<footer>`/`<container>` landmarks with ritualistic equivalents)
 - commit_intent: per-phase
-- notes: phases 1+2 (path drift fix + dead file/dep cleanup) shipped in this commit. Build verified clean (237 pages, 2.20s). Phases 3–9 ahead.
+- notes: phases 1+2+3 shipped. Component tree restructured into ritualistic categorized dirs (mantle/, nigredo/, rubedo/). Ritualistic custom-element markup landed. Phases 4–8 ahead.
 
 ## Alias Ledger
 
@@ -26,14 +26,14 @@
 - State: in_progress
 - Branch: master
 - Head: pending_next_commit (this commit becomes head after merge)
-- Scope_in: full alvorada rewrite to component-style (one silhouette per file), `.sol__` class prefix, `@apply`-blocks-not-class-soup, clean HTML on build
-- Scope_out: Codex unlock backend (future), Absurd Faith chapter content (3 identity-cores only for now), albedo/citrinitas/codex placeholder content (scaffold-shape decision deferred to phase 8)
+- Scope_in: full alvorada rewrite to component-style (one silhouette per file), bare ritualistic custom-element tags (`<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`), `.sol__foo--bar` class prefix for state/modifier, `@apply`-blocks-not-class-soup, clean HTML on build
+- Scope_out: Codex unlock backend (future), Absurd Faith chapter content (3 identity-cores only for now), albedo/citrinitas/codex placeholder content (scaffold-shape decision deferred to phase 7)
 
 ## Next (Top 3)
 
-1. [ ] Phase 3: migrate existing components into categorized dir structure (move + rename to snake_case where needed, behavior unchanged)
-2. [ ] Phase 4: decompose `src/layouts/index.astro` monolith into site primitives (site_header, site_footer, body_grid, etc.)
-3. [ ] Phase 5: reshape page files into thin composition routes
+1. [ ] Phase 4: decompose `src/layouts/index.astro` monolith into site primitives (`<main>` → `<vessel data-shape="page_main">` or similar; `<footer>` → `<mantle data-shape="footer">`; extract content-stage block into its own component file; reconcile `<container>` custom tag)
+2. [ ] Phase 5: reshape page files (`pages/*.astro`) into thin composition routes — drop landmark wrappers (`<section>`, `<article>`, `<header>`) inside pages in favor of ritualistic equivalents or `<div>`
+3. [ ] Phase 6: class-name rework — `.sol__foo--bar` prefix everywhere, `#sol_foo_bar` id prefix, tailwind classes folded into `@apply` blocks (no class-soup in markup), reconcile inner legacy `data-variant` attributes
 
 ## Blockers
 
@@ -41,22 +41,33 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 2.20s, after phases 1+2
-- bun install: pass — 6 dead packages removed
-- CSS hard gates: not run this phase (no CSS changes)
+- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.41s, after phase 3
+- bun install: pass (in phase 2) — 6 dead packages removed
+- CSS hard gates: not run this phase (no ornament/bg-stack changes)
 - Prettier: not run this phase
 - Rubedo scene identity: not changed
 
 ## Current Snapshot
 
-- **Phase 1 (path drift, 2026-05-12)**: repo moved `C:\laragon\www\alvorada` → `C:\Projects\alvorada` (laragon abandoned 2026-05-12). All five pointers updated: this `progress.md`, `.mcp.json`, `opencode.jsonc`, plus kodo-side canon (`memory/projects/alvorada.md` and `memory/important_index.json`). Both agents' filesystem MCP servers had been silently broken since the move.
-- **Phase 2 (dead file/dep trash, 2026-05-12)**: 24 deletes (~15 MB freed) — 10 root debug PNGs, 6 `src/images/` byte-identical duplicates of `public/images/`, four 0-byte zombies (`timeline.astro`, `eyes.css`, `floating.js`, `math_functions.js`), three orphan components (`gamey-carousel.astro`, `eyes.astro`, `/test.astro` QA dump), `public/js/components/eyes.js` (consumer dead), `tailwind.config.js` (Tailwind 4 doesn't use it). 6 modifies: `.gitignore` (added `/*.png` block), `.prettierignore` (added `dist/`, `.astro/`, `.vite/`, `bun.lock`, deduped node_modules), `package.json` (removed 6 dead deps: `@astrojs/tailwind` / `@splidejs/splide` / `@tailwindcss/cli` / `lenis` / `npm` / `smol-toml` + the broken `tailwind` script that pointed at nonexistent `./assets/css/base.css`). `.vite/` untracked (was committed despite `.gitignore`).
-- Build verified clean after both phases: 237 pages built in 2.20s, zero errors.
+- **Phase 1 (path drift, 2026-05-12)**: repo moved `C:\laragon\www\alvorada` → `C:\Projects\alvorada` (laragon abandoned 2026-05-12). All five pointers updated. Both agents' filesystem MCP servers had been silently broken since the move.
+- **Phase 2 (dead file/dep trash, 2026-05-12)**: 24 deletes (~15 MB freed) — 10 root debug PNGs, 6 `src/images/` duplicates, four 0-byte zombies, three orphan components, eyes.js, tailwind.config.js. 6 modifies including `package.json` (removed 6 dead deps + 1 broken script). `.vite/` untracked. Commit `dd6e373` with tail `// i love u kodo`.
+- **Phase 3 (component migration to ritualistic structure, 2026-05-12)**: 10 components moved into categorized subdirs (`src/components/mantle/`, `src/components/nigredo/`, `src/components/rubedo/`). Drop-redundant-prefix convention: `nigredo_entry.astro` → `nigredo/entry.astro`, `rubedo_timeline_constellation.astro` → `rubedo/timeline_constellation.astro`, etc. Each component's outermost landmark (`<nav>`, `<article>`, `<section>`, `<aside>`) replaced with bare ritualistic custom element (`<mantle>`, `<nigredo>`, `<rubedo>`) carrying `data-shape="X"` attribute. Global `display: block` rule added to `base.css` for all ritualistic tags. 3 importer files updated (6 import paths). The DOM rendered HTML now reads as the work: `<mantle data-shape="desktop_navbar">`, `<nigredo data-shape="entry">`, etc.
+- Build verified clean after all three phases: 237 pages built in 1.41s, zero errors.
+
+## Conventions (locked 2026-05-12)
+
+- **Snake_case** for all file/dir names (project.md rule honored, CSS files renamed to snake in phase 6)
+- **Ritualistic custom elements** for structural/landmark shells: bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>` (no `sol-` prefix on tags — cleaner aesthetic; spec-violation accepted since no JS encapsulation needed)
+- **Functional native HTML** kept: `button`, `a`, `input`, `select`, `textarea`, `form`, `img`, `h1-h6`, `ul`/`ol`/`li`, `p`, `strong`/`em`/`code`/`pre`, table family, `video`/`audio`
+- **Landmark HTML dropped**: `<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>` — replaced with ritualistic shells
+- **Attribute roles** on ritualistic outer wrappers: `data-shape="X"` (kind), `data-state="X"` (runtime). Class prefix `.sol__foo--bar` reserved for tasteful modifiers (phase 6 lands it broadly).
+- **ID prefix**: `#sol_foo_bar` for collision safety (phase 6 applies it).
+- **Internal layout `<div>`** stays `<div>` — ritualistic wrappers are for component boundaries, not every micro-layer.
 
 ## Notes
 
-- Class prefix decision (Sol, 2026-05-12): snake_case throughout, `.sol__foo_bar` style (double underscore as namespace marker, parallel to the kebab `--` energy in snake idiom).
-- Component-style shape modeled after multistock (Sol's reference): one silhouette per file, composition over monoliths, clean HTML.
-- Catppuccin baseline kept for now (phase 8 will decide removal timing per `styling.md`'s "temporary baseline" note).
+- Component-style shape modeled after multistock (Sol's reference): one silhouette per file, composition over monoliths.
+- Catppuccin baseline kept for now (phase 7 will decide removal timing per `styling.md`'s "temporary baseline" note).
+- Inner legacy `data-variant={variant}` on nigredo entry kept untouched (avoids CSS breakage); phase 6 reconciles into `data-tone` or similar.
 - Detailed session history lives in `progress.archive.md`.
 - Full-worktree handoff commits per `session-handoff-commit.md`; commit tails required per `commit-message-tail-required.md`.

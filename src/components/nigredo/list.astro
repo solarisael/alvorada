@@ -43,7 +43,7 @@ const INWARD = new Set([
 const { archive_index = [], base_path = "" } = Astro.props;
 ---
 
-<div class="nigredo-archive" data-nigredo-archive>
+<nigredo data-shape="list" class="nigredo-archive" data-nigredo-archive>
   <!-- Filter block: party_roster outer vessel -->
   <div class="nigredo-filter-block" data-nigredo-filter-rail>
     <!-- Header row: label + clear -->
@@ -101,7 +101,7 @@ const { archive_index = [], base_path = "" } = Astro.props;
       <ol class="nigredo-list" data-nigredo-list></ol>
     </div>
   </div>
-</div>
+</nigredo>
 
 <!-- Archive index — consumed by nigredo_archive.js -->
 <script
@@ -114,7 +114,7 @@ const { archive_index = [], base_path = "" } = Astro.props;
      Ornament srcs use data-ornament-src so RowPool can set them at runtime. -->
 <template id="nigredo-entry-template">
   <li class="nigredo-entry-row" data-align="left">
-    <article class="nigredo-entry" data-variant="quiet">
+    <nigredo data-shape="entry" class="nigredo-entry" data-variant="quiet">
       <a class="nigredo-entry-link" href="#">
         <span class="nigredo-entry-layer nigredo-entry-layer-surface"></span>
         <span class="nigredo-entry-layer nigredo-entry-layer-ash"></span>
@@ -162,11 +162,11 @@ const { archive_index = [], base_path = "" } = Astro.props;
           <div class="nigredo-entry-excerpt"><p></p></div>
         </div>
       </a>
-    </article>
+    </nigredo>
   </li>
 </template>
 
 <script>
-  import { init_nigredo_archive } from "../scripts/nigredo_archive.js";
+  import { init_nigredo_archive } from "../../scripts/nigredo_archive.js";
   init_nigredo_archive();
 </script>

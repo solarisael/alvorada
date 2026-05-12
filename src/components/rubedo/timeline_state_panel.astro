@@ -2,7 +2,7 @@
 import {
   default_thread_key,
   default_thread_modifier,
-} from "../utils/timeline_threads.js";
+} from "../../utils/timeline_threads.js";
 
 const {
   resolved_view_state = null,
@@ -105,7 +105,8 @@ const modifier_options =
 {
   resolved_view_state && (
     <>
-      <section
+      <rubedo
+        data-shape="state_panel_filters"
         class="rubedo-timeline-panel-card rubedo-timeline-filters-card"
         data-current-chapter-id={resolved_view_state.chapter_id}
         data-current-thread-key={resolved_view_state.requested_thread_key}
@@ -162,9 +163,9 @@ const modifier_options =
             </select>
           </label>
         </div>
-      </section>
+      </rubedo>
 
-      <section class="rubedo-timeline-panel-card rubedo-timeline-state-lane-card">
+      <rubedo data-shape="state_panel_lane" class="rubedo-timeline-panel-card rubedo-timeline-state-lane-card">
         <h3>Current state</h3>
         <p>
           Scene lens:{" "}
@@ -189,7 +190,7 @@ const modifier_options =
             {fallback_state}
           </span>
         </p>
-      </section>
+      </rubedo>
     </>
   )
 }

@@ -1,5 +1,5 @@
 ---
-import "../styles/components/desktop-nav.css";
+import "../../styles/components/desktop-nav.css";
 
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
@@ -10,7 +10,7 @@ const with_base = (path_value) => {
 };
 ---
 
-<nav id="desktop-nav" class="navbar-preset-rich route-active-tone-medium">
+<mantle data-shape="desktop_navbar" id="desktop-nav" class="navbar-preset-rich route-active-tone-medium">
   <div id="nav-user-bar" class="nav-rail" data-nav-rail>
     <div class="nav-rail-layer nav-rail-layer-cursor-glow"></div>
 
@@ -118,6 +118,6 @@ const with_base = (path_value) => {
       >
     </div>
   </div>
-</nav>
+</mantle>
 
 <script type="module" src={with_base("js/modules/navbar_runtime.js")}></script>

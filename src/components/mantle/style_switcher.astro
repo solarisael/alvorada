@@ -1,5 +1,5 @@
 ---
-import "../styles/components/style-switcher.css";
+import "../../styles/components/style-switcher.css";
 
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
@@ -47,7 +47,7 @@ const shell_options = [
 ];
 ---
 
-<aside id="style_switcher" data-style-collapsed="true">
+<mantle data-shape="style_switcher" id="style_switcher" data-style-collapsed="true">
   <button
     id="style_switcher_toggle"
     class="text_caption"
@@ -94,7 +94,7 @@ const shell_options = [
       </select>
     </label>
   </div>
-</aside>
+</mantle>
 
 <script type="module" src={with_base("js/modules/style_switcher_runtime.js")}
 ></script>

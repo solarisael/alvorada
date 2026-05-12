@@ -1,5 +1,5 @@
 ---
-import "../styles/components/breadcrumbs.css";
+import "../../styles/components/breadcrumbs.css";
 
 // crumbs: explicit array of { label, href } objects.
 // When provided, bypasses the URL parser entirely — the page controls the trail.
@@ -82,7 +82,8 @@ const active_theme_color =
   "var(--site_style_accent)";
 ---
 
-<nav
+<mantle
+  data-shape="breadcrumbs"
   id="breadcrumbers_xd"
   data-phase={active_phase}
   style={`--crumb_theme_color: ${active_theme_color};`}
@@ -107,7 +108,7 @@ const active_theme_color =
       })
     }
   </ol>
-</nav>
+</mantle>
 
 <script type="module" src={with_base("js/modules/breadcrumbs_runtime.js")}
 ></script>

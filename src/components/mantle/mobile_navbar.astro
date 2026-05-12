@@ -1,5 +1,5 @@
 ---
-import "../styles/components/mobile-nav.css";
+import "../../styles/components/mobile-nav.css";
 
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
@@ -10,7 +10,7 @@ const with_base = (path_value) => {
 };
 ---
 
-<nav id="mobile-nav">
+<mantle data-shape="mobile_navbar" id="mobile-nav">
   <div id="mobile-nav-shell">
     <div class="mobile-nav-side mobile-nav-left">
       <a
@@ -183,7 +183,7 @@ const with_base = (path_value) => {
       </a>
     </div>
   </div>
-</nav>
+</mantle>
 
 <script type="module" src={with_base("js/modules/mobile_nav_runtime.js")}
 ></script>

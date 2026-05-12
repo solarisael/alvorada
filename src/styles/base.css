@@ -132,6 +132,20 @@ body.body_grid container {
   }
 }
 
+aether,
+mantle,
+vessel,
+bones,
+spell,
+ornament,
+nigredo,
+rubedo,
+albedo,
+citrinitas,
+codex {
+  display: block;
+}
+
 main {
   @apply flex grow flex-col gap-1;
 }

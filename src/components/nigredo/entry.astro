@@ -1,5 +1,5 @@
 ---
-import NigredoPill from "./nigredo_pill.astro";
+import NigredoPill from "./pill.astro";
 
 /**
  * Derives a redaction string length from a slug deterministically.
@@ -28,7 +28,7 @@ const display_title = title ? title : "■".repeat(redact_length(slug));
 const href = `${base_path}/nigredo/${slug}`;
 ---
 
-<article class="nigredo-entry" data-variant={variant}>
+<nigredo data-shape="entry" class="nigredo-entry" data-variant={variant}>
   <a class="nigredo-entry-link" href={href}>
     <!-- Layer stack mirrors home-card architecture -->
     <span class="nigredo-entry-layer nigredo-entry-layer-surface"></span>
@@ -84,4 +84,4 @@ const href = `${base_path}/nigredo/${slug}`;
       }
     </div>
   </a>
-</article>
+</nigredo>
