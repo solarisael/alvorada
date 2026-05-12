@@ -973,7 +973,7 @@ const apply_label_visibility = (
   canvas,
 ) => {
   const label_nodes = root_node.querySelectorAll(
-    ".rubedo-constellation-node-label",
+    ".sol__rubedo_constellation_node_label",
   );
   const payload_map = root_node.__payload_map;
 
@@ -992,7 +992,7 @@ const apply_label_visibility = (
     label_node.style.top = top;
 
     const is_visible = node_id === active_node_id || node_id === hover_node_id;
-    label_node.classList.toggle("is-visible", is_visible);
+    label_node.classList.toggle("sol__is_visible", is_visible);
   });
 };
 
@@ -1488,7 +1488,7 @@ const init_constellation = async (interactive_section) => {
 
       if (!response.ok) {
         console.warn(
-          `[rubedo-constellation] Failed to fetch ${data_href}: ${response.status}`,
+          `[sol__rubedo_constellation] Failed to fetch ${data_href}: ${response.status}`,
         );
         return;
       }
@@ -1496,7 +1496,7 @@ const init_constellation = async (interactive_section) => {
       timeline_cache[book_slug] = await response.json();
     } catch (fetch_error) {
       console.warn(
-        `[rubedo-constellation] Fetch error for ${data_href}:`,
+        `[sol__rubedo_constellation] Fetch error for ${data_href}:`,
         fetch_error,
       );
       return;
@@ -1618,7 +1618,7 @@ const init_constellation = async (interactive_section) => {
     }
 
     if (zoom_badge instanceof HTMLElement) {
-      zoom_badge.classList.toggle("is-active", wheel_intent_active);
+      zoom_badge.classList.toggle("sol__is_active", wheel_intent_active);
     }
   };
 
@@ -1657,12 +1657,12 @@ const init_constellation = async (interactive_section) => {
     }
 
     if (!hovered_node?.is_clickable) {
-      hover_preview_node.classList.remove("is-visible");
+      hover_preview_node.classList.remove("sol__is_visible");
       last_hover_preview_node_id = "";
       return;
     }
 
-    hover_preview_node.classList.add("is-visible");
+    hover_preview_node.classList.add("sol__is_visible");
 
     if (pointer_event) {
       position_hover_preview(pointer_event);
@@ -1692,7 +1692,7 @@ const init_constellation = async (interactive_section) => {
     inactivity_timer = window.setTimeout(() => {
       wheel_intent_active = false;
       if (zoom_badge instanceof HTMLElement) {
-        zoom_badge.classList.remove("is-active");
+        zoom_badge.classList.remove("sol__is_active");
       }
     }, INACTIVITY_TIMEOUT_MS);
   };
@@ -1866,7 +1866,7 @@ const init_constellation = async (interactive_section) => {
     set_hover_preview(null);
     wheel_intent_active = false;
     if (zoom_badge instanceof HTMLElement) {
-      zoom_badge.classList.remove("is-active");
+      zoom_badge.classList.remove("sol__is_active");
     }
     render_now();
   });
@@ -2139,7 +2139,7 @@ const init_constellation = async (interactive_section) => {
       }
 
       const focused_canvas = focused_map.querySelector(
-        ".rubedo-constellation-canvas-surface",
+        ".sol__rubedo_constellation_canvas_surface",
       );
 
       if (!(focused_canvas instanceof HTMLCanvasElement)) {

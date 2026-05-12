@@ -84,7 +84,7 @@
     opacity 220ms ease;
 }
 
-#sol_desktop_nav.is-nav-hidden {
+#sol_desktop_nav.sol__is_nav_hidden {
   transform: translate3d(-50%, calc(-100% - 1.25rem), 0);
   opacity: 0;
   pointer-events: none;
@@ -96,19 +96,19 @@
   pointer-events: auto;
 }
 
-#sol_desktop_nav.navbar-preset-soft {
+#sol_desktop_nav.sol__navbar_preset_soft {
   --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.14;
   --pill_glow_scale: calc(0.85 * var(--site_fx_glow_mult, 1));
 }
 
-#sol_desktop_nav.navbar-preset-rich {
+#sol_desktop_nav.sol__navbar_preset_rich {
   --rail_glass_blur: calc(20px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.26;
   --pill_glow_scale: calc(1.25 * var(--site_fx_glow_mult, 1));
 }
 
-#sol_desktop_nav.route-active-tone-subtle {
+#sol_desktop_nav.sol__route_active_tone_subtle {
   --pill_active_tint_mix: 94%;
   --pill_active_tint_target: color-mix(
     in oklch,
@@ -119,14 +119,14 @@
   --pill_active_glow_strength: 0.18;
 }
 
-#sol_desktop_nav.route-active-tone-medium {
+#sol_desktop_nav.sol__route_active_tone_medium {
   --pill_active_tint_mix: 86%;
   --pill_active_tint_target: color-mix(in oklch, white 45%, var(--neon_color));
   --pill_active_border_mix: 36%;
   --pill_active_glow_strength: 0.24;
 }
 
-#sol_desktop_nav.route-active-tone-strong {
+#sol_desktop_nav.sol__route_active_tone_strong {
   --pill_active_tint_mix: 78%;
   --pill_active_tint_target: color-mix(in oklch, white 32%, var(--neon_color));
   --pill_active_border_mix: 44%;
@@ -171,15 +171,15 @@
       cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.nav-rail-layer {
+.sol__nav_rail_layer {
   @apply pointer-events-none absolute;
 }
 
-#sol_nav_user_bar.is-pointer-active {
+#sol_nav_user_bar.sol__is_pointer_active {
   --cursor_transition_duration: var(--cursor_follow_transition);
 }
 
-.nav-rail-layer-cursor-glow {
+.sol__nav_rail_layer_cursor_glow {
   @apply rounded-full;
 
   inset: -2px;
@@ -202,7 +202,7 @@
   opacity: 0.72;
 }
 
-.nav-links {
+.sol__nav_links {
   @apply relative z-30 flex items-center;
   @apply gap-2 md:gap-3;
   @apply min-w-0;
@@ -212,7 +212,7 @@
   @apply w-20;
 }
 
-.nav-pill {
+.sol__nav_pill {
   --pill_active_glow: 0;
   --pill_effective_glow: var(--pill_active_glow);
   --neon_color: color-mix(
@@ -244,11 +244,11 @@
     background-color var(--pill_transition) ease;
 }
 
-.nav-pill-layer {
+.sol__nav_pill_layer {
   @apply pointer-events-none absolute;
 }
 
-.nav-pill::before {
+.sol__nav_pill::before {
   content: "~/";
 
   @apply mr-1;
@@ -260,7 +260,7 @@
     text-shadow var(--pill_transition) ease;
 }
 
-.nav-pill-layer-ring {
+.sol__nav_pill_layer_ring {
   @apply inset-0 rounded-full;
   @apply border;
 
@@ -269,7 +269,7 @@
   transition: opacity var(--pill_transition) ease;
 }
 
-.nav-pill.is-route-active {
+.sol__nav_pill.sol__is_route_active {
   --pill_active_glow: var(--pill_active_glow_strength);
 
   border-color: color-mix(
@@ -289,12 +289,12 @@
       color-mix(in oklch, var(--neon_color) 48%, transparent);
 }
 
-.nav-pill.is-route-active::before {
+.sol__nav_pill.sol__is_route_active::before {
   color: color-mix(in oklch, var(--neon_color) 46%, var(--ui_text_muted));
 }
 
-.nav-pill:hover,
-.nav-pill:focus-visible {
+.sol__nav_pill:hover,
+.sol__nav_pill:focus-visible {
   @apply outline-none;
 
   transform: translateY(calc(-0.0625rem * var(--site_fx_lift_mult, 1)));
@@ -308,31 +308,31 @@
       color-mix(in oklch, var(--neon_color) 68%, transparent);
 }
 
-.nav-pill:hover::before,
-.nav-pill:focus-visible::before {
+.sol__nav_pill:hover::before,
+.sol__nav_pill:focus-visible::before {
   color: color-mix(in oklch, var(--neon_color) 58%, var(--ui_text_muted));
   text-shadow:
     0 0 8px color-mix(in oklch, var(--neon_color) 58%, transparent),
     0 0 14px color-mix(in oklch, var(--neon_color) 40%, transparent);
 }
 
-.nav-pill[data-phase="nigredo"] {
+.sol__nav_pill[data-phase="nigredo"] {
   --neon_color: var(--color-nigredo);
 }
 
-.nav-pill[data-phase="albedo"] {
+.sol__nav_pill[data-phase="albedo"] {
   --neon_color: var(--color-albedo);
 }
 
-.nav-pill[data-phase="citrinitas"] {
+.sol__nav_pill[data-phase="citrinitas"] {
   --neon_color: var(--color-citrinitas);
 }
 
-.nav-pill[data-phase="rubedo"] {
+.sol__nav_pill[data-phase="rubedo"] {
   --neon_color: var(--color-rubedo);
 }
 
-.nav-pill[data-phase="codex"] {
+.sol__nav_pill[data-phase="codex"] {
   --neon_color: var(--site_style_accent_alt);
 }
 
@@ -347,11 +347,11 @@
   transform: translate3d(-50%, 0, 0);
 }
 
-.icon-user-layer {
+.sol__icon_user_layer {
   @apply pointer-events-none absolute;
 }
 
-.icon-user-layer-orbit {
+.sol__icon_user_layer_orbit {
   @apply rounded-full;
 
   inset: -2px;
@@ -377,12 +377,12 @@
   );
 }
 
-#sol_icon_user.is-route-active .icon-user-layer-orbit {
+#sol_icon_user.sol__is_route_active .sol__icon_user_layer_orbit {
   opacity: 0.46;
 }
 
-#sol_icon_user:hover .icon-user-layer-orbit,
-#sol_icon_user:focus-visible .icon-user-layer-orbit {
+#sol_icon_user:hover .sol__icon_user_layer_orbit,
+#sol_icon_user:focus-visible .sol__icon_user_layer_orbit {
   opacity: 0.72;
   animation: icon_orbit_glow 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
@@ -412,8 +412,8 @@
   );
 }
 
-.cinza_sun_halo,
-.cinza_sun_highlight {
+.sol__cinza_sun_halo,
+.sol__cinza_sun_highlight {
   @apply pointer-events-none absolute;
 
   /* display: none; */
@@ -497,7 +497,7 @@
   overflow: visible;
 }
 
-:root[data-site-theme="solarisael"] .cinza_sun_halo {
+:root[data-site-theme="solarisael"] .sol__cinza_sun_halo {
   width: 248%;
   height: 248%;
   border-radius: 50%;
@@ -514,13 +514,13 @@
   mix-blend-mode: screen;
 }
 
-:root[data-site-theme="solarisael"] .icon-user-layer-orbit {
+:root[data-site-theme="solarisael"] .sol__icon_user_layer_orbit {
   opacity: 0;
   animation: none;
 }
 
-:root[data-site-theme="solarisael"] .cinza_sun_halo,
-:root[data-site-theme="solarisael"] .cinza_sun_highlight {
+:root[data-site-theme="solarisael"] .sol__cinza_sun_halo,
+:root[data-site-theme="solarisael"] .sol__cinza_sun_highlight {
   display: block;
   left: 50%;
   top: 50%;
@@ -528,7 +528,7 @@
   z-index: 6;
 }
 
-:root[data-site-theme="solarisael"] .cinza_sun_highlight {
+:root[data-site-theme="solarisael"] .sol__cinza_sun_highlight {
   width: 105%;
   height: 105%;
   border-radius: 50%;
@@ -550,13 +550,13 @@
   animation: cinza_highlight_rotate 18s linear infinite;
 }
 
-:root[data-site-theme="solarisael"] #sol_icon_user:hover .cinza_sun_highlight,
+:root[data-site-theme="solarisael"] #sol_icon_user:hover .sol__cinza_sun_highlight,
 :root[data-site-theme="solarisael"]
   #sol_icon_user:focus-visible
-  .cinza_sun_highlight,
+  .sol__cinza_sun_highlight,
 :root[data-site-theme="solarisael"]
-  #sol_icon_user.is-route-active
-  .cinza_sun_highlight {
+  #sol_icon_user.sol__is_route_active
+  .sol__cinza_sun_highlight {
   opacity: 1;
 }
 

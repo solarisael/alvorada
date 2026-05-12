@@ -52,11 +52,11 @@ const book_links = book_slugs.map((book_slug) => {
 });
 ---
 
-<IndexLayout phase="rubedo" body_class="pov_cinza">
+<IndexLayout phase="rubedo" body_class="sol__pov_cinza">
   <rubedo data-shape="index_page">
     <div class="page-hero">
-      <p class="text_kicker">~/ rubedo</p>
-      <p class="text_kicker">04</p>
+      <p class="sol__text_kicker">~/ rubedo</p>
+      <p class="sol__text_kicker">04</p>
       <h1>Rubedo</h1>
       <p>
         Finished work. Writing I am willing to put my name on, projects I
@@ -69,7 +69,7 @@ const book_links = book_slugs.map((book_slug) => {
 
       {
         book_links.length === 0 ? (
-          <p class="text_fine">No works published yet.</p>
+          <p class="sol__text_fine">No works published yet.</p>
         ) : (
           book_links.map((book) => (
             <div>

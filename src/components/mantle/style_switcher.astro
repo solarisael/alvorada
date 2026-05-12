@@ -50,7 +50,7 @@ const shell_options = [
 <mantle data-shape="style_switcher" id="sol_style_switcher" data-style-collapsed="true">
   <button
     id="sol_style_switcher_toggle"
-    class="text_caption"
+    class="sol__text_caption"
     type="button"
     data-style-toggle
     data-expanded="false"
@@ -59,10 +59,10 @@ const shell_options = [
   </button>
 
   <div id="sol_style_switcher_panel" data-style-panel>
-    <p id="sol_style_switcher_title" class="text_caption">style</p>
+    <p id="sol_style_switcher_title" class="sol__text_caption">style</p>
 
-    <label class="style_switcher_group" for="style_switcher_theme">
-      <span class="style_switcher_label text_caption">theme</span>
+    <label class="sol__style_switcher_group" for="style_switcher_theme">
+      <span class="sol__style_switcher_label sol__text_caption">theme</span>
       <select id="sol_style_switcher_theme" data-style-theme>
         {
           theme_options.map((theme_option) => (
@@ -72,8 +72,8 @@ const shell_options = [
       </select>
     </label>
 
-    <label class="style_switcher_group" for="style_switcher_fx">
-      <span class="style_switcher_label text_caption">intensity</span>
+    <label class="sol__style_switcher_group" for="style_switcher_fx">
+      <span class="sol__style_switcher_label sol__text_caption">intensity</span>
       <select id="sol_style_switcher_fx" data-style-fx>
         {
           fx_options.map((fx_option) => (
@@ -83,8 +83,8 @@ const shell_options = [
       </select>
     </label>
 
-    <label class="style_switcher_group" for="style_switcher_shell">
-      <span class="style_switcher_label text_caption">shell</span>
+    <label class="sol__style_switcher_group" for="style_switcher_shell">
+      <span class="sol__style_switcher_label sol__text_caption">shell</span>
       <select id="sol_style_switcher_shell" data-style-shell>
         {
           shell_options.map((shell_option) => (

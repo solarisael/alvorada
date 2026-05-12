@@ -102,7 +102,7 @@ body {
 /* CONSUMERS: READING CONTAINERS */
 :where(
   #sol_main_reading_container,
-  .reading_container,
+  .sol__reading_container,
   [data-reading-container="true"]
 ) {
   display: grid;
@@ -114,11 +114,11 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h1),
-.text_display {
+.sol__text_display {
   font-family: var(--font_reading_heading);
   font-size: var(--text_display);
   line-height: var(--leading_display);
@@ -127,11 +127,11 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h2),
-.text_large {
+.sol__text_large {
   font-family: var(--font_reading_heading);
   font-size: var(--text_large);
   line-height: var(--leading_heading);
@@ -140,11 +140,11 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h3),
-.text_main {
+.sol__text_main {
   font-family: var(--font_reading_heading);
   font-size: var(--text_main);
   line-height: var(--leading_heading);
@@ -153,11 +153,11 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h4),
-.text_mid {
+.sol__text_mid {
   font-family: var(--font_reading_heading);
   font-size: var(--text_mid);
   line-height: var(--leading_heading);
@@ -166,11 +166,11 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h5),
-.text_sub {
+.sol__text_sub {
   font-size: var(--text_sub);
   line-height: var(--leading_body);
   font-weight: var(--weight_reading_heading);
@@ -178,14 +178,14 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h6),
-.text_body,
+.sol__text_body,
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, th, td, a, blockquote) {
@@ -195,18 +195,18 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(small),
-.text_fine {
+.sol__text_fine {
   font-size: var(--text_fine);
   line-height: 1.4;
 }
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(p, li, dt, dd, blockquote, pre, table, dl) {
@@ -216,7 +216,7 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(h1, h2, h3, h4, h5, h6) {
@@ -226,7 +226,7 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(*:last-child) {
@@ -235,7 +235,7 @@ body {
 
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(blockquote) {
@@ -246,7 +246,7 @@ body {
 }
 
 /* OVERRIDES: POV */
-body.pov_cinza {
+body.sol__pov_cinza {
   --font_reading_heading:
     "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
   --font_reading_body:
@@ -278,14 +278,14 @@ body[data-phase="codex"] {
 /* CONSUMERS: CADENCE */
 :where(
     #sol_main_reading_container,
-    .reading_container,
+    .sol__reading_container,
     [data-reading-container="true"]
   )
   :where(
-    .text_fx_cadence,
-    .text_fx_cadence_soft,
-    .text_fx_cadence_oracular,
-    .text_fx_cadence_childlike
+    .sol__text_fx_cadence,
+    .sol__text_fx_cadence_soft,
+    .sol__text_fx_cadence_oracular,
+    .sol__text_fx_cadence_childlike
   ) {
   font-style: var(--cadence_font_style);
   font-weight: var(--weight_cadence);
@@ -298,73 +298,73 @@ body[data-phase="codex"] {
 }
 
 /* CONSUMERS + UTILITIES */
-.text_lead {
+.sol__text_lead {
   font-size: var(--text_lead);
   line-height: var(--leading_relaxed);
 }
 
-.text_kicker {
+.sol__text_kicker {
   font-size: var(--text_fine);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.text_caption {
+.sol__text_caption {
   font-size: var(--text_fine);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
-@utility text_body {
+@utility sol__text_body {
   font-size: var(--text_body);
   line-height: var(--leading_body);
 }
 
-@utility text_lead {
+@utility sol__text_lead {
   font-size: var(--text_lead);
   line-height: var(--leading_relaxed);
 }
 
-@utility text_kicker {
+@utility sol__text_kicker {
   font-size: var(--text_fine);
   line-height: 1.45;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-@utility text_caption {
+@utility sol__text_caption {
   font-size: var(--text_fine);
   line-height: 1.4;
   letter-spacing: 0.03em;
 }
 
-@utility text_fine {
+@utility sol__text_fine {
   font-size: var(--text_fine);
   line-height: 1.4;
 }
 
-@utility text_sub {
+@utility sol__text_sub {
   font-size: var(--text_sub);
   line-height: var(--leading_body);
 }
 
-@utility text_mid {
+@utility sol__text_mid {
   font-size: var(--text_mid);
   line-height: var(--leading_heading);
 }
 
-@utility text_main {
+@utility sol__text_main {
   font-size: var(--text_main);
   line-height: var(--leading_heading);
 }
 
-@utility text_large {
+@utility sol__text_large {
   font-size: var(--text_large);
   line-height: var(--leading_heading);
 }
 
-@utility text_display {
+@utility sol__text_display {
   font-size: var(--text_display);
   line-height: var(--leading_display);
 }

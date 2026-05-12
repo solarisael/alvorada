@@ -107,7 +107,7 @@ const modifier_options =
     <>
       <rubedo
         data-shape="state_panel_filters"
-        class="rubedo-timeline-panel-card rubedo-timeline-filters-card"
+        class="sol__rubedo_timeline_panel_card sol__rubedo_timeline_filters_card"
         data-current-chapter-id={resolved_view_state.chapter_id}
         data-current-thread-key={resolved_view_state.requested_thread_key}
         data-current-thread-modifier={
@@ -116,7 +116,7 @@ const modifier_options =
       >
         <h2>Eyes and thread state</h2>
 
-        <div class="rubedo-timeline-controls" data-rubedo-timeline-controls>
+        <div class="sol__rubedo_timeline_controls" data-rubedo-timeline-controls>
           <label>
             <span>Eye thread</span>
             <select
@@ -165,7 +165,7 @@ const modifier_options =
         </div>
       </rubedo>
 
-      <rubedo data-shape="state_panel_lane" class="rubedo-timeline-panel-card rubedo-timeline-state-lane-card">
+      <rubedo data-shape="state_panel_lane" class="sol__rubedo_timeline_panel_card sol__rubedo_timeline_state_lane_card">
         <h3>Current state</h3>
         <p>
           Scene lens:{" "}
@@ -184,7 +184,7 @@ const modifier_options =
         <p>
           Fallback state:{" "}
           <span
-            class="rubedo-timeline-fallback-badge"
+            class="sol__rubedo_timeline_fallback_badge"
             data-fallback-state={fallback_state}
           >
             {fallback_state}

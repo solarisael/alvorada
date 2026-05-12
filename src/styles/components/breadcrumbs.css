@@ -20,7 +20,7 @@
   @apply mb-4 md:mb-5;
   @apply pb-0;
 
-  .breadcrumb-divider {
+  .sol__breadcrumb_divider {
     @apply absolute;
 
     left: var(--crumb_divider_inset);
@@ -82,8 +82,8 @@
     transition-timing-function: ease;
   }
 
-  li.is-parent a:hover,
-  li.is-parent a:focus-visible {
+  li.sol__is_parent a:hover,
+  li.sol__is_parent a:focus-visible {
     @apply outline-none;
 
     opacity: 0.88;
@@ -100,7 +100,7 @@
     );
   }
 
-  li.is-current a {
+  li.sol__is_current a {
     @apply font-semibold;
 
     color: var(--crumb_theme_color);

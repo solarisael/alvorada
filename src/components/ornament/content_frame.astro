@@ -1,6 +1,6 @@
 ---
 // Decorative SVG frame for the content shell — corners, lines, sigils.
-// Preserves the content-layer class so the .content-layer positioning rules still apply.
+// Preserves the sol__content_layer class so the .sol__content_layer positioning rules still apply.
 
 const base_url = import.meta.env.BASE_URL;
 const base_path = base_url.replace(/\/+$/, "");
@@ -13,59 +13,59 @@ const with_base = (path_value) => {
 
 <ornament
   data-shape="content_frame"
-  class="content-layer content-layer-ornament-svg"
+  class="sol__content_layer sol__content_layer_ornament_svg"
 >
   <img
-    class="content-ornament content-ornament-corner-tl"
+    class="sol__content_ornament sol__content_ornament_corner_tl"
     src={with_base("ornaments/cinza/frame_corner_tl.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-corner-tr"
+    class="sol__content_ornament sol__content_ornament_corner_tr"
     src={with_base("ornaments/cinza/frame_corner_tr.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-corner-bl"
+    class="sol__content_ornament sol__content_ornament_corner_bl"
     src={with_base("ornaments/cinza/frame_corner_bl.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-corner-br"
+    class="sol__content_ornament sol__content_ornament_corner_br"
     src={with_base("ornaments/cinza/frame_corner_br.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-line-top"
+    class="sol__content_ornament sol__content_ornament_line_top"
     src={with_base("ornaments/cinza/frame_line_top.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-line-bottom"
+    class="sol__content_ornament sol__content_ornament_line_bottom"
     src={with_base("ornaments/cinza/frame_line_bottom.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-sigil-top"
+    class="sol__content_ornament sol__content_ornament_sigil_top"
     src={with_base("ornaments/cinza/sigil_moon_star.svg")}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
-    class="content-ornament content-ornament-sigil-bottom"
+    class="sol__content_ornament sol__content_ornament_sigil_bottom"
     src={with_base("ornaments/cinza/sigil_eye.svg")}
     alt=""
     loading="eager"

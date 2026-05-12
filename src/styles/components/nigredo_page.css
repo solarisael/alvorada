@@ -63,7 +63,7 @@ body[data-phase="nigredo"] {
    Archive shell
    ============================================================ */
 
-.nigredo-archive {
+.sol__nigredo_archive {
   @apply flex flex-col;
 
   gap: 0;
@@ -77,7 +77,7 @@ body[data-phase="nigredo"] {
    Trace:        memory_fragment (dashed edge, desaturated wear)
    ============================================================ */
 
-.nigredo-filter-block {
+.sol__nigredo_filter_block {
   @apply sticky flex flex-col;
 
   top: 0;
@@ -109,14 +109,14 @@ body[data-phase="nigredo"] {
 }
 
 /* Header row: label + clear button */
-.nigredo-filter-header {
+.sol__nigredo_filter_header {
   @apply flex items-center;
 
   gap: 0.5rem;
   margin-bottom: 0.6rem;
 }
 
-.nigredo-filter-title {
+.sol__nigredo_filter_title {
   font-size: 0.78rem;
   letter-spacing: 0.1em;
   text-transform: lowercase;
@@ -129,7 +129,7 @@ body[data-phase="nigredo"] {
   flex-shrink: 0;
 }
 
-.nigredo-filter-clear {
+.sol__nigredo_filter_clear {
   @apply cursor-pointer;
 
   margin-left: auto;
@@ -143,12 +143,12 @@ body[data-phase="nigredo"] {
   transition: color var(--nigredo_transition_ms) ease;
 }
 
-.nigredo-filter-clear:hover {
+.sol__nigredo_filter_clear:hover {
   color: color-mix(in oklch, var(--site_style_accent) 70%, oklch(65% 0.01 258));
 }
 
 /* Inner field: status_effects grouped pill container */
-.nigredo-filter-field {
+.sol__nigredo_filter_field {
   padding: 0.6rem 0.65rem;
   border-radius: 0.48rem;
   border: 1px solid
@@ -162,19 +162,19 @@ body[data-phase="nigredo"] {
     color-mix(in oklch, oklch(10% 0.01 258) 66%, transparent);
 }
 
-.nigredo-filter-pills {
+.sol__nigredo_filter_pills {
   @apply flex flex-wrap;
 
   gap: 0.45rem;
 }
 
 /* Filter pills are slightly larger than entry pills */
-.nigredo-filter-btn.nigredo-pill {
+.sol__nigredo_filter_btn.sol__nigredo_pill {
   padding: 0.22rem 0.7rem;
   font-size: 0.7rem;
 }
 
-.nigredo-filter-btn {
+.sol__nigredo_filter_btn {
   @apply cursor-pointer;
 
   transition:
@@ -184,14 +184,14 @@ body[data-phase="nigredo"] {
     background var(--nigredo_transition_ms) ease;
 }
 
-.nigredo-filter-btn[data-active="true"] {
+.sol__nigredo_filter_btn[data-active="true"] {
   opacity: 1;
   box-shadow:
     0 0 0 1.5px color-mix(in oklch, var(--site_style_accent) 65%, transparent),
     0 0 8px color-mix(in oklch, var(--site_style_accent) 22%, transparent);
 }
 
-.nigredo-filter-btn[data-active="true"][data-family="ash"] {
+.sol__nigredo_filter_btn[data-active="true"][data-family="ash"] {
   background: color-mix(
     in oklch,
     var(--nigredo_pill_ash_bg) 100%,
@@ -205,7 +205,7 @@ body[data-phase="nigredo"] {
   color: oklch(82% 0.022 260);
 }
 
-.nigredo-filter-btn[data-active="true"][data-family="ember"] {
+.sol__nigredo_filter_btn[data-active="true"][data-family="ember"] {
   background: color-mix(
     in oklch,
     var(--nigredo_pill_ember_bg) 100%,
@@ -219,11 +219,11 @@ body[data-phase="nigredo"] {
   color: oklch(84% 0.044 22);
 }
 
-.nigredo-filter-btn[data-active="false"] {
+.sol__nigredo_filter_btn[data-active="false"] {
   opacity: 0.58;
 }
 
-.nigredo-filter-btn:hover {
+.sol__nigredo_filter_btn:hover {
   opacity: 0.85;
 }
 
@@ -231,14 +231,14 @@ body[data-phase="nigredo"] {
    Status row
    ============================================================ */
 
-.nigredo-archive-status {
+.sol__nigredo_archive_status {
   @apply flex items-center;
 
   gap: 0.3rem;
   margin-bottom: 0.75rem;
 }
 
-.nigredo-archive-count {
+.sol__nigredo_archive_count {
   color: color-mix(
     in oklch,
     var(--site_style_accent) 66%,
@@ -246,11 +246,11 @@ body[data-phase="nigredo"] {
   );
 }
 
-.nigredo-archive-count-label {
+.sol__nigredo_archive_count_label {
   color: oklch(38% 0.01 260);
 }
 
-.nigredo-archive-filter-summary {
+.sol__nigredo_archive_filter_summary {
   color: color-mix(in oklch, var(--site_style_accent) 48%, oklch(40% 0.01 260));
   font-size: 0.62rem;
   letter-spacing: 0.06em;
@@ -260,7 +260,7 @@ body[data-phase="nigredo"] {
    Scroll pane — bounded overflow container for TanStack + Lenis
    ============================================================ */
 
-.nigredo-scroll-pane {
+.sol__nigredo_scroll_pane {
   height: var(--nigredo_scroll_height);
   overflow-y: auto;
   overflow-x: hidden;
@@ -277,7 +277,7 @@ body[data-phase="nigredo"] {
 /* Inner track — TanStack sets height here.
    position: relative gives absolutely-positioned rows a stable origin.
    width: 100% makes every row resolve against the full scroll-pane width. */
-.nigredo-inner-track {
+.sol__nigredo_inner_track {
   position: relative;
   width: 100%;
   /* height set dynamically by virtualizer */
@@ -287,7 +287,7 @@ body[data-phase="nigredo"] {
    Must NOT be positioned: li items (position: absolute) resolve width: 100% against
    the nearest positioned ancestor. Keeping ol as static lets them climb up to
    inner-track (position: relative, full scroll-pane width) so 100% is correct. */
-.nigredo-list {
+.sol__nigredo_list {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -298,7 +298,7 @@ body[data-phase="nigredo"] {
    Entry row — absolutely positioned by TanStack, full lane width
    ============================================================ */
 
-.nigredo-entry-row {
+.sol__nigredo_entry_row {
   display: flex;
   /* max-width from typography.css reading-container rule caps li at ~88% —
      override to none so rows can span the full scroll pane width. */
@@ -310,49 +310,49 @@ body[data-phase="nigredo"] {
 /* Lane alignment — the row is already full-width.
    justify-content controls where the card sits inside it. */
 @media (min-width: 640px) {
-  .nigredo-entry-row[data-align="left"] {
+  .sol__nigredo_entry_row[data-align="left"] {
     justify-content: flex-start;
   }
 
-  .nigredo-entry-row[data-align="right"] {
+  .sol__nigredo_entry_row[data-align="right"] {
     justify-content: flex-end;
   }
 
   /* Left/right cards with slight tilt, near full-width */
-  .nigredo-entry-row[data-align="left"] .nigredo-entry,
-  .nigredo-entry-row[data-align="right"] .nigredo-entry {
+  .sol__nigredo_entry_row[data-align="left"] .sol__nigredo_entry,
+  .sol__nigredo_entry_row[data-align="right"] .sol__nigredo_entry {
     width: var(--nigredo_entry_left_width);
   }
 
-  .nigredo-entry-row[data-align="left"] .nigredo-entry {
+  .sol__nigredo_entry_row[data-align="left"] .sol__nigredo_entry {
     transform: rotate(calc(-1 * var(--nigredo_entry_tilt_quiet)));
   }
 
-  .nigredo-entry-row[data-align="right"] .nigredo-entry {
+  .sol__nigredo_entry_row[data-align="right"] .sol__nigredo_entry {
     transform: rotate(var(--nigredo_entry_tilt_quiet));
   }
 }
 
 @media (max-width: 639px) {
-  .nigredo-entry-row {
+  .sol__nigredo_entry_row {
     justify-content: center;
   }
 
-  .nigredo-entry-row .nigredo-entry {
+  .sol__nigredo_entry_row .sol__nigredo_entry {
     width: 100%;
     transform: none;
   }
 }
 
 /* ============================================================
-   Entry — outer shell (mirrors .phase_card_link)
+   Entry — outer shell (mirrors .sol__phase_card_link)
    ============================================================ */
 
-.nigredo-entry {
+.sol__nigredo_entry {
   @apply relative isolate overflow-hidden;
 }
 
-.nigredo-entry-link {
+.sol__nigredo_entry_link {
   @apply relative flex flex-col no-underline;
   @apply w-full;
 
@@ -376,8 +376,8 @@ body[data-phase="nigredo"] {
     box-shadow var(--nigredo_transition_ms) ease;
 }
 
-.nigredo-entry-link:hover,
-.nigredo-entry-link:focus-visible {
+.sol__nigredo_entry_link:hover,
+.sol__nigredo_entry_link:focus-visible {
   transform: translateY(var(--nigredo_hover_lift));
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
   box-shadow:
@@ -386,7 +386,7 @@ body[data-phase="nigredo"] {
     inset 0 1px 0 color-mix(in oklch, white 12%, transparent);
 }
 
-.nigredo-entry-link:focus-visible {
+.sol__nigredo_entry_link:focus-visible {
   outline: 2px solid color-mix(in oklch, var(--site_style_accent) 72%, white);
   outline-offset: 0.125rem;
 }
@@ -395,14 +395,14 @@ body[data-phase="nigredo"] {
    Entry layers (absolute effect layers)
    ============================================================ */
 
-.nigredo-entry-layer {
+.sol__nigredo_entry_layer {
   @apply pointer-events-none absolute;
 
   inset: 0;
 }
 
 /* Surface: dark ash paper wash */
-.nigredo-entry-layer-surface {
+.sol__nigredo_entry_layer_surface {
   z-index: 0;
   /* paper body + corner halo — 2 layers, within gate */
   background:
@@ -427,7 +427,7 @@ body[data-phase="nigredo"] {
 }
 
 /* Ash layer: soot noise + singe falloff */
-.nigredo-entry-layer-ash {
+.sol__nigredo_entry_layer_ash {
   z-index: 1;
   opacity: var(--nigredo_ash_opacity);
   /* bg-stack-exception: ash requires 2 passes — grain speckle + perimeter singe */
@@ -445,7 +445,7 @@ body[data-phase="nigredo"] {
 }
 
 /* Frame: inset ring with slight damage asymmetry */
-.nigredo-entry-layer-frame {
+.sol__nigredo_entry_layer_frame {
   z-index: 3;
   inset: var(--nigredo_ornament_inset);
   border-radius: calc(var(--nigredo_card_radius) - 0.35rem);
@@ -469,11 +469,11 @@ body[data-phase="nigredo"] {
 }
 
 /* Rupture variant: heavier singe, more damage */
-.nigredo-entry[data-tone="rupture"] .nigredo-entry-layer-ash {
+.sol__nigredo_entry[data-tone="rupture"] .sol__nigredo_entry_layer_ash {
   opacity: calc(var(--nigredo_ash_opacity) * 2.4);
 }
 
-.nigredo-entry[data-tone="rupture"] .nigredo-entry-link {
+.sol__nigredo_entry[data-tone="rupture"] .sol__nigredo_entry_link {
   border-color: color-mix(in oklch, var(--site_style_accent) 48%, transparent);
 }
 
@@ -481,45 +481,45 @@ body[data-phase="nigredo"] {
    Ornament layer
    ============================================================ */
 
-.nigredo-entry-layer-ornament {
+.sol__nigredo_entry_layer_ornament {
   display: none;
   z-index: 2;
   opacity: var(--nigredo_ornament_opacity);
 }
 
-:root[data-site-theme="solarisael"] .nigredo-entry-layer-ornament {
+:root[data-site-theme="solarisael"] .sol__nigredo_entry_layer_ornament {
   display: block;
 }
 
-.nigredo-entry-ornament {
+.sol__nigredo_entry_ornament {
   @apply absolute;
 
   display: block;
   object-fit: contain;
 }
 
-.nigredo-entry-ornament-corner-tl {
+.sol__nigredo_entry_ornament_corner_tl {
   left: var(--nigredo_ornament_inset);
   top: var(--nigredo_ornament_inset);
   width: var(--nigredo_ornament_corner_size);
   height: var(--nigredo_ornament_corner_size);
 }
 
-.nigredo-entry-ornament-corner-tr {
+.sol__nigredo_entry_ornament_corner_tr {
   right: var(--nigredo_ornament_inset);
   top: var(--nigredo_ornament_inset);
   width: var(--nigredo_ornament_corner_size);
   height: var(--nigredo_ornament_corner_size);
 }
 
-.nigredo-entry-ornament-corner-bl {
+.sol__nigredo_entry_ornament_corner_bl {
   left: var(--nigredo_ornament_inset);
   bottom: var(--nigredo_ornament_inset);
   width: var(--nigredo_ornament_corner_size);
   height: var(--nigredo_ornament_corner_size);
 }
 
-.nigredo-entry-ornament-corner-br {
+.sol__nigredo_entry_ornament_corner_br {
   right: var(--nigredo_ornament_inset);
   bottom: var(--nigredo_ornament_inset);
   width: var(--nigredo_ornament_corner_size);
@@ -530,7 +530,7 @@ body[data-phase="nigredo"] {
    Entry body layer
    ============================================================ */
 
-.nigredo-entry-layer-body {
+.sol__nigredo_entry_layer_body {
   @apply relative flex flex-col;
 
   z-index: 10;
@@ -541,13 +541,13 @@ body[data-phase="nigredo"] {
    Entry header: title + pill + date
    ============================================================ */
 
-.nigredo-entry-header {
+.sol__nigredo_entry_header {
   @apply flex flex-wrap items-center;
 
   gap: 0.45rem;
 }
 
-.nigredo-entry-title {
+.sol__nigredo_entry_title {
   font-family: var(--font_reading_heading);
   font-size: var(--text_body, 0.9375rem);
   font-weight: 500;
@@ -557,13 +557,13 @@ body[data-phase="nigredo"] {
   min-width: 0;
 }
 
-.nigredo-entry-title[data-redacted="true"] {
+.sol__nigredo_entry_title[data-redacted="true"] {
   letter-spacing: 0.06em;
   color: oklch(38% 0.01 258);
   font-family: monospace;
 }
 
-.nigredo-entry-date {
+.sol__nigredo_entry_date {
   margin-left: auto;
   font-size: var(--nigredo_date_size);
   color: var(--nigredo_date_color);
@@ -578,7 +578,7 @@ body[data-phase="nigredo"] {
    Pill
    ============================================================ */
 
-.nigredo-pill {
+.sol__nigredo_pill {
   @apply inline-flex items-center;
 
   padding: 0.12rem 0.5rem;
@@ -591,13 +591,13 @@ body[data-phase="nigredo"] {
   flex-shrink: 0;
 }
 
-.nigredo-pill[data-family="ash"] {
+.sol__nigredo_pill[data-family="ash"] {
   background: var(--nigredo_pill_ash_bg);
   border: 1px solid var(--nigredo_pill_ash_border);
   color: var(--nigredo_pill_ash_text);
 }
 
-.nigredo-pill[data-family="ember"] {
+.sol__nigredo_pill[data-family="ember"] {
   background: var(--nigredo_pill_ember_bg);
   border: 1px solid var(--nigredo_pill_ember_border);
   color: var(--nigredo_pill_ember_text);
@@ -607,13 +607,13 @@ body[data-phase="nigredo"] {
    Excerpt
    ============================================================ */
 
-.nigredo-entry-excerpt {
+.sol__nigredo_entry_excerpt {
   font-size: var(--text_fine, 0.8125rem);
   line-height: var(--leading_relaxed, 1.7);
   color: oklch(56% 0.01 258);
 }
 
-.nigredo-entry-excerpt p {
+.sol__nigredo_entry_excerpt p {
   margin: 0;
 }
 
@@ -626,7 +626,7 @@ body[data-phase="nigredo"] {
     --nigredo_scroll_height: 70vh;
   }
 
-  .nigredo-filter-rail {
+  .sol__nigredo_filter_rail {
     gap: 0.4rem;
   }
 }

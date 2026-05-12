@@ -57,11 +57,11 @@ const crumb_label_overrides = {
 ---
 
 <IndexLayout
-  body_class="pov_cinza"
+  body_class="sol__pov_cinza"
   crumb_label_overrides={crumb_label_overrides}
 >
-  <rubedo data-shape="timeline_page" class="rubedo-timeline-page">
-    <div class="rubedo-timeline-header">
+  <rubedo data-shape="timeline_page" class="sol__rubedo_timeline_page">
+    <div class="sol__rubedo_timeline_header">
       <h1>{book_entry?.title ?? "Rubedo Book"} — constellation</h1>
     </div>
 
@@ -111,7 +111,7 @@ const crumb_label_overrides = {
         <rubedo
           data-shape="timeline_interactive"
           id="sol_rubedo_timeline_interactive"
-          class="rubedo-timeline-interactive"
+          class="sol__rubedo_timeline_interactive"
           data-book-slug={book_slug}
           data-timeline-data-href={timeline_data_href}
         >
@@ -119,23 +119,23 @@ const crumb_label_overrides = {
               The module reads data-timeline-data-href, fetches JSON once on init,
               caches result in a module-scoped object, then renders the constellation.
               Hover preview is rendered client-side from that cache — no server roundtrip. */}
-          <canvas id="sol_rubedo_timeline_canvas" class="rubedo-timeline-canvas" />
+          <canvas id="sol_rubedo_timeline_canvas" class="sol__rubedo_timeline_canvas" />
 
           <div
             id="sol_rubedo_timeline_hover_preview"
-            class="rubedo-timeline-hover-preview"
+            class="sol__rubedo_timeline_hover_preview"
           >
             {/* Populated client-side from cached JSON on node hover. */}
           </div>
 
           <div
             id="sol_rubedo_timeline_state_panel"
-            class="rubedo-timeline-state-panel"
+            class="sol__rubedo_timeline_state_panel"
           >
             {/* Populated client-side after JSON fetch completes. */}
           </div>
 
-          <ul class="rubedo-timeline-legend">
+          <ul class="sol__rubedo_timeline_legend">
             <li>white path — cinza thread</li>
             <li>green path — suul thread</li>
             <li>orange path — alvorada thread</li>

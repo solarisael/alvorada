@@ -274,7 +274,7 @@ const emit_sanitization_warning = (
 
   warning_cache?.add(cache_key);
   warn(
-    `[text_fx] auto-sanitized marker '${raw_descriptor}' -> '${effect_names.join("|")}' (${warning_reasons.join("; ")})`,
+    `[sol__text_fx] auto-sanitized marker '${raw_descriptor}' -> '${effect_names.join("|")}' (${warning_reasons.join("; ")})`,
   );
 };
 
@@ -367,7 +367,7 @@ const build_text_fx_span_html = (
     .map((safe_effect_name) => `text_fx_${safe_effect_name}`)
     .join(" ");
 
-  return `<span class="text_fx ${fx_classes}"${data_attributes}${style_attribute}>${escape_html(text_content)}</span>`;
+  return `<span class="sol__text_fx ${fx_classes}"${data_attributes}${style_attribute}>${escape_html(text_content)}</span>`;
 };
 
 const build_block_fx_open_html = (effect_name, options = {}) => {
@@ -383,7 +383,7 @@ const build_block_fx_open_html = (effect_name, options = {}) => {
   const data_attributes = build_text_fx_data_attributes(options);
   const style_attribute = build_block_fx_style_attribute(options);
 
-  return `<div class="block_fx block_fx_${safe_effect_name}" data-text-fx="${safe_effect_name}"${data_attributes}${style_attribute}>`;
+  return `<div class="sol__block_fx block_fx_${safe_effect_name}" data-text-fx="${safe_effect_name}"${data_attributes}${style_attribute}>`;
 };
 
 const marker_regex = /\{\{fx:([^}]+)\}\}([\s\S]*?)\{\{\/fx\}\}/gi;

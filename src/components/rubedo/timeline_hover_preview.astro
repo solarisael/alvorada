@@ -14,7 +14,7 @@ const reader_href = resolved_view_state
 <rubedo
   data-shape="timeline_hover_preview"
   id="sol_rubedo_timeline_hover_preview"
-  class="rubedo-timeline-hover-preview"
+  class="sol__rubedo_timeline_hover_preview"
 >
   {
     resolved_view_state ? (
@@ -28,7 +28,7 @@ const reader_href = resolved_view_state
         {resolved_view_state.resolved_chapter_snippet && (
           <p>{resolved_view_state.resolved_chapter_snippet}</p>
         )}
-        <p class="rubedo-timeline-preview-action">
+        <p class="sol__rubedo_timeline_preview_action">
           <a
             href={reader_href}
             hx-get={reader_href}
@@ -36,7 +36,7 @@ const reader_href = resolved_view_state
             hx-select="#sol_content"
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
-            class="rubedo-timeline-go-to-chapter"
+            class="sol__rubedo_timeline_go_to_chapter"
           >
             Go to chapter
           </a>

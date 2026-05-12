@@ -43,14 +43,14 @@ const INWARD = new Set([
 const { archive_index = [], base_path = "" } = Astro.props;
 ---
 
-<nigredo data-shape="list" class="nigredo-archive" data-nigredo-archive>
+<nigredo data-shape="list" class="sol__nigredo_archive" data-nigredo-archive>
   <!-- Filter block: party_roster outer vessel -->
-  <div class="nigredo-filter-block" data-nigredo-filter-rail>
+  <div class="sol__nigredo_filter_block" data-nigredo-filter-rail>
     <!-- Header row: label + clear -->
-    <div class="nigredo-filter-header">
-      <span class="nigredo-filter-title">afflictions</span>
+    <div class="sol__nigredo_filter_header">
+      <span class="sol__nigredo_filter_title">afflictions</span>
       <button
-        class="nigredo-filter-clear text_kicker"
+        class="sol__nigredo_filter_clear sol__text_kicker"
         data-nigredo-filter-clear
         type="button"
         hidden>clear</button
@@ -58,12 +58,12 @@ const { archive_index = [], base_path = "" } = Astro.props;
     </div>
 
     <!-- Inner field: status_effects grouped pills with memory_fragment trace -->
-    <div class="nigredo-filter-field">
-      <div class="nigredo-filter-pills">
+    <div class="sol__nigredo_filter_field">
+      <div class="sol__nigredo_filter_pills">
         {
           ALL_STATES.map((state) => (
             <button
-              class="nigredo-filter-btn nigredo-pill"
+              class="sol__nigredo_filter_btn sol__nigredo_pill"
               data-filter-state={state}
               data-family={INWARD.has(state) ? "ash" : "ember"}
               data-active="false"
@@ -78,13 +78,13 @@ const { archive_index = [], base_path = "" } = Astro.props;
   </div>
 
   <!-- Status row -->
-  <div class="nigredo-archive-status">
-    <span class="nigredo-archive-count text_kicker" data-nigredo-count>
+  <div class="sol__nigredo_archive_status">
+    <span class="sol__nigredo_archive_count sol__text_kicker" data-nigredo-count>
       {archive_index.length}
     </span>
-    <span class="nigredo-archive-count-label text_kicker">fragments</span>
+    <span class="sol__nigredo_archive_count_label sol__text_kicker">fragments</span>
     <span
-      class="nigredo-archive-filter-summary text_kicker"
+      class="sol__nigredo_archive_filter_summary sol__text_kicker"
       data-nigredo-filter-summary
       hidden></span>
   </div>
@@ -92,13 +92,13 @@ const { archive_index = [], base_path = "" } = Astro.props;
   <!-- Scroll pane: bounded overflow container.
        data-base-path consumed by RowPool in nigredo_archive.js. -->
   <div
-    class="nigredo-scroll-pane"
+    class="sol__nigredo_scroll_pane"
     data-nigredo-scroll
     data-base-path={base_path}
   >
     <!-- Inner track: TanStack sets height here. position:relative gives rows a stable origin. -->
-    <div class="nigredo-inner-track" data-nigredo-inner>
-      <ol class="nigredo-list" data-nigredo-list></ol>
+    <div class="sol__nigredo_inner_track" data-nigredo-inner>
+      <ol class="sol__nigredo_list" data-nigredo-list></ol>
     </div>
   </div>
 </nigredo>
@@ -113,15 +113,15 @@ const { archive_index = [], base_path = "" } = Astro.props;
 <!-- Entry template — cloned per virtual row.
      Ornament srcs use data-ornament-src so RowPool can set them at runtime. -->
 <template id="sol_nigredo_entry_template">
-  <li class="nigredo-entry-row" data-align="left">
-    <nigredo data-shape="entry" class="nigredo-entry" data-tone="quiet">
-      <a class="nigredo-entry-link" href="#">
-        <span class="nigredo-entry-layer nigredo-entry-layer-surface"></span>
-        <span class="nigredo-entry-layer nigredo-entry-layer-ash"></span>
-        <span class="nigredo-entry-layer nigredo-entry-layer-frame"></span>
-        <div class="nigredo-entry-layer nigredo-entry-layer-ornament">
+  <li class="sol__nigredo_entry_row" data-align="left">
+    <nigredo data-shape="entry" class="sol__nigredo_entry" data-tone="quiet">
+      <a class="sol__nigredo_entry_link" href="#">
+        <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_surface"></span>
+        <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ash"></span>
+        <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_frame"></span>
+        <div class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament">
           <img
-            class="nigredo-entry-ornament nigredo-entry-ornament-corner-tl"
+            class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tl"
             data-ornament-src="/ornaments/cinza/card_corner_a.svg"
             src=""
             alt=""
@@ -129,7 +129,7 @@ const { archive_index = [], base_path = "" } = Astro.props;
             decoding="async"
           />
           <img
-            class="nigredo-entry-ornament nigredo-entry-ornament-corner-tr"
+            class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tr"
             data-ornament-src="/ornaments/cinza/card_corner_b.svg"
             src=""
             alt=""
@@ -137,7 +137,7 @@ const { archive_index = [], base_path = "" } = Astro.props;
             decoding="async"
           />
           <img
-            class="nigredo-entry-ornament nigredo-entry-ornament-corner-bl"
+            class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_bl"
             data-ornament-src="/ornaments/cinza/card_corner_c.svg"
             src=""
             alt=""
@@ -145,7 +145,7 @@ const { archive_index = [], base_path = "" } = Astro.props;
             decoding="async"
           />
           <img
-            class="nigredo-entry-ornament nigredo-entry-ornament-corner-br"
+            class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_br"
             data-ornament-src="/ornaments/cinza/card_corner_d.svg"
             src=""
             alt=""
@@ -153,13 +153,13 @@ const { archive_index = [], base_path = "" } = Astro.props;
             decoding="async"
           />
         </div>
-        <div class="nigredo-entry-layer-body">
-          <header class="nigredo-entry-header">
-            <span class="nigredo-entry-title"></span>
-            <span class="nigredo-pill" data-state="" data-family="ash"></span>
-            <time class="nigredo-entry-date"></time>
+        <div class="sol__nigredo_entry_layer_body">
+          <header class="sol__nigredo_entry_header">
+            <span class="sol__nigredo_entry_title"></span>
+            <span class="sol__nigredo_pill" data-state="" data-family="ash"></span>
+            <time class="sol__nigredo_entry_date"></time>
           </header>
-          <div class="nigredo-entry-excerpt"><p></p></div>
+          <div class="sol__nigredo_entry_excerpt"><p></p></div>
         </div>
       </a>
     </nigredo>

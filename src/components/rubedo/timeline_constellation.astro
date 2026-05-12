@@ -403,11 +403,11 @@ const constellation_payload = {
 <rubedo
   data-shape="timeline_constellation"
   id="sol_rubedo_constellation_map"
-  class="rubedo-constellation"
+  class="sol__rubedo_constellation"
   data-active-thread-key={active_thread_key}
   data-renderer="canvas"
 >
-  <div class="rubedo-constellation-controls" data-map-controls>
+  <div class="sol__rubedo_constellation_controls" data-map-controls>
     <button type="button" data-map-action="zoom_out">-</button>
     <input
       type="range"
@@ -419,12 +419,12 @@ const constellation_payload = {
     />
     <button type="button" data-map-action="zoom_in">+</button>
     <button type="button" data-map-action="center_active">Center Active</button>
-    <span class="rubedo-constellation-zoom-badge" data-map-action="zoom_badge"
+    <span class="sol__rubedo_constellation_zoom_badge" data-map-action="zoom_badge"
       >Zoom Active</span
     >
   </div>
-  <canvas class="rubedo-constellation-canvas-surface" tabindex="0"></canvas>
-  <div class="rubedo-constellation-label-overlay">
+  <canvas class="sol__rubedo_constellation_canvas_surface" tabindex="0"></canvas>
+  <div class="sol__rubedo_constellation_label_overlay">
     {
       map_nodes_with_links
         .filter((node_entry) => {
@@ -438,8 +438,8 @@ const constellation_payload = {
           return (
             <span
               class:list={{
-                "rubedo-constellation-node-label": true,
-                "is-active": is_active_node,
+                "sol__rubedo_constellation_node_label": true,
+                "sol__is_active": is_active_node,
               }}
               data-node-id={node_entry.node_id}
               style={`left:${node_entry.x}%;top:${(node_entry.y / viewbox_height) * 100}%;`}
@@ -450,7 +450,7 @@ const constellation_payload = {
         })
     }
   </div>
-  <div class="rubedo-constellation-hover-preview-layer">
+  <div class="sol__rubedo_constellation_hover_preview_layer">
     <slot name="hover_preview" />
   </div>
   <script

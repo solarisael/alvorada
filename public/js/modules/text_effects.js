@@ -1,56 +1,56 @@
 const window_any = /** @type {any} */ (globalThis);
 
 const text_fx_effect_class_map = Object.freeze({
-  glow: "text_fx_glow",
-  neon: "text_fx_neon",
-  shadow: "text_fx_shadow",
-  chroma: "text_fx_chroma",
-  blur: "text_fx_blur",
-  flicker: "text_fx_flicker",
-  rainbow: "text_fx_rainbow",
-  gradient: "text_fx_gradient",
-  terminal: "block_fx_terminal",
-  stat_screen: "block_fx_stat_screen",
-  game_screen: "block_fx_game_screen",
-  quest_log: "block_fx_quest_log",
-  skill_popup: "block_fx_skill_popup",
-  inventory: "block_fx_inventory",
-  combat_feed: "block_fx_combat_feed",
-  status_effects: "block_fx_status_effects",
-  system_warning: "block_fx_system_warning",
-  memory_fragment: "block_fx_memory_fragment",
-  admin_trace: "block_fx_admin_trace",
-  party_roster: "block_fx_party_roster",
-  map_ping: "block_fx_map_ping",
-  aura: "text_fx_aura",
-  etch: "text_fx_etch",
-  whisper: "text_fx_whisper",
-  sigil_pulse: "text_fx_sigil_pulse",
-  veil: "text_fx_veil",
-  cadence: "text_fx_cadence",
-  cadence_soft: "text_fx_cadence_soft",
-  cadence_oracular: "text_fx_cadence_oracular",
-  cadence_childlike: "text_fx_cadence_childlike",
-  wiggle: "text_fx_wiggle",
-  float: "text_fx_float",
-  shake: "text_fx_shake",
-  glitch: "text_fx_glitch",
+  glow: "sol__text_fx_glow",
+  neon: "sol__text_fx_neon",
+  shadow: "sol__text_fx_shadow",
+  chroma: "sol__text_fx_chroma",
+  blur: "sol__text_fx_blur",
+  flicker: "sol__text_fx_flicker",
+  rainbow: "sol__text_fx_rainbow",
+  gradient: "sol__text_fx_gradient",
+  terminal: "sol__block_fx_terminal",
+  stat_screen: "sol__block_fx_stat_screen",
+  game_screen: "sol__block_fx_game_screen",
+  quest_log: "sol__block_fx_quest_log",
+  skill_popup: "sol__block_fx_skill_popup",
+  inventory: "sol__block_fx_inventory",
+  combat_feed: "sol__block_fx_combat_feed",
+  status_effects: "sol__block_fx_status_effects",
+  system_warning: "sol__block_fx_system_warning",
+  memory_fragment: "sol__block_fx_memory_fragment",
+  admin_trace: "sol__block_fx_admin_trace",
+  party_roster: "sol__block_fx_party_roster",
+  map_ping: "sol__block_fx_map_ping",
+  aura: "sol__text_fx_aura",
+  etch: "sol__text_fx_etch",
+  whisper: "sol__text_fx_whisper",
+  sigil_pulse: "sol__text_fx_sigil_pulse",
+  veil: "sol__text_fx_veil",
+  cadence: "sol__text_fx_cadence",
+  cadence_soft: "sol__text_fx_cadence_soft",
+  cadence_oracular: "sol__text_fx_cadence_oracular",
+  cadence_childlike: "sol__text_fx_cadence_childlike",
+  wiggle: "sol__text_fx_wiggle",
+  float: "sol__text_fx_float",
+  shake: "sol__text_fx_shake",
+  glitch: "sol__text_fx_glitch",
 });
 
 const combat_token_class_by_name = Object.freeze({
-  crit: "combat_token_crit",
-  miss: "combat_token_miss",
-  buff: "combat_token_buff",
-  debuff: "combat_token_debuff",
-  block: "combat_token_block",
-  dodge: "combat_token_dodge",
-  immune: "combat_token_immune",
-  resist: "combat_token_resist",
-  mega_crit: "combat_token_mega_crit",
-  overkill: "combat_token_overkill",
-  true_damage: "combat_token_true_damage",
-  guard_break: "combat_token_guard_break",
-  execute: "combat_token_execute",
+  crit: "sol__combat_token_crit",
+  miss: "sol__combat_token_miss",
+  buff: "sol__combat_token_buff",
+  debuff: "sol__combat_token_debuff",
+  block: "sol__combat_token_block",
+  dodge: "sol__combat_token_dodge",
+  immune: "sol__combat_token_immune",
+  resist: "sol__combat_token_resist",
+  mega_crit: "sol__combat_token_mega_crit",
+  overkill: "sol__combat_token_overkill",
+  true_damage: "sol__combat_token_true_damage",
+  guard_break: "sol__combat_token_guard_break",
+  execute: "sol__combat_token_execute",
 });
 
 const combat_token_regex =
@@ -339,11 +339,11 @@ const apply_text_fx_classes = (node_value) => {
   );
 
   if (has_text_effect) {
-    node_value.classList.add("text_fx");
+    node_value.classList.add("sol__text_fx");
   }
 
   if (has_block_effect) {
-    node_value.classList.add("block_fx");
+    node_value.classList.add("sol__block_fx");
   }
 
   for (const class_name of effect_classes) {
@@ -364,7 +364,7 @@ const find_text_fx_nodes = (root_node = document) => {
 
   return Array.from(
     root_node.querySelectorAll(
-      "[data-text-fx], [class*='fx-'], [class*='text_fx'], [class*='block_fx']",
+      "[data-text-fx], [class*='fx-'], [class*='sol__text_fx'], [class*='sol__block_fx']",
     ),
   );
 };
@@ -398,21 +398,21 @@ const build_combat_token_fragment = (text_value) => {
     }
 
     const token_span = document.createElement("span");
-    token_span.className = `combat_token ${segment_value.token_class}`;
+    token_span.className = `sol__combat_token ${segment_value.token_class}`;
 
     if (segment_value.bracketed) {
-      token_span.classList.add("combat_token_bracketed");
+      token_span.classList.add("sol__combat_token_bracketed");
 
       const open_bracket_span = document.createElement("span");
-      open_bracket_span.className = "combat_token_bracket";
+      open_bracket_span.className = "sol__combat_token_bracket";
       open_bracket_span.textContent = "[";
 
       const label_span = document.createElement("span");
-      label_span.className = "combat_token_label";
+      label_span.className = "sol__combat_token_label";
       label_span.textContent = segment_value.value;
 
       const close_bracket_span = document.createElement("span");
-      close_bracket_span.className = "combat_token_bracket";
+      close_bracket_span.className = "sol__combat_token_bracket";
       close_bracket_span.textContent = "]";
 
       token_span.append(open_bracket_span, label_span, close_bracket_span);
@@ -433,7 +433,7 @@ const hydrate_combat_tokens = (root_node = document) => {
   }
 
   const combat_roots = root_node.querySelectorAll(
-    ".block_fx_combat_feed, .text_fx_combat_feed",
+    ".sol__block_fx_combat_feed, .sol__text_fx_combat_feed",
   );
 
   combat_roots.forEach((combat_root) => {
@@ -457,7 +457,7 @@ const hydrate_combat_tokens = (root_node = document) => {
           }
 
           if (
-            parent_node.closest(".combat_token") ||
+            parent_node.closest(".sol__combat_token") ||
             parent_node.closest("script, style")
           ) {
             return NodeFilter.FILTER_REJECT;

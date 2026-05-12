@@ -79,7 +79,7 @@ const apply_route_active_state = (pathname_override = null) => {
     const is_exact_match = current_pathname === target_pathname;
     const is_active = is_section_path_active(current_pathname, target_pathname);
 
-    pill_node.classList.toggle("is-route-active", is_active);
+    pill_node.classList.toggle("sol__is_route_active", is_active);
     pill_node.classList.toggle("is-route-current", is_exact_match);
   });
 
@@ -96,7 +96,7 @@ const apply_route_active_state = (pathname_override = null) => {
       )
     : "/";
   const is_home_active = current_pathname === home_target_pathname;
-  home_node.classList.toggle("is-route-active", is_home_active);
+  home_node.classList.toggle("sol__is_route_active", is_home_active);
   home_node.classList.toggle("is-route-current", is_home_active);
   last_applied_pathname = current_pathname;
 };
@@ -208,7 +208,7 @@ const init_navbar_effects = (root_node = document) => {
       const cursor_x = client_x - rail_box.left;
       const cursor_y = client_y - rail_box.top;
 
-      nav_rail.classList.add("is-pointer-active");
+      nav_rail.classList.add("sol__is_pointer_active");
       nav_rail.style.setProperty("--cursor_x", `${cursor_x}px`);
       nav_rail.style.setProperty("--cursor_y", `${cursor_y}px`);
 
@@ -217,7 +217,7 @@ const init_navbar_effects = (root_node = document) => {
 
     nav_rail.addEventListener("pointerenter", () => {
       is_pointer_inside = true;
-      nav_rail.classList.add("is-pointer-active");
+      nav_rail.classList.add("sol__is_pointer_active");
     });
 
     nav_rail.addEventListener("pointermove", (event) => {
@@ -240,7 +240,7 @@ const init_navbar_effects = (root_node = document) => {
             return;
           }
 
-          nav_rail.classList.remove("is-pointer-active");
+          nav_rail.classList.remove("sol__is_pointer_active");
           nav_rail.style.setProperty("--cursor_x", "50%");
           nav_rail.style.setProperty("--cursor_y", "50%");
           reset_pill_glow(pill_nodes);
@@ -272,7 +272,7 @@ const init_navbar_visibility = () => {
     const current_scroll_y = window.scrollY;
 
     if (current_scroll_y <= NAV_REVEAL_TOP_OFFSET_PX) {
-      nav_node.classList.remove("is-nav-hidden");
+      nav_node.classList.remove("sol__is_nav_hidden");
       last_scroll_y = current_scroll_y;
       return;
     }
@@ -284,12 +284,12 @@ const init_navbar_visibility = () => {
     }
 
     const should_hide_nav = scroll_delta > 0;
-    nav_node.classList.toggle("is-nav-hidden", should_hide_nav);
+    nav_node.classList.toggle("sol__is_nav_hidden", should_hide_nav);
     last_scroll_y = current_scroll_y;
   };
 
   nav_node.addEventListener("focusin", () => {
-    nav_node.classList.remove("is-nav-hidden");
+    nav_node.classList.remove("sol__is_nav_hidden");
   });
 
   window.addEventListener("scroll", () => {

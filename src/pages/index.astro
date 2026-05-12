@@ -70,8 +70,8 @@ const phase_cards = [
   <vessel data-shape="home_gate" id="sol_home_card_gate">
     <div id="sol_home_gate_intro">
       <div id="sol_home_gate_header">
-        <p id="sol_home_gate_kicker" class="text_kicker">~/ threshold</p>
-        <h1 id="sol_home_gate_title" class="text_large">Choose your phase</h1>
+        <p id="sol_home_gate_kicker" class="sol__text_kicker">~/ threshold</p>
+        <h1 id="sol_home_gate_title" class="sol__text_large">Choose your phase</h1>
       </div>
 
       <div id="sol_home_gate_body">
@@ -86,7 +86,7 @@ const phase_cards = [
       {
         phase_cards.map((phase_card) => (
           <a
-            class={`phase_card_link phase_card_${phase_card.phase_slug}`}
+            class={`sol__phase_card_link phase_card_${phase_card.phase_slug}`}
             href={with_base(phase_card.phase_slug)}
             hx-get={with_base(phase_card.phase_slug)}
             hx-target="#sol_content"
@@ -94,61 +94,61 @@ const phase_cards = [
             hx-swap="morph swap:240ms settle:240ms"
             hx-push-url="true"
           >
-            <span class="phase-card-layer phase-card-layer-surface" />
-            <span class="phase-card-layer phase-card-layer-stars" />
-            <span class="phase-card-layer phase-card-layer-frame" />
-            <div class="phase-card-layer phase-card-layer-ornament-svg">
+            <span class="sol__phase_card_layer sol__phase_card_layer_surface" />
+            <span class="sol__phase_card_layer sol__phase_card_layer_stars" />
+            <span class="sol__phase_card_layer sol__phase_card_layer_frame" />
+            <div class="sol__phase_card_layer sol__phase_card_layer_ornament_svg">
               <img
-                class="phase-card-ornament phase-card-ornament-corner-tl"
+                class="sol__phase_card_ornament sol__phase_card_ornament_corner_tl"
                 src={phase_card.ornament.corner_tl}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-corner-tr"
+                class="sol__phase_card_ornament sol__phase_card_ornament_corner_tr"
                 src={phase_card.ornament.corner_tr}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-corner-bl"
+                class="sol__phase_card_ornament sol__phase_card_ornament_corner_bl"
                 src={phase_card.ornament.corner_bl}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-corner-br"
+                class="sol__phase_card_ornament sol__phase_card_ornament_corner_br"
                 src={phase_card.ornament.corner_br}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-center-top"
+                class="sol__phase_card_ornament sol__phase_card_ornament_center_top"
                 src={with_base("ornaments/cinza/card_center_top.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-side-left"
+                class="sol__phase_card_ornament sol__phase_card_ornament_side_left"
                 src={with_base("ornaments/cinza/card_side_flourish.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-side-right"
+                class="sol__phase_card_ornament sol__phase_card_ornament_side_right"
                 src={with_base("ornaments/cinza/card_side_flourish.svg")}
                 alt=""
                 loading="eager"
                 decoding="async"
               />
               <img
-                class="phase-card-ornament phase-card-ornament-sigil"
+                class="sol__phase_card_ornament sol__phase_card_ornament_sigil"
                 src={phase_card.ornament.sigil}
                 alt=""
                 loading="eager"
@@ -156,13 +156,13 @@ const phase_cards = [
               />
             </div>
 
-            <div class="phase-card-layer-body">
-              <p class="phase_card_symbol text_caption">
+            <div class="sol__phase_card_layer_body">
+              <p class="sol__phase_card_symbol sol__text_caption">
                 {phase_card.phase_symbol}
               </p>
-              <h2 class="phase_card_title text_mid">{phase_card.phase_name}</h2>
-              <p class="phase_card_blurb text_body">{phase_card.phase_blurb}</p>
-              <p class="phase_card_cta text_kicker">enter phase</p>
+              <h2 class="sol__phase_card_title sol__text_mid">{phase_card.phase_name}</h2>
+              <p class="sol__phase_card_blurb sol__text_body">{phase_card.phase_blurb}</p>
+              <p class="sol__phase_card_cta sol__text_kicker">enter phase</p>
             </div>
           </a>
         ))

@@ -89,7 +89,7 @@ body {
 }
 
 @media (min-width: 769px) {
-  body.body_grid {
+  body.sol__body_grid {
     --layout_viewport_pad_x: 1.25rem;
 
     display: grid;
@@ -104,30 +104,30 @@ body {
 }
 
 @media (min-width: 769px) {
-  body.compound_body_grid #sol_desktop_nav {
+  body.sol__compound_body_grid #sol_desktop_nav {
     grid-template-columns: repeat(6, 1fr);
   }
 }
 
-body.body_grid .content-grid,
-body.body_grid container {
+body.sol__body_grid .sol__content_grid,
+body.sol__body_grid container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: var(--layout_compound_gap);
   width: 100%;
 
-  & > *:not(.breakout) {
+  & > *:not(.sol__breakout) {
     grid-column: 1 / -1;
   }
 
-  & > .breakout {
+  & > .sol__breakout {
     grid-column: 1 / -1;
   }
 }
 
 @media (min-width: 769px) {
-  body.body_grid .content-grid,
-  body.body_grid container {
+  body.sol__body_grid .sol__content_grid,
+  body.sol__body_grid container {
     grid-column: composition-start / composition-end;
   }
 }

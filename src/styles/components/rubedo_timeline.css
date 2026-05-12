@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 @reference "../utils.css";
 
-.rubedo-timeline-page {
+.sol__rubedo_timeline_page {
   /* Quick Tune Variables (edit here first) */
 
   /* Panel surfaces */
@@ -17,14 +17,14 @@
   );
 }
 
-.rubedo-timeline-header {
+.sol__rubedo_timeline_header {
   @apply mb-4;
 }
 
 /* The interactive section has a fixed CSS height so the canvas pixel buffer
    (canvas.width / canvas.height attributes) cannot inflate the layout.
    Without this, writing canvas.width triggers ResizeObserver → resize loop. */
-.rubedo-timeline-interactive {
+.sol__rubedo_timeline_interactive {
   @apply relative mt-6 w-full overflow-hidden;
 
   height: 70vh;
@@ -34,7 +34,7 @@
 
 /* Canvas fills the section via CSS. The pixel buffer resolution is set
    separately in JS via canvas.width/height without affecting layout size. */
-.rubedo-timeline-canvas {
+.sol__rubedo_timeline_canvas {
   @apply absolute inset-0;
 
   display: block;
@@ -44,7 +44,7 @@
   outline: none;
 }
 
-.rubedo-timeline-grid {
+.sol__rubedo_timeline_grid {
   @apply mt-6 grid gap-4;
 
   grid-template-columns: 1fr;
@@ -54,7 +54,7 @@
     "state_lane";
 }
 
-.rubedo-timeline-grid > section {
+.sol__rubedo_timeline_grid > section {
   @apply rounded-2xl p-4;
 
   border: 1px solid var(--rubedo_timeline_panel_border);
@@ -69,37 +69,37 @@
     0 1.1rem 2.4rem -1.8rem rgb(0 0 0 / 0.84);
 }
 
-.rubedo-timeline-panel-column {
+.sol__rubedo_timeline_panel_column {
   @apply flex flex-col gap-4;
 }
 
-.rubedo-timeline-state-panel {
+.sol__rubedo_timeline_state_panel {
   @apply flex flex-col gap-4;
 }
 
-.rubedo-timeline-state-panel-body {
+.sol__rubedo_timeline_state_panel_body {
   @apply flex flex-col gap-4;
 }
 
-.rubedo-timeline-map-card {
+.sol__rubedo_timeline_map_card {
   grid-area: map;
 }
 
-.rubedo-timeline-filters-card {
+.sol__rubedo_timeline_filters_card {
   grid-area: filters;
 }
 
-.rubedo-timeline-state-lane-card {
+.sol__rubedo_timeline_state_lane_card {
   @apply flex flex-col gap-2;
 
   grid-area: state_lane;
 }
 
-.rubedo-timeline-preview-action {
+.sol__rubedo_timeline_preview_action {
   @apply mt-auto pt-4;
 }
 
-.rubedo-timeline-go-to-chapter {
+.sol__rubedo_timeline_go_to_chapter {
   @apply inline-flex rounded-lg px-3 py-1.5;
 
   border: 1px solid
@@ -107,7 +107,7 @@
   background: color-mix(in oklch, var(--site_style_accent) 18%, transparent);
 }
 
-.rubedo-timeline-panel-card {
+.sol__rubedo_timeline_panel_card {
   @apply rounded-2xl p-4;
 
   border: 1px solid var(--rubedo_timeline_panel_border);
@@ -122,21 +122,21 @@
     0 1.1rem 2.4rem -1.8rem rgb(0 0 0 / 0.84);
 }
 
-.rubedo-timeline-controls {
+.sol__rubedo_timeline_controls {
   @apply mt-3 flex flex-col gap-3;
 }
 
-.rubedo-timeline-controls span {
+.sol__rubedo_timeline_controls span {
   @apply text-xs uppercase;
 
   letter-spacing: 0.08em;
 }
 
-.rubedo-timeline-controls label {
+.sol__rubedo_timeline_controls label {
   @apply flex flex-col gap-1;
 }
 
-.rubedo-timeline-controls select {
+.sol__rubedo_timeline_controls select {
   @apply rounded-md px-2 py-1;
 
   border: 1px solid
@@ -145,14 +145,14 @@
 }
 
 @media (min-width: 52rem) {
-  .rubedo-timeline-controls {
+  .sol__rubedo_timeline_controls {
     @apply grid gap-3;
 
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.rubedo-timeline-legend {
+.sol__rubedo_timeline_legend {
   @apply absolute flex flex-col gap-1;
 
   bottom: 0.75rem;
@@ -166,7 +166,7 @@
   margin: 0;
 }
 
-.rubedo-constellation {
+.sol__rubedo_constellation {
   @apply relative rounded-xl p-2;
 
   border: 1px solid
@@ -184,7 +184,7 @@
     );
 }
 
-.rubedo-constellation-controls {
+.sol__rubedo_constellation_controls {
   @apply absolute top-3 right-3 z-20 inline-flex items-center gap-2 rounded-lg px-2 py-1;
 
   border: 1px solid
@@ -192,7 +192,7 @@
   background: color-mix(in oklch, var(--ui_bg_mantle) 72%, transparent);
 }
 
-.rubedo-constellation-controls button {
+.sol__rubedo_constellation_controls button {
   @apply rounded px-2 py-1 text-xs;
 
   border: 1px solid
@@ -200,11 +200,11 @@
   background: color-mix(in oklch, var(--site_style_accent) 14%, transparent);
 }
 
-.rubedo-constellation-controls input[type="range"] {
+.sol__rubedo_constellation_controls input[type="range"] {
   width: 7.5rem;
 }
 
-.rubedo-constellation-zoom-badge {
+.sol__rubedo_constellation_zoom_badge {
   @apply rounded px-2 py-0.5 text-[0.62rem] uppercase;
 
   letter-spacing: 0.08em;
@@ -218,12 +218,12 @@
     transform 220ms ease;
 }
 
-.rubedo-constellation-zoom-badge.is-active {
+.sol__rubedo_constellation_zoom_badge.sol__is_active {
   opacity: 1;
   transform: translateY(0);
 }
 
-.rubedo-constellation-node-label {
+.sol__rubedo_constellation_node_label {
   @apply pointer-events-none absolute;
 
   color: color-mix(in oklch, var(--site_style_accent) 52%, white);
@@ -240,7 +240,7 @@
 }
 
 /* Glow lives on ::before so filter never participates in the transition — avoids paint thrash */
-.rubedo-constellation-node-label::before {
+.sol__rubedo_constellation_node_label::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -250,14 +250,14 @@
   transition: opacity 320ms ease;
 }
 
-.rubedo-constellation-node-label.is-visible,
-.rubedo-constellation-node-label.is-active {
+.sol__rubedo_constellation_node_label.sol__is_visible,
+.sol__rubedo_constellation_node_label.sol__is_active {
   opacity: 1;
   transform: translate(-50%, calc(-100% - 0.5rem)) translateY(0);
 }
 
-.rubedo-constellation-node-label.is-visible::before,
-.rubedo-constellation-node-label.is-active::before {
+.sol__rubedo_constellation_node_label.sol__is_visible::before,
+.sol__rubedo_constellation_node_label.sol__is_active::before {
   opacity: 1;
   filter: drop-shadow(0 0 10px rgb(255 255 255 / 0.6))
     drop-shadow(
@@ -265,7 +265,7 @@
     );
 }
 
-.rubedo-constellation-canvas-surface {
+.sol__rubedo_constellation_canvas_surface {
   @apply w-full;
 
   display: block;
@@ -275,13 +275,13 @@
   outline: none;
 }
 
-.rubedo-constellation-label-overlay {
+.sol__rubedo_constellation_label_overlay {
   @apply pointer-events-none absolute;
 
   inset: 0;
 }
 
-.rubedo-constellation-hover-preview-layer {
+.sol__rubedo_constellation_hover_preview_layer {
   @apply absolute z-30;
 
   top: 0;
@@ -291,7 +291,7 @@
   pointer-events: none;
 }
 
-.rubedo-timeline-hover-preview {
+.sol__rubedo_timeline_hover_preview {
   @apply absolute rounded-xl p-3;
 
   left: 1rem;
@@ -317,43 +317,43 @@
   pointer-events: none;
 }
 
-.rubedo-timeline-hover-preview.is-visible {
+.sol__rubedo_timeline_hover_preview.sol__is_visible {
   opacity: 1;
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
 
-.rubedo-timeline-hover-preview h3 {
+.sol__rubedo_timeline_hover_preview h3 {
   @apply text-sm uppercase;
 
   letter-spacing: 0.08em;
 }
 
-.rubedo-timeline-hover-preview p {
+.sol__rubedo_timeline_hover_preview p {
   @apply text-sm;
 }
 
-.rubedo-timeline-fallback-badge {
+.sol__rubedo_timeline_fallback_badge {
   @apply rounded-md px-2 py-0.5;
 
   border: 1px solid
     color-mix(in oklch, var(--site_style_accent) 22%, transparent);
 }
 
-.rubedo-timeline-fallback-badge[data-fallback-state="exact"] {
+.sol__rubedo_timeline_fallback_badge[data-fallback-state="exact"] {
   background: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
 }
 
-.rubedo-timeline-fallback-badge[data-fallback-state="thread_core_fallback"] {
+.sol__rubedo_timeline_fallback_badge[data-fallback-state="thread_core_fallback"] {
   background: color-mix(in oklch, var(--color-citrinitas) 28%, transparent);
 }
 
-.rubedo-timeline-fallback-badge[data-fallback-state="cinza_core_fallback"] {
+.sol__rubedo_timeline_fallback_badge[data-fallback-state="cinza_core_fallback"] {
   background: color-mix(in oklch, var(--color-rubedo) 24%, transparent);
 }
 
 @media (min-width: 64rem) {
-  .rubedo-timeline-grid {
+  .sol__rubedo_timeline_grid {
     grid-template-columns: 1fr;
     grid-template-areas:
       "filters filters"

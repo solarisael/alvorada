@@ -1,4 +1,4 @@
-.text_fx {
+.sol__text_fx {
   --text_fx_glow_strength: calc(
     var(--site_fx_glow_mult, 1) * var(--text_fx_marker_intensity, 1)
   );
@@ -15,7 +15,7 @@
   letter-spacing: inherit;
 }
 
-.block_fx {
+.sol__block_fx {
   --block_fx_glow_strength: calc(
     var(--site_fx_glow_mult, 1) * var(--block_fx_marker_intensity, 1)
   );
@@ -55,7 +55,7 @@
       color-mix(in oklch, white 5%, transparent);
 }
 
-.block_fx_terminal {
+.sol__block_fx_terminal {
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   color: color-mix(
     in oklch,
@@ -72,7 +72,7 @@
   overflow: hidden;
 }
 
-.block_fx_terminal::before {
+.sol__block_fx_terminal::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -89,12 +89,12 @@
     calc(5s / var(--block_fx_motion_strength, 1)) linear infinite;
 }
 
-.block_fx_terminal p,
-.block_fx_terminal li {
+.sol__block_fx_terminal p,
+.sol__block_fx_terminal li {
   line-height: 1.56;
 }
 
-.block_fx_stat_screen {
+.sol__block_fx_stat_screen {
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -114,13 +114,13 @@
     color-mix(in oklch, black 62%, transparent);
 }
 
-.block_fx_stat_screen ul,
-.block_fx_stat_screen ol {
+.sol__block_fx_stat_screen ul,
+.sol__block_fx_stat_screen ol {
   list-style: none;
   padding-left: 0;
 }
 
-.block_fx_stat_screen li {
+.sol__block_fx_stat_screen li {
   padding: 0.5em 0.62em;
   border: 1px solid
     color-mix(
@@ -134,7 +134,7 @@
   letter-spacing: 0.01em;
 }
 
-.block_fx_game_screen {
+.sol__block_fx_game_screen {
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -155,12 +155,12 @@
     color-mix(in oklch, black 62%, transparent);
 }
 
-.block_fx_game_screen > :where(h1, h2, h3, h4, h5, h6, p:first-of-type) {
+.sol__block_fx_game_screen > :where(h1, h2, h3, h4, h5, h6, p:first-of-type) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.block_fx_quest_log {
+.sol__block_fx_quest_log {
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -180,13 +180,13 @@
     color-mix(in oklch, black 66%, transparent);
 }
 
-.block_fx_quest_log ul,
-.block_fx_quest_log ol {
+.sol__block_fx_quest_log ul,
+.sol__block_fx_quest_log ol {
   list-style: none;
   padding-left: 0;
 }
 
-.block_fx_quest_log li {
+.sol__block_fx_quest_log li {
   padding-left: 0.6em;
   padding-right: 0.6em;
   border-left: 0.18rem solid
@@ -198,7 +198,7 @@
     );
 }
 
-.block_fx_skill_popup {
+.sol__block_fx_skill_popup {
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -220,7 +220,7 @@
 }
 
 /* Glow pulse lives on ::before — box-shadow animation never runs on the host, avoids paint thrash */
-.block_fx_skill_popup::before {
+.sol__block_fx_skill_popup::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -230,7 +230,7 @@
     calc(2.6s / var(--block_fx_motion_strength, 1)) ease-in-out infinite;
 }
 
-.block_fx_inventory {
+.sol__block_fx_inventory {
   font-variant-numeric: tabular-nums;
   background:
     linear-gradient(
@@ -241,19 +241,19 @@
     color-mix(in oklch, black 66%, transparent);
 }
 
-.block_fx_inventory ul,
-.block_fx_inventory ol {
+.sol__block_fx_inventory ul,
+.sol__block_fx_inventory ol {
   list-style: none;
   padding-left: 0;
 }
 
-.block_fx_inventory li {
+.sol__block_fx_inventory li {
   padding: 0.4em 0.52em;
   border-radius: 0.4rem;
   background: color-mix(in oklch, black 42%, transparent);
 }
 
-.block_fx_combat_feed {
+.sol__block_fx_combat_feed {
   --combat_feed_bracket_color: currentColor;
   --combat_token_bracket_opacity: 0.74;
   --combat_token_bracket_tracking: -0.08em;
@@ -275,13 +275,13 @@
   font-variant-numeric: tabular-nums;
 }
 
-.block_fx_combat_feed ul,
-.block_fx_combat_feed ol {
+.sol__block_fx_combat_feed ul,
+.sol__block_fx_combat_feed ol {
   list-style: none;
   padding-left: 0;
 }
 
-.block_fx_combat_feed li {
+.sol__block_fx_combat_feed li {
   padding: 0.4em 0.54em;
   border-left: 0.16rem solid
     color-mix(
@@ -294,7 +294,7 @@
   border-radius: 0.36rem;
 }
 
-.block_fx_combat_feed :where(strong, b) {
+.sol__block_fx_combat_feed :where(strong, b) {
   color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -303,7 +303,7 @@
   );
 }
 
-.block_fx_status_effects {
+.sol__block_fx_status_effects {
   background:
     linear-gradient(
       120deg,
@@ -317,15 +317,15 @@
     color-mix(in oklch, black 66%, transparent);
 }
 
-.block_fx_status_effects ul,
-.block_fx_status_effects ol {
+.sol__block_fx_status_effects ul,
+.sol__block_fx_status_effects ol {
   list-style: none;
   padding-left: 0;
   display: grid;
   gap: 0.42em;
 }
 
-.block_fx_status_effects li {
+.sol__block_fx_status_effects li {
   padding: 0.38em 0.52em;
   border-radius: 0.45rem;
   border: 1px solid
@@ -336,7 +336,7 @@
     );
 }
 
-.block_fx_system_warning {
+.sol__block_fx_system_warning {
   /* Quick Tune Variables (edit here first) */
   --block_fx_warning_color: oklch(84% 0.14 84); /* amber warning tone */
 
@@ -361,17 +361,17 @@
   border-top-width: 0.24rem;
 }
 
-.block_fx_system_warning > :first-child {
+.sol__block_fx_system_warning > :first-child {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 640;
 }
 
-.block_fx_system_warning :where(strong, b) {
+.sol__block_fx_system_warning :where(strong, b) {
   color: color-mix(in oklch, var(--block_fx_warning_color) 72%, currentColor);
 }
 
-.block_fx_memory_fragment {
+.sol__block_fx_memory_fragment {
   border-style: dashed;
   background:
     linear-gradient(
@@ -383,7 +383,7 @@
   filter: saturate(0.92);
 }
 
-.block_fx_admin_trace {
+.sol__block_fx_admin_trace {
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   border-color: color-mix(
     in oklch,
@@ -400,7 +400,7 @@
     color-mix(in oklch, black 78%, transparent);
 }
 
-.block_fx_party_roster {
+.sol__block_fx_party_roster {
   background:
     linear-gradient(
       180deg,
@@ -414,13 +414,13 @@
     color-mix(in oklch, black 66%, transparent);
 }
 
-.block_fx_party_roster ul,
-.block_fx_party_roster ol {
+.sol__block_fx_party_roster ul,
+.sol__block_fx_party_roster ol {
   list-style: none;
   padding-left: 0;
 }
 
-.block_fx_party_roster li {
+.sol__block_fx_party_roster li {
   padding: 0.38em 0.52em;
   border-radius: 0.44rem;
   border: 1px solid
@@ -431,7 +431,7 @@
     );
 }
 
-.block_fx_map_ping {
+.sol__block_fx_map_ping {
   border-color: color-mix(
     in oklch,
     var(--site_style_accent, currentColor)
@@ -452,7 +452,7 @@
     color-mix(in oklch, black 66%, transparent);
 }
 
-.text_fx_glow {
+.sol__text_fx_glow {
   text-shadow:
     0 0 calc(0.18em * var(--text_fx_glow_strength))
       color-mix(
@@ -468,7 +468,7 @@
       );
 }
 
-.text_fx_neon {
+.sol__text_fx_neon {
   text-shadow:
     0 0 calc(0.12em * var(--text_fx_glow_strength))
       color-mix(in oklch, currentColor 72%, transparent),
@@ -486,29 +486,29 @@
       );
 }
 
-.text_fx_shadow {
+.sol__text_fx_shadow {
   text-shadow:
     0.05em 0.05em 0 color-mix(in oklch, black 48%, transparent),
     0.09em 0.09em 0 color-mix(in oklch, black 28%, transparent);
 }
 
 /* intentionally fixed red/blue aberration values — chromatic effect requires these specific hues */
-.text_fx_chroma {
+.sol__text_fx_chroma {
   text-shadow:
     calc(-0.05em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.66),
     calc(0.05em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.66);
 }
 
-.text_fx_blur {
+.sol__text_fx_blur {
   filter: blur(calc(0.075em * var(--text_fx_glow_strength)));
 }
 
-.text_fx_flicker {
-  animation: text_fx_flicker calc(2.8s / var(--text_fx_motion_strength)) linear
+.sol__text_fx_flicker {
+  animation: sol__text_fx_flicker calc(2.8s / var(--text_fx_motion_strength)) linear
     infinite;
 }
 
-.text_fx_combat_feed {
+.sol__text_fx_combat_feed {
   --combat_feed_line_color: color-mix(
     in oklch,
     currentColor calc(74% + (8% * var(--text_fx_glow_strength))),
@@ -532,8 +532,8 @@
     );
 }
 
-.text_fx.text_fx_combat_feed.text_fx_gradient,
-.text_fx.text_fx_combat_feed.text_fx_rainbow {
+.sol__text_fx.sol__text_fx_combat_feed.sol__text_fx_gradient,
+.sol__text_fx.sol__text_fx_combat_feed.sol__text_fx_rainbow {
   background: none;
   background-clip: border-box;
   color: var(--combat_feed_line_color);
@@ -541,57 +541,57 @@
   -webkit-text-fill-color: currentColor;
 }
 
-.text_fx_combat_feed .combat_token {
+.sol__text_fx_combat_feed .sol__combat_token {
   -webkit-background-clip: border-box;
   -webkit-text-fill-color: currentColor;
   background: none;
   background-clip: border-box;
 }
 
-.combat_token {
+.sol__combat_token {
   @apply mr-2;
 
   font-weight: 640;
   letter-spacing: 0.03em;
 }
 
-.combat_token_bracketed .combat_token_bracket {
+.sol__combat_token_bracketed .sol__combat_token_bracket {
   color: var(--combat_feed_bracket_color, currentColor);
   opacity: var(--combat_token_bracket_opacity, 0.74);
   letter-spacing: var(--combat_token_bracket_tracking, -0.08em);
   font-weight: var(--combat_token_bracket_weight, 640);
 }
 
-.combat_token_bracketed .combat_token_label {
+.sol__combat_token_bracketed .sol__combat_token_label {
   letter-spacing: 0.02em;
 }
 
-.block_fx_combat_feed.combat_brackets_soft,
-.text_fx_combat_feed.combat_brackets_soft {
+.sol__block_fx_combat_feed.sol__combat_brackets_soft,
+.sol__text_fx_combat_feed.sol__combat_brackets_soft {
   --combat_token_bracket_opacity: 0.68;
 }
 
-.block_fx_combat_feed.combat_brackets_text_weight,
-.text_fx_combat_feed.combat_brackets_text_weight {
+.sol__block_fx_combat_feed.sol__combat_brackets_text_weight,
+.sol__text_fx_combat_feed.sol__combat_brackets_text_weight {
   --combat_token_bracket_weight: 400;
 }
 
 /* Combat token palette — Quick Tune Variables (edit here first)
    Intentionally fixed game-state colors, not theme-variant. */
 :where(
-  .combat_token_crit,
-  .combat_token_miss,
-  .combat_token_buff,
-  .combat_token_debuff,
-  .combat_token_block,
-  .combat_token_dodge,
-  .combat_token_immune,
-  .combat_token_resist,
-  .combat_token_mega_crit,
-  .combat_token_overkill,
-  .combat_token_true_damage,
-  .combat_token_guard_break,
-  .combat_token_execute
+  .sol__combat_token_crit,
+  .sol__combat_token_miss,
+  .sol__combat_token_buff,
+  .sol__combat_token_debuff,
+  .sol__combat_token_block,
+  .sol__combat_token_dodge,
+  .sol__combat_token_immune,
+  .sol__combat_token_resist,
+  .sol__combat_token_mega_crit,
+  .sol__combat_token_overkill,
+  .sol__combat_token_true_damage,
+  .sol__combat_token_guard_break,
+  .sol__combat_token_execute
 ) {
   --combat_crit: oklch(78% 0.19 29);
   --combat_miss: oklch(72% 0.05 252);
@@ -608,62 +608,62 @@
   --combat_execute: oklch(80% 0.18 10);
 }
 
-.combat_token_crit {
+.sol__combat_token_crit {
   color: color-mix(in oklch, var(--combat_crit) 100%, currentColor);
 }
 
-.combat_token_miss {
+.sol__combat_token_miss {
   color: color-mix(in oklch, var(--combat_miss) 100%, currentColor);
 }
 
-.combat_token_buff {
+.sol__combat_token_buff {
   color: color-mix(in oklch, var(--combat_buff) 100%, currentColor);
 }
 
-.combat_token_debuff {
+.sol__combat_token_debuff {
   color: color-mix(in oklch, var(--combat_debuff) 100%, currentColor);
 }
 
-.combat_token_block {
+.sol__combat_token_block {
   color: color-mix(in oklch, var(--combat_block) 100%, currentColor);
 }
 
-.combat_token_dodge {
+.sol__combat_token_dodge {
   color: color-mix(in oklch, var(--combat_dodge) 100%, currentColor);
 }
 
-.combat_token_immune {
+.sol__combat_token_immune {
   color: color-mix(in oklch, var(--combat_immune) 100%, currentColor);
 }
 
-.combat_token_resist {
+.sol__combat_token_resist {
   color: color-mix(in oklch, var(--combat_resist) 100%, currentColor);
 }
 
-.combat_token_mega_crit {
+.sol__combat_token_mega_crit {
   color: color-mix(in oklch, var(--combat_mega_crit) 100%, currentColor);
   text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
     color-mix(in oklch, var(--combat_crit) 66%, transparent);
 }
 
-.combat_token_overkill {
+.sol__combat_token_overkill {
   color: color-mix(in oklch, var(--combat_overkill) 100%, currentColor);
 }
 
-.combat_token_true_damage {
+.sol__combat_token_true_damage {
   color: color-mix(in oklch, var(--combat_true_damage) 100%, currentColor);
 }
 
-.combat_token_guard_break {
+.sol__combat_token_guard_break {
   color: color-mix(in oklch, var(--combat_guard_break) 100%, currentColor);
 }
 
-.combat_token_execute {
+.sol__combat_token_execute {
   color: color-mix(in oklch, var(--combat_execute) 100%, currentColor);
   letter-spacing: 0.04em;
 }
 
-.text_fx_gradient {
+.sol__text_fx_gradient {
   background: linear-gradient(
     90deg,
     color-mix(in oklch, currentColor 86%, white),
@@ -676,7 +676,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-.text_fx_aura {
+.sol__text_fx_aura {
   text-shadow:
     0 0 calc(0.24em * var(--text_fx_glow_strength))
       color-mix(
@@ -692,7 +692,7 @@
       );
 }
 
-.text_fx_etch {
+.sol__text_fx_etch {
   text-shadow:
     0 0.02em 0 color-mix(in oklch, black 44%, transparent),
     0 0 calc(0.08em * var(--text_fx_glow_strength))
@@ -701,7 +701,7 @@
     color-mix(in oklch, currentColor 26%, transparent);
 }
 
-.text_fx_whisper {
+.sol__text_fx_whisper {
   color: color-mix(
     in oklch,
     currentColor calc(68% + (14% * var(--text_fx_glow_strength))),
@@ -711,7 +711,7 @@
     color-mix(in oklch, currentColor 18%, transparent);
 }
 
-.text_fx_sigil_pulse {
+.sol__text_fx_sigil_pulse {
   text-shadow:
     0 0 calc(0.16em * var(--text_fx_glow_strength))
       color-mix(
@@ -725,11 +725,11 @@
         var(--site_style_accent, currentColor) 24%,
         transparent
       );
-  animation: text_fx_sigil_pulse calc(2.4s / var(--text_fx_motion_strength, 1))
+  animation: sol__text_fx_sigil_pulse calc(2.4s / var(--text_fx_motion_strength, 1))
     ease-in-out infinite;
 }
 
-.text_fx_veil {
+.sol__text_fx_veil {
   color: color-mix(
     in oklch,
     currentColor calc(82% + (10% * var(--text_fx_glow_strength))),
@@ -744,32 +744,32 @@
     );
 }
 
-.text_fx_cadence {
+.sol__text_fx_cadence {
   font-style: italic;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
-.text_fx_cadence_soft {
+.sol__text_fx_cadence_soft {
   font-style: italic;
   font-weight: 460;
   letter-spacing: 0.006em;
 }
 
-.text_fx_cadence_oracular {
+.sol__text_fx_cadence_oracular {
   font-style: italic;
   font-weight: 540;
   letter-spacing: 0.02em;
 }
 
-.text_fx_cadence_childlike {
+.sol__text_fx_cadence_childlike {
   font-style: italic;
   font-weight: 480;
   letter-spacing: 0.014em;
 }
 
 /* intentionally fixed spectrum — not theme-variant */
-.text_fx_rainbow {
+.sol__text_fx_rainbow {
   background: linear-gradient(
     90deg,
     #ff4d6d,
@@ -785,30 +785,30 @@
   -webkit-text-fill-color: transparent;
 }
 
-.text_fx_wiggle {
-  animation: text_fx_wiggle calc(1.3s / var(--text_fx_motion_strength))
+.sol__text_fx_wiggle {
+  animation: sol__text_fx_wiggle calc(1.3s / var(--text_fx_motion_strength))
     ease-in-out infinite;
 }
 
-.text_fx_float {
-  animation: text_fx_float calc(2.8s / var(--text_fx_motion_strength))
+.sol__text_fx_float {
+  animation: sol__text_fx_float calc(2.8s / var(--text_fx_motion_strength))
     ease-in-out infinite;
 }
 
-.text_fx_shake {
-  animation: text_fx_shake calc(0.7s / var(--text_fx_motion_strength))
+.sol__text_fx_shake {
+  animation: sol__text_fx_shake calc(0.7s / var(--text_fx_motion_strength))
     steps(2, end) infinite;
 }
 
-.text_fx_glitch {
+.sol__text_fx_glitch {
   text-shadow:
     calc(-0.04em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.64),
     calc(0.04em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.64);
-  animation: text_fx_glitch calc(1.05s / var(--text_fx_motion_strength))
+  animation: sol__text_fx_glitch calc(1.05s / var(--text_fx_motion_strength))
     steps(2) infinite;
 }
 
-@keyframes text_fx_flicker {
+@keyframes sol__text_fx_flicker {
   0%,
   100% {
     opacity: 1;
@@ -835,7 +835,7 @@
   }
 }
 
-@keyframes text_fx_wiggle {
+@keyframes sol__text_fx_wiggle {
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -854,7 +854,7 @@
   }
 }
 
-@keyframes text_fx_float {
+@keyframes sol__text_fx_float {
   0%,
   100% {
     transform: translateY(0);
@@ -865,7 +865,7 @@
   }
 }
 
-@keyframes text_fx_shake {
+@keyframes sol__text_fx_shake {
   0% {
     transform: translate(0, 0);
   }
@@ -887,7 +887,7 @@
   }
 }
 
-@keyframes text_fx_glitch {
+@keyframes sol__text_fx_glitch {
   0%,
   100% {
     transform: translate(0, 0);
@@ -910,7 +910,7 @@
   }
 }
 
-@keyframes text_fx_sigil_pulse {
+@keyframes sol__text_fx_sigil_pulse {
   0%,
   100% {
     opacity: 0.92;

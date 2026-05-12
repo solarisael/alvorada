@@ -88,7 +88,7 @@ const active_theme_color =
   data-phase={active_phase}
   style={`--crumb_theme_color: ${active_theme_color};`}
 >
-  <div class="breadcrumb-divider"></div>
+  <div class="sol__breadcrumb_divider"></div>
 
   <ol>
     {
@@ -96,7 +96,7 @@ const active_theme_color =
         const is_current = crumb_item.href === current_crumb_href;
 
         return (
-          <li class={is_current ? "is-current" : "is-parent"}>
+          <li class={is_current ? "sol__is_current" : "sol__is_parent"}>
             <a
               href={crumb_item.href}
               class:list={{ "is-current-link": is_current }}

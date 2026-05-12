@@ -80,7 +80,7 @@ const apply_mobile_route_active_state = (pathname_override = null) => {
     const is_exact_match = current_pathname === target_pathname;
     const is_active = is_section_path_active(current_pathname, target_pathname);
 
-    pill_node.classList.toggle("is-route-active", is_active);
+    pill_node.classList.toggle("sol__is_route_active", is_active);
     pill_node.classList.toggle("is-route-current", is_exact_match);
   });
 
@@ -88,7 +88,7 @@ const apply_mobile_route_active_state = (pathname_override = null) => {
 
   if (home_node instanceof HTMLAnchorElement) {
     const is_home_active = current_pathname === "/";
-    home_node.classList.toggle("is-route-active", is_home_active);
+    home_node.classList.toggle("sol__is_route_active", is_home_active);
     home_node.classList.toggle("is-route-current", is_home_active);
   }
 

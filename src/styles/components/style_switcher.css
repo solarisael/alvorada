@@ -113,12 +113,12 @@
   );
 }
 
-.style_switcher_group {
+.sol__style_switcher_group {
   @apply flex flex-col;
   @apply gap-1;
 }
 
-.style_switcher_label {
+.sol__style_switcher_label {
   @apply lowercase;
   color: color-mix(in oklch, var(--ui_text_muted) 86%, var(--ui_text_primary));
 }

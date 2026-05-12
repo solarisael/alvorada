@@ -13,23 +13,23 @@
   @apply flex grow flex-col;
 }
 
-.content-stage-layer {
+.sol__content_stage_layer {
   @apply pointer-events-none absolute;
 
   inset: 0;
 }
 
-.content-stage-layer-fog {
+.sol__content_stage_layer_fog {
   inset: 0;
   z-index: 0;
 }
 
-.content-stage-layer-rails {
+.sol__content_stage_layer_rails {
   inset: 0;
   z-index: 1;
 }
 
-:root[data-site-theme="solarisael"] .content-stage-layer-fog {
+:root[data-site-theme="solarisael"] .sol__content_stage_layer_fog {
   opacity: calc(var(--cinza_fog_halo_mix) * 0.008);
   background: radial-gradient(
     120% 100% at 50% 50%,
@@ -38,7 +38,7 @@
   );
 }
 
-:root[data-site-theme="solarisael"] .content-stage-layer-rails {
+:root[data-site-theme="solarisael"] .sol__content_stage_layer_rails {
   inset: 0.5rem 0.75rem 0.5rem 0.75rem;
   --content_layer_cinza_rail_gradient: linear-gradient(
     180deg,
@@ -67,9 +67,9 @@
   filter: blur(10px);
 }
 
-.content-fog-layer,
-.content-layer,
-.reading-layer {
+.sol__content_fog_layer,
+.sol__content_layer,
+.sol__reading_layer {
   @apply pointer-events-none absolute;
 
   inset: 0;
@@ -79,7 +79,7 @@
   opacity: calc(var(--cinza_fog_halo_mix) * 0.014);
 }
 
-:root[data-site-theme="solarisael"] .content-fog-layer-top {
+:root[data-site-theme="solarisael"] .sol__content_fog_layer_top {
   background: radial-gradient(
     120% 90% at 50% 0%,
     color-mix(in oklch, var(--site_style_accent) 36%, transparent),
@@ -87,7 +87,7 @@
   );
 }
 
-:root[data-site-theme="solarisael"] .content-fog-layer-bottom {
+:root[data-site-theme="solarisael"] .sol__content_fog_layer_bottom {
   background: radial-gradient(
     120% 100% at 50% 100%,
     color-mix(
@@ -131,7 +131,7 @@
   backdrop-filter: blur(var(--site_style_blur)) saturate(1.04);
 }
 
-.content-layer-surface {
+.sol__content_layer_surface {
   z-index: 0;
   background:
     radial-gradient(
@@ -163,7 +163,7 @@
     );
 }
 
-.content-layer-noise {
+.sol__content_layer_noise {
   z-index: 1;
   opacity: var(--site_style_noise_opacity);
   /* bg-stack-exception: legacy grain profile uses 3 light-noise grains for depth */
@@ -185,12 +185,12 @@
     );
 }
 
-.content-layer-deco {
+.sol__content_layer_deco {
   z-index: 2;
   opacity: var(--site_style_deco_opacity);
 }
 
-.content-layer-body {
+.sol__content_layer_body {
   @apply relative z-10;
   @apply flex h-full flex-col;
 }
@@ -220,7 +220,7 @@
       );
 }
 
-:root[data-site-theme="solarisael"] .content-layer-surface {
+:root[data-site-theme="solarisael"] .sol__content_layer_surface {
   /* bg-stack-exception: cinza shell needs tri-layer depth halo + base gradient */
   background:
     radial-gradient(
@@ -261,7 +261,7 @@
     );
 }
 
-:root[data-site-theme="solarisael"] .content-layer-noise {
+:root[data-site-theme="solarisael"] .sol__content_layer_noise {
   opacity: calc(var(--site_style_noise_opacity) * 0.65);
   background:
     radial-gradient(
@@ -290,7 +290,7 @@
   filter: blur(2px);
 }
 
-:root[data-site-theme="solarisael"] .content-layer-deco {
+:root[data-site-theme="solarisael"] .sol__content_layer_deco {
   --content_layer_cinza_rail_gradient: linear-gradient(
     180deg,
     color-mix(
@@ -335,19 +335,19 @@
     );
 }
 
-.content-layer-ornament-svg {
+.sol__content_layer_ornament_svg {
   display: none;
   z-index: 3;
 }
 
-.content-ornament {
+.sol__content_ornament {
   @apply absolute;
 
   display: block;
   object-fit: contain;
 }
 
-:root[data-site-theme="solarisael"] .content-layer-ornament-svg {
+:root[data-site-theme="solarisael"] .sol__content_layer_ornament_svg {
   display: block;
   opacity: calc(
     var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity) * 0.92
@@ -372,26 +372,26 @@
     );
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-line-top,
-:root[data-site-theme="solarisael"] .content-ornament-line-bottom {
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_top,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
   object-fit: fill;
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-corner-tl {
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl {
   left: var(--cinza_reliquary_offset_left);
   top: var(--cinza_reliquary_offset_top);
   width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
   height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-corner-tr {
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr {
   right: var(--cinza_reliquary_offset_right);
   top: var(--cinza_reliquary_offset_top);
   width: calc(7.8rem * var(--cinza_reliquary_corner_scale));
   height: calc(7.8rem * var(--cinza_reliquary_corner_scale));
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-corner-bl {
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl {
   left: var(--cinza_reliquary_offset_left);
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
@@ -400,7 +400,7 @@
   height: calc(7.4rem * var(--cinza_reliquary_corner_scale));
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-corner-br {
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_br {
   right: var(--cinza_reliquary_offset_right);
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
@@ -409,7 +409,7 @@
   height: calc(6.8rem * var(--cinza_reliquary_corner_scale));
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-line-top {
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
   left: calc(
     var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
       var(--site_center_axis_line_nudge_x)
@@ -422,7 +422,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-line-bottom {
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
   left: calc(
     var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
       var(--site_center_axis_line_nudge_x)
@@ -436,7 +436,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-sigil-top {
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {
   left: calc(
     var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
       var(--site_center_axis_sigil_nudge_x)
@@ -450,7 +450,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="solarisael"] .content-ornament-sigil-bottom {
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom {
   left: calc(
     var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
       var(--site_center_axis_sigil_nudge_x)
@@ -496,11 +496,11 @@
   will-change: transform;
 }
 
-.reading-layer {
+.sol__reading_layer {
   border-radius: inherit;
 }
 
-.reading-layer-surface {
+.sol__reading_layer_surface {
   z-index: 0;
   background:
     linear-gradient(
@@ -539,7 +539,7 @@
     );
 }
 
-.reading-layer-noise {
+.sol__reading_layer_noise {
   z-index: 1;
   opacity: calc(var(--site_style_noise_opacity) * 0.62);
   mix-blend-mode: soft-light;
@@ -562,11 +562,11 @@
     );
 }
 
-.reading-layer-body {
+.sol__reading_layer_body {
   @apply relative z-10;
 }
 
-.chapter_content {
+.sol__chapter_content {
 }
 
 @media (max-width: 768px) {

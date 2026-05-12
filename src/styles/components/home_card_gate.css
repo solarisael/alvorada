@@ -76,7 +76,7 @@
   );
 }
 
-.phase_card_link {
+.sol__phase_card_link {
   @apply relative isolate overflow-hidden;
   @apply flex h-full flex-col;
   @apply gap-4;
@@ -117,13 +117,13 @@
     box-shadow var(--home_gate_transition_ms) ease;
 }
 
-.phase-card-layer {
+.sol__phase_card_layer {
   @apply pointer-events-none absolute;
 
   inset: 0;
 }
 
-.phase-card-layer-surface {
+.sol__phase_card_layer_surface {
   z-index: 0;
   background:
     radial-gradient(
@@ -151,7 +151,7 @@
     );
 }
 
-.phase-card-layer-stars {
+.sol__phase_card_layer_stars {
   z-index: 1;
   opacity: var(--home_gate_star_opacity);
   background:
@@ -167,7 +167,7 @@
     );
 }
 
-.phase-card-layer-frame {
+.sol__phase_card_layer_frame {
   z-index: 3;
   inset: 0.65rem;
   border-radius: calc(var(--home_gate_card_radius) - 0.5rem);
@@ -180,23 +180,23 @@
   opacity: var(--home_gate_ring_opacity);
 }
 
-.phase-card-layer-ornament-svg {
+.sol__phase_card_layer_ornament_svg {
   display: none;
   z-index: 2;
 }
 
-.phase-card-ornament {
+.sol__phase_card_ornament {
   @apply absolute;
 
   display: block;
   object-fit: contain;
 }
 
-.phase-card-layer-body {
+.sol__phase_card_layer_body {
   @apply relative z-10;
 }
 
-.phase_card_symbol {
+.sol__phase_card_symbol {
   @apply font-mono;
   color: color-mix(
     in oklch,
@@ -205,7 +205,7 @@
   );
 }
 
-.phase_card_title {
+.sol__phase_card_title {
   @apply mt-auto;
   @apply font-semibold;
   color: color-mix(
@@ -215,7 +215,7 @@
   );
 }
 
-.phase_card_blurb {
+.sol__phase_card_blurb {
   color: color-mix(
     in oklch,
     var(--ui_text_secondary) 86%,
@@ -223,7 +223,7 @@
   );
 }
 
-.phase_card_cta {
+.sol__phase_card_cta {
   color: color-mix(
     in oklch,
     var(--phase_color, var(--site_style_accent_alt)) 70%,
@@ -231,14 +231,14 @@
   );
 }
 
-.phase_card_link:hover,
-.phase_card_link:focus-visible {
+.sol__phase_card_link:hover,
+.sol__phase_card_link:focus-visible {
   transform: translateY(var(--home_gate_hover_lift));
   border-color: var(--phase_card_layer_hover_border_color);
   box-shadow: var(--phase_card_layer_hover_shadow_stack);
 }
 
-.phase_card_link:focus-visible {
+.sol__phase_card_link:focus-visible {
   outline: 2px solid
     color-mix(
       in oklch,
@@ -248,19 +248,19 @@
   outline-offset: 0.125rem;
 }
 
-.phase_card_nigredo {
+.sol__phase_card_nigredo {
   --phase_color: var(--color-nigredo);
 }
 
-.phase_card_albedo {
+.sol__phase_card_albedo {
   --phase_color: var(--color-albedo);
 }
 
-.phase_card_citrinitas {
+.sol__phase_card_citrinitas {
   --phase_color: var(--color-citrinitas);
 }
 
-.phase_card_rubedo {
+.sol__phase_card_rubedo {
   --phase_color: var(--color-rubedo);
 }
 
@@ -274,7 +274,7 @@
   --home_gate_ring_opacity: 0.5;
 }
 
-:root[data-site-theme="solarisael"] .phase_card_link {
+:root[data-site-theme="solarisael"] .sol__phase_card_link {
   --phase_ornament_inset: 0.5rem;
   --phase_ornament_tl_size: 2.25rem;
   --phase_ornament_tr_size: 2.45rem;
@@ -323,7 +323,7 @@
     inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-layer-frame {
+:root[data-site-theme="solarisael"] .sol__phase_card_layer_frame {
   inset: var(--phase_ornament_inset);
   border-radius: calc(var(--home_gate_card_radius) - 0.375rem);
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
@@ -365,46 +365,46 @@
   opacity: calc(var(--home_gate_ring_opacity) * 1.26);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-layer-ornament-svg {
+:root[data-site-theme="solarisael"] .sol__phase_card_layer_ornament_svg {
   display: block;
   opacity: calc(var(--home_gate_ring_opacity) * 1.08);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-center-top,
-:root[data-site-theme="solarisael"] .phase-card-ornament-side-left,
-:root[data-site-theme="solarisael"] .phase-card-ornament-side-right {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top,
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left,
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_right {
   object-fit: fill;
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-corner-tl {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_tl {
   left: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
   width: var(--phase_ornament_tl_size);
   height: var(--phase_ornament_tl_size);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-corner-tr {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_tr {
   right: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
   width: var(--phase_ornament_tr_size);
   height: var(--phase_ornament_tr_size);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-corner-bl {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_bl {
   left: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_bl_size);
   height: var(--phase_ornament_bl_size);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-corner-br {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_br {
   right: var(--phase_ornament_inset);
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_br_size);
   height: var(--phase_ornament_br_size);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-center-top {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top {
   left: 50%;
   top: var(--phase_ornament_inset);
   width: 84%;
@@ -412,7 +412,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-side-left {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left {
   left: var(--phase_ornament_inset);
   top: 50%;
   width: var(--phase_ornament_side_inline);
@@ -420,7 +420,7 @@
   transform: translateY(-50%);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-side-right {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_right {
   right: var(--phase_ornament_inset);
   top: 50%;
   width: var(--phase_ornament_side_inline);
@@ -428,7 +428,7 @@
   transform: translateY(-50%);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-ornament-sigil {
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_sigil {
   left: 50%;
   bottom: var(--phase_ornament_sigil_offset);
   width: var(--phase_ornament_sigil_size);
@@ -436,7 +436,7 @@
   transform: translateX(-50%);
 }
 
-:root[data-site-theme="solarisael"] .phase-card-layer-stars {
+:root[data-site-theme="solarisael"] .sol__phase_card_layer_stars {
   /* bg-stack-exception: starfield uses 4 layers for grain plus dual aura falloff */
   background:
     radial-gradient(

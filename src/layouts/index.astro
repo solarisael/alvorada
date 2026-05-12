@@ -38,9 +38,9 @@ const manual_body_classes = String(body_class).split(/\s+/).filter(Boolean);
 
 const resolved_body_classes = Array.from(
   new Set([
-    "body_grid",
-    "compound_body_grid",
-    "page-transition-breath-noticeable",
+    "sol__body_grid",
+    "sol__compound_body_grid",
+    "sol__page_transition_breath_noticeable",
     ...manual_body_classes,
   ]),
 );
@@ -78,24 +78,24 @@ const resolved_body_classes = Array.from(
     <container>
       <vessel data-shape="page_main" id="sol_page_main">
         <div id="sol_content_stage">
-          <div class="content-stage-layer content-stage-layer-fog"></div>
-          <div class="content-stage-layer content-stage-layer-rails"></div>
+          <div class="sol__content_stage_layer sol__content_stage_layer_fog"></div>
+          <div class="sol__content_stage_layer sol__content_stage_layer_rails"></div>
 
           <Fog />
 
           <div id="sol_content">
-            <div class="content-layer content-layer-surface"></div>
-            <div class="content-layer content-layer-noise"></div>
-            <div class="content-layer content-layer-deco"></div>
+            <div class="sol__content_layer sol__content_layer_surface"></div>
+            <div class="sol__content_layer sol__content_layer_noise"></div>
+            <div class="sol__content_layer sol__content_layer_deco"></div>
 
             <ContentFrame />
 
-            <div class="content-layer-body">
+            <div class="sol__content_layer_body">
               <div id="sol_main_reading_container">
-                <div class="reading-layer reading-layer-surface"></div>
-                <div class="reading-layer reading-layer-noise"></div>
+                <div class="sol__reading_layer sol__reading_layer_surface"></div>
+                <div class="sol__reading_layer sol__reading_layer_noise"></div>
 
-                <div class="reading-layer-body">
+                <div class="sol__reading_layer_body">
                   <Breadcrumbers
                     crumbs={crumbs}
                     crumb_label_overrides={crumb_label_overrides}

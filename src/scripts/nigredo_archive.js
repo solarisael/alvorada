@@ -83,12 +83,12 @@ class RowPool {
 
   _fill(node, entry, index) {
     const row = node;
-    const article = node.querySelector(".nigredo-entry");
-    const link = node.querySelector(".nigredo-entry-link");
-    const title = node.querySelector(".nigredo-entry-title");
-    const pill = node.querySelector(".nigredo-pill");
-    const date = node.querySelector(".nigredo-entry-date");
-    const excerpt = node.querySelector(".nigredo-entry-excerpt");
+    const article = node.querySelector(".sol__nigredo_entry");
+    const link = node.querySelector(".sol__nigredo_entry_link");
+    const title = node.querySelector(".sol__nigredo_entry_title");
+    const pill = node.querySelector(".sol__nigredo_pill");
+    const date = node.querySelector(".sol__nigredo_entry_date");
+    const excerpt = node.querySelector(".sol__nigredo_entry_excerpt");
 
     // Lane
     const align = derive_align(entry, index);

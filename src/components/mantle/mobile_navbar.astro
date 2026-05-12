@@ -12,9 +12,9 @@ const with_base = (path_value) => {
 
 <mantle data-shape="mobile_navbar" id="sol_mobile_nav">
   <div id="sol_mobile_nav_shell">
-    <div class="mobile-nav-side mobile-nav-left">
+    <div class="sol__mobile_nav_side sol__mobile_nav_left">
       <a
-        class="mobile-nav-link"
+        class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="nigredo"
         href={with_base("nigredo")}
@@ -24,8 +24,8 @@ const with_base = (path_value) => {
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
-        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-        <span class="mobile-nav-icon">
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -40,11 +40,11 @@ const with_base = (path_value) => {
             <path d="M7.7 17.2h8.6" stroke-linecap="round"></path>
           </svg>
         </span>
-        <span class="mobile-nav-label">nig</span>
+        <span class="sol__mobile_nav_label">nig</span>
       </a>
 
       <a
-        class="mobile-nav-link"
+        class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="albedo"
         href={with_base("albedo")}
@@ -54,8 +54,8 @@ const with_base = (path_value) => {
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
-        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-        <span class="mobile-nav-icon">
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -68,12 +68,12 @@ const with_base = (path_value) => {
             ></circle>
           </svg>
         </span>
-        <span class="mobile-nav-label">alb</span>
+        <span class="sol__mobile_nav_label">alb</span>
       </a>
     </div>
 
     <a
-      class="mobile-nav-link is-home-link"
+      class="sol__mobile_nav_link sol__is_home_link"
       data-mobile-home
       href={base_url}
       hx-get={base_url}
@@ -82,19 +82,19 @@ const with_base = (path_value) => {
       hx-swap="morph swap:240ms settle:240ms"
       hx-push-url="true"
     >
-      <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-      <span class="mobile-home-avatar">
-        <span class="mobile-home-avatar-shell"></span>
-        <span class="mobile-home-avatar-core">
+      <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+      <span class="sol__mobile_home_avatar">
+        <span class="sol__mobile_home_avatar_shell"></span>
+        <span class="sol__mobile_home_avatar_core">
           <img src={with_base("images/sol-curr.jpg")} alt="" />
         </span>
       </span>
-      <span class="mobile-nav-label">home</span>
+      <span class="sol__mobile_nav_label">home</span>
     </a>
 
-    <div class="mobile-nav-side mobile-nav-right">
+    <div class="sol__mobile_nav_side sol__mobile_nav_right">
       <a
-        class="mobile-nav-link"
+        class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="citrinitas"
         href={with_base("citrinitas")}
@@ -104,8 +104,8 @@ const with_base = (path_value) => {
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
-        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-        <span class="mobile-nav-icon">
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -118,11 +118,11 @@ const with_base = (path_value) => {
               stroke-linecap="round"></path>
           </svg>
         </span>
-        <span class="mobile-nav-label">cit</span>
+        <span class="sol__mobile_nav_label">cit</span>
       </a>
 
       <a
-        class="mobile-nav-link"
+        class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="rubedo"
         href={with_base("rubedo")}
@@ -132,8 +132,8 @@ const with_base = (path_value) => {
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
-        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-        <span class="mobile-nav-icon">
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -150,11 +150,11 @@ const with_base = (path_value) => {
               stroke-linejoin="round"></path>
           </svg>
         </span>
-        <span class="mobile-nav-label">rub</span>
+        <span class="sol__mobile_nav_label">rub</span>
       </a>
 
       <a
-        class="mobile-nav-link"
+        class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="codex"
         href={with_base("codex")}
@@ -164,8 +164,8 @@ const with_base = (path_value) => {
         hx-swap="morph swap:240ms settle:240ms"
         hx-push-url="true"
       >
-        <span class="mobile-nav-layer mobile-nav-layer-topline"></span>
-        <span class="mobile-nav-icon">
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -179,7 +179,7 @@ const with_base = (path_value) => {
             <circle cx="12" cy="12" r="6.1" stroke-dasharray="2 1.5"></circle>
           </svg>
         </span>
-        <span class="mobile-nav-label">cdx</span>
+        <span class="sol__mobile_nav_label">cdx</span>
       </a>
     </div>
   </div>
