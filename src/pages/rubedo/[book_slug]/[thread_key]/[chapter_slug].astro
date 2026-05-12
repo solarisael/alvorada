@@ -153,9 +153,9 @@ const crumbs = [
   theme_color={theme_color}
   crumbs={crumbs}
 >
-  <header>
+  <div class="chapter-header">
     <h1>{chapter?.title ?? "Unknown chapter"}</h1>
-  </header>
+  </div>
 
   {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
 
@@ -175,7 +175,8 @@ const crumbs = [
       FUTURE: paywall gate on chapter index.
     */
   }
-  <nav
+  <mantle
+    data-shape="eyes_nav"
     class="chapter_eyes_nav"
     data-chapter-slug={chapter_slug}
     data-book-slug={book_slug}
@@ -206,7 +207,7 @@ const crumbs = [
         );
       })
     }
-  </nav>
+  </mantle>
 
   <div id="chapter_thread_content" data-thread-key={thread_key}>
     {

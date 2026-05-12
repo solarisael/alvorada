@@ -67,12 +67,12 @@ const phase_cards = [
 ---
 
 <IndexLayout>
-  <section id="home_card_gate">
-    <article id="home_gate_intro">
-      <header id="home_gate_header">
+  <vessel data-shape="home_gate" id="home_card_gate">
+    <div id="home_gate_intro">
+      <div id="home_gate_header">
         <p id="home_gate_kicker" class="text_kicker">~/ threshold</p>
         <h1 id="home_gate_title" class="text_large">Choose your phase</h1>
-      </header>
+      </div>
 
       <div id="home_gate_body">
         <p>
@@ -80,9 +80,9 @@ const phase_cards = [
           ritual.
         </p>
       </div>
-    </article>
+    </div>
 
-    <nav id="phase_card_grid">
+    <mantle data-shape="phase_grid" id="phase_card_grid">
       {
         phase_cards.map((phase_card) => (
           <a
@@ -167,6 +167,6 @@ const phase_cards = [
           </a>
         ))
       }
-    </nav>
-  </section>
+    </mantle>
+  </vessel>
 </IndexLayout>

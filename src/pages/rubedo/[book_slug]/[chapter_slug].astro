@@ -123,9 +123,9 @@ const crumbs = [
   next_chapter_link={next_chapter_link}
   crumbs={crumbs}
 >
-  <header>
+  <div class="chapter-header">
     <h1>{chapter?.title ?? "Unknown chapter"}</h1>
-  </header>
+  </div>
 
   {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
 
@@ -142,7 +142,8 @@ const crumbs = [
       FUTURE: locked slots for codex-gated threads.
     */
   }
-  <nav
+  <mantle
+    data-shape="eyes_nav"
     class="chapter_eyes_nav"
     data-chapter-slug={chapter_slug}
     data-book-slug={book_slug}
@@ -171,7 +172,7 @@ const crumbs = [
         );
       })
     }
-  </nav>
+  </mantle>
 
   {
     /*

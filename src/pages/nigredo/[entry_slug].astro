@@ -39,25 +39,23 @@ const display_title = entry.data.title
     { label: display_title, href: null },
   ]}
 >
-  <section>
-    <article class="nigredo-detail">
-      <header class="nigredo-detail-header">
-        <div class="nigredo-detail-meta">
-          <NigredoPill state={primary_state} />
-          <time class="nigredo-entry-date" datetime={entry.data.published_at}>
-            {entry.data.published_at}
-          </time>
-        </div>
-        <h1 class="nigredo-detail-title" data-redacted={!entry.data.title}>
-          {display_title}
-        </h1>
-      </header>
-
-      <div class="nigredo-detail-body chapter_content">
-        <Content />
+  <nigredo data-shape="entry_detail" class="nigredo-detail">
+    <div class="nigredo-detail-header">
+      <div class="nigredo-detail-meta">
+        <NigredoPill state={primary_state} />
+        <time class="nigredo-entry-date" datetime={entry.data.published_at}>
+          {entry.data.published_at}
+        </time>
       </div>
-    </article>
-  </section>
+      <h1 class="nigredo-detail-title" data-redacted={!entry.data.title}>
+        {display_title}
+      </h1>
+    </div>
+
+    <div class="nigredo-detail-body chapter_content">
+      <Content />
+    </div>
+  </nigredo>
 </IndexLayout>
 
 <style>

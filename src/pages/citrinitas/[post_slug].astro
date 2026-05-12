@@ -20,29 +20,27 @@ const with_base = (path_value) => {
 ---
 
 <IndexLayout>
-  <section>
-    <article>
-      <header>
-        <p>~/ citrinitas / {post_slug}</p>
-        <h1>Citrinitas Post</h1>
-      </header>
+  <citrinitas data-shape="entry_detail">
+    <div class="entry-header">
+      <p>~/ citrinitas / {post_slug}</p>
+      <h1>Citrinitas Post</h1>
+    </div>
 
-      <div>
-        <p>
-          Scaffold child page for <code>/citrinitas/{post_slug}</code>. Use this
-          to verify nested breadcrumbs and HTMX transitions.
-        </p>
-        <p>
-          <a
-            href={with_base("/citrinitas")}
-            hx-get={with_base("/citrinitas")}
-            hx-target="#content"
-            hx-select="#content"
-            hx-swap="morph swap:240ms settle:240ms"
-            hx-push-url="true">Back to Citrinitas index</a
-          >
-        </p>
-      </div>
-    </article>
-  </section>
+    <div class="entry-body">
+      <p>
+        Scaffold child page for <code>/citrinitas/{post_slug}</code>. Use this
+        to verify nested breadcrumbs and HTMX transitions.
+      </p>
+      <p>
+        <a
+          href={with_base("/citrinitas")}
+          hx-get={with_base("/citrinitas")}
+          hx-target="#content"
+          hx-select="#content"
+          hx-swap="morph swap:240ms settle:240ms"
+          hx-push-url="true">Back to Citrinitas index</a
+        >
+      </p>
+    </div>
+  </citrinitas>
 </IndexLayout>

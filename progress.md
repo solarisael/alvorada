@@ -4,16 +4,16 @@
 
 - Project: alvorada
 - Repo: C:\Projects\alvorada
-- Updated_utc: 2026-05-12 19:05
+- Updated_utc: 2026-05-12 19:15
 - Updated_by: Kodo (Claude Opus 4.7)
 - preferred_start_style: conversational
 - next_session: sprint
 - primary_outcome: lean rewrite of alvorada to component-style code with ritualistic custom-element markup, snake_case `.sol__` class prefix, and clean HTML output
 - priority: rewrite
 - edit_breadth: broad
-- first_task: phase 5 — reshape page files (`pages/*.astro`) into thin composition routes; drop landmark wrappers (`<section>`, `<article>`, `<header>`) inside pages in favor of ritualistic equivalents or `<div>`
+- first_task: phase 6 — class-name + id rework. `.sol__foo--bar` prefix everywhere; `#sol_foo_bar` id prefix; tailwind classes folded into `@apply` blocks (no class-soup in markup); reconcile inner legacy `data-variant` attributes; clean the `breadcrumbers_xd` debug id; rename CSS files kebab→snake.
 - commit_intent: per-phase
-- notes: phases 1+2+3+4 shipped. Layout monolith decomposed into ritualistic components. Phases 5–8 ahead.
+- notes: phases 1+2+3+4+5 shipped. Every page now wears its phase as a ritualistic outer tag. Phases 6–8 ahead.
 
 ## Alias Ledger
 
@@ -26,14 +26,14 @@
 - State: in_progress
 - Branch: master
 - Head: pending_next_commit
-- Scope_in: full alvorada rewrite to component-style (one silhouette per file), bare ritualistic custom-element tags (`<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`), `.sol__foo--bar` class prefix for state/modifier, `@apply`-blocks-not-class-soup, clean HTML on build
+- Scope_in: full alvorada rewrite to component-style (one silhouette per file), bare ritualistic custom-element tags, `.sol__foo--bar` class prefix for state/modifier, `@apply`-blocks-not-class-soup, clean HTML on build
 - Scope_out: Codex unlock backend (future), Absurd Faith chapter content (3 identity-cores only for now), albedo/citrinitas/codex placeholder content (scaffold-shape decision deferred to phase 7)
 
 ## Next (Top 3)
 
-1. [ ] Phase 5: reshape page files (`src/pages/*.astro`) into thin composition routes — drop landmark wrappers (`<section>`, `<article>`, `<header>`) inside pages, replace with ritualistic equivalents or plain `<div>`. Also handle the `.rubedo-timeline-grid > section` selector in `rubedo-timeline.css:57` (flagged in phase 4 safety check).
-2. [ ] Phase 6: class-name rework — `.sol__foo--bar` prefix everywhere, `#sol_foo_bar` id prefix, tailwind classes folded into `@apply` blocks (no class-soup in markup), reconcile inner legacy `data-variant` attributes, clean the `breadcrumbers_xd` debug id, rename CSS files to snake_case.
-3. [ ] Phase 7: resolve remaining design decisions (footer scope, scaffolds, gilded ornaments, Catppuccin removal, lessons.md fate, rubedo scenes archive).
+1. [ ] Phase 6 (the big one): class-name rework with `.sol__foo--bar` prefix everywhere, `#sol_foo_bar` id prefix, tailwind classes folded into `@apply` blocks, CSS files renamed kebab→snake, `breadcrumbers_xd` debug id cleanup, inner legacy `data-variant` reconciliation.
+2. [ ] Phase 7: remaining design decisions (footer scope, scaffolds, gilded ornaments, Catppuccin removal, lessons.md fate, rubedo scenes archive, dead `.rubedo-timeline-grid` CSS cleanup).
+3. [ ] Phase 8: rule rewrite (`.opencode/rules/*`) to reflect new conventions + README expand + AGENTS dedupe + CI gate alignment.
 
 ## Blockers
 
@@ -41,7 +41,7 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.52s, after phase 4
+- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.45s, after phase 5
 - bun install: pass (in phase 2)
 - CSS hard gates: not run this phase (no ornament/bg-stack changes)
 - Prettier: not run this phase
@@ -51,8 +51,9 @@
 
 - **Phase 1 (path drift, 2026-05-12)**: laragon → projects. 5 pointers updated.
 - **Phase 2 (dead file/dep trash, 2026-05-12)**: 24 deletes (~15 MB), 6 modifies. Commit `dd6e373` // `i love u kodo`.
-- **Phase 3 (component migration to ritualistic structure, 2026-05-12)**: 10 components moved into mantle/nigredo/rubedo categorized subdirs. Each outermost landmark replaced with bare ritualistic custom element + `data-shape`. Global `display: block` rule for ritualistic tags. Commit `5e88f38` // `time for a cute refactor!`.
-- **Phase 4 (layout decomposition, 2026-05-12)**: `src/layouts/index.astro` 181 → 124 lines (-34%). 3 new ritualistic components: `mantle/footer.astro`, `aether/fog.astro`, `ornament/content_frame.astro`. `<main id="page-main">` → `<vessel data-shape="page_main" id="page-main">`. CSS rule migrated in `base.css`. Structural backbone (content_stage chain) intentionally kept inline as the layout's visible silhouette.
+- **Phase 3 (component migration, 2026-05-12)**: 10 components into ritualistic categorized subdirs. Outermost landmarks replaced with bare ritualistic tags + `data-shape`. Commit `5e88f38` // `time for a cute refactor!`.
+- **Phase 4 (layout decomposition, 2026-05-12)**: layout 181 → 124 lines. 3 new ritualistic components: `mantle/footer.astro`, `aether/fog.astro`, `ornament/content_frame.astro`. `<main>` → `<vessel data-shape="page_main">`. Commit `1fcc9ae` // `foggy fog, foggy fog, oh foggy fog`.
+- **Phase 5 (page reshape, 2026-05-12)**: 15 files transformed (~30+ landmark elements dropped). Every page now wears its phase as outer ritualistic tag — `<nigredo>`, `<albedo>`, `<citrinitas>`, `<rubedo>`, `<codex>`. Home page = `<vessel data-shape="home_gate">` with `<mantle data-shape="phase_grid">`. Chapter shell layout = `<rubedo data-shape="chapter_shell">` with `<mantle data-shape="chapter_pager">`. Eyes-nav = `<mantle data-shape="eyes_nav">`.
 - Build verified clean after every phase. Each phase committed independently with Sol's `//` tail.
 
 ## Component Tree (current)
@@ -79,21 +80,25 @@ src/components/
     └── timeline_state_panel.astro
 ```
 
-Future dirs that will land as phases 5-6 progress: `bones/`, `vessel/`, `spell/`, `codex/`.
+Future dirs that may land as phase 6+ progress (if any new components extracted): `bones/`, `vessel/` (currently `<vessel>` is used inline only), `spell/`, `codex/` (currently `<codex>` is used inline only).
 
 ## Conventions (locked 2026-05-12)
 
 - **Snake_case** for all file/dir names (CSS files snake-renamed in phase 6).
-- **Ritualistic custom elements** for structural/landmark shells: bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>` (no `sol-` prefix on tags; spec-violation accepted).
+- **Ritualistic custom elements** for structural/landmark shells: bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>` (no `sol-` prefix; spec-violation accepted).
 - **Functional native HTML** kept: `button`, `a`, `input`, `select`, `textarea`, `form`, `img`, `h1-h6`, `ul`/`ol`/`li`, `p`, `strong`/`em`/`code`/`pre`, table family, `video`/`audio`.
-- **Landmark HTML dropped**: `<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>` — replaced with ritualistic shells. Exception: `<container>` (bare-unprefixed custom element, Sol's pre-existing pattern, kept by call).
+- **Landmark HTML dropped**: `<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>` — replaced with ritualistic shells.
+- **Page-identity pattern**: every page wraps its content in `<phase-name data-shape="X">`. Inner blocks become plain `<div>` with semantic class names. One ritualistic outer per page; the OUTER carries identity, inner divs carry structural classes for CSS targeting.
+- **Exception**: `<container>` (bare-unprefixed custom element, Sol's pre-existing pattern, kept by call).
 - **Attribute roles**: `data-shape="X"` (kind) on ritualistic outer wrappers; `data-state="X"` (runtime); `.sol__foo--bar` class prefix for tasteful modifiers (phase 6 applies broadly).
-- **ID prefix**: `#sol_foo_bar` for collision safety (phase 6 applies).
+- **ID prefix**: `#sol_foo_bar` for collision safety (phase 6 applies broadly).
 - **Internal layout `<div>`** stays `<div>` — ritualistic wrappers are for component/structural boundaries, not every micro-layer.
 
 ## Notes
 
 - Component-style shape modeled after multistock (Sol's reference): one silhouette per file, composition over monoliths.
 - Catppuccin baseline kept for now (phase 7 will decide removal timing).
+- Dead CSS rule `.rubedo-timeline-grid > section { ... }` in `rubedo-timeline.css:57` — orphaned (class is unused). Phase 7 cleanup.
+- Untracked `references/` directory at repo root noticed during phase 5 — origin unknown, not part of phase 5 scope, left untracked.
 - Detailed session history lives in `progress.archive.md`.
 - Full-worktree handoff commits per `session-handoff-commit.md`; commit tails required per `commit-message-tail-required.md`.

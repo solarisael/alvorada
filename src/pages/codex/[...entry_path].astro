@@ -47,70 +47,67 @@ const sibling_entry_label =
 ---
 
 <IndexLayout>
-  <section>
-    <article>
-      <header>
-        <p>~/ codex / {entry_path}</p>
-        <h1>Codex Entry</h1>
-      </header>
+  <codex data-shape="entry_detail">
+    <div class="entry-header">
+      <p>~/ codex / {entry_path}</p>
+      <h1>Codex Entry</h1>
+    </div>
 
-      <div>
-        <p>
-          Scaffold child page for <code>/codex/{entry_path}</code>. This
-          catch-all route is intended for highly variable codex entry
-          structures.
-        </p>
-        {
-          is_category_page && (
-            <p>
-              This is a category-level codex page for{" "}
-              <code>{entry_category}</code>.
-            </p>
-          )
-        }
-        {
-          sibling_entry_href && (
-            <p>
-              <a
-                href={sibling_entry_href}
-                hx-get={sibling_entry_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open sibling character: {sibling_entry_label}
-              </a>
-            </p>
-          )
-        }
-        {
-          category_index_href && (
-            <p>
-              <a
-                href={category_index_href}
-                hx-get={category_index_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Back to category: {entry_category}
-              </a>
-            </p>
-          )
-        }
-        <p>
-          <a
-            href={with_base("/codex")}
-            hx-get={with_base("/codex")}
-            hx-target="#content"
-            hx-select="#content"
-            hx-swap="morph swap:240ms settle:240ms"
-            hx-push-url="true">Back to Codex index</a
-          >
-        </p>
-      </div>
-    </article>
-  </section>
+    <div class="entry-body">
+      <p>
+        Scaffold child page for <code>/codex/{entry_path}</code>. This catch-all
+        route is intended for highly variable codex entry structures.
+      </p>
+      {
+        is_category_page && (
+          <p>
+            This is a category-level codex page for{" "}
+            <code>{entry_category}</code>.
+          </p>
+        )
+      }
+      {
+        sibling_entry_href && (
+          <p>
+            <a
+              href={sibling_entry_href}
+              hx-get={sibling_entry_href}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              Open sibling character: {sibling_entry_label}
+            </a>
+          </p>
+        )
+      }
+      {
+        category_index_href && (
+          <p>
+            <a
+              href={category_index_href}
+              hx-get={category_index_href}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              Back to category: {entry_category}
+            </a>
+          </p>
+        )
+      }
+      <p>
+        <a
+          href={with_base("/codex")}
+          hx-get={with_base("/codex")}
+          hx-target="#content"
+          hx-select="#content"
+          hx-swap="morph swap:240ms settle:240ms"
+          hx-push-url="true">Back to Codex index</a
+        >
+      </p>
+    </div>
+  </codex>
 </IndexLayout>

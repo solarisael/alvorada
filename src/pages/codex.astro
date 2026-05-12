@@ -23,27 +23,20 @@ const with_base = (path_value) => {
 ---
 
 <IndexLayout phase="codex">
-  <section>
-    <article>
-      <header>
-        <p class="text_kicker">~/ codex</p>
-        <p class="text_kicker">05</p>
-        <h1>Codex</h1>
-      </header>
+  <codex data-shape="index_page">
+    <div class="page-hero">
+      <p class="text_kicker">~/ codex</p>
+      <p class="text_kicker">05</p>
+      <h1>Codex</h1>
+      <p>
+        The lore index. Everything on this site that has a name, a category, or
+        a definition lives here. Entries can be cross-referenced by any page —
+        hover a reference to see the entry inline.
+      </p>
+    </div>
 
-      <div>
-        <p>
-          The lore index. Everything on this site that has a name, a category,
-          or a definition lives here. Entries can be cross-referenced by any
-          page — hover a reference to see the entry inline.
-        </p>
-      </div>
-    </article>
-
-    <article>
-      <header>
-        <h2>Categories</h2>
-      </header>
+    <div class="page-section">
+      <h2>Categories</h2>
 
       {
         categories.map((category) => (
@@ -61,12 +54,10 @@ const with_base = (path_value) => {
           </p>
         ))
       }
-    </article>
+    </div>
 
-    <article>
-      <header>
-        <h2>Labs</h2>
-      </header>
+    <div class="page-section">
+      <h2>Labs</h2>
 
       {
         labs.map((lab) => (
@@ -84,6 +75,6 @@ const with_base = (path_value) => {
           </p>
         ))
       }
-    </article>
-  </section>
+    </div>
+  </codex>
 </IndexLayout>

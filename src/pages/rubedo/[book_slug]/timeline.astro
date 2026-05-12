@@ -60,94 +60,90 @@ const crumb_label_overrides = {
   body_class="pov_cinza"
   crumb_label_overrides={crumb_label_overrides}
 >
-  <section class="rubedo-timeline-page">
-    <article>
-      <header class="rubedo-timeline-header">
-        <h1>{book_entry?.title ?? "Rubedo Book"} — constellation</h1>
-      </header>
+  <rubedo data-shape="timeline_page" class="rubedo-timeline-page">
+    <div class="rubedo-timeline-header">
+      <h1>{book_entry?.title ?? "Rubedo Book"} — constellation</h1>
+    </div>
 
-      {book_entry?.synopsis && <p>{book_entry.synopsis}</p>}
+    {book_entry?.synopsis && <p>{book_entry.synopsis}</p>}
 
-      {
-        !book_entry && (
-          <p>
-            Unknown book slug <code>{book_slug}</code>. Return to the Rubedo
-            index.
-          </p>
-        )
-      }
+    {
+      !book_entry && (
+        <p>
+          Unknown book slug <code>{book_slug}</code>. Return to the Rubedo
+          index.
+        </p>
+      )
+    }
 
-      <p>
-        <a
-          href={rubedo_index_href}
-          hx-get={rubedo_index_href}
-          hx-target="#content"
-          hx-select="#content"
-          hx-swap="morph swap:240ms settle:240ms"
-          hx-push-url="true"
-        >
-          Back to Rubedo index
-        </a>
-      </p>
+    <p>
+      <a
+        href={rubedo_index_href}
+        hx-get={rubedo_index_href}
+        hx-target="#content"
+        hx-select="#content"
+        hx-swap="morph swap:240ms settle:240ms"
+        hx-push-url="true"
+      >
+        Back to Rubedo index
+      </a>
+    </p>
 
-      {
-        book_entry && (
-          <p>
-            <a
-              href={reader_entry_href}
-              hx-get={reader_entry_href}
-              hx-target="#content"
-              hx-select="#content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
-              Begin reading {book_entry.title}
-            </a>
-          </p>
-        )
-      }
-
-      {
-        book_entry && (
-          <section
-            id="rubedo_timeline_interactive"
-            class="rubedo-timeline-interactive"
-            data-book-slug={book_slug}
-            data-timeline-data-href={timeline_data_href}
+    {
+      book_entry && (
+        <p>
+          <a
+            href={reader_entry_href}
+            hx-get={reader_entry_href}
+            hx-target="#content"
+            hx-select="#content"
+            hx-swap="morph swap:240ms settle:240ms"
+            hx-push-url="true"
           >
-            {/* Canvas constellation — initialized by rubedo_constellation_webgl.js.
-                The module reads data-timeline-data-href, fetches JSON once on init,
-                caches result in a module-scoped object, then renders the constellation.
-                Hover preview is rendered client-side from that cache — no server roundtrip. */}
-            <canvas
-              id="rubedo_timeline_canvas"
-              class="rubedo-timeline-canvas"
-            />
+            Begin reading {book_entry.title}
+          </a>
+        </p>
+      )
+    }
 
-            <div
-              id="rubedo_timeline_hover_preview"
-              class="rubedo-timeline-hover-preview"
-            >
-              {/* Populated client-side from cached JSON on node hover. */}
-            </div>
+    {
+      book_entry && (
+        <rubedo
+          data-shape="timeline_interactive"
+          id="rubedo_timeline_interactive"
+          class="rubedo-timeline-interactive"
+          data-book-slug={book_slug}
+          data-timeline-data-href={timeline_data_href}
+        >
+          {/* Canvas constellation — initialized by rubedo_constellation_webgl.js.
+              The module reads data-timeline-data-href, fetches JSON once on init,
+              caches result in a module-scoped object, then renders the constellation.
+              Hover preview is rendered client-side from that cache — no server roundtrip. */}
+          <canvas id="rubedo_timeline_canvas" class="rubedo-timeline-canvas" />
 
-            <div
-              id="rubedo_timeline_state_panel"
-              class="rubedo-timeline-state-panel"
-            >
-              {/* Populated client-side after JSON fetch completes. */}
-            </div>
+          <div
+            id="rubedo_timeline_hover_preview"
+            class="rubedo-timeline-hover-preview"
+          >
+            {/* Populated client-side from cached JSON on node hover. */}
+          </div>
 
-            <ul class="rubedo-timeline-legend">
-              <li>white path — cinza thread</li>
-              <li>green path — suul thread</li>
-              <li>orange path — alvorada thread</li>
-              <li>dashed path — optional branch</li>
-              <li>bright sigil — active chapter</li>
-            </ul>
-          </section>
-        )
-      }
-    </article>
-  </section>
+          <div
+            id="rubedo_timeline_state_panel"
+            class="rubedo-timeline-state-panel"
+          >
+            {/* Populated client-side after JSON fetch completes. */}
+          </div>
+
+          <ul class="rubedo-timeline-legend">
+            <li>white path — cinza thread</li>
+            <li>green path — suul thread</li>
+            <li>orange path — alvorada thread</li>
+            <li>dashed path — optional branch</li>
+            <li>bright sigil — active chapter</li>
+          </ul>
+        </rubedo>
+      )
+    }
+  </rubedo>
 </IndexLayout>

@@ -41,65 +41,63 @@ const rubedo_index_href = with_base("/rubedo");
 ---
 
 <IndexLayout body_class="pov_cinza">
-  <section>
-    <article>
-      <header>
-        <h1>{book_entry?.title ?? "Rubedo Book"}</h1>
-      </header>
+  <rubedo data-shape="book_page">
+    <div class="book-header">
+      <h1>{book_entry?.title ?? "Rubedo Book"}</h1>
+    </div>
 
-      {
-        book_entry ? (
-          <p>{book_entry.synopsis}</p>
-        ) : (
+    {
+      book_entry ? (
+        <p>{book_entry.synopsis}</p>
+      ) : (
+        <p>
+          Unknown book slug <code>{book_slug}</code>. Return to Rubedo index.
+        </p>
+      )
+    }
+
+    <p>
+      <a
+        href={rubedo_index_href}
+        hx-get={rubedo_index_href}
+        hx-target="#content"
+        hx-select="#content"
+        hx-swap="morph swap:240ms settle:240ms"
+        hx-push-url="true"
+      >
+        Back to Rubedo index
+      </a>
+    </p>
+
+    {
+      book_entry && (
+        <>
           <p>
-            Unknown book slug <code>{book_slug}</code>. Return to Rubedo index.
+            <a
+              href={canonical_reader_href}
+              hx-get={canonical_reader_href}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              Begin reading {book_entry.title}
+            </a>
           </p>
-        )
-      }
-
-      <p>
-        <a
-          href={rubedo_index_href}
-          hx-get={rubedo_index_href}
-          hx-target="#content"
-          hx-select="#content"
-          hx-swap="morph swap:240ms settle:240ms"
-          hx-push-url="true"
-        >
-          Back to Rubedo index
-        </a>
-      </p>
-
-      {
-        book_entry && (
-          <>
-            <p>
-              <a
-                href={canonical_reader_href}
-                hx-get={canonical_reader_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Begin reading {book_entry.title}
-              </a>
-            </p>
-            <p>
-              <a
-                href={timeline_href}
-                hx-get={timeline_href}
-                hx-target="#content"
-                hx-select="#content"
-                hx-swap="morph swap:240ms settle:240ms"
-                hx-push-url="true"
-              >
-                Open constellation timeline
-              </a>
-            </p>
-          </>
-        )
-      }
-    </article>
-  </section>
+          <p>
+            <a
+              href={timeline_href}
+              hx-get={timeline_href}
+              hx-target="#content"
+              hx-select="#content"
+              hx-swap="morph swap:240ms settle:240ms"
+              hx-push-url="true"
+            >
+              Open constellation timeline
+            </a>
+          </p>
+        </>
+      )
+    }
+  </rubedo>
 </IndexLayout>
