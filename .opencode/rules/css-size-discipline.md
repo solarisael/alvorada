@@ -31,7 +31,7 @@ Allowed `px` exceptions (default):
 
 Default priority scope:
 
-1. `src/styles/components/style-switcher.css`
+1. `src/styles/components/style_switcher.css`
 2. `src/styles/index.css` for `#content`
 3. `src/styles/index.css` for `.phase_card_link`
 

@@ -469,11 +469,11 @@ body[data-phase="nigredo"] {
 }
 
 /* Rupture variant: heavier singe, more damage */
-.nigredo-entry[data-variant="rupture"] .nigredo-entry-layer-ash {
+.nigredo-entry[data-tone="rupture"] .nigredo-entry-layer-ash {
   opacity: calc(var(--nigredo_ash_opacity) * 2.4);
 }
 
-.nigredo-entry[data-variant="rupture"] .nigredo-entry-link {
+.nigredo-entry[data-tone="rupture"] .nigredo-entry-link {
   border-color: color-mix(in oklch, var(--site_style_accent) 48%, transparent);
 }
 

@@ -19,7 +19,7 @@ const {
   published_at,
   state,
   excerpt,
-  variant = "quiet",
+  tone = "quiet",
   base_path = "",
 } = Astro.props;
 
@@ -28,7 +28,7 @@ const display_title = title ? title : "■".repeat(redact_length(slug));
 const href = `${base_path}/nigredo/${slug}`;
 ---
 
-<nigredo data-shape="entry" class="nigredo-entry" data-variant={variant}>
+<nigredo data-shape="entry" class="nigredo-entry" data-tone={tone}>
   <a class="nigredo-entry-link" href={href}>
     <!-- Layer stack mirrors home-card architecture -->
     <span class="nigredo-entry-layer nigredo-entry-layer-surface"></span>

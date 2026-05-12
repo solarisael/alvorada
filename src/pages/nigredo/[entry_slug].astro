@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 import NigredoPill from "../../components/nigredo/pill.astro";
-import "../../styles/components/nigredo-page.css";
+import "../../styles/components/nigredo_page.css";
 
 export async function getStaticPaths() {
   const entries = await getCollection("nigredo", ({ data }) => !data.draft);

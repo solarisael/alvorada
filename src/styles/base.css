@@ -3,7 +3,7 @@
 @import "@catppuccin/tailwindcss/mocha.css";
 @import "./typography.css";
 @import "./utils.css";
-@import "./components/text-effects.css";
+@import "./components/text_effects.css";
 
 @theme {
   --default-font-family:
