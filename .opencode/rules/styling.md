@@ -99,6 +99,32 @@ This project's main reading container should feel stable, centered, and immersiv
 - Structural/landmark shells use bare ritualistic custom elements: `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`. See `project.md` for the full landmark-drop policy.
 - Each ritualistic outer carries `data-shape="X"` as the kind marker. Class styling targets `.sol__foo` classes; ritualistic tags get global `display: block` default from `base.css`.
 
+## CSS Scoping for HTMX-Nav
+
+**Page-scoped CSS imports are incompatible with htmx-driven SPA-nav.** Astro injects them as `<style>` tags in the response head, and htmx with `hx-select="container"` doesn't pull head content across. Page-CSS-only-on-first-load means content renders unstyled after every htmx-nav (cards collapse to inline anchors, virtualizers render without sizing, etc.).
+
+**Rule:** any CSS that styles content inside `<container>` MUST be imported at **layout level** (`src/layouts/index.astro` frontmatter), NOT page level.
+
+```js
+// src/layouts/index.astro — load-bearing imports
+import "../styles/base.css";
+import "../styles/index.css";
+import "../styles/components/content_shell.css";
+import "../styles/components/footer.css";
+import "../styles/components/rubedo_timeline.css";
+import "../styles/components/home_card_gate.css";  // page-CSS hoisted
+import "../styles/components/nigredo_page.css";    // page-CSS hoisted
+// future page-specific CSS goes here too
+```
+
+**Acceptable exception:** CSS that styles content NEVER inside the swap zone — e.g., navbar-only styles in `desktop_nav.css`, `mobile_nav.css` — can stay component-scoped because the navbars themselves do not swap.
+
+Cost: small CSS bloat per page (~10-20KB per page-CSS hoisted). Worth it for working htmx-nav. Pre-existing pattern was a 2026-05-14 fix; do not regress.
+
+## Phase Tokens Anchor at `container[data-phase]`
+
+See `htmx-contract.md` → §3. Body-level phase rules stale across navigations.
+
 ## Property Policy
 
 - Logical CSS properties are forbidden (`inline-size`, `block-size`, `padding-inline`, `margin-block`, `border-inline-*`, etc.).

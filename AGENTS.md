@@ -87,6 +87,7 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 - `.opencode/rules/visual-hard-gates.md`
 - `.opencode/rules/workflow.md`
 - `.opencode/rules/js-reliability.md`
+- `.opencode/rules/htmx-contract.md`
 - `.opencode/rules/option-classes.md`
 - `.opencode/rules/session-handoff-commit.md`
 - `.opencode/rules/commit-message-tail-required.md`
@@ -97,6 +98,7 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 - Always relevant:
   - `project.md`, `intent-lock.md`, `commit-message-tail-required.md`, `addressing.md`
   - `style-intent-contract.md`, `styling.md`, `css-size-discipline.md`, `visual-hard-gates.md`
+  - `htmx-contract.md` — load-bearing for layout, navbars, vendor scripts
 - UI/visual implementation:
   - `typography.md`
   - `expose-css-tunables.md` when editing component CSS variables
@@ -104,6 +106,7 @@ Usage hints: add `use context7` to prompts for live API docs. Use `playwright` t
 - CSS `@apply` editing: `apply-discipline.md`
 - Debugging/integration/workflow: `workflow.md`
 - JavaScript behavior changes: `js-reliability.md`
+- HTMX / layout / swap target / data-phase / vendor script changes: `htmx-contract.md`
 - Session-end handoff/commit flow: `session-handoff-commit.md`, `commit-message-tail-required.md`
 
 ## Session Modes

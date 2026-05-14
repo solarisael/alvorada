@@ -73,3 +73,44 @@ simpler approaches are proven insufficient.
 - If a fix feels hacky, ask: "knowing everything I know now, what is the clean solution?"
 - Skip this for simple, obvious fixes — do not over-engineer.
 - Challenge your own work before presenting it.
+
+## Visual Verification via Playwright
+
+For any change touching layout, htmx contract, CSS scoping, or visible UI: verify with playwright before committing. Eyeball-only checks miss the subtle bugs (e.g., a card that's "kind of where it should be" but is actually 14000px tall with display:inline because its CSS didn't load).
+
+### Required loop
+
+1. **Baseline:** reproduce the current state via `mcp_Playwright_browser_navigate` + `browser_evaluate` + `browser_take_screenshot` before making the change.
+2. **Change:** make the smallest viable fix.
+3. **Verify:** at minimum:
+   - `browser_navigate` to the affected page(s).
+   - `browser_evaluate` to read DOM structure, computed styles (`display`, `width`, `height`, `getBoundingClientRect`), and attribute state (`data-phase`, `hx-target`, etc.).
+   - `browser_click` to trigger nav transitions and re-check post-swap state.
+   - `browser_console_messages` (level=error and level=warning) — expect 0.
+   - `browser_take_screenshot` and read it back via the file tools to confirm visual state.
+4. **Compare:** if measured state matches expected state, commit. If not, iterate.
+
+### When to use
+
+Required for:
+
+- HTMX contract changes (load order, swap target, attribute defaults, `data-phase` placement)
+- CSS scoping changes (page → layout hoists, selector refactors)
+- Layout structure changes in `src/layouts/index.astro`
+- Per-page UI changes that involve interactive elements or scripts
+
+Optional but recommended for:
+
+- Component styling tweaks
+- New ornaments / SVGs
+- Anything that visually shifts
+
+### What playwright catches that eyeballs miss
+
+- DOM structure correct but computed styles wrong (CSS missing-after-nav)
+- Cards/elements present but with `display:inline` and 14000px height (page-CSS not loaded)
+- Stale `data-phase` token (visual accent stuck on previous page's color)
+- Console errors firing silently
+- Layout shifts during morph
+
+If a change feels "working" in your browser but you haven't run playwright, you haven't verified it.
