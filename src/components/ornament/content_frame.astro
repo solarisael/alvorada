@@ -23,82 +23,53 @@ const reliquary_flourish = with_base("ornaments/reliquary/divider_flourish.svg")
   data-shape="content_frame"
   class="sol__content_layer sol__content_layer_ornament_svg"
 >
-  <img
+  <span
     class="sol__content_ornament sol__content_ornament_corner_tl"
-    src={reliquary_corner}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
-  <img
+    style={`--ornament_mask_url: url(${reliquary_corner})`}
+  ></span>
+  <span
     class="sol__content_ornament sol__content_ornament_corner_tr"
-    src={reliquary_corner}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
-  <img
+    style={`--ornament_mask_url: url(${reliquary_corner})`}
+  ></span>
+  <span
     class="sol__content_ornament sol__content_ornament_corner_bl"
-    src={reliquary_corner}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
-  <img
+    style={`--ornament_mask_url: url(${reliquary_corner})`}
+  ></span>
+  <span
     class="sol__content_ornament sol__content_ornament_corner_br"
-    src={reliquary_corner}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
+    style={`--ornament_mask_url: url(${reliquary_corner})`}
+  ></span>
   <!-- Top divider: container with flourishes at each end and a thin bar between them.
-       The container itself is the alignment unit; flourishes flank naturally via flex. -->
+       The container itself is the alignment unit; flourishes flank naturally via flex.
+       Each child uses css mask-image so background-color picks up var(--site_style_accent). -->
   <div class="sol__content_ornament sol__content_ornament_line_top">
-    <img
+    <span
       class="sol__content_ornament_line_flourish_start"
-      src={reliquary_flourish}
-      alt=""
-      loading="eager"
-      decoding="async"
-    />
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}
+    ></span>
     <span class="sol__content_ornament_line_bar"></span>
-    <img
+    <span
       class="sol__content_ornament_line_flourish_end"
-      src={reliquary_flourish}
-      alt=""
-      loading="eager"
-      decoding="async"
-    />
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}
+    ></span>
   </div>
   <div class="sol__content_ornament sol__content_ornament_line_bottom">
-    <img
+    <span
       class="sol__content_ornament_line_flourish_start"
-      src={reliquary_flourish}
-      alt=""
-      loading="eager"
-      decoding="async"
-    />
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}
+    ></span>
     <span class="sol__content_ornament_line_bar"></span>
-    <img
+    <span
       class="sol__content_ornament_line_flourish_end"
-      src={reliquary_flourish}
-      alt=""
-      loading="eager"
-      decoding="async"
-    />
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}
+    ></span>
   </div>
-  <img
+  <span
     class="sol__content_ornament sol__content_ornament_sigil_top"
-    src={reliquary_sigil}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
-  <img
+    style={`--ornament_mask_url: url(${reliquary_sigil})`}
+  ></span>
+  <span
     class="sol__content_ornament sol__content_ornament_sigil_bottom"
-    src={reliquary_center}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
+    style={`--ornament_mask_url: url(${reliquary_center})`}
+  ></span>
 </ornament>

@@ -346,6 +346,24 @@
   object-fit: contain;
 }
 
+/* Reliquary ornaments use css mask-image so the SVG silhouette gets painted in
+   var(--site_style_accent) — the route's accent color flows through automatically.
+   Each consuming element passes its own SVG via inline --ornament_mask_url. */
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_br,
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top,
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
+  background-color: var(--site_style_accent);
+  mask-image: var(--ornament_mask_url);
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
 :root[data-site-theme="solarisael"] .sol__content_layer_ornament_svg {
   display: block;
   opacity: calc(
@@ -372,13 +390,15 @@
 }
 
 /* Line containers — flex with flourish at each end and a thin bar between.
-   Container manages alignment; bar grows to fill, flourishes anchor the ends. */
+   Container manages alignment; bar grows to fill, flourishes touch the bar (no gap).
+   Container's left/right/top/bottom mirror the corner offsets so the line shares the
+   same parent-border distance as the corners. */
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top,
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0;
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start,
@@ -396,7 +416,7 @@
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bar {
   flex: 1 1 auto;
   height: 1px;
-  background: #d8b06a;
+  background: var(--site_style_accent);
   opacity: 0.42;
   min-width: 0;
 }
@@ -441,30 +461,19 @@
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
-  left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
-      var(--site_center_axis_line_nudge_x)
-  );
-  top: calc(
-    var(--cinza_reliquary_offset_top) - var(--cinza_tune_rail_edge_nudge)
-  );
-  width: 72%;
+  left: var(--cinza_reliquary_offset_left);
+  right: var(--cinza_reliquary_offset_right);
+  top: var(--cinza_reliquary_offset_top);
   height: var(--cinza_reliquary_line_block_size);
-  transform: translateX(-50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
-  left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
-      var(--site_center_axis_line_nudge_x)
-  );
+  left: var(--cinza_reliquary_offset_left);
+  right: var(--cinza_reliquary_offset_right);
   bottom: calc(
-    var(--cinza_reliquary_offset_bottom) - var(--cinza_tune_rail_edge_nudge) +
-      var(--content_footer_reserve)
+    var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
   );
-  width: 54%;
   height: var(--cinza_reliquary_line_block_size);
-  transform: translateX(-50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {

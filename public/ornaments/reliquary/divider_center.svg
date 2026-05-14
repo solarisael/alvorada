@@ -4,7 +4,7 @@
     Diamond with cross + side-dash extensions. Sits between two flourishes in the divider composition.
     color: currentColor.
   -->
-  <g stroke="#d8b06a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M24 4l8 8-8 8-8-8 8-8z"/>
     <path d="M24 8v8"/>
     <path d="M20 12h8"/>

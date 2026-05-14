@@ -4,7 +4,7 @@
     Gothic curved tracery in 64x64 viewBox. Rotate 0/90/180/270 in CSS for TL/TR/BR/BL placement.
     color: currentColor. stroke-width and opacity tuned downstream.
   -->
-  <g stroke="#d8b06a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6 58V14c0-4.4 3.6-8 8-8h44"/>
     <path d="M12 52V17c0-2.8 2.2-5 5-5h35"/>
     <path d="M20 12c0 8-8 8-8 16"/>
