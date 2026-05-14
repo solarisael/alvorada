@@ -17,7 +17,7 @@ const with_base = (path_value) => {
   return `${base_path}/${normalized_path}`;
 };
 
-const default_map_thread_keys = ["cinza", "suul", "alvorada"];
+const default_map_thread_keys = ["cinza", "suul", "matins"];
 
 const map_thread_key_set = new Set(default_map_thread_keys);
 
@@ -47,19 +47,19 @@ const map_thread_keys = [
 const thread_image_src_map = {
   cinza: with_base("/images/eyes/cinza.jpg"),
   suul: with_base("/images/eyes/suul.jpg"),
-  alvorada: with_base("/images/eyes/alvorada.jpg"),
+  matins: with_base("/images/eyes/matins.jpg"),
 };
 
 const thread_trail_rotation_map = {
   cinza: 334,
   suul: 312,
-  alvorada: 348,
+  matins: 348,
 };
 
 const thread_neon_rgb_map = {
   cinza: "242 246 255",
   suul: "77 214 107",
-  alvorada: "255 159 46",
+  matins: "255 159 46",
 };
 
 const resolve_thread_image_src = (thread_key) => {

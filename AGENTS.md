@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Operational index for coding agents in `alvorada`.
+Operational index for coding agents in `matins`.
 Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 ## Agent Identity

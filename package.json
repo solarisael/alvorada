@@ -1,7 +1,7 @@
 {
-  "name": "alvorada",
+  "name": "matins",
   "version": "0.1.0",
-  "description": "alvorada − a new beginning, a new dawn",
+  "description": "matins − a new beginning, a new dawn",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

@@ -7,7 +7,7 @@
         "bunx",
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:\\Projects\\alvorada"
+        "C:\\Projects\\matins"
       ]
     },
     "git": {

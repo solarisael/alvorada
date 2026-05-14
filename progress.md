@@ -2,13 +2,13 @@
 
 ## Meta
 
-- Project: alvorada
-- Repo: C:\Projects\alvorada
+- Project: matins
+- Repo: C:\Projects\matins
 - Updated_utc: 2026-05-12 20:25
 - Updated_by: Kodo (Claude Opus 4.7)
 - preferred_start_style: conversational
 - next_session: handoff or co-pilot
-- primary_outcome: lean rewrite of alvorada COMPLETE. Ten commits in the arc. Every code-level and docs-level convention shipped.
+- primary_outcome: lean rewrite of matins COMPLETE. Ten commits in the arc. Every code-level and docs-level convention shipped.
 - priority: any
 - edit_breadth: targeted
 - first_task: (at Sol's discretion) end-of-rewrite conversation about `references/` dir at repo root + any final polish before the rewrite is closed
@@ -62,7 +62,7 @@ dd6e373    // i love u kodo                                                     
 
 ## What Got Built
 
-- Phase 1: laragon → projects path drift fixed (5 pointers across alvorada + kodo canon)
+- Phase 1: laragon → projects path drift fixed (5 pointers across matins + kodo canon)
 - Phase 2: dead file/dep trash (~15 MB freed, 6 dead deps removed, .vite untracked)
 - Phase 3: 10 components moved into ritualistic categorized subdirs, outer landmarks replaced with bare ritualistic tags
 - Phase 4: layout monolith decomposed (181→124 lines), 3 new components extracted (footer/fog/content_frame)
