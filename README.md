@@ -1,10 +1,10 @@
 # matins
 
-*a new beginning, a new dawn.*
-
 A personal website — **Solarisael rendered in browser, full Sol, no pretenses.** Not a portfolio, not a business site, not a professional surface. Every section is a facet of the same person; visitors experience Sol by moving through the alchemical stages.
 
 Eventually hosts **Absurd Faith** at `/rubedo/`. The Codex is the reading mechanic for the book.
+
+*new day sunlight, a faithful prayer.*
 
 ## The five alchemical sections
 
