@@ -16,6 +16,7 @@ const with_base = (path_value) => {
 const reliquary_corner = with_base("ornaments/reliquary/card_corner.svg");
 const reliquary_sigil = with_base("ornaments/reliquary/sigil_concentric.svg");
 const reliquary_center = with_base("ornaments/reliquary/divider_center.svg");
+const reliquary_flourish = with_base("ornaments/reliquary/divider_flourish.svg");
 ---
 
 <ornament
@@ -50,21 +51,42 @@ const reliquary_center = with_base("ornaments/reliquary/divider_center.svg");
     loading="eager"
     decoding="async"
   />
-  <!-- lines kept cinza: reliquary set has no true wide-line element (divider_flourish is 44x14 inline ornament; would distort if stretched to 72% width) -->
-  <img
-    class="sol__content_ornament sol__content_ornament_line_top"
-    src={with_base("ornaments/cinza/frame_line_top.svg")}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
-  <img
-    class="sol__content_ornament sol__content_ornament_line_bottom"
-    src={with_base("ornaments/cinza/frame_line_bottom.svg")}
-    alt=""
-    loading="eager"
-    decoding="async"
-  />
+  <!-- Top divider: container with flourishes at each end and a thin bar between them.
+       The container itself is the alignment unit; flourishes flank naturally via flex. -->
+  <div class="sol__content_ornament sol__content_ornament_line_top">
+    <img
+      class="sol__content_ornament_line_flourish_start"
+      src={reliquary_flourish}
+      alt=""
+      loading="eager"
+      decoding="async"
+    />
+    <span class="sol__content_ornament_line_bar"></span>
+    <img
+      class="sol__content_ornament_line_flourish_end"
+      src={reliquary_flourish}
+      alt=""
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+  <div class="sol__content_ornament sol__content_ornament_line_bottom">
+    <img
+      class="sol__content_ornament_line_flourish_start"
+      src={reliquary_flourish}
+      alt=""
+      loading="eager"
+      decoding="async"
+    />
+    <span class="sol__content_ornament_line_bar"></span>
+    <img
+      class="sol__content_ornament_line_flourish_end"
+      src={reliquary_flourish}
+      alt=""
+      loading="eager"
+      decoding="async"
+    />
+  </div>
   <img
     class="sol__content_ornament sol__content_ornament_sigil_top"
     src={reliquary_sigil}

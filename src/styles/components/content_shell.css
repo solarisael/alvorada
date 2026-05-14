@@ -371,9 +371,34 @@
     );
 }
 
+/* Line containers — flex with flourish at each end and a thin bar between.
+   Container manages alignment; bar grows to fill, flourishes anchor the ends. */
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top,
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
-  object-fit: fill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
+  width: 2.6rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
+  transform: scaleX(-1);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_bar {
+  flex: 1 1 auto;
+  height: 1px;
+  background: #d8b06a;
+  opacity: 0.42;
+  min-width: 0;
 }
 
 /* Content frame corners use single reliquary card_corner.svg rotated per-position.
@@ -470,6 +495,8 @@
   height: var(--cinza_reliquary_sigil_size);
   transform: translateX(-50%);
 }
+
+
 
 #sol_main_reading_container {
   @apply relative isolate;

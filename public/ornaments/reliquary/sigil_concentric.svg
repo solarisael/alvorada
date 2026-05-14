@@ -4,7 +4,7 @@
     Concentric circles + cardinal arms + diamond + cross. Single SVG used at 24/36/48px tiers.
     color: currentColor.
   -->
-  <g stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="#d8b06a" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="24" cy="24" r="17"/>
     <circle cx="24" cy="24" r="10"/>
     <path d="M24 7v34"/>
