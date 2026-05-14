@@ -77,16 +77,15 @@ const resolved_body_classes = Array.from(
   </head>
   <body
     class:list={resolved_body_classes}
-    data-phase={phase || undefined}
     hx-ext="morph,head-support,preload,sse"
-    hx-target="body"
-    hx-select="body"
+    hx-target="container"
+    hx-select="container"
     hx-swap="morph:outerHTML swap:240ms settle:240ms"
     hx-push-url="true"
   >
     <Navbar />
     <MobileNavbar />
-    <container>
+    <container data-phase={phase || undefined}>
       <vessel data-shape="page_main" id="sol_page_main">
         <div id="sol_content_stage">
           <div class="sol__content_stage_layer sol__content_stage_layer_fog"></div>

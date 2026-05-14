@@ -255,23 +255,23 @@ body.sol__pov_cinza {
 }
 
 /* OVERRIDES: PHASE */
-body[data-phase="nigredo"] {
+container[data-phase="nigredo"] {
   --site_style_accent: var(--color-nigredo);
 }
 
-body[data-phase="albedo"] {
+container[data-phase="albedo"] {
   --site_style_accent: var(--color-albedo);
 }
 
-body[data-phase="citrinitas"] {
+container[data-phase="citrinitas"] {
   --site_style_accent: var(--color-citrinitas);
 }
 
-body[data-phase="rubedo"] {
+container[data-phase="rubedo"] {
   --site_style_accent: var(--color-rubedo);
 }
 
-body[data-phase="codex"] {
+container[data-phase="codex"] {
   --site_style_accent: oklch(62% 0.08 290);
 }
 

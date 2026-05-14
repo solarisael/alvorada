@@ -3,7 +3,7 @@
 
 /* ============================================================
    NIGREDO PAGE — Ash Reliquary
-   Scoped to body[data-phase="nigredo"] only.
+   Scoped to container[data-phase="nigredo"] only.
    Import only from src/pages/nigredo.astro.
    ============================================================ */
 
@@ -11,7 +11,7 @@
    Quick Tune Variables (edit here first)
    ============================================================ */
 
-body[data-phase="nigredo"] {
+container[data-phase="nigredo"] {
   /* geometry */
   --nigredo_card_radius: 14px;
   --nigredo_card_border_width: 1px;
@@ -621,7 +621,7 @@ body[data-phase="nigredo"] {
    ============================================================ */
 
 @media (max-width: 768px) {
-  body[data-phase="nigredo"] {
+  container[data-phase="nigredo"] {
     --nigredo_scroll_height: 70vh;
   }
 
