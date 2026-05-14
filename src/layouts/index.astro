@@ -5,6 +5,12 @@ import "../styles/index.css";
 import "../styles/components/content_shell.css";
 import "../styles/components/footer.css";
 import "../styles/components/rubedo_timeline.css";
+// Page-specific CSS hoisted to layout level so htmx-nav has it available.
+// Astro page-scoped imports only inject on native page load; htmx swaps don't
+// pull the response's <style> tags, so cards/entries render unstyled. Keep these
+// here unless head-support extension starts merging style tags reliably.
+import "../styles/components/home_card_gate.css";
+import "../styles/components/nigredo_page.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
