@@ -460,22 +460,47 @@
   transform: rotate(180deg);
 }
 
+/* Line horizontal extent: starts after the corner ends + a clearance gap, mirrored on right.
+   Corner width = 7.1rem * --cinza_reliquary_corner_scale (from corner sizing rules above).
+   --reliquary_line_corner_clearance is the breathing room between corner and flourish. */
+:root[data-site-theme="solarisael"] {
+  --reliquary_line_corner_clearance: 1rem;
+}
+
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
-  left: var(--cinza_reliquary_offset_left);
-  right: var(--cinza_reliquary_offset_right);
+  left: calc(
+    var(--cinza_reliquary_offset_left) +
+      7.1rem * var(--cinza_reliquary_corner_scale) +
+      var(--reliquary_line_corner_clearance)
+  );
+  right: calc(
+    var(--cinza_reliquary_offset_right) +
+      7.1rem * var(--cinza_reliquary_corner_scale) +
+      var(--reliquary_line_corner_clearance)
+  );
   top: var(--cinza_reliquary_offset_top);
   height: var(--cinza_reliquary_line_block_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
-  left: var(--cinza_reliquary_offset_left);
-  right: var(--cinza_reliquary_offset_right);
+  left: calc(
+    var(--cinza_reliquary_offset_left) +
+      7.1rem * var(--cinza_reliquary_corner_scale) +
+      var(--reliquary_line_corner_clearance)
+  );
+  right: calc(
+    var(--cinza_reliquary_offset_right) +
+      7.1rem * var(--cinza_reliquary_corner_scale) +
+      var(--reliquary_line_corner_clearance)
+  );
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
   );
   height: var(--cinza_reliquary_line_block_size);
 }
 
+/* Sigils anchor to the line's vertical center so they overlay the bar at its midpoint.
+   Horizontal: center axis. Vertical: line top + line height / 2 (so sigil center == line center). */
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {
   left: calc(
     var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
@@ -483,11 +508,11 @@
   );
   top: calc(
     var(--cinza_reliquary_offset_top) +
-      var(--cinza_reliquary_sigil_vertical_offset)
+      var(--cinza_reliquary_line_block_size) / 2
   );
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom {
@@ -497,12 +522,12 @@
   );
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) +
-      var(--cinza_reliquary_sigil_vertical_offset) +
-      var(--content_footer_reserve)
+      var(--content_footer_reserve) +
+      var(--cinza_reliquary_line_block_size) / 2
   );
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
-  transform: translateX(-50%);
+  transform: translate(-50%, 50%);
 }
 
 
