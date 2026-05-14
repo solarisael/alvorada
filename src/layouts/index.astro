@@ -60,17 +60,28 @@ const resolved_body_classes = Array.from(
     <title>Sol's Rest</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <script src={with_base("js/vendor/htmx_runtime.js")} type="module"></script>
-    <script src={with_base("js/vendor/idiomorph-ext.js")}></script>
+    {/*
+      LOAD-BEARING — DO NOT TOUCH.
+
+      htmx (UMD build, self-assigns window.htmx) and idiomorph-ext (uses window.htmx)
+      MUST load as plain synchronous scripts in this exact order. Do NOT add `type="module"`,
+      do NOT add `defer` or `async`, do NOT reorder. Module + plain mix or any deferral
+      causes a load-order race where idiomorph-ext fires before htmx is defined and the
+      whole site's swap behavior breaks ("htmx is not defined" in console).
+
+      scripts.js stays a module — it's user code and is allowed to defer.
+    */}
+    <script is:inline src={with_base("js/vendor/htmx.min.js")}></script>
+    <script is:inline src={with_base("js/vendor/idiomorph-ext.js")}></script>
     <script src={with_base("js/scripts.js")} type="module"></script>
   </head>
   <body
     class:list={resolved_body_classes}
     data-phase={phase || undefined}
     hx-ext="morph,head-support,preload,sse"
-    hx-target="#sol_content"
-    hx-select="#sol_content"
-    hx-swap="morph swap:240ms settle:240ms"
+    hx-target="body"
+    hx-select="body"
+    hx-swap="morph:outerHTML swap:240ms settle:240ms"
     hx-push-url="true"
   >
     <Navbar />
