@@ -1,5 +1,8 @@
 ---
 // Decorative SVG frame for the content shell — corners, lines, sigils.
+// Reliquary set (Kintsu pass-1, 2026-05-14): single corner SVG rotated per-position,
+// divider_flourish for lines, sigil_concentric for top sigil, divider_center for bottom.
+// Sol-mythology weaving (black sun / wolf skull / Perseus) is the next iteration.
 // Preserves the sol__content_layer class so the .sol__content_layer positioning rules still apply.
 
 const base_url = import.meta.env.BASE_URL;
@@ -9,6 +12,10 @@ const with_base = (path_value) => {
 
   return `${base_path}/${normalized_path}`;
 };
+
+const reliquary_corner = with_base("ornaments/reliquary/card_corner.svg");
+const reliquary_sigil = with_base("ornaments/reliquary/sigil_concentric.svg");
+const reliquary_center = with_base("ornaments/reliquary/divider_center.svg");
 ---
 
 <ornament
@@ -17,32 +24,33 @@ const with_base = (path_value) => {
 >
   <img
     class="sol__content_ornament sol__content_ornament_corner_tl"
-    src={with_base("ornaments/cinza/frame_corner_tl.svg")}
+    src={reliquary_corner}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
     class="sol__content_ornament sol__content_ornament_corner_tr"
-    src={with_base("ornaments/cinza/frame_corner_tr.svg")}
+    src={reliquary_corner}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
     class="sol__content_ornament sol__content_ornament_corner_bl"
-    src={with_base("ornaments/cinza/frame_corner_bl.svg")}
+    src={reliquary_corner}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
     class="sol__content_ornament sol__content_ornament_corner_br"
-    src={with_base("ornaments/cinza/frame_corner_br.svg")}
+    src={reliquary_corner}
     alt=""
     loading="eager"
     decoding="async"
   />
+  <!-- lines kept cinza: reliquary set has no true wide-line element (divider_flourish is 44x14 inline ornament; would distort if stretched to 72% width) -->
   <img
     class="sol__content_ornament sol__content_ornament_line_top"
     src={with_base("ornaments/cinza/frame_line_top.svg")}
@@ -59,14 +67,14 @@ const with_base = (path_value) => {
   />
   <img
     class="sol__content_ornament sol__content_ornament_sigil_top"
-    src={with_base("ornaments/cinza/sigil_moon_star.svg")}
+    src={reliquary_sigil}
     alt=""
     loading="eager"
     decoding="async"
   />
   <img
     class="sol__content_ornament sol__content_ornament_sigil_bottom"
-    src={with_base("ornaments/cinza/sigil_eye.svg")}
+    src={reliquary_center}
     alt=""
     loading="eager"
     decoding="async"

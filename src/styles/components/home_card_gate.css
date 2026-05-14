@@ -375,9 +375,6 @@
   object-fit: fill;
 }
 
-/* Corner ornaments use single reliquary card_corner.svg rotated per-position.
-   The SVG was authored for TL placement (curl extends down+right from the top-left).
-   Rotate 90 / 180 / 270 for the other three corners; rotation is around element center. */
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_tl {
   left: var(--phase_ornament_inset);
   top: var(--phase_ornament_inset);
@@ -390,7 +387,6 @@
   top: var(--phase_ornament_inset);
   width: var(--phase_ornament_tr_size);
   height: var(--phase_ornament_tr_size);
-  transform: rotate(90deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_bl {
@@ -398,7 +394,6 @@
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_bl_size);
   height: var(--phase_ornament_bl_size);
-  transform: rotate(270deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_br {
@@ -406,7 +401,6 @@
   bottom: var(--phase_ornament_inset);
   width: var(--phase_ornament_br_size);
   height: var(--phase_ornament_br_size);
-  transform: rotate(180deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top {

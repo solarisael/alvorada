@@ -376,6 +376,10 @@
   object-fit: fill;
 }
 
+/* Content frame corners use single reliquary card_corner.svg rotated per-position.
+   The SVG was authored for TL placement (curl extends down+right from the top-left).
+   Rotate 90 / 180 / 270 for the other three corners; rotation is around element center.
+   Per-corner sizes equalized at 7.1rem since rotated single source replaces 4 distinct cinza files. */
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl {
   left: var(--cinza_reliquary_offset_left);
   top: var(--cinza_reliquary_offset_top);
@@ -386,8 +390,9 @@
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr {
   right: var(--cinza_reliquary_offset_right);
   top: var(--cinza_reliquary_offset_top);
-  width: calc(7.8rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.8rem * var(--cinza_reliquary_corner_scale));
+  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  transform: rotate(90deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl {
@@ -395,8 +400,9 @@
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
   );
-  width: calc(7.4rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.4rem * var(--cinza_reliquary_corner_scale));
+  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  transform: rotate(270deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_br {
@@ -404,8 +410,9 @@
   bottom: calc(
     var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
   );
-  width: calc(6.8rem * var(--cinza_reliquary_corner_scale));
-  height: calc(6.8rem * var(--cinza_reliquary_corner_scale));
+  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  transform: rotate(180deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
