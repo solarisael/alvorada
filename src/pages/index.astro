@@ -10,11 +10,19 @@ const with_base = (path_value) => {
   return `${base_path}/${normalized_path}`;
 };
 
-const cinza_card_ornament_base = {
-  corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
-  corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
-  corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
-  corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
+// Reliquary ornament set — single corner SVG rotated per-position via CSS,
+// single sigil at all four cards. Kintsu pass-1 (2026-05-14).
+// Sol-mythology weaving (black sun / wolf skull / Perseus) is the next pass.
+// Side flourishes still use cinza set (reliquary divider_flourish is horizontal-oriented; vertical equivalent not yet generated).
+const reliquary_corner = with_base("ornaments/reliquary/card_corner.svg");
+const reliquary_sigil = with_base("ornaments/reliquary/sigil_concentric.svg");
+const reliquary_center_top = with_base("ornaments/reliquary/divider_center.svg");
+
+const reliquary_corner_set = {
+  corner_tl: reliquary_corner,
+  corner_tr: reliquary_corner,
+  corner_bl: reliquary_corner,
+  corner_br: reliquary_corner,
 };
 
 const phase_cards = [
@@ -25,8 +33,8 @@ const phase_cards = [
     phase_blurb:
       "Dissolution and shadow-work. Enter the black vessel of becoming.",
     ornament: {
-      ...cinza_card_ornament_base,
-      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
+      ...reliquary_corner_set,
+      sigil: reliquary_sigil,
     },
   },
   {
@@ -35,8 +43,8 @@ const phase_cards = [
     phase_symbol: "02",
     phase_blurb: "Clarification and silver breath. Distill signal from noise.",
     ornament: {
-      ...cinza_card_ornament_base,
-      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
+      ...reliquary_corner_set,
+      sigil: reliquary_sigil,
     },
   },
   {
@@ -45,10 +53,8 @@ const phase_cards = [
     phase_symbol: "03",
     phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
     ornament: {
-      ...cinza_card_ornament_base,
-      corner_tl: with_base("ornaments/cinza/card_corner_b.svg"),
-      corner_tr: with_base("ornaments/cinza/card_corner_a.svg"),
-      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
+      ...reliquary_corner_set,
+      sigil: reliquary_sigil,
     },
   },
   {
@@ -57,10 +63,8 @@ const phase_cards = [
     phase_symbol: "04",
     phase_blurb: "Union and embodiment. Seal the work in living fire.",
     ornament: {
-      ...cinza_card_ornament_base,
-      corner_bl: with_base("ornaments/cinza/card_corner_d.svg"),
-      corner_br: with_base("ornaments/cinza/card_corner_c.svg"),
-      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
+      ...reliquary_corner_set,
+      sigil: reliquary_sigil,
     },
   },
 ];
@@ -89,10 +93,6 @@ const phase_cards = [
             class={`sol__phase_card_link phase_card_${phase_card.phase_slug}`}
             href={with_base(phase_card.phase_slug)}
             hx-get={with_base(phase_card.phase_slug)}
-            hx-target="#sol_content"
-            hx-select="#sol_content"
-            hx-swap="morph swap:240ms settle:240ms"
-            hx-push-url="true"
           >
             <span class="sol__phase_card_layer sol__phase_card_layer_surface" />
             <span class="sol__phase_card_layer sol__phase_card_layer_stars" />
@@ -128,7 +128,7 @@ const phase_cards = [
               />
               <img
                 class="sol__phase_card_ornament sol__phase_card_ornament_center_top"
-                src={with_base("ornaments/cinza/card_center_top.svg")}
+                src={reliquary_center_top}
                 alt=""
                 loading="eager"
                 decoding="async"
