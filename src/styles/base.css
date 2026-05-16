@@ -52,11 +52,11 @@
 
 /* Thread identity colors — per character, not per theme.
    Values derived from character descriptions:
-   cinza = divine light, suul = abyssal green (Envy), matins = dawn */
+   cinza = divine light, suul = abyssal green (Envy), solarisael = dawn */
 :root {
   --color-thread-cinza: oklch(94% 0.018 85);
   --color-thread-suul: oklch(58% 0.18 148);
-  --color-thread-matins: oklch(74% 0.13 47);
+  --color-thread-solarisael: oklch(74% 0.13 47);
 }
 
 :root[data-site-theme="solarisael"] {

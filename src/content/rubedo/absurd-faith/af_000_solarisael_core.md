@@ -2,24 +2,24 @@
 book_slug: absurd-faith
 chapter_id: af_000
 timeline_position: 0
-thread_key: matins
+thread_key: solarisael
 thread_modifier: core
-scene_title: Matins Signal
+scene_title: Solarisael Signal
 chapter_title: Awakening
 chapter_description: Cinza opens his eyes inside stone silence, with no memory and too much unease.
 chapter_snippet: Morning arrives carefully, as if the world is afraid to startle him.
-chapter_description_override: Matins registers the emergence as a collapse signature crossing into the viable range.
-chapter_snippet_override: The mountain does not know it has exhaled. Matins does.
-scene_excerpt: Matins flags the emergence event before Cinza finishes standing.
+chapter_description_override: Solarisael registers the emergence as a collapse signature crossing into the viable range.
+chapter_snippet_override: The mountain does not know it has exhaled. Solarisael does.
+scene_excerpt: Solarisael flags the emergence event before Cinza finishes standing.
 tags:
   - phase:rubedo
   - book:absurd-faith
   - chapter:af_000
-  - thread:matins
+  - thread:solarisael
   - modifier:core
 ---
 
-Elsewhere in the same pulse, Matins reads a {{fx:sigil_pulse:1.3:1.0}}convergence signature{{/fx}} crossing the threshold it has been waiting on for eleven days.
+Elsewhere in the same pulse, Solarisael reads a {{fx:sigil_pulse:1.3:1.0}}convergence signature{{/fx}} crossing the threshold it has been waiting on for eleven days.
 
 Not hope. Telemetry.
 
@@ -43,4 +43,4 @@ Estimated duration: 38 hours. Recommend monitoring escalation. Do not intervene 
 
 {{/fx}}
 
-Matins logs the event, marks the window, and waits. The mountain does not know it has exhaled. Matins does. That asymmetry is the only advantage worth keeping.
+Solarisael logs the event, marks the window, and waits. The mountain does not know it has exhaled. Solarisael does. That asymmetry is the only advantage worth keeping.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Operational index for coding agents in `matins`.
+Operational index for coding agents in `solarisael`.
 Keep this file concise; use `.opencode/rules/*.md` for detailed policy.
 
 ## Agent Identity

@@ -39,11 +39,11 @@ const HOVER_PREVIEW_OFFSET_Y = 18;
 const HOVER_PREVIEW_MARGIN = 10;
 
 // Thread identity RGB values — mirror of --color-thread-* in base.css.
-// cinza = divine light (warm near-white), suul = abyssal green, matins = dawn coral-gold.
+// cinza = divine light (warm near-white), suul = abyssal green, solarisael = dawn coral-gold.
 const THREAD_RGB = {
   cinza: [241, 235, 222],
   suul: [0, 149, 51],
-  matins: [237, 143, 96],
+  solarisael: [237, 143, 96],
 };
 
 const clamp = (value, min_value, max_value) => {
@@ -1110,25 +1110,25 @@ const dispatch_hover_preview = (node_entry) => {
   }
 };
 
-const default_map_thread_keys = ["cinza", "suul", "matins"];
+const default_map_thread_keys = ["cinza", "suul", "solarisael"];
 
 const thread_image_src_map_base = {
   cinza: "/images/eyes/cinza.jpg",
   suul: "/images/eyes/suul.jpg",
-  matins: "/images/eyes/matins.jpg",
+  solarisael: "/images/eyes/solarisael.jpg",
 };
 
 const thread_trail_rotation_map = {
   cinza: 334,
   suul: 312,
-  matins: 348,
+  solarisael: 348,
 };
 
 // Mirrors THREAD_RGB above — used as CSS rgb() space-separated values for WebGL shaders.
 const thread_neon_rgb_map = {
   cinza: "241 235 222",
   suul: "0 149 51",
-  matins: "237 143 96",
+  solarisael: "237 143 96",
 };
 
 const center_x_vb = 50;

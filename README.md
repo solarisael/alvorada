@@ -1,4 +1,4 @@
-# matins
+# solarisael
 
 A personal website — **Solarisael rendered in browser, full Sol, no pretenses.** Not a portfolio, not a business site, not a professional surface. Every section is a facet of the same person; visitors experience Sol by moving through the alchemical stages.
 

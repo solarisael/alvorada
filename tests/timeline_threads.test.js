@@ -54,9 +54,9 @@ const absurd_faith_timeline = {
             "A memory echo reframes the cliff as threshold, not dead end.",
         },
         {
-          thread_key: "matins",
+          thread_key: "solarisael",
           thread_modifier: "core",
-          scene_title: "Matins Thread",
+          scene_title: "Solarisael Thread",
           chapter_title_override: "Collapse Signatures",
           chapter_snippet_override:
             "The mountain is not a place here; it is a warning mapped in light.",
@@ -176,7 +176,7 @@ describe("timeline thread resolver", () => {
   test("applies chapter metadata overrides from resolved thread scene", () => {
     const resolved_state = resolve_book_view_state(absurd_faith_timeline, {
       chapter_id: "af_001",
-      thread_key: "matins",
+      thread_key: "solarisael",
       thread_modifier: "core",
     });
 

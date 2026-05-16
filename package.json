@@ -1,7 +1,7 @@
 {
-  "name": "matins",
+  "name": "solarisael",
   "version": "0.1.0",
-  "description": "matins - new day sunlight, a faithful prayer",
+  "description": "solarisael - new day sunlight, a faithful prayer",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

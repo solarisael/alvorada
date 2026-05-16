@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Project Architecture
 
-`matins` is a personal website built with Astro 5 + Tailwind 4 + Bun + vanilla JS + HTMX + idiomorph. Reading-focused, ritualistic in markup, indie-web in spirit.
+`solarisael` is a personal website built with Astro 5 + Tailwind 4 + Bun + vanilla JS + HTMX + idiomorph. Reading-focused, ritualistic in markup, indie-web in spirit.
 
 ## Source Layout
 
