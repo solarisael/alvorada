@@ -1,7 +1,7 @@
 {
   "name": "solarisael",
   "version": "0.1.0",
-  "description": "solarisael - new day sunlight, a faithful prayer",
+  "description": "sun + aris + aleph + el — the being placed within the divine architecture",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

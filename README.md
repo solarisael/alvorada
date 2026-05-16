@@ -4,7 +4,7 @@ A personal website — **Solarisael rendered in browser, full Sol, no pretenses.
 
 Eventually hosts **Absurd Faith** at `/rubedo/`. The Codex is the reading mechanic for the book.
 
-*new day sunlight, a faithful prayer.*
+*sun + aris (lion / war / altar) + aleph (breath / threshold) + el (god) — the being placed within the divine architecture.*
 
 ## The five alchemical sections
 
