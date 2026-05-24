@@ -1,5 +1,24 @@
 ---
+import { getCollection } from "astro:content";
 import IndexLayout from "../layouts/index.astro";
+
+const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
+
+// Albedo entries land in the Obsidian vault at `zz_albedo/`. The schema in
+// `content.config.js` is intentionally loose for now — pattern will be
+// tightened once Sol surfaces what frontmatter shape Albedo wants in practice.
+const raw_entries = await getCollection("albedo", ({ data }) => !data.draft);
+
+const archive_index = raw_entries
+  .sort((a, b) => b.data.published_at.localeCompare(a.data.published_at))
+  .map((entry) => ({
+    slug: entry.data.slug,
+    title: entry.data.title ?? null,
+    published_at: entry.data.published_at,
+    excerpt: entry.data.excerpt ?? null,
+    featured: entry.data.featured ?? false,
+    href: `${base_path}/albedo/${entry.data.slug}`,
+  }));
 ---
 
 <IndexLayout phase="albedo">
@@ -17,7 +36,32 @@ import IndexLayout from "../layouts/index.astro";
 
     <div class="sol__page_section">
       <h2>Notes &amp; Progress</h2>
-      <p class="sol__text_fine">No entries yet. Keep going.</p>
+      {
+        archive_index.length === 0 ? (
+          <p class="sol__text_fine">No entries yet. Keep going.</p>
+        ) : (
+          <ul class="sol__archive_list">
+            {archive_index.map((entry) => (
+              <li>
+                <a
+                  href={entry.href}
+                  hx-get={entry.href}
+                  hx-target="#sol_content"
+                  hx-select="#sol_content"
+                  hx-swap="morph swap:240ms settle:240ms"
+                  hx-push-url="true"
+                >
+                  <time datetime={entry.published_at} class="sol__text_kicker">
+                    {entry.published_at}
+                  </time>
+                  <span>{entry.title ?? entry.slug}</span>
+                </a>
+                {entry.excerpt && <p class="sol__text_fine">{entry.excerpt}</p>}
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </div>
   </albedo>
 </IndexLayout>

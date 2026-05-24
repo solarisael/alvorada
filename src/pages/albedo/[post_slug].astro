@@ -1,46 +1,40 @@
 ---
+import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 
-export const getStaticPaths = () => {
-  return [
-    { params: { post_slug: "first-lantern" } },
-    { params: { post_slug: "midnight-notes" } },
-    { params: { post_slug: "ritual-of-clarity" } },
-  ];
-};
+export async function getStaticPaths() {
+  const entries = await getCollection("albedo", ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { post_slug: entry.data.slug },
+    props: { entry },
+  }));
+}
 
-const post_slug = Astro.params.post_slug ?? "unknown-post";
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
+const { entry } = Astro.props;
+const { Content } = await render(entry);
 
-  return `${base_path}/${normalized_path}`;
-};
+const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
+const display_title = entry.data.title ?? entry.data.slug;
 ---
 
-<IndexLayout>
+<IndexLayout
+  phase="albedo"
+  crumbs={[
+    { label: "home", href: `${base_path}/` },
+    { label: "albedo", href: `${base_path}/albedo` },
+    { label: display_title, href: null },
+  ]}
+>
   <albedo data-shape="entry_detail">
     <div class="sol__entry_header">
-      <p>~/ albedo / {post_slug}</p>
-      <h1>Albedo Post</h1>
+      <time datetime={entry.data.published_at} class="sol__text_kicker">
+        {entry.data.published_at}
+      </time>
+      <h1>{display_title}</h1>
     </div>
 
-    <div class="sol__entry_body">
-      <p>
-        Scaffold child page for <code>/albedo/{post_slug}</code>. Use this to
-        verify nested breadcrumbs and HTMX transition behavior.
-      </p>
-      <p>
-        <a
-          href={with_base("/albedo")}
-          hx-get={with_base("/albedo")}
-          hx-target="#sol_content"
-          hx-select="#sol_content"
-          hx-swap="morph swap:240ms settle:240ms"
-          hx-push-url="true">Back to Albedo index</a
-        >
-      </p>
+    <div class="sol__entry_body sol__chapter_content">
+      <Content />
     </div>
   </albedo>
 </IndexLayout>

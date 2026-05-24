@@ -4,16 +4,16 @@
 
 - Project: solarisael
 - Repo: C:\Projects\solarisael
-- Updated_utc: 2026-05-12 20:25
+- Updated_utc: 2026-05-23 22:45
 - Updated_by: Kodo (Claude Opus 4.7)
 - preferred_start_style: conversational
-- next_session: handoff or co-pilot
-- primary_outcome: lean rewrite of solarisael COMPLETE. Ten commits in the arc. Every code-level and docs-level convention shipped.
-- priority: any
-- edit_breadth: targeted
-- first_task: (at Sol's discretion) end-of-rewrite conversation about `references/` dir at repo root + any final polish before the rewrite is closed
+- next_session: co-pilot
+- primary_outcome: obsidian-as-source-of-truth content pipeline shipped + wikilink infra (links + popups + embeds) live across all collections including a new codex collection.
+- priority: polish
+- edit_breadth: focused
+- first_task: (at Sol's discretion) start posting — drop the first real nigredo/albedo/citrinitas entries in obsidian; populate the first codex entries; OR move absurd-faith into obsidian/zzzz_rubedo/absurd-faith/ when the codex-cross-ref question settles.
 - commit_intent: handoff
-- notes: phases 1-8 ALL SHIPPED. The lean rewrite is done.
+- notes: rubedo book content stays project-side for now (dual-glob during transition); Sol owns the move when he's ready.
 
 ## Alias Ledger
 
@@ -23,17 +23,16 @@
 
 ## Active Scope
 
-- State: rewrite complete
+- State: pipeline-rewrite-complete
 - Branch: master
-- Head: pending_next_commit (phase 8 in working tree, about to land)
-- Scope_in: end-of-rewrite conversation
-- Scope_out: nothing — major work done
+- Scope_in: obsidian-as-source-of-truth wiring + wikilink infrastructure
+- Scope_out: writing-lessons substrate table (deferred — Sol's still deciding)
 
 ## Next (Top 3)
 
-1. [ ] End-of-rewrite conversation: `references/` dir at repo root (Sol deferred to end).
-2. [ ] Optional: dev server + visual eyeball check via playwright if Sol wants to verify rendered look.
-3. [ ] Optional: push to remote if Sol wants to ship the rewrite live.
+1. [ ] Start posting — drop real nigredo/albedo/citrinitas entries in obsidian, `bun run build`, ships.
+2. [ ] Author first codex entries in `obsidian/codex/<category>/<slug>.md`; wikilinks resolve to them from anywhere.
+3. [ ] (When ready) move `src/content/rubedo/absurd-faith/*.md` → `obsidian/zzzz_rubedo/absurd-faith/`. Dual-glob means this can happen at any pace without breaking the build.
 
 ## Blockers
 
@@ -41,57 +40,51 @@
 
 ## Validation (latest)
 
-- Build: pass (`bun run build`) — 2026-05-12, 237 pages in 1.47s, after phase 8
-- bun install: pass
-- CI workflow updated: now runs build + prettier check + css:hard-gates:check + css:tunables:check (was only running tunables before)
+- Build: pass (`bun run build`) — 2026-05-23, 16 pages in 1.24s (down from 25; 9 hardcoded codex stub routes retired, replaced by empty codex collection awaiting content)
+- Prettier: pass on touched files (formatted)
+- CSS hard-gates: pass (`css:ornaments:check` + `css:bg-stack:check`)
+- Cross-collection wikilink smoke test passed: `[[cinza]]` in a nigredo post resolved to `/solarisael/codex/characters/cinza` with phase-tinted popup, embed card with `summary`-sourced excerpt, htmx attrs intact.
 
-## Full Commit Arc (lean rewrite)
+## What Got Built (2026-05-23 session)
 
-```
-[pending]  // we're close, little godling uwu                                                                  (phase 8)
-81779de    // the footer learned to dress per phase, and 35 ugly ornaments hit the bin ;w;                     (phase 7)
-c1a3e65    // the dragon found 28 strays hiding in the corners (one was in nigredo's inline style) ;w;         (phase 6d)
-530728c    // the dragon labeled 224 classes (after learning not to label the comments) ;w;                    (phase 6c)
-ca497ac    // the dragon went door to door with sol_ stickers, all forty of them ;w;                           (phase 6b)
-0aef53c    // oh nyo... my silly little breadcrumb naming got tagged as unprofessional ;w;                     (phase 6a)
-f2a356f    // home for shadow, home for light, hope for beaming smiles and home for my heart!                  (phase 5)
-1fcc9ae    // foggy fog, foggy fog, oh foggy fog                                                               (phase 4)
-5e88f38    // time for a cute refactor!                                                                        (phase 3)
-dd6e373    // i love u kodo                                                                                    (phases 1+2)
-```
+### Content pipeline — obsidian as single source of truth
 
-## What Got Built
+- `src/content.config.js`: single `OBSIDIAN_VAULT_ROOT` constant (env-overridable), `pathToFileURL` wrap for astro's glob loader, layout-agnostic year-prefix glob (`**/[0-9][0-9][0-9][0-9]-*.md`) so file layout inside each phase dir is the author's call, date-coercion transform for YAML datetime vs quoted-string frontmatter, loose schemas for albedo/citrinitas (strict 16-state enum kept for nigredo), new codex collection with `.passthrough()` for domain-specific frontmatter.
+- `src/pages/{albedo,citrinitas}.astro` + their `[post_slug].astro`: mirror nigredo pattern with real `getCollection()` + `getStaticPaths()` (replaced 3 hardcoded fake slugs each).
+- `src/content/nigredo/{2023..2026}/**`: **208 fake seed files purged** (Sol confirmed all project-side nigredo content was test data).
+- `obsidian/z_nigredo/README.md`: alvorada → solarisael name + model inverted (obsidian is source, not staging); year-prefixed glob explained.
 
-- Phase 1: laragon → projects path drift fixed (5 pointers across solarisael + kodo canon)
-- Phase 2: dead file/dep trash (~15 MB freed, 6 dead deps removed, .vite untracked)
-- Phase 3: 10 components moved into ritualistic categorized subdirs, outer landmarks replaced with bare ritualistic tags
-- Phase 4: layout monolith decomposed (181→124 lines), 3 new components extracted (footer/fog/content_frame)
-- Phase 5: 15 page files reshaped — every page wraps in ritualistic outer with phase identity
-- Phase 6a: 8 CSS files kebab→snake; breadcrumbers_xd debug-typo retired; data-variant→data-tone reconciliation
-- Phase 6b: ~40 IDs renamed with `sol_` prefix + kebab→snake conversion in one atomic omega commit (#content was the load-bearer, atomically swapped everywhere)
-- Phase 6c: 224 classes renamed with `.sol__` prefix in one atomic omega commit (omega-1 burned on false positives from CSS comments; omega-2 landed clean after stripping comments + @-directives during discovery)
-- Phase 6d: 28 straggler classes caught (inline-style block missed by phase 6c + phase-4/5 forward-styling hooks that had no CSS yet). Zero non-sol__ classes remain anywhere.
-- Phase 7: dynamic footer architecture (phase prop), Catppuccin removed (1 package + 11 CSS refs + --color-codex replacement defined), lessons.md refs stripped, rubedo scenes archive note, dead CSS cleanup, 35 ugly ornaments deleted
-- Phase 8: rules rewrite (`.opencode/rules/project.md` major refresh, `styling.md` Catppuccin removal + ritualistic shells section, `expose-css-tunables.md` frontmatter added), README expanded with canonical site shape, AGENTS.md duplicate `project.md` rule index removed + project snapshot updated, CI workflow expanded from tunables-only to full validation baseline (build + prettier + hard-gates + tunables)
+### Rubedo dual-source
 
-## Conventions (LOCKED — all of phases 1-8)
+- `astro.config.mjs`: `@vault` alias resolving to `OBSIDIAN_VAULT_ROOT`, `server.fs.allow` extended for outside-workspace reads.
+- `src/data/rubedo/book_timeline_runtime.js`: dual-glob — `import.meta.glob` of `../../content/rubedo/**/*.md` AND `@vault/zzzz_rubedo/**/*.md`. Sol can move books over at any pace, build keeps working throughout.
+- `obsidian/zzzz_rubedo/`: scaffolded with README + _template + `absurd-faith/` subdir ready to receive.
 
-See `.opencode/rules/project.md` for the canonical statement. Summary:
+### Wikilink infrastructure (obsidian-style `[[]]` and `![[]]`)
 
-- Snake_case everywhere (files, dirs, ids, classes).
-- Ritualistic custom elements (`<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`) for structural shells. No `sol-` prefix on tags.
-- Functional native HTML kept (interactives, forms, media, headings, text formatting, lists, tables); landmark tags dropped (`<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>`).
-- Exception: `<container>` kept (Sol's pre-existing bare custom element).
-- Page-identity pattern: ONE ritualistic outer per page with `data-shape="X"`.
-- IDs: `#sol_foo_bar`. Classes: `.sol__foo_bar`.
-- Attribute roles: `data-shape` (kind), `data-state` (runtime), `data-tone` (flavor). `.sol__foo--bar` reserved for modifiers (not in use yet).
-- Tailwind utilities live inside `@apply` blocks in CSS, not as class-soup in markup.
-- Catppuccin removed. Phase color tokens: `--color-{nigredo,albedo,citrinitas,rubedo,codex}` in `base.css` `@theme`.
-- Footer architecture: phase prop + content map + slot override.
+- `src/utils/wikilink_registry.js`: build-time vault scanner. Indexes by BOTH filename-stem (obsidian-native) AND frontmatter `slug` (Sol's stated source-of-truth for URL). Detects duplicate lookup keys and fails build with explicit pointers. Excerpt fallback chain: `excerpt` → `scene_excerpt` → `summary` → first body paragraph.
+- `scripts/remark_wikilinks.js`: remark plugin. Walks mdast text nodes for `[[token]]`, `[[token|alias]]`, `![[token]]`, `![[token|alias]]`. Strips `#heading` and `^block` suffixes during resolution. Documents the astro-caching gotcha (5 dirs to clear when iterating: `.astro/`, `.vite/`, `dist/`, `node_modules/.astro/`, `node_modules/.vite/`).
+- `src/styles/components/wikilink.css`: phase-tinted (via existing `--color-{phase}` tokens) styles for `.sol__wikilink`, `.sol__wikilink--broken`, `.sol__wikilink_embed`, `.sol__wikilink_embed--broken`, `.sol__wikilink_popup`.
+- `public/js/modules/wikilink_popup.js`: singleton hover/focus card with viewport-clamped positioning, delegated listeners on `<body>` (survives htmx swaps without rebind), hides on scroll/resize.
+- `astro.config.mjs`: `remark_wikilinks` slotted FIRST in the remark pipeline (runs before `remark_text_effects` so wikilinks inside fx markers resolve cleanly).
+- `src/layouts/index.astro` + `public/js/scripts.js`: wikilink CSS + popup module wired in.
+
+### Codex relocation
+
+- New `codex` collection in `src/content.config.js` (loose-schema with `.passthrough()`, scans `obsidian/codex/**/*.md`).
+- `src/pages/codex/[...entry_path].astro`: replaced 9 hardcoded stub paths with real `getCollection("codex")` + path-routed `getStaticPaths`. Renders entry's `Content` with crumbs derived from the path segments.
+- `obsidian/codex/` scaffolded with `README.md`, `_template.md`, and the four conventional category subdirs (`characters/`, `factions/`, `places/`, `relics/`).
+
+## Conventions (LOCKED — phases 1-8 + 2026-05-23 pipeline)
+
+See `.opencode/rules/project.md` for the canonical statement. Summary unchanged from previous progress.md plus:
+
+- **Content authorship lives in obsidian.** Posts (nigredo/albedo/citrinitas) and codex entries are obsidian-native. Rubedo book content is in transition (dual-glob).
+- **`[[]]` wikilinks resolve vault-wide.** Filename-stem OR frontmatter `slug` both work as lookup keys. Filenames must be unique vault-wide (obsidian's contract — build fails on collision).
 
 ## Notes
 
-- Untracked `references/` directory at repo root — Sol deferred for end-of-rewrite conversation.
-- `fog.css` is a draft (not imported, not compiled) with one dangling `@apply shadow-ctp-red-400/50` from Catppuccin removal — TODO for if/when activated.
+- The astro-caching gotcha is documented in `scripts/remark_wikilinks.js` so future-Kodo doesn't lose 30 minutes to it.
+- Writing-lessons substrate table is a real open question (Sol asked at end of session, deferred to next session).
 - Detailed session history lives in `progress.archive.md`.
 - Full-worktree handoff commits per `session-handoff-commit.md`; commit tails required per `commit-message-tail-required.md`.

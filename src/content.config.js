@@ -1,14 +1,53 @@
-// The rubedo collection files are consumed via import.meta.glob in
-// book_timeline_runtime.js — not through Astro's getCollection() API.
-// This file declares the collection with an empty loader so Astro does not
-// auto-glob the files (which would produce duplicate-id warnings).
+// Content collections — single source of truth: the Obsidian vault.
+//
+// Each alchemical phase lives in its own holding-pen directory inside the
+// vault. Astro's glob loader reads markdown from there at build time, so
+// authoring happens in Obsidian (templater, dataview, daily notes) and the
+// site renders without an explicit migration step.
+//
+// To move the vault: set SOLARISAEL_OBSIDIAN_ROOT, or edit the constant
+// below. Per-phase subdirs are pinned to the vault's existing naming
+// (`z_` / `zz_` / `zzz_` / `zzzz_` for sort-order convenience in Obsidian's
+// file pane — the alchemical sequence matches the prefix length).
+//
+// The rubedo collection stays declared-but-empty here: rubedo book content
+// is consumed through `import.meta.glob` in `book_timeline_runtime.js`, not
+// `getCollection()`. Declaring it with an empty loader prevents Astro from
+// auto-globbing the files (which would produce duplicate-id warnings).
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-const rubedo = defineCollection({
-  loader: async () => [],
-});
+const OBSIDIAN_VAULT_ROOT =
+  process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
 
+// Astro's glob loader resolves `base` via fileURLToPath — it expects a
+// file:// URL, NOT a bare absolute path. Convert with pathToFileURL.
+// Trailing slash matters: URL semantics treat the last segment as a file
+// unless the URL ends in `/`, so we append before converting.
+const vault_phase_url = (subdir) =>
+  pathToFileURL(`${path.join(OBSIDIAN_VAULT_ROOT, subdir)}${path.sep}`);
+
+const VAULT_PHASE_DIRS = {
+  nigredo: vault_phase_url("z_nigredo"),
+  albedo: vault_phase_url("zz_albedo"),
+  citrinitas: vault_phase_url("zzz_citrinitas"),
+  rubedo: vault_phase_url("zzzz_rubedo"),
+  codex: vault_phase_url("codex"),
+};
+
+// Coerce frontmatter dates to ISO date strings (YYYY-MM-DD). Obsidian
+// accepts both quoted strings ("2026-05-05") and bare datetimes
+// (2026-05-05T18:36:00 → JS Date). The pages sort by `localeCompare` so
+// we normalize to string here once, instead of branching at every callsite.
+const date_string = z
+  .union([z.string(), z.date()])
+  .transform((v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v));
+
+// The 16-state vocabulary for Nigredo entries. Enforced by `z.enum`; any
+// state outside this list fails the build. The README inside the vault's
+// `z_nigredo/` mirrors this list — keep them in sync if the vocabulary grows.
 const NIGREDO_STATES = [
   "grief",
   "dread",
@@ -28,19 +67,103 @@ const NIGREDO_STATES = [
   "exhaustion",
 ];
 
+// Layout-agnostic posts glob — matches any markdown file at any depth
+// whose filename starts with `YYYY-`. The date-prefix on the filename is
+// the marker; the directory layout is the author's call (flat, themed
+// clusters, year-tree, whatever). README.md and _template.md don't match
+// (no year prefix) so they stay invisible to the loader.
+//
+// The actual published-at date for sorting/display comes from the
+// `published_at` frontmatter, not the filename — keep the two in sync
+// or `published_at` wins. The filename prefix is purely a glob marker.
+const POSTS_PATTERN = "**/[0-9][0-9][0-9][0-9]-*.md";
+
 const nigredo = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "src/content/nigredo" }),
+  loader: glob({ pattern: POSTS_PATTERN, base: VAULT_PHASE_DIRS.nigredo }),
   schema: z.object({
     title: z.string().optional(),
     slug: z.string(),
-    published_at: z.string(),
+    published_at: date_string,
     states: z.array(z.enum(NIGREDO_STATES)).min(1),
     excerpt: z.string().optional(),
-    updated_at: z.string().optional(),
+    updated_at: date_string.optional(),
     tags: z.array(z.string()).optional(),
     draft: z.boolean().optional().default(false),
     featured: z.boolean().optional().default(false),
   }),
 });
 
-export const collections = { rubedo, nigredo };
+// Albedo + Citrinitas schemas stay loose intentionally — Sol hasn't yet
+// surfaced the frontmatter shape these phases want. Once a pattern lands
+// in real entries (after a handful of posts), tighten the schema then.
+// Floor required: slug + published_at, everything else optional.
+const albedo = defineCollection({
+  loader: glob({ pattern: POSTS_PATTERN, base: VAULT_PHASE_DIRS.albedo }),
+  schema: z.object({
+    title: z.string().optional(),
+    slug: z.string(),
+    published_at: date_string,
+    excerpt: z.string().optional(),
+    updated_at: date_string.optional(),
+    tags: z.array(z.string()).optional(),
+    draft: z.boolean().optional().default(false),
+    featured: z.boolean().optional().default(false),
+  }),
+});
+
+const citrinitas = defineCollection({
+  loader: glob({ pattern: POSTS_PATTERN, base: VAULT_PHASE_DIRS.citrinitas }),
+  schema: z.object({
+    title: z.string().optional(),
+    slug: z.string(),
+    published_at: date_string,
+    excerpt: z.string().optional(),
+    updated_at: date_string.optional(),
+    tags: z.array(z.string()).optional(),
+    draft: z.boolean().optional().default(false),
+    featured: z.boolean().optional().default(false),
+  }),
+});
+
+// Rubedo: book content (Absurd Faith) is loaded via import.meta.glob in
+// src/data/rubedo/book_timeline_runtime.js, not getCollection(). The empty
+// loader keeps Astro from auto-globbing those files (duplicate-id risk).
+// When/if Sol surfaces a separate "rubedo posts" pattern in
+// VAULT_PHASE_DIRS.rubedo, register a second collection here (e.g.
+// `rubedo_posts`) instead of mutating this one — keeps the book pipeline
+// untouched.
+const rubedo = defineCollection({
+  loader: async () => [],
+});
+
+// Codex: in-site wiki / cross-reference index. Path-routed via the
+// `[...entry_path].astro` rest-spread route. Filename stems land in the
+// wikilink registry as lookup keys — so `[[cinza]]` from anywhere in the
+// vault resolves to `/codex/characters/cinza` (assuming a file at
+// `obsidian/codex/characters/cinza.md` exists with that filename).
+//
+// Schema is loose because Sol's codex entry shape is still unfolding.
+// Floor: `slug` is optional (defaults to the URL-derived path); title is
+// optional (defaults to the slug); category is optional (derived from the
+// first segment of the relative path). Tighten later when patterns surface.
+const codex = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: VAULT_PHASE_DIRS.codex }),
+  schema: z
+    .object({
+      title: z.string().optional(),
+      slug: z.string().optional(),
+      category: z.string().optional(),
+      summary: z.string().optional(),
+      excerpt: z.string().optional(),
+      aliases: z.array(z.string()).optional(),
+      tags: z.array(z.string()).optional(),
+      draft: z.boolean().optional().default(false),
+    })
+    // Allow unknown frontmatter keys — codex entries will accumulate
+    // domain-specific fields (e.g. character.first_appearance,
+    // relic.bearer) that don't belong in the floor schema. Astro's
+    // collection validator is strict-by-default; passthrough flips that.
+    .passthrough(),
+});
+
+export const collections = { rubedo, nigredo, albedo, citrinitas, codex };

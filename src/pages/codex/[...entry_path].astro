@@ -1,113 +1,78 @@
 ---
+import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 
-export const getStaticPaths = () => {
-  return [
-    { params: { entry_path: "characters" } },
-    { params: { entry_path: "characters/sol" } },
-    { params: { entry_path: "characters/luna" } },
-    { params: { entry_path: "factions" } },
-    { params: { entry_path: "factions/order-of-dawn" } },
-    { params: { entry_path: "places" } },
-    { params: { entry_path: "places/astral-garden" } },
-    { params: { entry_path: "relics" } },
-    { params: { entry_path: "relics/first-lantern" } },
-  ];
-};
+// Codex entries live in `obsidian/codex/`. The collection is path-routed:
+// each .md file at `<category>/<sub>/<slug>.md` becomes the URL
+// `/codex/<category>/<sub>/<slug>`.
+//
+// The entry id Astro gives us is the relative path without `.md` —
+// matching our route param shape exactly. So `getStaticPaths` is a
+// direct map: id → entry_path param.
+//
+// README.md and _template.md at the codex root are filtered out: their
+// id forms would be `README` and `_template` (or in subdirs, similar)
+// and they aren't real codex entries. We skip by filename stem.
 
-const entry_path_raw = Astro.params.entry_path;
-const entry_path = Array.isArray(entry_path_raw)
-  ? entry_path_raw.join("/")
-  : (entry_path_raw ?? "unknown-entry");
+export async function getStaticPaths() {
+  // Inlined here because Astro hoists getStaticPaths and module-level
+  // bindings declared in the same frontmatter aren't always reachable
+  // (see route-cache.js error: "SKIP_STEMS is not defined" when this
+  // lived above the function).
+  const skip_stems = new Set(["readme", "_template"]);
+  const entries = await getCollection("codex", ({ data, id }) => {
+    if (data?.draft) return false;
+    const stem = String(id).split("/").pop()?.toLowerCase() ?? "";
+    if (skip_stems.has(stem)) return false;
+    return true;
+  });
+  return entries.map((entry) => ({
+    params: { entry_path: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
+const entry_path = String(entry.id);
 const entry_segments = entry_path.split("/");
 const entry_category = entry_segments[0] ?? "";
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
-const is_category_page = entry_segments.length === 1;
-const category_index_href = is_category_page
-  ? null
-  : with_base(`/codex/${entry_category}`);
-const sibling_entry_href =
-  entry_path === "characters/sol"
-    ? with_base("/codex/characters/luna")
-    : entry_path === "characters/luna"
-      ? with_base("/codex/characters/sol")
-      : null;
-const sibling_entry_label =
-  entry_path === "characters/sol"
-    ? "luna"
-    : entry_path === "characters/luna"
-      ? "sol"
-      : "";
+const display_title =
+  (typeof entry.data?.title === "string" && entry.data.title.trim()) ||
+  (typeof entry.data?.slug === "string" && entry.data.slug.trim()) ||
+  (entry_segments.at(-1) ?? entry_path);
+const display_category =
+  (typeof entry.data?.category === "string" && entry.data.category.trim()) ||
+  entry_category;
 ---
 
-<IndexLayout>
+<IndexLayout
+  phase="codex"
+  crumbs={[
+    { label: "home", href: `${base_path}/` },
+    { label: "codex", href: `${base_path}/codex` },
+    ...entry_segments.slice(0, -1).map((segment, idx) => ({
+      label: segment,
+      href: `${base_path}/codex/${entry_segments.slice(0, idx + 1).join("/")}`,
+    })),
+    { label: display_title, href: null },
+  ]}
+>
   <codex data-shape="entry_detail">
     <div class="sol__entry_header">
-      <p>~/ codex / {entry_path}</p>
-      <h1>Codex Entry</h1>
+      <p class="sol__text_kicker">~/ codex / {display_category}</p>
+      <h1>{display_title}</h1>
+      {
+        entry.data?.summary && (
+          <p class="sol__text_lead">{entry.data.summary}</p>
+        )
+      }
     </div>
 
-    <div class="sol__entry_body">
-      <p>
-        Scaffold child page for <code>/codex/{entry_path}</code>. This catch-all
-        route is intended for highly variable codex entry structures.
-      </p>
-      {
-        is_category_page && (
-          <p>
-            This is a category-level codex page for{" "}
-            <code>{entry_category}</code>.
-          </p>
-        )
-      }
-      {
-        sibling_entry_href && (
-          <p>
-            <a
-              href={sibling_entry_href}
-              hx-get={sibling_entry_href}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
-              Open sibling character: {sibling_entry_label}
-            </a>
-          </p>
-        )
-      }
-      {
-        category_index_href && (
-          <p>
-            <a
-              href={category_index_href}
-              hx-get={category_index_href}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
-              Back to category: {entry_category}
-            </a>
-          </p>
-        )
-      }
-      <p>
-        <a
-          href={with_base("/codex")}
-          hx-get={with_base("/codex")}
-          hx-target="#sol_content"
-          hx-select="#sol_content"
-          hx-swap="morph swap:240ms settle:240ms"
-          hx-push-url="true">Back to Codex index</a
-        >
-      </p>
+    <div class="sol__entry_body sol__chapter_content">
+      <Content />
     </div>
   </codex>
 </IndexLayout>

@@ -4,9 +4,23 @@ import {
   validate_scene_identity_consistency,
 } from "./scene_identity.js";
 
-const scene_module_map = import.meta.glob("../../content/rubedo/**/*.md", {
-  eager: true,
-});
+// Rubedo scene sources — dual-glob during the obsidian-migration window.
+//
+// Historically rubedo scenes lived under `src/content/rubedo/` (project-side).
+// As of 2026-05-23 the canonical home is `obsidian/zzzz_rubedo/<book>/...`
+// matching the nigredo/albedo/citrinitas pattern (vault = single source of
+// truth). The project-side glob stays during transition so Sol can move
+// books over carefully without breaking the build mid-way. Once the
+// project-side `src/content/rubedo/` is empty, the first glob can be
+// dropped — keeping it costs ~0 for empty dirs.
+//
+// `@vault` alias resolves to the obsidian root (see astro.config.mjs).
+// Vite's static analyzer requires alias usage at the glob callsite — do
+// not interpolate or precompute the pattern string.
+const scene_module_map = {
+  ...import.meta.glob("../../content/rubedo/**/*.md", { eager: true }),
+  ...import.meta.glob("@vault/zzzz_rubedo/**/*.md", { eager: true }),
+};
 
 const resolve_identity_value = ({
   field_label,
@@ -190,7 +204,8 @@ const build_markdown_book_map = () => {
       active_chapter_entry.sol__chapter_snippet == null &&
       frontmatter?.sol__chapter_snippet
     ) {
-      active_chapter_entry.sol__chapter_snippet = frontmatter.sol__chapter_snippet;
+      active_chapter_entry.sol__chapter_snippet =
+        frontmatter.sol__chapter_snippet;
     }
 
     if (
