@@ -97,18 +97,13 @@ const albedo = defineCollection({
   }),
 });
 
+// Citrinitas: booklet content is loaded via import.meta.glob in
+// src/data/citrinitas/booklet_runtime.js (same posture as rubedo), not
+// getCollection(). Booklets carry book/chapter identity frontmatter, not the
+// post schema, so the empty loader keeps Astro from auto-globbing + schema-
+// failing them (e.g. _book.md has no slug/published_at).
 const citrinitas = defineCollection({
-  loader: glob({ pattern: POSTS_PATTERN, base: VAULT_PHASE_DIRS.citrinitas }),
-  schema: z.object({
-    title: z.string().optional(),
-    slug: z.string(),
-    published_at: date_string,
-    excerpt: z.string().optional(),
-    updated_at: date_string.optional(),
-    tags: z.array(z.string()).optional(),
-    draft: z.boolean().optional().default(false),
-    featured: z.boolean().optional().default(false),
-  }),
+  loader: async () => [],
 });
 
 // Rubedo: book content (Absurd Faith) is loaded via import.meta.glob in

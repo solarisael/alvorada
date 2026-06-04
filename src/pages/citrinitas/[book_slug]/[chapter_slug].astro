@@ -1,0 +1,77 @@
+---
+import IndexLayout from "../../../layouts/index.astro";
+import ContentLink from "../../../components/page/content_link.astro";
+import {
+  citrinitas_book_map,
+  citrinitas_book_slugs,
+  chapter_neighbors,
+} from "../../../data/citrinitas/booklet_runtime.js";
+import { with_base } from "../../../utils/routes.js";
+
+export const getStaticPaths = () =>
+  citrinitas_book_slugs.flatMap((book_slug) =>
+    citrinitas_book_map[book_slug].chapters.map((chapter) => ({
+      params: { book_slug, chapter_slug: chapter.chapter_slug },
+    })),
+  );
+
+const { book_slug, chapter_slug } = Astro.params;
+const book = citrinitas_book_map[book_slug] ?? null;
+const chapter =
+  book?.chapters.find((c) => c.chapter_slug === chapter_slug) ?? null;
+
+const { prev, next } = chapter_neighbors(
+  citrinitas_book_map,
+  book_slug,
+  chapter_slug,
+);
+
+const ChapterContent = chapter?.Content ?? null;
+const booklet_href = with_base(`/citrinitas/${book_slug}`);
+const prev_href = prev
+  ? with_base(`/citrinitas/${book_slug}/${prev.chapter_slug}`)
+  : null;
+const next_href = next
+  ? with_base(`/citrinitas/${book_slug}/${next.chapter_slug}`)
+  : null;
+---
+
+<IndexLayout
+  phase="citrinitas"
+  crumbs={[
+    { label: "home", href: with_base("/") },
+    { label: "citrinitas", href: with_base("/citrinitas") },
+    { label: book?.title ?? book_slug, href: booklet_href },
+    { label: chapter?.title ?? chapter_slug, href: null },
+  ]}
+>
+  <citrinitas data-shape="chapter_page" class="sol__citrinitas_chapter">
+    <div class="sol__citrinitas_chapter_header">
+      <h1 class="sol__citrinitas_chapter_heading">{chapter?.title ?? chapter_slug}</h1>
+    </div>
+
+    <div class="sol__citrinitas_chapter_body sol__chapter_content">
+      {ChapterContent ? <ChapterContent /> : <p>This piece is empty.</p>}
+    </div>
+
+    <nav class="sol__citrinitas_chapter_nav" aria-label="booklet navigation">
+      {prev_href ? (
+        <ContentLink href={prev_href} class="sol__citrinitas_nav_prev sol__text_kicker">
+          ← {prev.title}
+        </ContentLink>
+      ) : (
+        <span />
+      )}
+      <ContentLink href={booklet_href} class="sol__citrinitas_nav_up sol__text_kicker">
+        all pieces
+      </ContentLink>
+      {next_href ? (
+        <ContentLink href={next_href} class="sol__citrinitas_nav_next sol__text_kicker">
+          {next.title} →
+        </ContentLink>
+      ) : (
+        <span />
+      )}
+    </nav>
+  </citrinitas>
+</IndexLayout>

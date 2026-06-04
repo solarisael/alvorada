@@ -1,42 +1,65 @@
 ---
-import { getCollection } from "astro:content";
 import IndexLayout from "../layouts/index.astro";
-import ArchiveList from "../components/page/archive_list.astro";
+import ContentLink from "../components/page/content_link.astro";
 import PageHero from "../components/page/hero.astro";
-import PageSection from "../components/page/section.astro";
+import { citrinitas_gallery } from "../data/citrinitas/booklet_runtime.js";
 import { with_base } from "../utils/routes.js";
+// citrinitas_page.css hoisted to layout-level for htmx-nav availability
 
-// Citrinitas entries land in the Obsidian vault at `zzz_citrinitas/`. Schema
-// in `content.config.js` is intentionally loose — tighten once Sol's pattern
-// surfaces in real entries.
-const raw_entries = await getCollection(
-  "citrinitas",
-  ({ data }) => !data.draft,
-);
-
-const archive_index = raw_entries
-  .sort((a, b) => b.data.published_at.localeCompare(a.data.published_at))
-  .map((entry) => ({
-    slug: entry.data.slug,
-    title: entry.data.title ?? null,
-    published_at: entry.data.published_at,
-    excerpt: entry.data.excerpt ?? null,
-    featured: entry.data.featured ?? false,
-    href: with_base(`/citrinitas/${entry.data.slug}`),
-  }));
+// Each booklet links to its landing page; the masonry size drives the grid
+// span via data-size (resolved to span tokens in citrinitas_page.css).
+const booklets = citrinitas_gallery.map((booklet) => ({
+  ...booklet,
+  href: with_base(`/citrinitas/${booklet.book_slug}`),
+  cover_src: booklet.cover ? with_base(booklet.cover) : null,
+}));
 ---
 
 <IndexLayout phase="citrinitas">
-  <citrinitas data-shape="archive_page">
+  <citrinitas data-shape="gallery_page">
     <PageHero title="Citrinitas">
-      <p>
-        Archives of things that landed. Moments, photos, records. The collection
-        of what I am actually proud of.
+      <p class="sol__text_lead">
+        The yellowing — the dark turned to fuel, not denied. Contained works,
+        booklets, the things that landed. What I am actually proud of.
       </p>
     </PageHero>
 
-    <PageSection title="Archives & Moments">
-      <ArchiveList entries={archive_index} empty_text="Nothing archived yet." />
-    </PageSection>
+    {
+      booklets.length === 0 ? (
+        <p class="sol__citrinitas_empty">No booklets yet. The garden is young.</p>
+      ) : (
+        <citrinitas data-shape="masonry" class="sol__citrinitas_masonry">
+          {booklets.map((booklet) => (
+            <ContentLink
+              href={booklet.href}
+              class="sol__citrinitas_card"
+              data-size={booklet.size}
+            >
+              <article class="sol__citrinitas_card_inner">
+                {booklet.cover_src && (
+                  <img
+                    class="sol__citrinitas_card_cover"
+                    src={booklet.cover_src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <div class="sol__citrinitas_card_body">
+                  <h2 class="sol__citrinitas_card_title">{booklet.title}</h2>
+                  {booklet.synopsis && (
+                    <p class="sol__citrinitas_card_synopsis">{booklet.synopsis}</p>
+                  )}
+                  <span class="sol__citrinitas_card_count sol__text_kicker">
+                    {booklet.chapter_count}{" "}
+                    {booklet.chapter_count === 1 ? "piece" : "pieces"}
+                  </span>
+                </div>
+              </article>
+            </ContentLink>
+          ))}
+        </citrinitas>
+      )
+    }
   </citrinitas>
 </IndexLayout>
