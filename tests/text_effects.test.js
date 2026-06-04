@@ -21,6 +21,9 @@ describe("text_effects runtime normalization", () => {
     expect(normalize_text_fx_token("aura")).toBe("aura");
     expect(normalize_text_fx_token("terminal")).toBe("terminal");
     expect(normalize_text_fx_token("combat_feed")).toBe("combat_feed");
+    expect(normalize_text_fx_token("sol__text_fx_combat_feed")).toBe(
+      "combat_feed",
+    );
     expect(normalize_text_fx_token("game-screen")).toBe("game_screen");
     expect(normalize_text_fx_token("quest-log")).toBe("quest_log");
     expect(normalize_text_fx_token("system_warning")).toBe("system_warning");
@@ -34,18 +37,24 @@ describe("text_effects runtime normalization", () => {
   });
 
   test("resolves effect class from token", () => {
-    expect(resolve_text_fx_class("neon")).toBe("text_fx_neon");
-    expect(resolve_text_fx_class("fx-neon")).toBe("text_fx_neon");
-    expect(resolve_text_fx_class("whisper")).toBe("text_fx_whisper");
-    expect(resolve_text_fx_class("terminal")).toBe("block_fx_terminal");
-    expect(resolve_text_fx_class("combat_feed")).toBe("block_fx_combat_feed");
-    expect(resolve_text_fx_class("stat_screen")).toBe("block_fx_stat_screen");
-    expect(resolve_text_fx_class("quest_log")).toBe("block_fx_quest_log");
-    expect(resolve_text_fx_class("map_ping")).toBe("block_fx_map_ping");
-    expect(resolve_text_fx_class("sigil_pulse")).toBe("text_fx_sigil_pulse");
-    expect(resolve_text_fx_class("cadence")).toBe("text_fx_cadence");
+    expect(resolve_text_fx_class("neon")).toBe("sol__text_fx_neon");
+    expect(resolve_text_fx_class("fx-neon")).toBe("sol__text_fx_neon");
+    expect(resolve_text_fx_class("whisper")).toBe("sol__text_fx_whisper");
+    expect(resolve_text_fx_class("terminal")).toBe("sol__block_fx_terminal");
+    expect(resolve_text_fx_class("combat_feed")).toBe(
+      "sol__block_fx_combat_feed",
+    );
+    expect(resolve_text_fx_class("stat_screen")).toBe(
+      "sol__block_fx_stat_screen",
+    );
+    expect(resolve_text_fx_class("quest_log")).toBe("sol__block_fx_quest_log");
+    expect(resolve_text_fx_class("map_ping")).toBe("sol__block_fx_map_ping");
+    expect(resolve_text_fx_class("sigil_pulse")).toBe(
+      "sol__text_fx_sigil_pulse",
+    );
+    expect(resolve_text_fx_class("cadence")).toBe("sol__text_fx_cadence");
     expect(resolve_text_fx_class("cadence_oracular")).toBe(
-      "text_fx_cadence_oracular",
+      "sol__text_fx_cadence_oracular",
     );
     expect(resolve_text_fx_class("bad-token")).toBeNull();
   });
@@ -62,13 +71,13 @@ describe("text_effects runtime normalization", () => {
       {
         type: "token",
         value: "CRIT",
-        token_class: "combat_token_crit",
+        token_class: "sol__combat_token_crit",
       },
       { type: "text", value: " dealt. " },
       {
         type: "token",
         value: "BUFF",
-        token_class: "combat_token_buff",
+        token_class: "sol__combat_token_buff",
       },
       { type: "text", value: " gained." },
     ]);
@@ -81,13 +90,13 @@ describe("text_effects runtime normalization", () => {
       {
         type: "token",
         value: "MEGA_CRIT",
-        token_class: "combat_token_mega_crit",
+        token_class: "sol__combat_token_mega_crit",
       },
       { type: "text", value: " spike. " },
       {
         type: "token",
         value: "TRUE_DAMAGE",
-        token_class: "combat_token_true_damage",
+        token_class: "sol__combat_token_true_damage",
       },
       { type: "text", value: " lands." },
     ]);
@@ -99,14 +108,14 @@ describe("text_effects runtime normalization", () => {
         {
           type: "token",
           value: "CRIT",
-          token_class: "combat_token_crit",
+          token_class: "sol__combat_token_crit",
           bracketed: true,
         },
         { type: "text", value: " lands. " },
         {
           type: "token",
           value: "BUFF",
-          token_class: "combat_token_buff",
+          token_class: "sol__combat_token_buff",
           bracketed: true,
         },
         { type: "text", value: " pulses." },
@@ -145,7 +154,7 @@ describe("text_effects markdown marker processing", () => {
       { type: "text", value: "before " },
       {
         type: "html",
-        value: '<span class="text_fx text_fx_glow">sigil</span>',
+        value: '<span class="sol__text_fx sol__text_fx_glow">sigil</span>',
       },
       { type: "text", value: " after" },
     ]);
@@ -164,7 +173,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_glow" data-text-fx-intensity="1.2" style="--text_fx_marker_intensity:1.2">sigil</span>',
+          '<span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="1.2" style="--text_fx_marker_intensity:1.2">sigil</span>',
       },
     ]);
   });
@@ -176,7 +185,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7">signal</span>',
+          '<span class="sol__text_fx sol__text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7">signal</span>',
       },
     ]);
   });
@@ -188,7 +197,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_aura" data-text-fx-intensity="1.4" style="--text_fx_marker_intensity:1.4">beacon</span>',
+          '<span class="sol__text_fx sol__text_fx_aura" data-text-fx-intensity="1.4" style="--text_fx_marker_intensity:1.4">beacon</span>',
       },
     ]);
   });
@@ -202,7 +211,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_glow text_fx_flicker text_fx_shadow">signal</span>',
+          '<span class="sol__text_fx sol__text_fx_glow sol__text_fx_flicker sol__text_fx_shadow">signal</span>',
       },
     ]);
   });
@@ -216,7 +225,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_glow text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7">signal</span>',
+          '<span class="sol__text_fx sol__text_fx_glow sol__text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7">signal</span>',
       },
     ]);
   });
@@ -235,17 +244,19 @@ describe("text_effects markdown marker processing", () => {
     expect(nodes).toEqual([
       {
         type: "html",
-        value: '<span class="text_fx text_fx_shake text_fx_glow">signal</span>',
+        value:
+          '<span class="sol__text_fx sol__text_fx_shake sol__text_fx_glow">signal</span>',
       },
       { type: "text", value: " " },
       {
         type: "html",
-        value: '<span class="text_fx text_fx_shake text_fx_glow">echo</span>',
+        value:
+          '<span class="sol__text_fx sol__text_fx_shake sol__text_fx_glow">echo</span>',
       },
     ]);
 
     expect(warning_messages).toEqual([
-      "[text_fx] auto-sanitized marker 'shake|float|glow' -> 'shake|glow' (token 'float' dropped because 'shake+float' is blacklisted)",
+      "[sol__text_fx] auto-sanitized marker 'shake|float|glow' -> 'shake|glow' (token 'float' dropped because 'shake+float' is blacklisted)",
     ]);
   });
 
@@ -271,7 +282,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_combat_feed" data-text-fx-intensity="1.2" style="--text_fx_marker_intensity:1.2">CRIT lands</span>',
+          '<span class="sol__text_fx sol__text_fx_combat_feed" data-text-fx-intensity="1.2" style="--text_fx_marker_intensity:1.2">CRIT lands</span>',
       },
     ]);
   });
@@ -285,7 +296,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_combat_feed text_fx_glitch text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="1.1" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:1.1">[CRIT] lands</span>',
+          '<span class="sol__text_fx sol__text_fx_combat_feed sol__text_fx_glitch sol__text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="1.1" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:1.1">[CRIT] lands</span>',
       },
     ]);
   });
@@ -306,12 +317,12 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_combat_feed text_fx_glow" data-text-fx-intensity="1.1" style="--text_fx_marker_intensity:1.1">telemetry</span>',
+          '<span class="sol__text_fx sol__text_fx_combat_feed sol__text_fx_glow" data-text-fx-intensity="1.1" style="--text_fx_marker_intensity:1.1">telemetry</span>',
       },
     ]);
 
     expect(warning_messages).toEqual([
-      "[text_fx] auto-sanitized marker 'terminal|combat_feed|glow:1.1' -> 'combat_feed|glow' (block token 'terminal' is not allowed in stacks)",
+      "[sol__text_fx] auto-sanitized marker 'terminal|combat_feed|glow:1.1' -> 'combat_feed|glow' (block token 'terminal' is not allowed in stacks)",
     ]);
   });
 
@@ -333,7 +344,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_glow" data-text-fx-intensity="3" data-text-fx-motion="0.2" style="--text_fx_marker_intensity:3;--text_fx_marker_motion:0.2">flare</span>',
+          '<span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="3" data-text-fx-motion="0.2" style="--text_fx_marker_intensity:3;--text_fx_marker_motion:0.2">flare</span>',
       },
     ]);
   });
@@ -363,7 +374,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="text_fx text_fx_cadence_childlike" data-text-fx-intensity="1.1" style="--text_fx_marker_intensity:1.1">',
+          '<span class="sol__text_fx sol__text_fx_cadence_childlike" data-text-fx-intensity="1.1" style="--text_fx_marker_intensity:1.1">',
       },
       {
         type: "emphasis",
@@ -412,7 +423,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<div class="block_fx block_fx_stat_screen" data-text-fx="stat_screen" data-text-fx-intensity="1.1" style="--block_fx_marker_intensity:1.1">',
+          '<div class="sol__block_fx sol__block_fx_stat_screen" data-text-fx="stat_screen" data-text-fx-intensity="1.1" style="--block_fx_marker_intensity:1.1">',
       },
       {
         type: "list",
@@ -461,7 +472,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<div class="block_fx block_fx_quest_log" data-text-fx="quest_log" data-text-fx-intensity="1.2" data-text-fx-motion="0.8" style="--block_fx_marker_intensity:1.2;--block_fx_marker_motion:0.8">',
+          '<div class="sol__block_fx sol__block_fx_quest_log" data-text-fx="quest_log" data-text-fx-intensity="1.2" data-text-fx-motion="0.8" style="--block_fx_marker_intensity:1.2;--block_fx_marker_motion:0.8">',
       },
       {
         type: "paragraph",

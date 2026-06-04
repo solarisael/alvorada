@@ -1,41 +1,20 @@
+import {
+  TEXT_FX_BLOCK_BASE_CLASS,
+  TEXT_FX_EFFECT_CLASS_MAP,
+  TEXT_FX_INTENSITY_MAX,
+  TEXT_FX_INTENSITY_MIN,
+  TEXT_FX_STACK_BLACKLIST_PAIRS,
+  TEXT_FX_TEXT_BASE_CLASS,
+  normalize_text_fx_name,
+  text_fx_block_class_for,
+  text_fx_is_inline_block_effect,
+  text_fx_is_text_effect,
+  text_fx_text_class_for,
+} from "./text_effects_contract.js";
+
 const window_any = /** @type {any} */ (globalThis);
 
-const text_fx_effect_class_map = Object.freeze({
-  glow: "sol__text_fx_glow",
-  neon: "sol__text_fx_neon",
-  shadow: "sol__text_fx_shadow",
-  chroma: "sol__text_fx_chroma",
-  blur: "sol__text_fx_blur",
-  flicker: "sol__text_fx_flicker",
-  rainbow: "sol__text_fx_rainbow",
-  gradient: "sol__text_fx_gradient",
-  terminal: "sol__block_fx_terminal",
-  stat_screen: "sol__block_fx_stat_screen",
-  game_screen: "sol__block_fx_game_screen",
-  quest_log: "sol__block_fx_quest_log",
-  skill_popup: "sol__block_fx_skill_popup",
-  inventory: "sol__block_fx_inventory",
-  combat_feed: "sol__block_fx_combat_feed",
-  status_effects: "sol__block_fx_status_effects",
-  system_warning: "sol__block_fx_system_warning",
-  memory_fragment: "sol__block_fx_memory_fragment",
-  admin_trace: "sol__block_fx_admin_trace",
-  party_roster: "sol__block_fx_party_roster",
-  map_ping: "sol__block_fx_map_ping",
-  aura: "sol__text_fx_aura",
-  etch: "sol__text_fx_etch",
-  whisper: "sol__text_fx_whisper",
-  sigil_pulse: "sol__text_fx_sigil_pulse",
-  veil: "sol__text_fx_veil",
-  cadence: "sol__text_fx_cadence",
-  cadence_soft: "sol__text_fx_cadence_soft",
-  cadence_oracular: "sol__text_fx_cadence_oracular",
-  cadence_childlike: "sol__text_fx_cadence_childlike",
-  wiggle: "sol__text_fx_wiggle",
-  float: "sol__text_fx_float",
-  shake: "sol__text_fx_shake",
-  glitch: "sol__text_fx_glitch",
-});
+const text_fx_effect_class_map = TEXT_FX_EFFECT_CLASS_MAP;
 
 const combat_token_class_by_name = Object.freeze({
   crit: "sol__combat_token_crit",
@@ -109,13 +88,9 @@ const parse_combat_token_segments = (text_value) => {
   return segments;
 };
 
-const text_fx_intensity_min = 0.2;
-const text_fx_intensity_max = 3;
-
-const text_fx_stack_blacklist_pairs = Object.freeze([
-  Object.freeze(["rainbow", "gradient"]),
-  Object.freeze(["shake", "float"]),
-]);
+const text_fx_intensity_min = TEXT_FX_INTENSITY_MIN;
+const text_fx_intensity_max = TEXT_FX_INTENSITY_MAX;
+const text_fx_stack_blacklist_pairs = TEXT_FX_STACK_BLACKLIST_PAIRS;
 
 const build_blacklist_lookup = () => {
   const blacklist_lookup = new Map();
@@ -140,37 +115,8 @@ const build_blacklist_lookup = () => {
 
 const text_fx_stack_blacklist_lookup = build_blacklist_lookup();
 
-const text_fx_alias_map = (() => {
-  const alias_map = {};
-
-  for (const effect_name of Object.keys(text_fx_effect_class_map)) {
-    const class_name = text_fx_effect_class_map[effect_name];
-
-    alias_map[effect_name] = effect_name;
-    alias_map[effect_name.replaceAll("-", "_")] = effect_name;
-    alias_map[effect_name.replaceAll("_", "-")] = effect_name;
-
-    alias_map[`fx-${effect_name}`] = effect_name;
-    alias_map[`fx_${effect_name}`] = effect_name;
-
-    alias_map[class_name] = effect_name;
-  }
-
-  return Object.freeze(alias_map);
-})();
-
 const normalize_text_fx_token = (raw_token) => {
-  if (typeof raw_token !== "string") {
-    return null;
-  }
-
-  const normalized_token = raw_token.trim().toLowerCase();
-
-  if (!normalized_token) {
-    return null;
-  }
-
-  return text_fx_alias_map[normalized_token] ?? null;
+  return normalize_text_fx_name(raw_token);
 };
 
 const resolve_text_fx_class = (raw_token) => {
@@ -194,12 +140,9 @@ const resolve_text_fx_effects_with_stack_rules = (raw_tokens) => {
       continue;
     }
 
-    const is_text_effect =
-      text_fx_effect_class_map[normalized_effect]?.startsWith("text_fx_");
-
     let is_blocked = false;
 
-    if (is_text_effect) {
+    if (text_fx_is_text_effect(normalized_effect)) {
       for (const accepted_effect of accepted_effects) {
         if (
           text_fx_stack_blacklist_lookup
@@ -235,6 +178,18 @@ const split_text_fx_tokens = (token_string = "") => {
     .split(/[\s,|]+/)
     .map((token) => token.trim())
     .filter(Boolean);
+};
+
+const resolve_text_fx_class_for_node = (effect_name, node_value) => {
+  if (
+    text_fx_is_text_effect(effect_name) ||
+    (text_fx_is_inline_block_effect(effect_name) &&
+      node_value.classList.contains(TEXT_FX_TEXT_BASE_CLASS))
+  ) {
+    return text_fx_text_class_for(effect_name);
+  }
+
+  return text_fx_block_class_for(effect_name);
 };
 
 const parse_text_fx_intensity_value = (raw_value) => {
@@ -310,7 +265,10 @@ const collect_text_fx_classes_from_node = (node_value) => {
   ]);
 
   for (const effect_name of resolved_effects) {
-    const resolved_class = resolve_text_fx_class(effect_name);
+    const resolved_class = resolve_text_fx_class_for_node(
+      effect_name,
+      node_value,
+    );
 
     if (resolved_class) {
       classes_to_apply.add(resolved_class);
@@ -332,18 +290,18 @@ const apply_text_fx_classes = (node_value) => {
   }
 
   const has_text_effect = effect_classes.some((class_name) =>
-    class_name.startsWith("text_fx_"),
+    class_name.startsWith(`${TEXT_FX_TEXT_BASE_CLASS}_`),
   );
   const has_block_effect = effect_classes.some((class_name) =>
-    class_name.startsWith("block_fx_"),
+    class_name.startsWith(`${TEXT_FX_BLOCK_BASE_CLASS}_`),
   );
 
   if (has_text_effect) {
-    node_value.classList.add("sol__text_fx");
+    node_value.classList.add(TEXT_FX_TEXT_BASE_CLASS);
   }
 
   if (has_block_effect) {
-    node_value.classList.add("sol__block_fx");
+    node_value.classList.add(TEXT_FX_BLOCK_BASE_CLASS);
   }
 
   for (const class_name of effect_classes) {

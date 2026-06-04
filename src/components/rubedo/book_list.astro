@@ -1,0 +1,33 @@
+---
+import ContentLink from "../page/content_link.astro";
+
+const { books = [], empty_text = "No works published yet." } = Astro.props;
+---
+
+{
+  books.length === 0 ? (
+    <p class="sol__text_fine">{empty_text}</p>
+  ) : (
+    books.map((book) => (
+      <div>
+        <p>
+          <ContentLink href={book.book_href}>{book.book_title}</ContentLink>
+        </p>
+        {book.reader_href && (
+          <p>
+            <ContentLink href={book.reader_href}>
+              Read from first chapter
+            </ContentLink>
+          </p>
+        )}
+        {book.timeline_href && (
+          <p>
+            <ContentLink href={book.timeline_href}>
+              Constellation timeline
+            </ContentLink>
+          </p>
+        )}
+      </div>
+    ))
+  )
+}

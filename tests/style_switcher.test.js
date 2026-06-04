@@ -65,14 +65,11 @@ describe("style_switcher cookie parsing", () => {
 describe("style_switcher option safety", () => {
   test("get_safe_option accepts only allowed values", () => {
     expect(
-      get_safe_option("cosmic_overlay", site_theme_options, SITE_THEME_DEFAULT),
-    ).toBe("cosmic_overlay");
-    expect(
-      get_safe_option("pixel_relic", site_theme_options, SITE_THEME_DEFAULT),
-    ).toBe("pixel_relic");
+      get_safe_option("solarisael", site_theme_options, SITE_THEME_DEFAULT),
+    ).toBe("solarisael");
     expect(
       get_safe_option(
-        "totally_invalid",
+        "cosmic_overlay",
         site_theme_options,
         SITE_THEME_DEFAULT,
       ),
@@ -81,12 +78,12 @@ describe("style_switcher option safety", () => {
 
   test("legacy normalizers map old values", () => {
     expect(normalize_legacy_theme_value("site_theme_vibrant")).toBe(
-      "gilded_arcane",
+      "solarisael",
     );
     expect(normalize_theme_alias_value("golden_mystical_tarot")).toBe(
-      "gilded_arcane",
+      "solarisael",
     );
-    expect(normalize_theme_alias_value("cosmic_themed")).toBe("cosmic_overlay");
+    expect(normalize_theme_alias_value("cosmic_themed")).toBe("solarisael");
     expect(normalize_legacy_fx_value("home_fx_bold")).toBe("bold");
     expect(normalize_legacy_theme_value("bad")).toBeNull();
     expect(normalize_theme_alias_value(42)).toBeNull();
@@ -94,9 +91,9 @@ describe("style_switcher option safety", () => {
   });
 
   test("legacy_theme_alias_map contains expected dual aliases", () => {
-    expect(legacy_theme_alias_map.astrology_themed).toBe("minimal_astral");
-    expect(legacy_theme_alias_map.gothic_dark_girl).toBe("graveyard_gothic");
-    expect(legacy_theme_alias_map.ritual).toBe("minimal_astral");
+    expect(legacy_theme_alias_map.astrology_themed).toBe("solarisael");
+    expect(legacy_theme_alias_map.gothic_dark_girl).toBe("solarisael");
+    expect(legacy_theme_alias_map.ritual).toBe("solarisael");
   });
 
   test("resolve_saved_style falls back on invalid cookie values", () => {
@@ -128,7 +125,7 @@ describe("style_switcher option safety", () => {
       `${LEGACY_HOME_THEME_COOKIE_NAME}=site_theme_arcane; ${LEGACY_HOME_FX_COOKIE_NAME}=home_fx_bold; ${SITE_SHELL_COOKIE_NAME}=subtle`,
     );
 
-    expect(resolved_style.saved_theme_class).toBe("cosmic_overlay");
+    expect(resolved_style.saved_theme_class).toBe("solarisael");
     expect(resolved_style.saved_fx_class).toBe("bold");
     expect(resolved_style.saved_shell_class).toBe("subtle");
   });
@@ -138,7 +135,7 @@ describe("style_switcher option safety", () => {
       "site_theme=golden_mystical_tarot; site_fx=balanced; site_shell=medium",
     );
 
-    expect(resolved_style.saved_theme_class).toBe("gilded_arcane");
+    expect(resolved_style.saved_theme_class).toBe("solarisael");
   });
 });
 

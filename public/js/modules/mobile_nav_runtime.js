@@ -78,7 +78,9 @@ const apply_mobile_route_active_state = (pathname_override = null) => {
       new URL(pill_node.href, window.location.origin).pathname,
     );
     const is_exact_match = current_pathname === target_pathname;
-    const is_active = is_section_path_active(current_pathname, target_pathname);
+    const is_home_shortcut = pill_node.dataset.phase === "home";
+    const is_active = !is_home_shortcut &&
+      is_section_path_active(current_pathname, target_pathname);
 
     pill_node.classList.toggle("sol__is_route_active", is_active);
     pill_node.classList.toggle("is-route-current", is_exact_match);
@@ -87,7 +89,10 @@ const apply_mobile_route_active_state = (pathname_override = null) => {
   const home_node = nav_node.querySelector("[data-mobile-home]");
 
   if (home_node instanceof HTMLAnchorElement) {
-    const is_home_active = current_pathname === "/";
+    const home_target_pathname = normalize_pathname(
+      new URL(home_node.href, window.location.origin).pathname,
+    );
+    const is_home_active = current_pathname === home_target_pathname;
     home_node.classList.toggle("sol__is_route_active", is_home_active);
     home_node.classList.toggle("is-route-current", is_home_active);
   }

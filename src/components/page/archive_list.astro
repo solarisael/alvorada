@@ -1,0 +1,25 @@
+---
+import ContentLink from "./content_link.astro";
+
+const { entries = [], empty_text = "No entries yet." } = Astro.props;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="sol__text_fine">{empty_text}</p>
+  ) : (
+    <ul class="sol__archive_list">
+      {entries.map((entry) => (
+        <li>
+          <ContentLink href={entry.href}>
+            <time datetime={entry.published_at} class="sol__text_kicker">
+              {entry.published_at}
+            </time>
+            <span>{entry.title ?? entry.slug}</span>
+          </ContentLink>
+          {entry.excerpt && <p class="sol__text_fine">{entry.excerpt}</p>}
+        </li>
+      ))}
+    </ul>
+  )
+}

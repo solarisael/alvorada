@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
+import EntryDetail from "../../components/page/entry_detail.astro";
+import { with_base } from "../../utils/routes.js";
 
 export async function getStaticPaths() {
   const entries = await getCollection("citrinitas", ({ data }) => !data.draft);
@@ -13,28 +15,20 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const display_title = entry.data.title ?? entry.data.slug;
 ---
 
 <IndexLayout
   phase="citrinitas"
   crumbs={[
-    { label: "home", href: `${base_path}/` },
-    { label: "citrinitas", href: `${base_path}/citrinitas` },
+    { label: "home", href: with_base("/") },
+    { label: "citrinitas", href: with_base("/citrinitas") },
     { label: display_title, href: null },
   ]}
 >
   <citrinitas data-shape="entry_detail">
-    <div class="sol__entry_header">
-      <time datetime={entry.data.published_at} class="sol__text_kicker">
-        {entry.data.published_at}
-      </time>
-      <h1>{display_title}</h1>
-    </div>
-
-    <div class="sol__entry_body sol__chapter_content">
+    <EntryDetail title={display_title} published_at={entry.data.published_at}>
       <Content />
-    </div>
+    </EntryDetail>
   </citrinitas>
 </IndexLayout>

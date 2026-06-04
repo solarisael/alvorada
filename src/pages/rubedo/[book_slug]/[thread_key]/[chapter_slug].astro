@@ -1,10 +1,14 @@
 ---
 import ChapterLayout from "../../../../layouts/chapter.astro";
+import ContentLink from "../../../../components/page/content_link.astro";
+import ChapterIntro from "../../../../components/rubedo/chapter_intro.astro";
+import ThreadSwitcher from "../../../../components/rubedo/thread_switcher.astro";
 import {
   rubedo_book_map,
   rubedo_book_slugs,
   derive_chapter_slug,
 } from "../../../../data/rubedo/book_timeline_runtime.js";
+import { content_link_attrs, with_base } from "../../../../utils/routes.js";
 
 const default_thread_key = "cinza";
 const default_thread_modifier = "core";
@@ -38,13 +42,6 @@ export const getStaticPaths = () => {
 
 const { chapter, book_entry } = Astro.props;
 const { book_slug, thread_key, chapter_slug } = Astro.params;
-
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-  return `${base_path}/${normalized_path}`;
-};
 
 // Resolve the scene for the active thread — prefer core modifier.
 const thread_scene =
@@ -95,14 +92,7 @@ const build_chapter_href = (target_chapter) => {
 
 const build_hx_link = (href) => {
   if (!href) return null;
-  return {
-    href,
-    hx_get: href,
-    hx_target: "#sol_content",
-    hx_select: "#sol_content",
-    hx_swap: "morph swap:240ms settle:240ms",
-    hx_push_url: "true",
-  };
+  return content_link_attrs(href);
 };
 
 const previous_chapter_link = build_hx_link(
@@ -153,61 +143,15 @@ const crumbs = [
   theme_color={theme_color}
   crumbs={crumbs}
 >
-  <div class="sol__chapter_header">
-    <h1>{chapter?.title ?? "Unknown chapter"}</h1>
-  </div>
+  <ChapterIntro chapter={chapter} />
 
-  {chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
-
-  {
-    chapter?.sol__chapter_snippet && (
-      <p class="sol__chapter_snippet">{chapter.sol__chapter_snippet}</p>
-    )
-  }
-
-  {
-    /*
-      Eyes thread switcher — full navigation per slot.
-      Each slot navigates to /book/thread/chapter via HTMX full content swap.
-      URL updates to reflect the active thread. Active thread slot is inert.
-
-      FUTURE: locked slots render muted/glitched for threads not yet in codex.
-      FUTURE: paywall gate on chapter index.
-    */
-  }
-  <mantle
-    data-shape="eyes_nav"
-    class="sol__chapter_eyes_nav"
-    data-chapter-slug={chapter_slug}
-    data-book-slug={book_slug}
-    data-active-thread={thread_key}
-  >
-    {
-      chapter_thread_keys.map((slot_thread_key) => {
-        const is_active = slot_thread_key === thread_key;
-        const slot_href = with_base(
-          `/rubedo/${book_slug}/${slot_thread_key}/${chapter_slug}`,
-        );
-
-        return (
-          <a
-            class="sol__chapter_eyes_slot"
-            data-thread-key={slot_thread_key}
-            data-thread-locked="false"
-            aria-current={is_active ? "page" : undefined}
-            href={is_active ? undefined : slot_href}
-            hx-get={is_active ? undefined : slot_href}
-            hx-target={is_active ? undefined : "#sol_content"}
-            hx-select={is_active ? undefined : "#sol_content"}
-            hx-swap={is_active ? undefined : "morph swap:240ms settle:240ms"}
-            hx-push-url={is_active ? undefined : "true"}
-          >
-            {slot_thread_key}
-          </a>
-        );
-      })
-    }
-  </mantle>
+  <ThreadSwitcher
+    book_slug={book_slug}
+    chapter_slug={chapter_slug}
+    thread_keys={chapter_thread_keys}
+    active_thread_key={thread_key}
+    inert_active
+  />
 
   <div id="sol_chapter_thread_content" data-thread-key={thread_key}>
     {
@@ -229,15 +173,8 @@ const crumbs = [
   </div>
 
   <p>
-    <a
-      href={timeline_href}
-      hx-get={timeline_href}
-      hx-target="#sol_content"
-      hx-select="#sol_content"
-      hx-swap="morph swap:240ms settle:240ms"
-      hx-push-url="true"
-    >
+    <ContentLink href={timeline_href}>
       Back to {book_entry?.title ?? book_slug} constellation
-    </a>
+    </ContentLink>
   </p>
 </ChapterLayout>

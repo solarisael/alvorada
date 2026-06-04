@@ -17,7 +17,7 @@ const absurd_faith_timeline = {
       title: "Awakening",
       chapter_description:
         "Cinza opens his eyes inside stone silence, with no memory and too much unease.",
-      chapter_snippet:
+      sol__chapter_snippet:
         "Morning arrives carefully, as if the world is afraid to startle him.",
       scenes: [
         {
@@ -38,7 +38,7 @@ const absurd_faith_timeline = {
       title: "Edge of the Cliff",
       chapter_description:
         "Awe and panic collide as Cinza sees the scale of the world and the depth below.",
-      chapter_snippet:
+      sol__chapter_snippet:
         "A cliff can look like freedom until you need to climb down alive.",
       scenes: [
         {
@@ -69,7 +69,7 @@ const absurd_faith_timeline = {
       title: "First Descent",
       chapter_description:
         "Decision hardens into movement as Cinza commits to the unknown path down.",
-      chapter_snippet:
+      sol__chapter_snippet:
         "No map, no certainty, only one last attempt that still counts.",
       scenes: [
         {

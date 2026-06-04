@@ -1,5 +1,6 @@
 ---
 import "../../styles/components/breadcrumbs.css";
+import { base_path, with_base } from "../../utils/routes.js";
 
 // crumbs: explicit array of { label, href } objects.
 // When provided, bypasses the URL parser entirely — the page controls the trail.
@@ -17,18 +18,12 @@ const {
 } = Astro.props;
 
 const phase_color_by_name = {
+  home: "var(--site_style_accent)",
   nigredo: "var(--color-nigredo)",
   albedo: "var(--color-albedo)",
   citrinitas: "var(--color-citrinitas)",
   rubedo: "var(--color-rubedo)",
   codex: "var(--color-codex)",
-};
-
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-  return `${base_path}/${normalized_path}`;
 };
 
 const pathname_raw = Astro.url.pathname;
@@ -42,7 +37,7 @@ const path_segments =
     : pathname_without_base.slice(1).split("/");
 
 const active_phase =
-  path_segments[0] in phase_color_by_name ? path_segments[0] : "nigredo";
+  path_segments[0] in phase_color_by_name ? path_segments[0] : "home";
 
 const segment_to_label = (segment) => {
   const decoded_segment = decodeURIComponent(segment);
@@ -57,7 +52,7 @@ if (Array.isArray(crumbs) && crumbs.length > 0) {
   crumb_items = crumbs;
 } else {
   // URL-derived fallback.
-  crumb_items = [{ href: with_base("/"), label: "home" }];
+  crumb_items = [{ href: with_base("/"), label: "hearth" }];
   let current_path = "";
 
   path_segments.forEach((segment) => {
@@ -99,7 +94,7 @@ const active_theme_color =
           <li class={is_current ? "sol__is_current" : "sol__is_parent"}>
             <a
               href={crumb_item.href}
-              class:list={{ "sol__is_current_link": is_current }}
+              class:list={{ sol__is_current_link: is_current }}
             >
               {crumb_item.label}
             </a>

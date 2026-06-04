@@ -1,0 +1,13 @@
+---
+const {
+  title = "",
+  description = "",
+  description_class = undefined,
+} = Astro.props;
+---
+
+<div class="sol__page_hero">
+  {title && <h1>{title}</h1>}
+  {description && <p class={description_class}>{description}</p>}
+  <slot />
+</div>

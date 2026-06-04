@@ -4,19 +4,19 @@
 /* Quick Tune Variables (edit here first) */
 #sol_mobile_nav {
   /* Center home geometry */
-  --mobile_home_size: 4.15rem;
-  --mobile_home_lift: 1.15rem;
-  --mobile_home_slot_half: calc(var(--mobile_home_size) * 0.5 + 0.45rem);
+  --mobile_home_size: 4.85rem;
+  --mobile_home_lift: 0.95rem;
+  --mobile_home_slot_half: calc(var(--mobile_home_size) * 0.5 + 0.3rem);
 
   /* Dock shell */
-  --mobile_dock_border_mix: 32%;
+  --mobile_dock_border_mix: 20%;
   --mobile_dock_base_mix: 86%;
   --mobile_dock_mantle_mix: 94%;
   --mobile_dock_shadow: 0 -14px 28px -24px rgb(0 0 0 / 0.92);
   --mobile_dock_blur: calc(10px * var(--site_shell_blur_mult, 1));
 
   /* Link sizing */
-  --mobile_side_divider_mix: 14%;
+  --mobile_side_divider_mix: 8%;
   --mobile_link_min_height: 4.75rem;
   --mobile_link_icon_size: 1.5rem;
   --mobile_link_icon_right_size: 1.25rem;
@@ -76,6 +76,7 @@
         calc(var(--mobile_dock_border_mix) * var(--site_style_strength_mult, 1)),
       transparent
     );
+    border-top-width: var(--site_border_width_hairline);
     background: linear-gradient(
       180deg,
       color-mix(
@@ -112,34 +113,15 @@
   }
 
   .sol__mobile_nav_left {
-    @apply border-r;
-
     width: calc(50% - var(--mobile_home_slot_half));
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-color: color-mix(
-      in oklch,
-      var(--site_style_accent)
-        calc(
-          var(--mobile_side_divider_mix) * var(--site_style_strength_mult, 1)
-        ),
-      transparent
-    );
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .sol__mobile_nav_right {
-    @apply border-l;
     @apply ml-auto;
 
     width: calc(50% - var(--mobile_home_slot_half));
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-color: color-mix(
-      in oklch,
-      var(--site_style_accent)
-        calc(
-          var(--mobile_side_divider_mix) * var(--site_style_strength_mult, 1)
-        ),
-      transparent
-    );
   }
 
   .sol__mobile_nav_link {
@@ -196,13 +178,20 @@
 
   .sol__mobile_nav_label {
     @apply font-medium;
-    @apply lowercase;
 
-    font-size: var(--mobile_link_label_size);
+    font-family: var(--font_ritual);
+    font-size: 0.875rem;
+    font-variant: small-caps;
+    font-weight: 500;
     letter-spacing: var(--mobile_link_label_tracking);
+    text-transform: capitalize;
     transition:
       color var(--mobile_link_transition_fast) ease,
       text-shadow var(--mobile_link_transition_slow) ease;
+  }
+
+  .sol__mobile_nav_link[data-phase="home"] {
+    --mobile_neon_color: var(--site_style_accent);
   }
 
   .sol__mobile_nav_link[data-phase="nigredo"] {
@@ -222,7 +211,7 @@
   }
 
   .sol__mobile_nav_link[data-phase="codex"] {
-    --mobile_neon_color: var(--site_style_accent_alt);
+    --mobile_neon_color: var(--color-codex);
   }
 
   .sol__mobile_nav_link.sol__is_home_link {
@@ -233,12 +222,13 @@
     );
 
     @apply absolute z-20;
-    @apply gap-1;
+    @apply inline-flex items-center justify-center rounded-full;
 
     left: 50%;
     bottom: 0;
     min-height: auto;
     width: var(--mobile_home_size);
+    height: var(--mobile_home_size);
     padding: 0;
     transform: translate3d(-50%, calc(var(--mobile_home_lift) * -1), 0);
     color: color-mix(
@@ -250,8 +240,43 @@
     box-shadow: none;
   }
 
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
   .sol__mobile_nav_link.sol__is_home_link .sol__mobile_nav_layer_topline {
     @apply hidden;
+  }
+
+  .sol__mobile_home_orbit {
+    @apply pointer-events-none absolute rounded-full;
+
+    inset: -2px;
+    padding: 2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 306deg,
+      color-mix(in oklch, var(--mobile_neon_color) 22%, transparent) 321deg,
+      color-mix(in oklch, var(--mobile_neon_color) 88%, transparent) 334deg,
+      color-mix(in oklch, var(--mobile_neon_color) 44%, transparent) 342deg,
+      transparent 350deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    filter: drop-shadow(
+      0 0 8px color-mix(in oklch, var(--mobile_neon_color) 62%, transparent)
+    );
+  }
+
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active .sol__mobile_home_orbit {
+    opacity: 0.46;
   }
 
   .sol__mobile_nav_right .sol__mobile_nav_icon {
@@ -266,15 +291,17 @@
   .sol__mobile_home_avatar {
     @apply relative inline-flex items-center justify-center;
 
-    width: calc(var(--mobile_home_size) * 0.72);
-    height: calc(var(--mobile_home_size) * 0.72);
+    width: calc(var(--mobile_home_size) * 0.82);
+    height: calc(var(--mobile_home_size) * 0.82);
     border-radius: 9999px;
   }
 
   .sol__mobile_home_avatar_shell {
     @apply absolute inset-0 rounded-full;
 
-    border: 1px solid
+    overflow: visible;
+    isolation: isolate;
+    border: var(--site_border_width_hairline) solid
       color-mix(
         in oklch,
         var(--mobile_neon_color) var(--mobile_home_ring_mix),
@@ -295,12 +322,22 @@
       inset 0 1px 0 rgb(255 255 255 / 0.16);
   }
 
+  .sol__mobile_cinza_sun_halo,
+  .sol__mobile_cinza_sun_highlight {
+    @apply pointer-events-none absolute;
+
+    display: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .sol__mobile_home_avatar_core {
     @apply relative z-10 overflow-hidden rounded-full;
 
-    width: calc(var(--mobile_home_size) * 0.61);
-    height: calc(var(--mobile_home_size) * 0.61);
-    border: 1px solid
+    width: calc(var(--mobile_home_size) * 0.72);
+    height: calc(var(--mobile_home_size) * 0.72);
+    border: var(--site_border_width_hairline) solid
       color-mix(
         in oklch,
         var(--mobile_neon_color) var(--mobile_home_core_border_mix),
@@ -338,7 +375,7 @@
           var(--mobile_neon_color) var(--mobile_active_inner_edge_mix),
           transparent
         ),
-      0 0 0 1px
+      0 0 0 var(--site_border_width_hairline)
         color-mix(
           in oklch,
           var(--mobile_neon_color) var(--mobile_active_border_mix),
@@ -395,7 +432,7 @@
 
   .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active .sol__mobile_home_avatar_shell {
     box-shadow:
-      0 0 0 1px
+      0 0 0 var(--site_border_width_hairline)
         color-mix(
           in oklch,
           var(--mobile_neon_color) var(--mobile_home_shell_active_ring_mix),
@@ -453,6 +490,12 @@
   --mobile_home_shell_active_ring_mix: 34%;
   --mobile_home_shell_active_glow_mix: 72%;
   --mobile_home_shell_active_glow_strong_mix: 78%;
+  --mobile_cinza_sun_tint: color-mix(in oklch, white 90%, var(--site_style_accent));
+  --mobile_cinza_sun_neon_opacity: 0.94;
+  --mobile_cinza_sun_halo_opacity: 0.88;
+  --mobile_cinza_sun_highlight_opacity: 0.9;
+  --mobile_cinza_sun_saturation: 1.28;
+  --mobile_cinza_sun_contrast: 1.22;
 }
 
 :root[data-site-theme="solarisael"] .sol__mobile_home_avatar_shell {
@@ -467,4 +510,74 @@
       color-mix(in oklch, var(--mobile_neon_color) 14%, transparent),
       transparent 72%
     );
+}
+
+:root[data-site-theme="solarisael"] .sol__mobile_home_avatar {
+  filter: drop-shadow(
+      0 0 16px rgb(255 255 255 / calc(0.24 * var(--site_fx_glow_mult, 1)))
+    )
+    drop-shadow(0 0 34px rgb(255 255 255 / 0.14));
+}
+
+:root[data-site-theme="solarisael"] .sol__mobile_cinza_sun_halo,
+:root[data-site-theme="solarisael"] .sol__mobile_cinza_sun_highlight {
+  display: block;
+  z-index: 6;
+}
+
+:root[data-site-theme="solarisael"] .sol__mobile_cinza_sun_halo {
+  width: 248%;
+  height: 248%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--mobile_cinza_sun_tint) 50%, transparent) 0 14%,
+    color-mix(in oklch, var(--mobile_cinza_sun_tint) 26%, transparent) 34%,
+    transparent 76%
+  );
+  opacity: calc(
+    var(--mobile_cinza_sun_halo_opacity) * var(--mobile_cinza_sun_neon_opacity)
+  );
+  filter: blur(16px) saturate(var(--mobile_cinza_sun_saturation))
+    contrast(var(--mobile_cinza_sun_contrast));
+  mix-blend-mode: screen;
+}
+
+:root[data-site-theme="solarisael"] .sol__mobile_cinza_sun_highlight {
+  width: 105%;
+  height: 105%;
+  border-radius: 50%;
+  border: var(--site_border_width_standard) solid transparent;
+  border-top-color: color-mix(in oklch, white 94%, var(--mobile_cinza_sun_tint));
+  border-right-color: color-mix(in oklch, white 74%, var(--mobile_cinza_sun_tint));
+  opacity: calc(
+    var(--mobile_cinza_sun_highlight_opacity) *
+      var(--mobile_cinza_sun_neon_opacity)
+  );
+  filter: blur(4px) saturate(var(--mobile_cinza_sun_saturation))
+    contrast(var(--mobile_cinza_sun_contrast))
+    drop-shadow(
+      0 0 8px color-mix(in oklch, var(--mobile_cinza_sun_tint) 72%, transparent)
+    )
+    drop-shadow(
+      0 0 16px color-mix(in oklch, var(--mobile_cinza_sun_tint) 44%, transparent)
+    );
+  mix-blend-mode: screen;
+  animation: mobile_cinza_highlight_rotate 18s linear infinite;
+}
+
+:root[data-site-theme="solarisael"]
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active
+  .sol__mobile_cinza_sun_highlight {
+  opacity: 1;
+}
+
+@keyframes mobile_cinza_highlight_rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

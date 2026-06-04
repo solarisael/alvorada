@@ -1,27 +1,13 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+import PageHero from "../components/page/hero.astro";
+import PageSection from "../components/page/section.astro";
+import BookList from "../components/rubedo/book_list.astro";
 import {
   rubedo_book_map,
   derive_chapter_slug,
 } from "../data/rubedo/book_timeline_runtime.js";
-
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
-
-const build_hx_link_attrs = (href) => {
-  return {
-    hx_get: href,
-    hx_target: "#sol_content",
-    hx_select: "#sol_content",
-    hx_swap: "morph swap:240ms settle:240ms",
-    hx_push_url: "true",
-  };
-};
+import { with_base } from "../utils/routes.js";
 
 const book_slugs = Object.keys(rubedo_book_map);
 
@@ -43,80 +29,24 @@ const book_links = book_slugs.map((book_slug) => {
   return {
     book_slug,
     book_title: book_entry?.title ?? book_slug,
-    book_link: { href: book_href, ...build_hx_link_attrs(book_href) },
-    reader_link: reader_href
-      ? { href: reader_href, ...build_hx_link_attrs(reader_href) }
-      : null,
-    timeline_link: { href: timeline_href, ...build_hx_link_attrs(timeline_href) },
+    book_href,
+    reader_href,
+    timeline_href,
   };
 });
 ---
 
 <IndexLayout phase="rubedo" body_class="sol__pov_cinza">
   <rubedo data-shape="index_page">
-    <div class="sol__page_hero">
-      <p class="sol__text_kicker">~/ rubedo</p>
-      <p class="sol__text_kicker">04</p>
-      <h1>Rubedo</h1>
+    <PageHero title="Rubedo">
       <p>
         Finished work. Writing I am willing to put my name on, projects I
         consider my main goals. This is the seal.
       </p>
-    </div>
+    </PageHero>
 
-    <div class="sol__page_section">
-      <h2>Works</h2>
-
-      {
-        book_links.length === 0 ? (
-          <p class="sol__text_fine">No works published yet.</p>
-        ) : (
-          book_links.map((book) => (
-            <div>
-              <p>
-                <a
-                  href={book.book_link.href}
-                  hx-get={book.book_link.hx_get}
-                  hx-target={book.book_link.hx_target}
-                  hx-select={book.book_link.hx_select}
-                  hx-swap={book.book_link.hx_swap}
-                  hx-push-url={book.book_link.hx_push_url}
-                >
-                  {book.book_title}
-                </a>
-              </p>
-              {book.reader_link && (
-                <p>
-                  <a
-                    href={book.reader_link.href}
-                    hx-get={book.reader_link.hx_get}
-                    hx-target={book.reader_link.hx_target}
-                    hx-select={book.reader_link.hx_select}
-                    hx-swap={book.reader_link.hx_swap}
-                    hx-push-url={book.reader_link.hx_push_url}
-                  >
-                    Read from first chapter
-                  </a>
-                </p>
-              )}
-              {book.timeline_link && (
-                <p>
-                  <a
-                    href={book.timeline_link.href}
-                    hx-get={book.timeline_link.hx_get}
-                    hx-target={book.timeline_link.hx_target}
-                    hx-select={book.timeline_link.hx_select}
-                    hx-swap={book.timeline_link.hx_swap}
-                    hx-push-url={book.timeline_link.hx_push_url}
-                  >
-                    Constellation timeline
-                  </a>
-                </p>
-              )}
-            </div>
-          ))
-        )
-      }
-    </div>
+    <PageSection title="Works">
+      <BookList books={book_links} />
+    </PageSection>
   </rubedo>
 </IndexLayout>

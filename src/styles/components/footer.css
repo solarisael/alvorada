@@ -9,7 +9,7 @@
   /* spacing */
   @apply px-4 py-4;
   /* shape / borders */
-  @apply rounded-xl border-2;
+  @apply rounded-xl border;
 
   border-color: color-mix(
     in oklch,
@@ -17,6 +17,7 @@
       calc(var(--site_style_border_mix) * var(--site_style_strength_mult)),
     transparent
   );
+  border-width: var(--site_border_width_standard);
   background: linear-gradient(
     165deg,
     color-mix(
@@ -37,7 +38,7 @@
     )
   );
   box-shadow:
-    inset 0 0 0 1px
+    inset 0 0 0 var(--site_border_width_hairline)
       color-mix(
         in oklch,
         var(--site_style_accent)

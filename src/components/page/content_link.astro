@@ -1,0 +1,22 @@
+---
+const {
+  href,
+  class: class_name = undefined,
+  hx_target = "#sol_content",
+  hx_select = "#sol_content",
+  hx_swap = "morph swap:160ms settle:160ms",
+  ...rest
+} = Astro.props;
+---
+
+<a
+  href={href}
+  hx-get={href}
+  hx-target={hx_target}
+  hx-select={hx_select}
+  hx-swap={hx_swap}
+  class={class_name}
+  {...rest}
+>
+  <slot />
+</a>

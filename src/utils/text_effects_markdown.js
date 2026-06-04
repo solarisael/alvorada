@@ -1,83 +1,30 @@
-const text_fx_effect_names = Object.freeze([
-  "glow",
-  "neon",
-  "shadow",
-  "chroma",
-  "blur",
-  "flicker",
-  "rainbow",
-  "gradient",
-  "aura",
-  "etch",
-  "whisper",
-  "sigil_pulse",
-  "veil",
-  "cadence",
-  "cadence_soft",
-  "cadence_oracular",
-  "cadence_childlike",
-  "wiggle",
-  "float",
-  "shake",
-  "glitch",
-]);
+import {
+  TEXT_FX_BLOCK_BASE_CLASS,
+  TEXT_FX_BLOCK_EFFECT_NAMES,
+  TEXT_FX_EFFECT_NAMES,
+  TEXT_FX_INLINE_BLOCK_EFFECT_NAMES,
+  TEXT_FX_INTENSITY_MAX,
+  TEXT_FX_INTENSITY_MIN,
+  TEXT_FX_STACK_BLACKLIST_PAIRS,
+  TEXT_FX_TEXT_BASE_CLASS,
+  TEXT_FX_TEXT_EFFECT_NAMES,
+  normalize_text_fx_name,
+  text_fx_block_class_for,
+  text_fx_text_class_for,
+} from "../../public/js/modules/text_effects_contract.js";
 
-const text_fx_block_effect_names = Object.freeze([
-  "terminal",
-  "stat_screen",
-  "game_screen",
-  "quest_log",
-  "skill_popup",
-  "inventory",
-  "combat_feed",
-  "status_effects",
-  "system_warning",
-  "memory_fragment",
-  "admin_trace",
-  "party_roster",
-  "map_ping",
-]);
-
-const text_fx_inline_block_effect_names = Object.freeze(["combat_feed"]);
+const text_fx_effect_names = TEXT_FX_TEXT_EFFECT_NAMES;
+const text_fx_block_effect_names = TEXT_FX_BLOCK_EFFECT_NAMES;
+const text_fx_inline_block_effect_names = TEXT_FX_INLINE_BLOCK_EFFECT_NAMES;
 const text_fx_inline_block_effect_name_set = new Set(
   text_fx_inline_block_effect_names,
 );
 
-const text_fx_stack_blacklist_pairs = Object.freeze([
-  Object.freeze(["rainbow", "gradient"]),
-  Object.freeze(["shake", "float"]),
-]);
-
-const text_fx_effect_names_with_blocks = Object.freeze([
-  ...text_fx_effect_names,
-  ...text_fx_block_effect_names,
-]);
-
 const text_fx_effect_name_set = new Set(text_fx_effect_names);
 const text_fx_block_effect_name_set = new Set(text_fx_block_effect_names);
-
-const text_fx_alias_map = (() => {
-  const alias_map = {};
-
-  for (const effect_name of text_fx_effect_names_with_blocks) {
-    alias_map[effect_name] = effect_name;
-    alias_map[effect_name.replaceAll("-", "_")] = effect_name;
-    alias_map[effect_name.replaceAll("_", "-")] = effect_name;
-
-    alias_map[`fx-${effect_name}`] = effect_name;
-    alias_map[`fx_${effect_name}`] = effect_name;
-    alias_map[`text_fx_${effect_name}`] = effect_name;
-
-    alias_map[`fx-${effect_name.replaceAll("_", "-")}`] = effect_name;
-    alias_map[`fx_${effect_name.replaceAll("-", "_")}`] = effect_name;
-    alias_map[`text_fx_${effect_name.replaceAll("-", "_")}`] = effect_name;
-  }
-
-  return Object.freeze(alias_map);
-})();
-
-const text_fx_intensity_min = 0.2;
-const text_fx_intensity_max = 3;
+const text_fx_stack_blacklist_pairs = TEXT_FX_STACK_BLACKLIST_PAIRS;
+const text_fx_intensity_min = TEXT_FX_INTENSITY_MIN;
+const text_fx_intensity_max = TEXT_FX_INTENSITY_MAX;
 
 const stack_intensity_regex_fragment = "([0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)";
 const marker_descriptor_regex = new RegExp(
@@ -92,20 +39,6 @@ const escape_html = (raw_value) => {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
-};
-
-const normalize_text_fx_name = (raw_name) => {
-  if (typeof raw_name !== "string") {
-    return null;
-  }
-
-  const normalized_name = raw_name.trim().toLowerCase();
-
-  if (!normalized_name) {
-    return null;
-  }
-
-  return text_fx_alias_map[normalized_name] ?? null;
 };
 
 const normalize_text_fx_intensity_value = (raw_value) => {
@@ -364,10 +297,10 @@ const build_text_fx_span_html = (
   const style_attribute = build_text_fx_style_attribute(options);
 
   const fx_classes = safe_effect_names
-    .map((safe_effect_name) => `text_fx_${safe_effect_name}`)
+    .map((safe_effect_name) => text_fx_text_class_for(safe_effect_name))
     .join(" ");
 
-  return `<span class="sol__text_fx ${fx_classes}"${data_attributes}${style_attribute}>${escape_html(text_content)}</span>`;
+  return `<span class="${TEXT_FX_TEXT_BASE_CLASS} ${fx_classes}"${data_attributes}${style_attribute}>${escape_html(text_content)}</span>`;
 };
 
 const build_block_fx_open_html = (effect_name, options = {}) => {
@@ -383,7 +316,7 @@ const build_block_fx_open_html = (effect_name, options = {}) => {
   const data_attributes = build_text_fx_data_attributes(options);
   const style_attribute = build_block_fx_style_attribute(options);
 
-  return `<div class="sol__block_fx block_fx_${safe_effect_name}" data-text-fx="${safe_effect_name}"${data_attributes}${style_attribute}>`;
+  return `<div class="${TEXT_FX_BLOCK_BASE_CLASS} ${text_fx_block_class_for(safe_effect_name)}" data-text-fx="${safe_effect_name}"${data_attributes}${style_attribute}>`;
 };
 
 const marker_regex = /\{\{fx:([^}]+)\}\}([\s\S]*?)\{\{\/fx\}\}/gi;

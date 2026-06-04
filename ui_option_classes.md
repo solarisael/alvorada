@@ -101,7 +101,7 @@ For each new option set, document:
 Quick switch:
 
 ```html
-<span class="text_fx text_fx_glow">luminous text</span>
+<span class="sol__text_fx sol__text_fx_glow">luminous text</span>
 ```
 
 Markdown marker (Obsidian flow):

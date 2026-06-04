@@ -87,7 +87,7 @@ const build_link_html = ({ token, alias, target }) => {
     `href="${safe_url}" data-popup-title="${safe_title}" ` +
     `data-popup-excerpt="${safe_excerpt}" data-popup-phase="${safe_phase}" ` +
     `hx-get="${safe_url}" hx-target="#sol_content" hx-select="#sol_content" ` +
-    `hx-swap="morph swap:240ms settle:240ms" hx-push-url="true">${display}</a>`
+    `hx-swap="morph swap:160ms settle:160ms">${display}</a>`
   );
 };
 
@@ -112,14 +112,14 @@ const build_embed_html = ({ token, alias, target }) => {
     `<aside class="sol__wikilink_embed" data-shape="embed" data-phase="${safe_phase}">` +
     `<a class="sol__wikilink_embed_header" href="${safe_url}" ` +
     `hx-get="${safe_url}" hx-target="#sol_content" hx-select="#sol_content" ` +
-    `hx-swap="morph swap:240ms settle:240ms" hx-push-url="true">` +
+    `hx-swap="morph swap:160ms settle:160ms">` +
     `<span class="sol__text_kicker">~/ ${safe_phase}</span>` +
     `<span class="sol__wikilink_embed_title">${header_display}</span>` +
     `</a>` +
     `<p class="sol__wikilink_embed_excerpt">${safe_excerpt}</p>` +
     `<a class="sol__wikilink_embed_more" href="${safe_url}" ` +
     `hx-get="${safe_url}" hx-target="#sol_content" hx-select="#sol_content" ` +
-    `hx-swap="morph swap:240ms settle:240ms" hx-push-url="true">Read full →</a>` +
+    `hx-swap="morph swap:160ms settle:160ms">Read full →</a>` +
     `</aside>`
   );
 };

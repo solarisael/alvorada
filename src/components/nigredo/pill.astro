@@ -1,22 +1,14 @@
 ---
+import { NIGREDO_STATE_TO_CONTAINER } from "../../data/nigredo_taxonomy.js";
+
 const { state } = Astro.props;
 
-const inward_states = [
-  "grief",
-  "dread",
-  "shame",
-  "guilt",
-  "ache",
-  "numb",
-  "doubt",
-  "loneliness",
-  "exhaustion",
-  "panic",
-  "ruin",
-  "hunger",
-];
-
-const family = inward_states.includes(state) ? "ash" : "ember";
+const container = NIGREDO_STATE_TO_CONTAINER[state] ?? "cinder";
 ---
 
-<nigredo data-shape="pill" class="sol__nigredo_pill" data-state={state} data-family={family}>{state}</nigredo>
+<nigredo
+  data-shape="pill"
+  class="sol__nigredo_pill"
+  data-state={state}
+  data-container={container}>{state}</nigredo
+>

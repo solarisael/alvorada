@@ -1,10 +1,12 @@
 ---
 import IndexLayout from "../../layouts/index.astro";
+import ContentLink from "../../components/page/content_link.astro";
 import {
   rubedo_book_map,
   rubedo_book_slugs,
   derive_chapter_slug,
 } from "../../data/rubedo/book_timeline_runtime.js";
+import { with_base } from "../../utils/routes.js";
 
 export const getStaticPaths = () => {
   return rubedo_book_slugs.map((book_slug) => {
@@ -13,13 +15,6 @@ export const getStaticPaths = () => {
 };
 
 const { book_slug } = Astro.params;
-
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-  return `${base_path}/${normalized_path}`;
-};
 
 const book_entry = rubedo_book_map[book_slug] ?? null;
 
@@ -57,44 +52,21 @@ const rubedo_index_href = with_base("/rubedo");
     }
 
     <p>
-      <a
-        href={rubedo_index_href}
-        hx-get={rubedo_index_href}
-        hx-target="#sol_content"
-        hx-select="#sol_content"
-        hx-swap="morph swap:240ms settle:240ms"
-        hx-push-url="true"
-      >
-        Back to Rubedo index
-      </a>
+      <ContentLink href={rubedo_index_href}> Back to Rubedo index </ContentLink>
     </p>
 
     {
       book_entry && (
         <>
           <p>
-            <a
-              href={canonical_reader_href}
-              hx-get={canonical_reader_href}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
+            <ContentLink href={canonical_reader_href}>
               Begin reading {book_entry.title}
-            </a>
+            </ContentLink>
           </p>
           <p>
-            <a
-              href={timeline_href}
-              hx-get={timeline_href}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
+            <ContentLink href={timeline_href}>
               Open constellation timeline
-            </a>
+            </ContentLink>
           </p>
         </>
       )

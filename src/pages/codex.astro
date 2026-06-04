@@ -1,5 +1,9 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+import LinkList from "../components/page/link_list.astro";
+import PageHero from "../components/page/hero.astro";
+import PageSection from "../components/page/section.astro";
+import { with_base } from "../utils/routes.js";
 
 const categories = [
   { slug: "characters", label: "Characters" },
@@ -13,68 +17,33 @@ const labs = [
   { slug: "labs/test-overlays", label: "Overlay Sandbox" },
 ];
 
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
+const category_links = categories.map((category) => ({
+  href: with_base(`/codex/${category.slug}`),
+  label: category.label,
+}));
 
-  return `${base_path}/${normalized_path}`;
-};
+const lab_links = labs.map((lab) => ({
+  href: with_base(`/codex/${lab.slug}`),
+  label: lab.label,
+}));
 ---
 
 <IndexLayout phase="codex">
   <codex data-shape="index_page">
-    <div class="sol__page_hero">
-      <p class="sol__text_kicker">~/ codex</p>
-      <p class="sol__text_kicker">05</p>
-      <h1>Codex</h1>
+    <PageHero title="Codex">
       <p>
         The lore index. Everything on this site that has a name, a category, or
         a definition lives here. Entries can be cross-referenced by any page —
         hover a reference to see the entry inline.
       </p>
-    </div>
+    </PageHero>
 
-    <div class="sol__page_section">
-      <h2>Categories</h2>
+    <PageSection title="Categories">
+      <LinkList items={category_links} />
+    </PageSection>
 
-      {
-        categories.map((category) => (
-          <p>
-            <a
-              href={with_base(`/codex/${category.slug}`)}
-              hx-get={with_base(`/codex/${category.slug}`)}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
-              {category.label}
-            </a>
-          </p>
-        ))
-      }
-    </div>
-
-    <div class="sol__page_section">
-      <h2>Labs</h2>
-
-      {
-        labs.map((lab) => (
-          <p>
-            <a
-              href={with_base(`/codex/${lab.slug}`)}
-              hx-get={with_base(`/codex/${lab.slug}`)}
-              hx-target="#sol_content"
-              hx-select="#sol_content"
-              hx-swap="morph swap:240ms settle:240ms"
-              hx-push-url="true"
-            >
-              {lab.label}
-            </a>
-          </p>
-        ))
-      }
-    </div>
+    <PageSection title="Labs">
+      <LinkList items={lab_links} />
+    </PageSection>
   </codex>
 </IndexLayout>

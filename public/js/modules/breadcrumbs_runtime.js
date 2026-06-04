@@ -1,12 +1,14 @@
 const window_any = /** @type {any} */ (window);
 let last_applied_pathname = null;
 const phase_color_by_name = {
+  home: "var(--site_style_accent)",
   nigredo: "var(--color-nigredo)",
   albedo: "var(--color-albedo)",
   citrinitas: "var(--color-citrinitas)",
   rubedo: "var(--color-rubedo)",
-  codex: "var(--color-ctp-lavender)",
+  codex: "var(--color-codex)",
 };
+const phase_names = new Set(Object.keys(phase_color_by_name));
 
 /**
  * @param {string} pathname_value
@@ -62,7 +64,8 @@ const apply_constant_crumb_state = (pathname_value) => {
   const path_segments =
     normalized_pathname === "/" ? [] : normalized_pathname.slice(1).split("/");
   const active_phase =
-    path_segments[0] in phase_color_by_name ? path_segments[0] : "nigredo";
+    path_segments.find((path_segment) => phase_names.has(path_segment)) ??
+    "home";
   const active_theme_color = phase_color_by_name[active_phase];
 
   breadcrumb_node.dataset.phase = active_phase;

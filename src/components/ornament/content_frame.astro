@@ -5,18 +5,14 @@
 // Sol-mythology weaving (black sun / wolf skull / Perseus) is the next iteration.
 // Preserves the sol__content_layer class so the .sol__content_layer positioning rules still apply.
 
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
+import { with_base } from "../../utils/routes.js";
 
 const reliquary_corner = with_base("ornaments/reliquary/card_corner.svg");
 const reliquary_sigil = with_base("ornaments/reliquary/sigil_concentric.svg");
 const reliquary_center = with_base("ornaments/reliquary/divider_center.svg");
-const reliquary_flourish = with_base("ornaments/reliquary/divider_flourish.svg");
+const reliquary_flourish = with_base(
+  "ornaments/reliquary/divider_flourish.svg",
+);
 ---
 
 <ornament
@@ -25,51 +21,41 @@ const reliquary_flourish = with_base("ornaments/reliquary/divider_flourish.svg")
 >
   <span
     class="sol__content_ornament sol__content_ornament_corner_tl"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
   <span
     class="sol__content_ornament sol__content_ornament_corner_tr"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
   <span
     class="sol__content_ornament sol__content_ornament_corner_bl"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
   <span
     class="sol__content_ornament sol__content_ornament_corner_br"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
   <!-- Top divider: container with flourishes at each end and a thin bar between them.
        The container itself is the alignment unit; flourishes flank naturally via flex.
        Each child uses css mask-image so background-color picks up var(--site_style_accent). -->
   <div class="sol__content_ornament sol__content_ornament_line_top">
     <span
       class="sol__content_ornament_line_flourish_start"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}
-    ></span>
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
     <span class="sol__content_ornament_line_bar"></span>
     <span
       class="sol__content_ornament_line_flourish_end"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}
-    ></span>
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
   </div>
   <div class="sol__content_ornament sol__content_ornament_line_bottom">
     <span
       class="sol__content_ornament_line_flourish_start"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}
-    ></span>
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
     <span class="sol__content_ornament_line_bar"></span>
     <span
       class="sol__content_ornament_line_flourish_end"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}
-    ></span>
+      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
   </div>
   <span
     class="sol__content_ornament sol__content_ornament_sigil_top"
-    style={`--ornament_mask_url: url(${reliquary_sigil})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_sigil})`}></span>
   <span
     class="sol__content_ornament sol__content_ornament_sigil_bottom"
-    style={`--ornament_mask_url: url(${reliquary_center})`}
-  ></span>
+    style={`--ornament_mask_url: url(${reliquary_center})`}></span>
 </ornament>

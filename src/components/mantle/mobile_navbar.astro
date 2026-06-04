@@ -1,18 +1,36 @@
 ---
 import "../../styles/components/mobile_nav.css";
+import { with_base } from "../../utils/routes.js";
 
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
+const home_href = with_base("/");
 ---
 
 <mantle data-shape="mobile_navbar" id="sol_mobile_nav">
   <div id="sol_mobile_nav_shell">
     <div class="sol__mobile_nav_side sol__mobile_nav_left">
+      <a
+        class="sol__mobile_nav_link sol__is_mobile_hearth_link"
+        data-mobile-nav-pill
+        data-phase="home"
+        href={home_href}
+        hx-get={home_href}
+      >
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M4.5 10.8 12 4l7.5 6.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M6.8 10.2V20h10.4v-9.8" stroke-linejoin="round"></path>
+            <path d="M10 20v-5.4h4V20" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span class="sol__mobile_nav_label">hea</span>
+      </a>
+
       <a
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
@@ -20,7 +38,8 @@ const with_base = (path_value) => {
         href={with_base("nigredo")}
         hx-get={with_base("nigredo")}
       >
-        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"
+        ></span>
         <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
@@ -46,7 +65,8 @@ const with_base = (path_value) => {
         href={with_base("albedo")}
         hx-get={with_base("albedo")}
       >
-        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"
+        ></span>
         <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
@@ -67,17 +87,20 @@ const with_base = (path_value) => {
     <a
       class="sol__mobile_nav_link sol__is_home_link"
       data-mobile-home
-      href={base_url}
-      hx-get={base_url}
+      href={home_href}
+      hx-get={home_href}
     >
       <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+      <span class="sol__mobile_home_orbit"></span>
       <span class="sol__mobile_home_avatar">
-        <span class="sol__mobile_home_avatar_shell"></span>
+        <span class="sol__mobile_home_avatar_shell">
+          <span class="sol__mobile_cinza_sun_halo"></span>
+          <span class="sol__mobile_cinza_sun_highlight"></span>
+        </span>
         <span class="sol__mobile_home_avatar_core">
           <img src={with_base("images/sol-curr.jpg")} alt="" />
         </span>
       </span>
-      <span class="sol__mobile_nav_label">home</span>
     </a>
 
     <div class="sol__mobile_nav_side sol__mobile_nav_right">
@@ -88,7 +111,8 @@ const with_base = (path_value) => {
         href={with_base("citrinitas")}
         hx-get={with_base("citrinitas")}
       >
-        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"
+        ></span>
         <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
@@ -112,7 +136,8 @@ const with_base = (path_value) => {
         href={with_base("rubedo")}
         hx-get={with_base("rubedo")}
       >
-        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"
+        ></span>
         <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"
@@ -140,7 +165,8 @@ const with_base = (path_value) => {
         href={with_base("codex")}
         hx-get={with_base("codex")}
       >
-        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+        <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"
+        ></span>
         <span class="sol__mobile_nav_icon">
           <svg
             viewBox="0 0 24 24"

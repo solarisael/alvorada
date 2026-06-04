@@ -18,6 +18,8 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { NIGREDO_STATES } from "./data/nigredo_taxonomy.js";
+import { ALBEDO_STATES } from "./data/albedo_taxonomy.js";
 
 const OBSIDIAN_VAULT_ROOT =
   process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
@@ -45,27 +47,9 @@ const date_string = z
   .union([z.string(), z.date()])
   .transform((v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v));
 
-// The 16-state vocabulary for Nigredo entries. Enforced by `z.enum`; any
-// state outside this list fails the build. The README inside the vault's
-// `z_nigredo/` mirrors this list — keep them in sync if the vocabulary grows.
-const NIGREDO_STATES = [
-  "grief",
-  "dread",
-  "shame",
-  "guilt",
-  "envy",
-  "spite",
-  "ache",
-  "panic",
-  "ruin",
-  "numb",
-  "hunger",
-  "rot",
-  "doubt",
-  "rage",
-  "loneliness",
-  "exhaustion",
-];
+// The 16-state Nigredo vocabulary is enforced by `z.enum`; any state outside
+// this list fails the build. Container metadata lives in nigredo_taxonomy.js.
+// The vault's `z_nigredo/README.md` mirrors this list and taxonomy.
 
 // Layout-agnostic posts glob — matches any markdown file at any depth
 // whose filename starts with `YYYY-`. The date-prefix on the filename is
@@ -93,16 +77,18 @@ const nigredo = defineCollection({
   }),
 });
 
-// Albedo + Citrinitas schemas stay loose intentionally — Sol hasn't yet
-// surfaced the frontmatter shape these phases want. Once a pattern lands
-// in real entries (after a handful of posts), tighten the schema then.
-// Floor required: slug + published_at, everything else optional.
+// The 20-state Albedo vocabulary is enforced by `z.enum` (parity with
+// nigredo); any state outside this list fails the build. Container metadata
+// (the six light/water containers) lives in albedo_taxonomy.js, mirrored by
+// the vault's `zz_albedo/README.md`. Albedo is the washed/composed stage —
+// same machinery as nigredo, opposite register.
 const albedo = defineCollection({
   loader: glob({ pattern: POSTS_PATTERN, base: VAULT_PHASE_DIRS.albedo }),
   schema: z.object({
     title: z.string().optional(),
     slug: z.string(),
     published_at: date_string,
+    states: z.array(z.enum(ALBEDO_STATES)).min(1),
     excerpt: z.string().optional(),
     updated_at: date_string.optional(),
     tags: z.array(z.string()).optional(),

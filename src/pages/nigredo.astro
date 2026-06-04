@@ -2,40 +2,38 @@
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../layouts/index.astro";
 import NigredoList from "../components/nigredo/list.astro";
+import PageHero from "../components/page/hero.astro";
+import { with_base } from "../utils/routes.js";
+import { derive_nigredo_entry_view } from "../utils/nigredo_feed.js";
 // nigredo_page.css moved to layout-level for htmx-nav availability
 
-const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
-
-// Build the thin archive index from frontmatter only
 const raw_entries = await getCollection("nigredo", ({ data }) => !data.draft);
 
-const archive_index = raw_entries
-  .sort((a, b) => b.data.published_at.localeCompare(a.data.published_at))
-  .map((entry) => {
-    // Excerpt: frontmatter first, body first-paragraph fallback handled client-side
-    // We pass excerpt from frontmatter; JS module uses it directly.
-    return {
-      slug: entry.data.slug,
-      title: entry.data.title ?? null,
-      published_at: entry.data.published_at,
-      states: entry.data.states,
-      excerpt: entry.data.excerpt ?? null,
-      featured: entry.data.featured ?? false,
-      href: `${base_path}/nigredo/${entry.data.slug}`,
-    };
-  });
+const archive_index = await Promise.all(
+  raw_entries
+    .sort((a, b) => b.data.published_at.localeCompare(a.data.published_at))
+    .map(async (entry, index) => {
+      const { Content } = await render(entry);
+      const view = derive_nigredo_entry_view({
+        body: entry.body,
+        data: entry.data,
+        href: with_base(`/nigredo/${entry.data.slug}`),
+        index,
+      });
+
+      return { ...view, Content };
+    }),
+);
 ---
 
 <IndexLayout phase="nigredo">
   <nigredo data-shape="archive_page">
-    <div class="sol__page_hero">
-      <p class="sol__text_kicker">~/ nigredo</p>
-      <h1>Nigredo</h1>
+    <PageHero title="Nigredo">
       <p class="sol__text_lead">
         Uncut. No audience. No revision. The thought before it learns to behave.
       </p>
-    </div>
+    </PageHero>
 
-    <NigredoList archive_index={archive_index} base_path={base_path} />
+    <NigredoList archive_index={archive_index} />
   </nigredo>
 </IndexLayout>

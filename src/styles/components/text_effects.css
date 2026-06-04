@@ -28,7 +28,7 @@
   margin-top: 1.2em;
   margin-bottom: 1.2em;
   padding: 1rem 1.05rem;
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)
@@ -122,7 +122,7 @@
 
 .sol__block_fx_stat_screen li {
   padding: 0.5em 0.62em;
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       currentColor calc(18% + (12% * var(--block_fx_glow_strength))),
@@ -189,7 +189,7 @@
 .sol__block_fx_quest_log li {
   padding-left: 0.6em;
   padding-right: 0.6em;
-  border-left: 0.18rem solid
+  border-left: 0.1rem solid
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)
@@ -283,7 +283,7 @@
 
 .sol__block_fx_combat_feed li {
   padding: 0.4em 0.54em;
-  border-left: 0.16rem solid
+  border-left: 0.1rem solid
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)
@@ -328,7 +328,7 @@
 .sol__block_fx_status_effects li {
   padding: 0.38em 0.52em;
   border-radius: 0.45rem;
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       currentColor calc(22% + (10% * var(--block_fx_glow_strength))),
@@ -358,7 +358,7 @@
       color-mix(in oklch, var(--block_fx_warning_color) 36%, transparent),
     inset 0 0 calc(0.45rem * var(--block_fx_glow_strength))
       color-mix(in oklch, var(--block_fx_warning_color) 22%, transparent);
-  border-top-width: 0.24rem;
+  border-top-width: 0.14rem;
 }
 
 .sol__block_fx_system_warning > :first-child {
@@ -423,7 +423,7 @@
 .sol__block_fx_party_roster li {
   padding: 0.38em 0.52em;
   border-radius: 0.44rem;
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       currentColor calc(20% + (10% * var(--block_fx_glow_strength))),

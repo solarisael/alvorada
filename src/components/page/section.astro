@@ -1,0 +1,8 @@
+---
+const { title = "" } = Astro.props;
+---
+
+<div class="sol__page_section">
+  {title && <h2>{title}</h2>}
+  <slot />
+</div>

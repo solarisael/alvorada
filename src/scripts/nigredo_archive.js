@@ -1,191 +1,207 @@
 /**
- * nigredo_archive.js
- * Client-side archive controller for the Nigredo pillar page.
- * Virtualizer: @tanstack/virtual-core (native scroll, no Lenis)
+ * Client-side controller for the virtual Nigredo feed.
+ * Astro owns the entry templates; this layer filters, windows, and toggles them.
  */
 
 import {
   Virtualizer,
-  elementScroll,
-  observeElementOffset,
-  observeElementRect,
+  observeWindowOffset,
+  observeWindowRect,
+  windowScroll,
 } from "@tanstack/virtual-core";
 
-// ─── Pure helpers ─────────────────────────────────────────────────────────────
+const OVERSCAN = 5;
+const MOBILE_QUERY = "(max-width: 639px)";
 
 export function filter_entries(entries, active_states) {
   if (!active_states || active_states.size === 0) return entries;
   return entries.filter((entry) =>
-    entry.states.some((s) => active_states.has(s)),
+    entry.states.some((state) => active_states.has(state)),
   );
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const INWARD = new Set([
-  "grief",
-  "dread",
-  "shame",
-  "guilt",
-  "ache",
-  "numb",
-  "doubt",
-  "loneliness",
-  "exhaustion",
-  "panic",
-  "ruin",
-  "hunger",
-]);
-
-const EXTREME_STATES = new Set(["rage", "panic", "ruin", "grief"]);
-
-const OVERSCAN = 4;
-const ESTIMATED_SIZE = 88;
-
-function measure_row(node) {
-  return node.getBoundingClientRect().height;
+export function entry_matches_states(entry_states, active_states) {
+  if (!active_states || active_states.size === 0) return true;
+  return entry_states.some((state) => active_states.has(state));
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function redact_length(slug) {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
+export function toggle_container_states(active_states, container_states) {
+  let all_active = container_states.length > 0;
+  for (const state of container_states) {
+    if (!active_states.has(state)) {
+      all_active = false;
+      break;
+    }
   }
-  return 4 + (hash % 9);
+
+  for (const state of container_states) {
+    if (all_active) {
+      active_states.delete(state);
+    } else {
+      active_states.add(state);
+    }
+  }
+
+  return !all_active;
 }
 
-function derive_align(entry, index) {
-  const state = entry.states?.[0];
-  return EXTREME_STATES.has(state) ? "right" : "left";
+function is_mobile_view() {
+  return window.matchMedia?.(MOBILE_QUERY).matches ?? false;
 }
 
-// ─── Row pool — stable DOM nodes keyed by virtual index ──────────────────────
-// Avoids constant createElement/destroy cycles that break measurement caching.
-
-class RowPool {
-  constructor(template, base_path, on_remove = null) {
-    this._template = template;
-    this._base_path = base_path;
-    this._pool = new Map(); // key (index) -> li element
-    this._on_remove = on_remove;
+function fallback_entry_size(entry, expanded) {
+  if (expanded && !entry.can_expand) return fallback_entry_size(entry, false);
+  if (expanded) {
+    return is_mobile_view() ? entry.expanded_size_mobile : entry.expanded_size;
   }
 
-  _make_node() {
-    const clone = this._template.content.cloneNode(true);
-    // Fix ornament src paths that couldn't be dynamic in template
-    clone.querySelectorAll("[data-ornament-src]").forEach((img) => {
-      img.src = this._base_path + img.dataset.ornamentSrc;
-    });
-    return clone.querySelector("li");
+  return is_mobile_view() ? entry.collapsed_size_mobile : entry.collapsed_size;
+}
+
+function entry_size_key(entry, expanded) {
+  return `${entry.key}:${expanded ? "expanded" : "collapsed"}:${
+    is_mobile_view() ? "mobile" : "desktop"
+  }`;
+}
+
+function get_entry_template(entry) {
+  return document.querySelector(
+    `[data-nigredo-entry-template][data-index="${entry.index}"]`,
+  );
+}
+
+function clone_entry_node(entry, expanded) {
+  const node =
+    get_entry_template(entry)?.content.firstElementChild?.cloneNode(true) ?? null;
+  if (!node) return null;
+
+  set_entry_expanded(node, expanded);
+  node.style.position = "static";
+  node.style.top = "";
+  node.style.left = "";
+  node.style.width = "100%";
+  node.style.transform = "";
+  return node;
+}
+
+function set_entry_expanded(entry_node, expanded) {
+  const preview = entry_node.querySelector("[data-nigredo-preview]");
+  const full = entry_node.querySelector("[data-nigredo-full]");
+  const button = entry_node.querySelector("[data-nigredo-expand]");
+
+  entry_node.dataset.expanded = expanded ? "true" : "false";
+  if (preview) preview.hidden = expanded;
+  if (full) full.hidden = !expanded;
+  if (button) {
+    button.setAttribute("aria-expanded", expanded ? "true" : "false");
+    button.textContent = expanded ? "show less" : "read more";
+  }
+}
+
+function create_measure_list(scroll_pane) {
+  const measure_list = document.createElement("ol");
+  measure_list.className = "sol__nigredo_list sol__nigredo_measure_list";
+  measure_list.setAttribute("aria-hidden", "true");
+  measure_list.inert = true;
+  scroll_pane.appendChild(measure_list);
+  return measure_list;
+}
+
+class EntrySizeCache {
+  constructor(measure_list) {
+    this.measure_list = measure_list;
+    this.sizes = new Map();
   }
 
-  _fill(node, entry, index) {
-    const row = node;
-    const article = node.querySelector(".sol__nigredo_entry");
-    const link = node.querySelector(".sol__nigredo_entry_link");
-    const title = node.querySelector(".sol__nigredo_entry_title");
-    const pill = node.querySelector(".sol__nigredo_pill");
-    const date = node.querySelector(".sol__nigredo_entry_date");
-    const excerpt = node.querySelector(".sol__nigredo_entry_excerpt");
-
-    // Lane
-    const align = derive_align(entry, index);
-    row.dataset.align = align;
-
-    // Variant
-    if (article) {
-      article.dataset.variant = entry.featured ? "rupture" : "quiet";
-    }
-
-    // Link
-    if (link) link.href = entry.href;
-
-    // Title
-    if (title) {
-      if (entry.title) {
-        title.textContent = entry.title;
-        title.dataset.redacted = "false";
-      } else {
-        title.textContent = "■".repeat(redact_length(entry.slug));
-        title.dataset.redacted = "true";
-      }
-    }
-
-    // Pill
-    if (pill) {
-      const state = entry.states[0] ?? "numb";
-      pill.textContent = state;
-      pill.dataset.state = state;
-      pill.dataset.family = INWARD.has(state) ? "ash" : "ember";
-    }
-
-    // Date
-    if (date) {
-      date.setAttribute("datetime", entry.published_at);
-      date.textContent = entry.published_at;
-    }
-
-    // Excerpt — show/hide with visibility to preserve height stability
-    if (excerpt) {
-      const p = excerpt.querySelector("p");
-      if (entry.excerpt) {
-        if (p) p.textContent = entry.excerpt;
-        excerpt.hidden = false;
-      } else {
-        excerpt.hidden = true;
-      }
-    }
-
-    return node;
+  clear() {
+    this.sizes.clear();
+    this.measure_list.replaceChildren();
   }
 
-  get(v_item, filtered) {
-    const entry = filtered[v_item.index];
-    let node = this._pool.get(v_item.key);
+  measure(entry, expanded) {
+    const key = entry_size_key(entry, expanded);
+    const cached = this.sizes.get(key);
+    if (cached) return cached;
 
+    const fallback = fallback_entry_size(entry, expanded);
+    const node = clone_entry_node(entry, expanded);
+    if (!node) return fallback;
+
+    this.measure_list.appendChild(node);
+    const measured = Math.ceil(node.getBoundingClientRect().height);
+    node.remove();
+
+    const size = measured > 0 ? measured : fallback;
+    this.sizes.set(key, size);
+    return size;
+  }
+}
+
+function update_status({
+  count_label,
+  filter_sum,
+  clear_btn,
+  active_states,
+  visible_count,
+  total_count,
+}) {
+  if (count_label) {
+    count_label.textContent =
+      active_states.size > 0
+        ? `${visible_count} / ${total_count}`
+        : `${total_count}`;
+  }
+
+  if (filter_sum) {
+    if (active_states.size > 0) {
+      filter_sum.textContent = `— ${[...active_states].join(", ")}`;
+      filter_sum.hidden = false;
+    } else {
+      filter_sum.textContent = "";
+      filter_sum.hidden = true;
+    }
+  }
+
+  if (clear_btn) clear_btn.hidden = active_states.size === 0;
+}
+
+class VirtualEntryPool {
+  constructor() {
+    this.nodes = new Map();
+  }
+
+  get(entry, expanded) {
+    let node = this.nodes.get(entry.key);
     if (!node) {
-      node = this._make_node();
-      this._pool.set(v_item.key, node);
+      node = clone_entry_node(entry, expanded);
+      if (!node) return null;
+      this.nodes.set(entry.key, node);
     }
 
-    node.dataset.index = String(v_item.index);
-    this._fill(node, entry, v_item.index);
-
-    // Absolute positioning inside inner track
-    node.style.position = "absolute";
-    node.style.top = "0";
-    node.style.left = "0";
-    node.style.right = "";
-    node.style.width = "100%";
-    node.style.transform = `translateY(${v_item.start}px)`;
-
+    set_entry_expanded(node, expanded);
     return node;
   }
 
   prune(active_keys) {
-    const key_set = new Set(active_keys);
-    for (const [k, node] of this._pool) {
-      if (!key_set.has(k)) {
+    const active_key_set = new Set(active_keys);
+    for (const [key, node] of this.nodes) {
+      if (!active_key_set.has(key)) {
         node.remove();
-        if (this._on_remove) {
-          this._on_remove(node);
-        }
-        this._pool.delete(k);
+        this.nodes.delete(key);
       }
     }
   }
-}
 
-// ─── DOM controller ──────────────────────────────────────────────────────────
+  clear() {
+    this.prune([]);
+  }
+}
 
 export function init_nigredo_archive() {
   const root = document.querySelector("[data-nigredo-archive]");
   if (!root || root.__nigredo_archive_bound) return;
   root.__nigredo_archive_bound = true;
 
-  // ── Data ──────────────────────────────────────────────────────────────────
   const raw_index = JSON.parse(
     document.getElementById("sol_nigredo_archive_index")?.textContent ?? "[]",
   );
@@ -194,151 +210,181 @@ export function init_nigredo_archive() {
     b.published_at.localeCompare(a.published_at),
   );
 
-  let active_states = new Set();
-  let filtered = full_index;
-
-  // ── Nodes ─────────────────────────────────────────────────────────────────
   const filter_rail = root.querySelector("[data-nigredo-filter-rail]");
   const clear_btn = root.querySelector("[data-nigredo-filter-clear]");
   const filter_sum = root.querySelector("[data-nigredo-filter-summary]");
   const count_label = root.querySelector("[data-nigredo-count]");
-  const scroll_el = root.querySelector("[data-nigredo-scroll]");
+  const scroll_pane = root.querySelector("[data-nigredo-scroll]");
   const inner_track = root.querySelector("[data-nigredo-inner]");
   const list_el = root.querySelector("[data-nigredo-list]");
 
-  if (!scroll_el || !inner_track || !list_el) return;
+  if (!scroll_pane || !inner_track || !list_el) return;
 
-  const entry_template = document.getElementById("sol_nigredo_entry_template");
-  if (!entry_template) return;
+  const active_states = new Set();
+  const expanded_indexes = new Set();
+  const measure_list = create_measure_list(scroll_pane);
+  const size_cache = new EntrySizeCache(measure_list);
+  const pool = new VirtualEntryPool();
 
-  const base_path = scroll_el.dataset.basePath ?? "";
+  let filtered = full_index;
+  let virtualizer = null;
+  let cleanup_virtualizer = null;
 
-  let layout_measure_pending = false;
+  function get_scroll_margin() {
+    return scroll_pane.getBoundingClientRect().top + window.scrollY;
+  }
 
-  function request_layout_measure() {
-    if (!virtualizer || layout_measure_pending) return;
+  function entry_is_expanded(entry) {
+    return expanded_indexes.has(entry.index);
+  }
 
-    layout_measure_pending = true;
-    requestAnimationFrame(() => {
-      layout_measure_pending = false;
-      virtualizer?.measure();
+  function update_count() {
+    update_status({
+      count_label,
+      filter_sum,
+      clear_btn,
+      active_states,
+      visible_count: filtered.length,
+      total_count: full_index.length,
     });
   }
 
-  const row_resize_observer = new ResizeObserver((entries) => {
+  function entry_size(entry) {
+    return size_cache.measure(entry, entry_is_expanded(entry));
+  }
+
+  function resize_entry(entry, filtered_index) {
+    if (!virtualizer || !entry) return;
+    virtualizer.resizeItem(filtered_index, entry_size(entry));
+  }
+
+  function render_virtual_items() {
     if (!virtualizer) return;
 
-    for (const entry of entries) {
-      virtualizer.measureElement(entry.target);
-    }
+    const virtual_items = virtualizer.getVirtualItems();
+    inner_track.style.height = `${virtualizer.getTotalSize()}px`;
 
-    request_layout_measure();
-  });
+    const active_keys = [];
+    for (const virtual_item of virtual_items) {
+      const entry = filtered[virtual_item.index];
+      if (!entry) continue;
 
-  // ── Row pool ──────────────────────────────────────────────────────────────
-  const pool = new RowPool(entry_template, base_path, (node) => {
-    row_resize_observer.unobserve(node);
-  });
+      active_keys.push(entry.key);
+      const node = pool.get(entry, entry_is_expanded(entry));
+      if (!node) continue;
 
-  // ── Render visible items ───────────────────────────────────────────────────
-  let rendering = false;
+      node.dataset.virtualIndex = String(virtual_item.index);
+      node.style.position = "absolute";
+      node.style.top = "0";
+      node.style.left = "0";
+      node.style.width = "100%";
+      node.style.transform = `translateY(${
+        virtual_item.start - virtualizer.options.scrollMargin
+      }px)`;
 
-  function render_items(virtual_items, total_size) {
-    if (rendering) return;
-    rendering = true;
-
-    inner_track.style.height = `${total_size}px`;
-
-    // Update count + summary
-    if (count_label) {
-      count_label.textContent =
-        active_states.size > 0
-          ? `${filtered.length} / ${full_index.length}`
-          : `${full_index.length}`;
-    }
-
-    if (filter_sum) {
-      if (active_states.size > 0) {
-        filter_sum.textContent = `— ${[...active_states].join(", ")}`;
-        filter_sum.hidden = false;
-      } else {
-        filter_sum.hidden = true;
-      }
-    }
-
-    if (clear_btn) clear_btn.hidden = active_states.size === 0;
-
-    // Diff: keep existing nodes, add missing, prune stale
-    const active_keys = virtual_items.map((v) => v.key);
-    pool.prune(active_keys);
-
-    for (const v_item of virtual_items) {
-      const node = pool.get(v_item, filtered);
       if (node.parentElement !== list_el) {
         list_el.appendChild(node);
       }
-
-      virtualizer?.measureElement?.(node);
-      row_resize_observer.observe(node);
     }
 
-    rendering = false;
+    pool.prune(active_keys);
   }
 
-  // ── TanStack virtualizer ───────────────────────────────────────────────────
-  let virtualizer = null;
+  function cleanup_current_virtualizer() {
+    cleanup_virtualizer?.();
+    cleanup_virtualizer = null;
+    virtualizer = null;
+  }
 
   function make_virtualizer() {
-    if (virtualizer) {
-      virtualizer.cleanup?.();
-      virtualizer = null;
-    }
+    cleanup_current_virtualizer();
+    size_cache.clear();
+    pool.clear();
+    list_el.replaceChildren();
 
     virtualizer = new Virtualizer({
       count: filtered.length,
-      getScrollElement: () => scroll_el,
-      estimateSize: () => ESTIMATED_SIZE,
-      measureElement: (el) => {
-        return measure_row(el);
+      getScrollElement: () => window,
+      estimateSize: (index) => {
+        const entry = filtered[index];
+        return entry ? entry_size(entry) : 160;
       },
+      getItemKey: (index) => filtered[index]?.key ?? index,
+      observeElementRect: observeWindowRect,
+      observeElementOffset: observeWindowOffset,
+      scrollToFn: windowScroll,
+      scrollMargin: get_scroll_margin(),
       overscan: OVERSCAN,
-      scrollToFn: elementScroll,
-      observeElementRect,
-      observeElementOffset,
-      onChange: (v) => {
-        render_items(v.getVirtualItems(), v.getTotalSize());
+      initialRect: {
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
+      onChange: render_virtual_items,
     });
 
-    virtualizer._didMount();
+    cleanup_virtualizer = virtualizer._didMount();
     virtualizer._willUpdate();
-
-    return virtualizer;
+    render_virtual_items();
   }
 
-  // ── Filter wiring ─────────────────────────────────────────────────────────
   function apply_filters() {
     filtered = filter_entries(full_index, active_states);
-    // Clear the pool so rows are rebuilt for new filtered set
-    pool.prune([]);
-    list_el.replaceChildren();
-    scroll_el.scrollTop = 0;
+    update_count();
     make_virtualizer();
-    request_layout_measure();
+  }
+
+  function sync_filter_controls() {
+    if (!filter_rail) return;
+
+    for (const button of filter_rail.querySelectorAll("[data-filter-state]")) {
+      button.dataset.active = active_states.has(button.dataset.filterState)
+        ? "true"
+        : "false";
+    }
+
+    for (const button of filter_rail.querySelectorAll("[data-filter-container]")) {
+      const group = button.closest(".sol__nigredo_filter_group");
+      const state_buttons = group?.querySelectorAll("[data-filter-state]") ?? [];
+      let all_active = state_buttons.length > 0;
+      for (const state_button of state_buttons) {
+        if (!active_states.has(state_button.dataset.filterState)) {
+          all_active = false;
+          break;
+        }
+      }
+
+      button.dataset.active = all_active ? "true" : "false";
+      button.setAttribute("aria-pressed", all_active ? "true" : "false");
+    }
   }
 
   if (filter_rail) {
-    filter_rail.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-filter-state]");
-      if (!btn) return;
-      const state = btn.dataset.filterState;
+    filter_rail.addEventListener("click", (event) => {
+      const container_button = event.target.closest("[data-filter-container]");
+      if (container_button) {
+        const group = container_button.closest(".sol__nigredo_filter_group");
+        const container_states = [];
+        for (const button of group?.querySelectorAll("[data-filter-state]") ?? []) {
+          container_states.push(button.dataset.filterState);
+        }
+
+        toggle_container_states(active_states, container_states);
+        sync_filter_controls();
+        apply_filters();
+        return;
+      }
+
+      const button = event.target.closest("[data-filter-state]");
+      if (!button) return;
+
+      const state = button.dataset.filterState;
       if (active_states.has(state)) {
         active_states.delete(state);
-        btn.dataset.active = "false";
       } else {
         active_states.add(state);
-        btn.dataset.active = "true";
       }
+
+      sync_filter_controls();
       apply_filters();
     });
   }
@@ -346,27 +392,54 @@ export function init_nigredo_archive() {
   if (clear_btn) {
     clear_btn.addEventListener("click", () => {
       active_states.clear();
-      filter_rail
-        .querySelectorAll("[data-filter-state]")
-        .forEach((btn) => (btn.dataset.active = "false"));
+      sync_filter_controls();
       apply_filters();
     });
   }
 
-  // ── Boot ──────────────────────────────────────────────────────────────────
+  root.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-nigredo-expand]");
+    if (!button || !virtualizer) return;
+
+    const entry_node = button.closest("[data-nigredo-entry]");
+    const entry_index = Number(entry_node?.dataset.entryIndex);
+    if (!Number.isInteger(entry_index)) return;
+
+    const filtered_index = filtered.findIndex(
+      (entry) => entry.index === entry_index,
+    );
+    const entry = filtered[filtered_index];
+    if (!entry || !entry.can_expand) return;
+
+    if (expanded_indexes.has(entry_index)) {
+      expanded_indexes.delete(entry_index);
+    } else {
+      expanded_indexes.add(entry_index);
+    }
+
+    set_entry_expanded(entry_node, entry_is_expanded(entry));
+    resize_entry(entry, filtered_index);
+    render_virtual_items();
+  });
+
+  window.addEventListener(
+    "resize",
+    () => {
+      make_virtualizer();
+    },
+    { passive: true },
+  );
+
+  document.fonts?.ready.then(() => {
+    if (root.isConnected) make_virtualizer();
+  });
+
+  update_count();
+  sync_filter_controls();
   make_virtualizer();
-
-  request_layout_measure();
-
-  window.addEventListener("resize", request_layout_measure, { passive: true });
-
-  if (document.fonts?.status === "loading") {
-    document.fonts.ready.then(() => {
-      request_layout_measure();
-    });
-  }
 }
 
-// Auto-boot
-document.addEventListener("DOMContentLoaded", init_nigredo_archive);
-document.addEventListener("htmx:afterSettle", init_nigredo_archive);
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init_nigredo_archive);
+  document.addEventListener("htmx:afterSettle", init_nigredo_archive);
+}

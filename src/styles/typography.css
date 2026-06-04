@@ -11,20 +11,26 @@
  */
 
 :root {
-  /* TYPE SCALE — Septimal Minor Third (7/6 ≈ 1.1667), base 14px
-   * nano → micro → fine → base → body → lead → sub → mid → main → large → display
+  /* TYPE SCALE — compact page scale, base 16px
+   * body/h4 stay at 1rem; h1 caps the page at 32px.
    */
-  --text_nano: 9px;
-  --text_micro: 10px;
+  --text_nano: 10px;
+  --text_micro: 11px;
   --text_fine: 12px;
-  --text_base: 14px;
+  --text_base: 16px;
   --text_body: 16px;
-  --text_lead: 19px;
-  --text_sub: 22px;
-  --text_mid: 26px;
-  --text_main: 30px;
-  --text_large: 35px;
-  --text_display: 41px;
+  --text_lead: 16px;
+  --text_h1: 32px;
+  --text_h2: 24px;
+  --text_h3: 20px;
+  --text_h4: 16px;
+  --text_h5: 16px;
+  --text_h6: 16px;
+  --text_sub: var(--text_h5);
+  --text_mid: var(--text_h4);
+  --text_main: var(--text_h3);
+  --text_large: var(--text_h2);
+  --text_display: var(--text_h1);
 
   /* LEADING — Pythagorean just intonation intervals
    * display  → minor second  16:15 ≈ 1.067
@@ -59,10 +65,8 @@
   --weight_cadence: 500;
 
   /* FONTS + CADENCE */
-  --font_reading_body:
-    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
-  --font_reading_heading:
-    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
+  --font_reading_body: var(--font_body);
+  --font_reading_heading: var(--font_heading);
   --cadence_font_style: italic;
   --cadence_letter_spacing: 0.01em;
   --cadence_color_mix: 24%;
@@ -74,6 +78,7 @@ html {
 }
 
 body {
+  font-family: var(--font_reading_body);
   font-size: var(--text_base);
   line-height: var(--leading_ui);
 }
@@ -224,6 +229,11 @@ body {
   margin-bottom: var(--space_heading_bottom);
 }
 
+.sol__reading_layer_body > #sol_breadcrumbs ~ :not(script) :where(h1:first-of-type) {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
 :where(
     #sol_main_reading_container,
     .sol__reading_container,
@@ -247,32 +257,35 @@ body {
 
 /* OVERRIDES: POV */
 body.sol__pov_cinza {
-  --font_reading_heading:
-    "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
-  --font_reading_body:
-    "Atkinson Hyperlegible Next", "Source Sans 3", "Segoe UI", sans-serif;
+  --font_reading_heading: var(--font_heading);
+  --font_reading_body: var(--font_body);
   --cadence_color_mix: 30%;
 }
 
 /* OVERRIDES: PHASE */
+body[data-phase="nigredo"],
 container[data-phase="nigredo"] {
   --site_style_accent: var(--color-nigredo);
 }
 
+body[data-phase="albedo"],
 container[data-phase="albedo"] {
   --site_style_accent: var(--color-albedo);
 }
 
+body[data-phase="citrinitas"],
 container[data-phase="citrinitas"] {
   --site_style_accent: var(--color-citrinitas);
 }
 
+body[data-phase="rubedo"],
 container[data-phase="rubedo"] {
   --site_style_accent: var(--color-rubedo);
 }
 
+body[data-phase="codex"],
 container[data-phase="codex"] {
-  --site_style_accent: oklch(62% 0.08 290);
+  --site_style_accent: var(--color-codex);
 }
 
 /* CONSUMERS: CADENCE */

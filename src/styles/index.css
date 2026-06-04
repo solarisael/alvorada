@@ -18,13 +18,15 @@ Ownership Matrix
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
   --site_style_shell_mix: 48%;
-  --site_style_border_mix: 40%;
+  --site_style_border_mix: 26%;
   --site_style_halo_mix: 18%;
-  --site_style_edge_mix: 22%;
+  --site_style_edge_mix: 14%;
   --site_style_noise_opacity: 0.14;
   --site_style_deco_opacity: 0.22;
   --site_style_blur: 5px;
   --site_style_strength_mult: 1;
+  --site_border_width_hairline: 0.5px;
+  --site_border_width_standard: 1px;
   --site_shell_blur_mult: 1;
   --site_shell_surface_mult: 1;
   --site_shell_glow_mult: 1;
@@ -44,7 +46,7 @@ Ownership Matrix
   /* Cinza quick tuning: master controls */
   --cinza_tune_axis_span: 0.5rem;
   --cinza_tune_rail_inline_offset: 0%;
-  --cinza_tune_corner_scale: 1;
+  --cinza_tune_corner_scale: 0.67;
   --cinza_tune_line_block_size: 1.5rem;
   --cinza_tune_sigil_size: 2.6rem;
   --cinza_tune_rail_edge_nudge: 0.7rem;
@@ -60,14 +62,14 @@ Ownership Matrix
   --site_style_accent: var(--ui_accent);
   --site_style_accent_alt: var(--ui_accent_2);
   --site_style_shell_mix: 48%;
-  --site_style_border_mix: 44%;
+  --site_style_border_mix: 28%;
   --site_style_halo_mix: 26%;
-  --site_style_edge_mix: 36%;
+  --site_style_edge_mix: 22%;
   --site_style_noise_opacity: 0.1;
   --site_style_deco_opacity: 0.46;
   --cinza_reliquary_opacity: 0.88;
-  --cinza_reliquary_line_mix: 40%;
-  --cinza_reliquary_strong_mix: 62%;
+  --cinza_reliquary_line_mix: 26%;
+  --cinza_reliquary_strong_mix: 48%;
 
   /* Away from border + vertical positioning */
   --cinza_reliquary_corner_scale: var(--cinza_tune_corner_scale);
@@ -125,57 +127,57 @@ Ownership Matrix
   --cinza_fog_halo_mix: 30%;
   --cinza_fog_depth_mix: 20%;
   --cinza_fog_shadow_mix: 34%;
-  --cinza_bw_saturation: 0.24;
+  --cinza_bw_saturation: 1;
   --cinza_bw_contrast: 1.16;
 }
 
 :root[data-site-theme="solarisael"][data-site-shell="subtle"] {
   --site_style_deco_opacity: 0.38;
   --cinza_reliquary_opacity: 0.74;
-  --cinza_reliquary_line_mix: 30%;
-  --cinza_reliquary_strong_mix: 48%;
+  --cinza_reliquary_line_mix: 20%;
+  --cinza_reliquary_strong_mix: 38%;
   --cinza_sun_bleed_mix: 24%;
   --cinza_sun_bleed_alt_mix: 16%;
   --cinza_fog_halo_mix: 18%;
   --cinza_fog_depth_mix: 14%;
   --cinza_fog_shadow_mix: 24%;
-  --cinza_bw_saturation: 0.34;
+  --cinza_bw_saturation: 1;
   --cinza_bw_contrast: 1.08;
 }
 
 :root[data-site-theme="solarisael"][data-site-shell="medium"] {
-  --site_style_border_mix: 52%;
+  --site_style_border_mix: 34%;
   --site_style_halo_mix: 31%;
-  --site_style_edge_mix: 42%;
+  --site_style_edge_mix: 26%;
   --site_style_noise_opacity: 0.14;
   --site_style_deco_opacity: 0.52;
   --cinza_reliquary_opacity: 0.9;
-  --cinza_reliquary_line_mix: 56%;
-  --cinza_reliquary_strong_mix: 76%;
+  --cinza_reliquary_line_mix: 36%;
+  --cinza_reliquary_strong_mix: 58%;
   --cinza_sun_bleed_mix: 42%;
   --cinza_sun_bleed_alt_mix: 28%;
   --cinza_fog_halo_mix: 40%;
   --cinza_fog_depth_mix: 24%;
   --cinza_fog_shadow_mix: 42%;
-  --cinza_bw_saturation: 0.16;
+  --cinza_bw_saturation: 1;
   --cinza_bw_contrast: 1.26;
 }
 
 :root[data-site-theme="solarisael"][data-site-shell="strong"] {
-  --site_style_border_mix: 62%;
+  --site_style_border_mix: 42%;
   --site_style_halo_mix: 37%;
-  --site_style_edge_mix: 50%;
+  --site_style_edge_mix: 32%;
   --site_style_noise_opacity: 0.18;
   --site_style_deco_opacity: 0.62;
   --cinza_reliquary_opacity: 0.95;
-  --cinza_reliquary_line_mix: 68%;
-  --cinza_reliquary_strong_mix: 88%;
+  --cinza_reliquary_line_mix: 46%;
+  --cinza_reliquary_strong_mix: 68%;
   --cinza_sun_bleed_mix: 50%;
   --cinza_sun_bleed_alt_mix: 36%;
   --cinza_fog_halo_mix: 52%;
   --cinza_fog_depth_mix: 34%;
   --cinza_fog_shadow_mix: 56%;
-  --cinza_bw_saturation: 0.1;
+  --cinza_bw_saturation: 1;
   --cinza_bw_contrast: 1.34;
 }
 
@@ -228,18 +230,19 @@ Ownership Matrix
 }
 
 .sol__page_transition_breath_subtle {
-  --page_fade_out_ms: 160ms;
-  --page_fade_gap_ms: 60ms;
-  --page_fade_in_ms: 220ms;
+  --page_fade_out_ms: 70ms;
+  --page_fade_gap_ms: 0ms;
+  --page_fade_in_ms: 120ms;
 }
 
 .sol__page_transition_breath_noticeable {
-  --page_fade_out_ms: 240ms;
-  --page_fade_gap_ms: 20ms;
-  --page_fade_in_ms: 180ms;
+  --page_fade_out_ms: 160ms;
+  --page_fade_gap_ms: 0ms;
+  --page_fade_in_ms: 160ms;
 }
 
-#sol_content.sol__htmx_request {
+container.sol__htmx_request,
+container.htmx-request {
   animation-duration: calc(
     (
         var(--page_fade_out_ms) + var(--page_fade_gap_ms) +
@@ -261,7 +264,8 @@ Ownership Matrix
   animation-timing-function: linear;
 }
 
-#sol_content.sol__htmx_swapping {
+container.sol__htmx_swapping,
+container.htmx-swapping {
   animation-name: page_content_fade_out;
   animation-duration: calc(
     var(--page_fade_out_ms) * var(--site_fx_motion_mult)
@@ -279,10 +283,11 @@ Ownership Matrix
   animation-fill-mode: both;
 }
 
-#sol_content.sol__htmx_added {
+container.sol__htmx_added,
+container.htmx-added,
+container.htmx-settling {
   animation-name: page_content_fade_in;
   animation-duration: calc(var(--page_fade_in_ms) * var(--site_fx_motion_mult));
-  animation-delay: calc(var(--page_fade_gap_ms) * var(--site_fx_motion_mult));
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   animation-fill-mode: both;
 }

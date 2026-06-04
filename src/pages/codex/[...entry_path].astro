@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
+import EntryDetail from "../../components/page/entry_detail.astro";
+import { with_base } from "../../utils/routes.js";
 
 // Codex entries live in `obsidian/codex/`. The collection is path-routed:
 // each .md file at `<category>/<sub>/<slug>.md` becomes the URL
@@ -35,44 +37,29 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const base_path = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const entry_path = String(entry.id);
 const entry_segments = entry_path.split("/");
-const entry_category = entry_segments[0] ?? "";
 const display_title =
   (typeof entry.data?.title === "string" && entry.data.title.trim()) ||
   (typeof entry.data?.slug === "string" && entry.data.slug.trim()) ||
   (entry_segments.at(-1) ?? entry_path);
-const display_category =
-  (typeof entry.data?.category === "string" && entry.data.category.trim()) ||
-  entry_category;
 ---
 
 <IndexLayout
   phase="codex"
   crumbs={[
-    { label: "home", href: `${base_path}/` },
-    { label: "codex", href: `${base_path}/codex` },
+    { label: "home", href: with_base("/") },
+    { label: "codex", href: with_base("/codex") },
     ...entry_segments.slice(0, -1).map((segment, idx) => ({
       label: segment,
-      href: `${base_path}/codex/${entry_segments.slice(0, idx + 1).join("/")}`,
+      href: with_base(`/codex/${entry_segments.slice(0, idx + 1).join("/")}`),
     })),
     { label: display_title, href: null },
   ]}
 >
   <codex data-shape="entry_detail">
-    <div class="sol__entry_header">
-      <p class="sol__text_kicker">~/ codex / {display_category}</p>
-      <h1>{display_title}</h1>
-      {
-        entry.data?.summary && (
-          <p class="sol__text_lead">{entry.data.summary}</p>
-        )
-      }
-    </div>
-
-    <div class="sol__entry_body sol__chapter_content">
+    <EntryDetail title={display_title} lead={entry.data?.summary}>
       <Content />
-    </div>
+    </EntryDetail>
   </codex>
 </IndexLayout>

@@ -1,67 +1,50 @@
 ---
 import IndexLayout from "../layouts/index.astro";
+import PhaseCardGrid from "../components/home/phase_card_grid.astro";
+import { with_base } from "../utils/routes.js";
 // home_card_gate.css moved to layout-level for htmx-nav availability
-
-const base_url = import.meta.env.BASE_URL;
-const base_path = base_url.replace(/\/+$/, "");
-const with_base = (path_value) => {
-  const normalized_path = String(path_value).replace(/^\/+/, "");
-
-  return `${base_path}/${normalized_path}`;
-};
 
 const cinza_card_ornament_base = {
   corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
   corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
   corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
   corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
+  side_left: with_base("ornaments/cinza/card_side_flourish.svg"),
+  side_right: with_base("ornaments/cinza/card_side_flourish.svg"),
+};
+
+const nigredo_card_visual = {
+  ornament: {
+    ...cinza_card_ornament_base,
+    sigil: with_base("ornaments/cinza/sigil_eye.svg"),
+  },
 };
 
 const phase_cards = [
   {
     phase_name: "Nigredo",
     phase_slug: "nigredo",
-    phase_symbol: "01",
     phase_blurb:
       "Dissolution and shadow-work. Enter the black vessel of becoming.",
-    ornament: {
-      ...cinza_card_ornament_base,
-      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
-    },
+    ...nigredo_card_visual,
   },
   {
     phase_name: "Albedo",
     phase_slug: "albedo",
-    phase_symbol: "02",
     phase_blurb: "Clarification and silver breath. Distill signal from noise.",
-    ornament: {
-      ...cinza_card_ornament_base,
-      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
-    },
+    ...nigredo_card_visual,
   },
   {
     phase_name: "Citrinitas",
     phase_slug: "citrinitas",
-    phase_symbol: "03",
     phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
-    ornament: {
-      ...cinza_card_ornament_base,
-      corner_tl: with_base("ornaments/cinza/card_corner_b.svg"),
-      corner_tr: with_base("ornaments/cinza/card_corner_a.svg"),
-      sigil: with_base("ornaments/cinza/sigil_moon_star.svg"),
-    },
+    ...nigredo_card_visual,
   },
   {
     phase_name: "Rubedo",
     phase_slug: "rubedo",
-    phase_symbol: "04",
     phase_blurb: "Union and embodiment. Seal the work in living fire.",
-    ornament: {
-      ...cinza_card_ornament_base,
-      corner_bl: with_base("ornaments/cinza/card_corner_d.svg"),
-      corner_br: with_base("ornaments/cinza/card_corner_c.svg"),
-      sigil: with_base("ornaments/cinza/sigil_eye.svg"),
-    },
+    ...nigredo_card_visual,
   },
 ];
 ---
@@ -70,99 +53,18 @@ const phase_cards = [
   <vessel data-shape="home_gate" id="sol_home_card_gate">
     <div id="sol_home_gate_intro">
       <div id="sol_home_gate_header">
-        <p id="sol_home_gate_kicker" class="sol__text_kicker">~/ threshold</p>
-        <h1 id="sol_home_gate_title" class="sol__text_large">Choose your phase</h1>
+        <h1 id="sol_home_gate_title">Hearth</h1>
       </div>
 
       <div id="sol_home_gate_body">
         <p>
-          Four doors, one work. Pick a transmutation path and continue the
-          ritual.
+          This is the warm room before the work branches. Solarisael gathers
+          here first: the raw, the clarified, the golden, the completed, and the
+          codex that remembers the names.
         </p>
       </div>
     </div>
 
-    <mantle data-shape="phase_grid" id="sol_phase_card_grid">
-      {
-        phase_cards.map((phase_card) => (
-          <a
-            class={`sol__phase_card_link phase_card_${phase_card.phase_slug}`}
-            href={with_base(phase_card.phase_slug)}
-            hx-get={with_base(phase_card.phase_slug)}
-          >
-            <span class="sol__phase_card_layer sol__phase_card_layer_surface" />
-            <span class="sol__phase_card_layer sol__phase_card_layer_stars" />
-            <span class="sol__phase_card_layer sol__phase_card_layer_frame" />
-            <div class="sol__phase_card_layer sol__phase_card_layer_ornament_svg">
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_corner_tl"
-                src={phase_card.ornament.corner_tl}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_corner_tr"
-                src={phase_card.ornament.corner_tr}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_corner_bl"
-                src={phase_card.ornament.corner_bl}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_corner_br"
-                src={phase_card.ornament.corner_br}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_center_top"
-                src={with_base("ornaments/cinza/card_center_top.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_side_left"
-                src={with_base("ornaments/cinza/card_side_flourish.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_side_right"
-                src={with_base("ornaments/cinza/card_side_flourish.svg")}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-              <img
-                class="sol__phase_card_ornament sol__phase_card_ornament_sigil"
-                src={phase_card.ornament.sigil}
-                alt=""
-                loading="eager"
-                decoding="async"
-              />
-            </div>
-
-            <div class="sol__phase_card_layer_body">
-              <p class="sol__phase_card_symbol sol__text_caption">
-                {phase_card.phase_symbol}
-              </p>
-              <h2 class="sol__phase_card_title sol__text_mid">{phase_card.phase_name}</h2>
-              <p class="sol__phase_card_blurb sol__text_body">{phase_card.phase_blurb}</p>
-              <p class="sol__phase_card_cta sol__text_kicker">enter phase</p>
-            </div>
-          </a>
-        ))
-      }
-    </mantle>
+    <PhaseCardGrid phase_cards={phase_cards} />
   </vessel>
 </IndexLayout>

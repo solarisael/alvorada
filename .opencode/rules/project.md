@@ -101,3 +101,18 @@ Inner blocks inside the ritualistic outer use plain `<div>` with semantic classe
 - HTMX 2 + idiomorph for progressive enhancement.
 - Catppuccin REMOVED (was "temporary baseline" — removed 2026-05-12; replaced with `--color-codex` for the lavender variable previously in use).
 - Phase color tokens defined in `base.css` `@theme` block: `--color-nigredo`, `--color-albedo`, `--color-citrinitas`, `--color-rubedo`, `--color-codex`.
+
+## Font Palette
+
+Font files are self-hosted in `public/fonts/`. Font faces and semantic font tokens live in `src/styles/fonts.css`.
+
+- `--font_body`: Atkinson Hyperlegible Next; stable body/UI reading font.
+- `--font_heading`: Atkinson Hyperlegible Next; stable heading font until a specific display treatment is chosen.
+- `--font_mono`: JetBrains Mono; code, system overlays, traces, terminal UI.
+- `--font_literary`: Cormorant Garamond; prose panels, memory fragments, intimate introduction copy.
+- `--font_editorial`: Bodoni Moda; dramatic titles, page-level display moments.
+- `--font_ritual`: Cinzel Decorative; alchemical labels, ceremonial headings, sigil-adjacent text.
+- `--font_shadow`: Grenze Gotisch; Nigredo/dark accents and rare haunted emphasis only.
+- `--font_artifact`: Syne Tactile; weird, corrupted, magical-system accents only.
+
+Keep Atkinson as the default body/heading baseline. Use the non-default families as intentional accents, not full-page replacements unless explicitly requested.

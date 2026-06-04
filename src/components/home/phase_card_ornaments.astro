@@ -1,0 +1,45 @@
+---
+import { with_base } from "../../utils/routes.js";
+
+const { ornament } = Astro.props;
+const content_sigil_top = with_base("ornaments/reliquary/sigil_concentric.svg");
+const content_sigil_bottom = with_base("ornaments/reliquary/divider_center.svg");
+
+const ornament_items = [
+  { role: "corner_tl", src: ornament.corner_tl },
+  { role: "corner_tr", src: ornament.corner_tr },
+  { role: "corner_bl", src: ornament.corner_bl },
+  { role: "corner_br", src: ornament.corner_br },
+  { role: "center_top", src: content_sigil_top, mode: "mask" },
+  { role: "center_bottom", src: content_sigil_bottom, mode: "mask" },
+  { role: "side_left", src: ornament.side_left },
+  { role: "side_right", src: ornament.side_right },
+  { role: "frame_corner_tl", src: with_base("ornaments/cinza/frame_corner_tl.svg") },
+  { role: "frame_corner_tr", src: with_base("ornaments/cinza/frame_corner_tr.svg") },
+  { role: "frame_corner_bl", src: with_base("ornaments/cinza/frame_corner_bl.svg") },
+  { role: "frame_corner_br", src: with_base("ornaments/cinza/frame_corner_br.svg") },
+];
+---
+
+<ornament data-shape="phase_card_ornaments" class="sol__phase_card_ornaments">
+  {
+    ornament_items.map((ornament_item) => (
+      ornament_item.mode === "mask" ? (
+        <span
+          class={`sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
+          data-ornament-role={ornament_item.role}
+          style={`--ornament_mask_url: url(${ornament_item.src})`}
+        />
+      ) : (
+        <img
+          class={`sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
+          data-ornament-role={ornament_item.role}
+          src={ornament_item.src}
+          alt=""
+          loading="eager"
+          decoding="async"
+        />
+      )
+    ))
+  }
+</ornament>

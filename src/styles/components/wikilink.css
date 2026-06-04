@@ -87,7 +87,7 @@
   margin: 1.25rem 0;
   padding: 1rem 1.15rem;
   border-radius: 0.4rem;
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       var(--site_style_accent, oklch(70% 0.05 240)) 16%,
@@ -185,7 +185,7 @@
   padding: 0.85rem 1rem;
   border-radius: 0.4rem;
   background: oklch(14% 0.012 258);
-  border: 1px solid
+  border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
       var(--site_style_accent, oklch(70% 0.05 240)) 22%,

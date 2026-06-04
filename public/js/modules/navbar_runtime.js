@@ -6,6 +6,14 @@ const POINTER_LEAVE_DEBOUNCE_MS = 16;
 const NAV_SCROLL_THROTTLE_MS = 16;
 const NAV_REVEAL_TOP_OFFSET_PX = 96;
 const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
+const PHASE_NAMES = new Set([
+  "home",
+  "nigredo",
+  "albedo",
+  "citrinitas",
+  "rubedo",
+  "codex",
+]);
 let last_applied_pathname = null;
 
 /**
@@ -32,6 +40,36 @@ const is_section_path_active = (current_pathname, target_pathname) => {
   );
 };
 
+/**
+ * @param {string} pathname_value
+ */
+const derive_phase_from_pathname = (pathname_value) => {
+  const path_segments = normalize_pathname(pathname_value)
+    .split("/")
+    .filter(Boolean);
+
+  for (const path_segment of path_segments) {
+    if (PHASE_NAMES.has(path_segment)) {
+      return path_segment;
+    }
+  }
+
+  return "home";
+};
+
+/**
+ * @param {string} pathname_value
+ */
+const sync_route_phase = (pathname_value) => {
+  const route_phase = derive_phase_from_pathname(pathname_value);
+
+  if (document.body?.dataset.phase === route_phase) {
+    return;
+  }
+
+  document.body?.setAttribute("data-phase", route_phase);
+};
+
 const ensure_action_queuer = () => {
   if (window_any.action_queuer) {
     return;
@@ -44,15 +82,17 @@ const ensure_action_queuer = () => {
  * @param {string | null} [pathname_override=null]
  */
 const apply_route_active_state = (pathname_override = null) => {
+  const current_pathname = normalize_pathname(
+    pathname_override ?? window.location.pathname,
+  );
+
+  sync_route_phase(current_pathname);
+
   const nav_node = document.querySelector("#sol_desktop_nav");
 
   if (!(nav_node instanceof HTMLElement)) {
     return;
   }
-
-  const current_pathname = normalize_pathname(
-    pathname_override ?? window.location.pathname,
-  );
 
   if (last_applied_pathname === current_pathname) {
     return;
@@ -77,7 +117,10 @@ const apply_route_active_state = (pathname_override = null) => {
       new URL(href_value, window.location.origin).pathname,
     );
     const is_exact_match = current_pathname === target_pathname;
-    const is_active = is_section_path_active(current_pathname, target_pathname);
+    const is_active =
+      pill_node.dataset.phase === "home"
+        ? is_exact_match
+        : is_section_path_active(current_pathname, target_pathname);
 
     pill_node.classList.toggle("sol__is_route_active", is_active);
     pill_node.classList.toggle("is-route-current", is_exact_match);
