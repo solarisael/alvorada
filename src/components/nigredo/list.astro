@@ -9,6 +9,8 @@ import ContentLink from "../page/content_link.astro";
 import {
   NIGREDO_CONTAINERS,
   NIGREDO_STATE_TO_CONTAINER,
+  NIGREDO_STATE_LABEL,
+  NIGREDO_STATE_GLOSS,
 } from "../../data/nigredo_taxonomy.js";
 import { with_base } from "../../utils/routes.js";
 
@@ -65,12 +67,13 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
                 {container.states.map((state) => (
                   <button
                     class="sol__nigredo_filter_btn sol__nigredo_pill"
-                    data-filter-state={state}
+                    data-filter-state={state.key}
                     data-container={container.key}
                     data-active="false"
                     type="button"
+                    title={state.gloss || undefined}
                   >
-                    {state}
+                    {state.label}
                   </button>
                 ))}
               </div>
@@ -196,8 +199,9 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
                         data-container={
                           NIGREDO_STATE_TO_CONTAINER[state] ?? "cinder"
                         }
+                        title={NIGREDO_STATE_GLOSS[state] || undefined}
                       >
-                        {state}
+                        {NIGREDO_STATE_LABEL[state] ?? state}
                       </span>
                     ))}
                   </div>

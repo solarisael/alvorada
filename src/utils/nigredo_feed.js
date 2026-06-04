@@ -1,6 +1,6 @@
 import { NIGREDO_STATE_TO_CONTAINER } from "../data/nigredo_taxonomy.js";
 
-const EXTREME_STATES = new Set(["rage", "panic", "ruin", "grief"]);
+const EXTREME_STATES = new Set(["charon", "rage", "panic", "angst"]);
 const NIGREDO_PREVIEW_CHAR_LIMIT = 320;
 
 function redact_length(slug) {
@@ -113,7 +113,7 @@ function estimate_nigredo_entry_sizes({
 
 function derive_nigredo_entry_view({ body = "", data, href, index = 0 }) {
   const states = data.states ?? [];
-  const primary_state = states[0] ?? "numb";
+  const primary_state = states[0] ?? "acedia";
   const primary_container =
     NIGREDO_STATE_TO_CONTAINER[primary_state] ?? "cinder";
   const title = data.title ?? null;

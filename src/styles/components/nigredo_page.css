@@ -36,7 +36,7 @@ container[data-phase="nigredo"] {
   --nigredo_transition_ms: 260ms;
 
   /* pill containers — fire shapes */
-  --nigredo_pill_hearth: oklch(68% 0.07 58);
+  --nigredo_pill_kindling: oklch(68% 0.07 58);
   --nigredo_pill_cinder: oklch(62% 0.018 258);
   --nigredo_pill_scorch: oklch(68% 0.085 35);
   --nigredo_pill_smoke: oklch(62% 0.032 286);
@@ -647,8 +647,8 @@ container[data-phase="nigredo"] {
   color: color-mix(in oklch, var(--nigredo_pill_tint) 76%, oklch(88% 0.01 258));
 }
 
-.sol__nigredo_pill[data-container="hearth"] {
-  --nigredo_pill_tint: var(--nigredo_pill_hearth);
+.sol__nigredo_pill[data-container="kindling"] {
+  --nigredo_pill_tint: var(--nigredo_pill_kindling);
 }
 
 .sol__nigredo_pill[data-container="cinder"] {
