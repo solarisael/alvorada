@@ -5,33 +5,28 @@ import PageSection from "../components/page/section.astro";
 import BookList from "../components/rubedo/book_list.astro";
 import {
   rubedo_book_map,
-  derive_chapter_slug,
+  rubedo_book_slugs,
 } from "../data/rubedo/book_timeline_runtime.js";
 import { with_base } from "../utils/routes.js";
 
-const book_slugs = Object.keys(rubedo_book_map);
-
-const book_links = book_slugs.map((book_slug) => {
+// rubedo_book_map chapters arrive already sorted by timeline_position and
+// slug-stamped (chapter_slug baked in the runtime), so no re-sort or re-derive
+// here. rubedo_book_slugs is the sorted key list.
+const book_links = rubedo_book_slugs.map((book_slug) => {
   const book_entry = rubedo_book_map[book_slug] ?? null;
-  const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
-    (left_chapter, right_chapter) =>
-      left_chapter.timeline_position - right_chapter.timeline_position,
-  );
-  const first_chapter = sorted_chapters[0] ?? null;
-  const book_href = with_base(`/rubedo/${book_slug}`);
-  const reader_href = first_chapter
-    ? with_base(
-        `/rubedo/${book_slug}/${derive_chapter_slug(first_chapter.timeline_position)}`,
-      )
-    : null;
-  const timeline_href = with_base(`/rubedo/${book_slug}/timeline`);
+  const chapters = book_entry?.chapters ?? [];
+  const first_chapter = chapters[0] ?? null;
 
   return {
     book_slug,
     book_title: book_entry?.title ?? book_slug,
-    book_href,
-    reader_href,
-    timeline_href,
+    synopsis: book_entry?.synopsis ?? "",
+    chapter_count: chapters.length,
+    book_href: with_base(`/rubedo/${book_slug}`),
+    reader_href: first_chapter
+      ? with_base(`/rubedo/${book_slug}/${first_chapter.chapter_slug}`)
+      : null,
+    timeline_href: with_base(`/rubedo/${book_slug}/timeline`),
   };
 });
 ---

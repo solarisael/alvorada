@@ -4,7 +4,6 @@ import ContentLink from "../../components/page/content_link.astro";
 import {
   rubedo_book_map,
   rubedo_book_slugs,
-  derive_chapter_slug,
 } from "../../data/rubedo/book_timeline_runtime.js";
 import { with_base } from "../../utils/routes.js";
 
@@ -18,17 +17,11 @@ const { book_slug } = Astro.params;
 
 const book_entry = rubedo_book_map[book_slug] ?? null;
 
-const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
-  (left_chapter, right_chapter) =>
-    left_chapter.timeline_position - right_chapter.timeline_position,
-);
-
-const first_chapter = sorted_chapters[0] ?? null;
+// Chapters arrive sorted + slug-stamped from the runtime — no re-sort/derive.
+const first_chapter = book_entry?.chapters[0] ?? null;
 
 const canonical_reader_href = first_chapter
-  ? with_base(
-      `/rubedo/${book_slug}/${derive_chapter_slug(first_chapter.timeline_position)}`,
-    )
+  ? with_base(`/rubedo/${book_slug}/${first_chapter.chapter_slug}`)
   : with_base("/rubedo");
 
 const timeline_href = with_base(`/rubedo/${book_slug}/timeline`);

@@ -1,3 +1,4 @@
+import { derive_chapter_slug } from "./chapter_slug.js";
 import {
   normalize_identity_token,
   parse_tag_identity,
@@ -241,6 +242,10 @@ const build_markdown_book_map = () => {
       .map((chapter) => {
         return {
           chapter_id: chapter.chapter_id,
+          // Slug baked once here (the chapters are already sorted), so
+          // consumers read chapter.chapter_slug instead of re-deriving it at
+          // every callsite — mirrors the shared book/ core.
+          chapter_slug: derive_chapter_slug(chapter.timeline_position),
           timeline_position: chapter.timeline_position,
           title: chapter.title,
           chapter_description: chapter.chapter_description,
@@ -267,13 +272,6 @@ const rubedo_book_slugs = Object.freeze(
     return left_slug.localeCompare(right_slug);
   }),
 );
-
-// Derives a zero-padded chapter slug from timeline_position.
-// Position 0 -> "000", 1 -> "001", 42 -> "042", 100 -> "100".
-// Minimum 3 digits — purely numeric, stable regardless of title changes.
-const derive_chapter_slug = (timeline_position = 0) => {
-  return String(Math.max(0, Math.floor(timeline_position))).padStart(3, "0");
-};
 
 // Collects the distinct thread keys present in a chapter's scenes,
 // with the default cinza thread always first when present.

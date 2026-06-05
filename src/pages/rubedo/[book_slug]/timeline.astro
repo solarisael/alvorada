@@ -14,7 +14,6 @@ import TimelineInteractive from "../../../components/rubedo/timeline_interactive
 import {
   rubedo_book_map,
   rubedo_book_slugs,
-  derive_chapter_slug,
 } from "../../../data/rubedo/book_timeline_runtime.js";
 import { with_base } from "../../../utils/routes.js";
 
@@ -31,18 +30,12 @@ const book_entry = rubedo_book_map[book_slug] ?? null;
 // JSON endpoint the constellation will fetch on load.
 const timeline_data_href = with_base(`/rubedo/data/${book_slug}.json`);
 
-// Canonical first chapter — used as entry point from this page.
-// Spread before sort — book_entry.chapters is frozen.
-const first_chapter =
-  [...(book_entry?.chapters ?? [])].sort(
-    (left_chapter, right_chapter) =>
-      left_chapter.timeline_position - right_chapter.timeline_position,
-  )[0] ?? null;
+// Canonical first chapter — entry point from this page. Chapters arrive
+// pre-sorted and slug-stamped from the runtime.
+const first_chapter = book_entry?.chapters[0] ?? null;
 
 const reader_entry_href = first_chapter
-  ? with_base(
-      `/rubedo/${book_slug}/${derive_chapter_slug(first_chapter.timeline_position)}`,
-    )
+  ? with_base(`/rubedo/${book_slug}/${first_chapter.chapter_slug}`)
   : with_base(`/rubedo/${book_slug}`);
 
 const rubedo_index_href = with_base("/rubedo");

@@ -6,7 +6,6 @@ import ThreadSwitcher from "../../../../components/rubedo/thread_switcher.astro"
 import {
   rubedo_book_map,
   rubedo_book_slugs,
-  derive_chapter_slug,
 } from "../../../../data/rubedo/book_timeline_runtime.js";
 import { build_crumbs, content_link_attrs, with_base } from "../../../../utils/routes.js";
 
@@ -20,7 +19,7 @@ export const getStaticPaths = () => {
     if (!book_entry) return [];
 
     return (book_entry.chapters ?? []).flatMap((chapter) => {
-      const chapter_slug = derive_chapter_slug(chapter.timeline_position);
+      const chapter_slug = chapter.chapter_slug;
 
       const thread_keys = [
         ...new Set(
@@ -66,28 +65,26 @@ const chapter_thread_keys = [
   return left_key.localeCompare(right_key);
 });
 
-// Sorted chapters for prev/next pager.
-const sorted_chapters = [...(book_entry?.chapters ?? [])].sort(
-  (left_chapter, right_chapter) =>
-    left_chapter.timeline_position - right_chapter.timeline_position,
-);
+// Chapters arrive pre-sorted by timeline_position from the runtime.
+const book_chapters = book_entry?.chapters ?? [];
 
-const chapter_index = sorted_chapters.findIndex(
+const chapter_index = book_chapters.findIndex(
   (candidate) => candidate.chapter_id === chapter?.chapter_id,
 );
 
 const previous_chapter =
-  chapter_index > 0 ? sorted_chapters[chapter_index - 1] : null;
+  chapter_index > 0 ? book_chapters[chapter_index - 1] : null;
 const next_chapter =
-  chapter_index >= 0 && chapter_index < sorted_chapters.length - 1
-    ? sorted_chapters[chapter_index + 1]
+  chapter_index >= 0 && chapter_index < book_chapters.length - 1
+    ? book_chapters[chapter_index + 1]
     : null;
 
 // Pager links preserve the active thread across chapters.
 const build_chapter_href = (target_chapter) => {
   if (!target_chapter) return null;
-  const target_slug = derive_chapter_slug(target_chapter.timeline_position);
-  return with_base(`/rubedo/${book_slug}/${thread_key}/${target_slug}`);
+  return with_base(
+    `/rubedo/${book_slug}/${thread_key}/${target_chapter.chapter_slug}`,
+  );
 };
 
 const build_hx_link = (href) => {
