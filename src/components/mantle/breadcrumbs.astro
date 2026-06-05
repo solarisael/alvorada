@@ -1,6 +1,6 @@
 ---
 import "../../styles/components/breadcrumbs.css";
-import { base_path, with_base } from "../../utils/routes.js";
+import { base_path, HOME_CRUMB_LABEL, with_base } from "../../utils/routes.js";
 
 // crumbs: explicit array of { label, href } objects.
 // When provided, bypasses the URL parser entirely — the page controls the trail.
@@ -52,7 +52,7 @@ if (Array.isArray(crumbs) && crumbs.length > 0) {
   crumb_items = crumbs;
 } else {
   // URL-derived fallback.
-  crumb_items = [{ href: with_base("/"), label: "hearth" }];
+  crumb_items = [{ href: with_base("/"), label: HOME_CRUMB_LABEL }];
   let current_path = "";
 
   path_segments.forEach((segment) => {
@@ -70,7 +70,10 @@ if (Array.isArray(crumbs) && crumbs.length > 0) {
   });
 }
 
-const current_crumb_href = crumb_items.at(-1)?.href ?? with_base("/");
+// The current page is always the LAST crumb in the trail, by position — not by
+// href-equality. The leaf often has href:null (it's the page you're on), so
+// matching on href would mark the wrong crumb (or none) at 2+ depth.
+const current_crumb_index = crumb_items.length - 1;
 const active_theme_color =
   theme_color ??
   phase_color_by_name[active_phase] ??
@@ -87,17 +90,23 @@ const active_theme_color =
 
   <ol>
     {
-      crumb_items.map((crumb_item) => {
-        const is_current = crumb_item.href === current_crumb_href;
+      crumb_items.map((crumb_item, crumb_index) => {
+        const is_current = crumb_index === current_crumb_index;
 
         return (
           <li class={is_current ? "sol__is_current" : "sol__is_parent"}>
-            <a
-              href={crumb_item.href}
-              class:list={{ sol__is_current_link: is_current }}
-            >
-              {crumb_item.label}
-            </a>
+            {crumb_item.href ? (
+              <a
+                href={crumb_item.href}
+                class:list={{ sol__is_current_link: is_current }}
+              >
+                {crumb_item.label}
+              </a>
+            ) : (
+              <span class:list={{ sol__is_current_link: is_current }}>
+                {crumb_item.label}
+              </span>
+            )}
           </li>
         );
       })

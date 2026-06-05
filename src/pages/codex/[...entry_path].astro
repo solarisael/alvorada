@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 import EntryDetail from "../../components/page/entry_detail.astro";
-import { with_base } from "../../utils/routes.js";
+import { build_crumbs, with_base } from "../../utils/routes.js";
 
 // Codex entries live in `obsidian/codex/`. The collection is path-routed:
 // each .md file at `<category>/<sub>/<slug>.md` becomes the URL
@@ -47,15 +47,14 @@ const display_title =
 
 <IndexLayout
   phase="codex"
-  crumbs={[
-    { label: "home", href: with_base("/") },
+  crumbs={build_crumbs([
     { label: "codex", href: with_base("/codex") },
     ...entry_segments.slice(0, -1).map((segment, idx) => ({
       label: segment,
       href: with_base(`/codex/${entry_segments.slice(0, idx + 1).join("/")}`),
     })),
     { label: display_title, href: null },
-  ]}
+  ])}
 >
   <codex data-shape="entry_detail">
     <EntryDetail title={display_title} lead={entry.data?.summary}>

@@ -71,46 +71,24 @@ const apply_constant_crumb_state = (pathname_value) => {
   breadcrumb_node.dataset.phase = active_phase;
   breadcrumb_node.style.setProperty("--crumb_theme_color", active_theme_color);
 
-  const crumb_link_nodes = /** @type {NodeListOf<HTMLAnchorElement>} */ (
-    breadcrumb_node.querySelectorAll("a[href]")
+  // The current page is the LAST crumb in the trail, by position — the page
+  // controls the trail and the leaf is always "where you are." Match by
+  // position, not by href prefix: the leaf is often hrefless (a <span>), and
+  // prefix-matching mis-lights at 2+ depth. Mirrors breadcrumbs.astro.
+  const crumb_item_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+    breadcrumb_node.querySelectorAll("ol > li")
   );
+  const last_index = crumb_item_nodes.length - 1;
 
-  let current_link_node = null;
-  let current_link_length = -1;
-
-  crumb_link_nodes.forEach((crumb_link_node) => {
-    const link_pathname = normalize_pathname(
-      new URL(crumb_link_node.href, window.location.origin).pathname,
-    );
-    const is_exact_match = normalized_pathname === link_pathname;
-    const is_parent_match =
-      link_pathname !== "/" &&
-      normalized_pathname.startsWith(`${link_pathname}/`);
-    const is_root_match = link_pathname === "/" && normalized_pathname === "/";
-
-    if (!(is_exact_match || is_parent_match || is_root_match)) {
-      return;
-    }
-
-    if (link_pathname.length <= current_link_length) {
-      return;
-    }
-
-    current_link_node = crumb_link_node;
-    current_link_length = link_pathname.length;
-  });
-
-  crumb_link_nodes.forEach((crumb_link_node) => {
-    const crumb_item_node = crumb_link_node.closest("li");
-
-    if (!(crumb_item_node instanceof HTMLElement)) {
-      return;
-    }
-
-    const is_current = crumb_link_node === current_link_node;
+  crumb_item_nodes.forEach((crumb_item_node, crumb_index) => {
+    const is_current = crumb_index === last_index;
     crumb_item_node.classList.toggle("sol__is_current", is_current);
     crumb_item_node.classList.toggle("sol__is_parent", !is_current);
-    crumb_link_node.classList.toggle("sol__is_current_link", is_current);
+
+    const crumb_label_node = crumb_item_node.querySelector("a, span");
+    if (crumb_label_node instanceof HTMLElement) {
+      crumb_label_node.classList.toggle("sol__is_current_link", is_current);
+    }
   });
 
   last_applied_pathname = normalized_pathname;

@@ -14,7 +14,7 @@ import {
   rubedo_book_slugs,
   derive_chapter_slug,
 } from "../../../data/rubedo/book_timeline_runtime.js";
-import { content_link_attrs, with_base } from "../../../utils/routes.js";
+import { build_crumbs, content_link_attrs, with_base } from "../../../utils/routes.js";
 
 const default_thread_key = "cinza";
 
@@ -93,8 +93,7 @@ const cinza_thread_href = with_base(
 );
 
 // Explicit breadcrumb trail for the shell — no thread segment in the URL.
-const crumbs = [
-  { label: "home", href: with_base("/") },
+const crumbs = build_crumbs([
   { label: "rubedo", href: with_base("/rubedo") },
   {
     label: book_entry?.title ?? book_slug,
@@ -104,7 +103,7 @@ const crumbs = [
     label: chapter?.title ?? chapter_slug,
     href: with_base(`/rubedo/${book_slug}/${chapter_slug}`),
   },
-];
+]);
 ---
 
 <ChapterLayout

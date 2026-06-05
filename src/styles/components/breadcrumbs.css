@@ -92,7 +92,9 @@
     opacity: 0.72;
   }
 
-  a {
+  /* `a` for navigable crumbs, `span` for the hrefless leaf (current page). */
+  a,
+  span {
     @apply inline-flex items-center;
     @apply rounded px-1 py-0;
     @apply transition;
@@ -128,7 +130,8 @@
     );
   }
 
-  li.sol__is_current a {
+  li.sol__is_current a,
+  li.sol__is_current span {
     @apply font-semibold;
 
     color: var(--crumb_theme_color);
@@ -145,6 +148,7 @@
 }
 
 #sol_breadcrumbs a,
+#sol_breadcrumbs span,
 #sol_breadcrumbs li:not(:last-child)::after {
   font-size: 0.875rem;
 }

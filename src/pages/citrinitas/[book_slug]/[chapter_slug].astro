@@ -6,7 +6,7 @@ import {
   citrinitas_book_slugs,
   chapter_neighbors,
 } from "../../../data/citrinitas/booklet_runtime.js";
-import { with_base } from "../../../utils/routes.js";
+import { build_crumbs, with_base } from "../../../utils/routes.js";
 
 export const getStaticPaths = () =>
   citrinitas_book_slugs.flatMap((book_slug) =>
@@ -38,12 +38,11 @@ const next_href = next
 
 <IndexLayout
   phase="citrinitas"
-  crumbs={[
-    { label: "home", href: with_base("/") },
+  crumbs={build_crumbs([
     { label: "citrinitas", href: with_base("/citrinitas") },
     { label: book?.title ?? book_slug, href: booklet_href },
     { label: chapter?.title ?? chapter_slug, href: null },
-  ]}
+  ])}
 >
   <citrinitas data-shape="chapter_page" class="sol__citrinitas_chapter">
     <div class="sol__citrinitas_chapter_header">

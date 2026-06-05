@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 import NigredoPill from "../../components/nigredo/pill.astro";
-import { with_base } from "../../utils/routes.js";
+import { build_crumbs, with_base } from "../../utils/routes.js";
 import { redact_length } from "../../utils/nigredo_feed.js";
 // nigredo_page.css moved to layout-level for htmx-nav availability
 
@@ -26,11 +26,10 @@ const display_title = entry.data.title
 
 <IndexLayout
   phase="nigredo"
-  crumbs={[
-    { label: "home", href: with_base("/") },
+  crumbs={build_crumbs([
     { label: "nigredo", href: with_base("/nigredo") },
     { label: display_title, href: null },
-  ]}
+  ])}
 >
   <nigredo data-shape="entry_detail" class="sol__nigredo_detail">
     <div class="sol__nigredo_detail_header">

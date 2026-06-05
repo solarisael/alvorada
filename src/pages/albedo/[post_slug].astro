@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import IndexLayout from "../../layouts/index.astro";
 import AlbedoPill from "../../components/albedo/pill.astro";
-import { with_base } from "../../utils/routes.js";
+import { build_crumbs, with_base } from "../../utils/routes.js";
 
 export async function getStaticPaths() {
   const entries = await getCollection("albedo", ({ data }) => !data.draft);
@@ -21,11 +21,10 @@ const display_title = entry.data.title ?? entry.data.slug;
 
 <IndexLayout
   phase="albedo"
-  crumbs={[
-    { label: "home", href: with_base("/") },
+  crumbs={build_crumbs([
     { label: "albedo", href: with_base("/albedo") },
     { label: display_title, href: null },
-  ]}
+  ])}
 >
   <albedo data-shape="entry_detail" class="sol__albedo_detail">
     <div class="sol__albedo_detail_header">
@@ -76,13 +75,13 @@ const display_title = entry.data.title ?? entry.data.slug;
     font-family: var(--font_reading_heading);
     font-weight: 500;
     line-height: 1.2;
-    color: oklch(34% 0.02 258);
+    color: oklch(88% 0.012 247);
     margin: 0;
   }
 
   .sol__albedo_detail_title[data-untitled="true"] {
     font-style: italic;
-    color: oklch(50% 0.018 258);
+    color: oklch(58% 0.014 247);
   }
 
   .sol__albedo_detail_body {
