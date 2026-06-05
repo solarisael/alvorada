@@ -140,6 +140,41 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
     return null;
   }
 
+  // GL location lookups are slow and were previously re-queried inside every
+  // draw call, every frame, once PER NODE. Cache them once here — the program
+  // and its attribute/uniform locations never change after link. Draw helpers
+  // read from these records instead of calling getAttribLocation each frame.
+  const cache_locations = (program, attrib_names, uniform_names) => ({
+    program,
+    attribs: Object.fromEntries(
+      attrib_names.map((name) => [name, gl.getAttribLocation(program, name)]),
+    ),
+    uniforms: Object.fromEntries(
+      uniform_names.map((name) => [name, gl.getUniformLocation(program, name)]),
+    ),
+  });
+
+  const line_loc = cache_locations(
+    line_program,
+    ["a_position"],
+    ["u_canvas_size", "u_color"],
+  );
+  const point_loc = cache_locations(
+    point_program,
+    ["a_position", "a_size"],
+    ["u_canvas_size", "u_color", "u_softness"],
+  );
+  const ring_loc = cache_locations(
+    ring_program,
+    ["a_position", "a_size"],
+    ["u_canvas_size", "u_color", "u_thickness"],
+  );
+  const tex_loc = cache_locations(
+    tex_program,
+    ["a_position", "a_size"],
+    ["u_canvas_size", "u_texture"],
+  );
+
   const line_buffer = gl.createBuffer();
   const point_buffer = gl.createBuffer();
   const textures = new Map();
@@ -169,18 +204,16 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
       vertices[base + 3] = p2.y;
     }
 
-    gl.useProgram(line_program);
+    gl.useProgram(line_loc.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, line_buffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STREAM_DRAW);
 
-    const pos = gl.getAttribLocation(line_program, "a_position");
-    const size = gl.getUniformLocation(line_program, "u_canvas_size");
-    const color = gl.getUniformLocation(line_program, "u_color");
+    const pos = line_loc.attribs.a_position;
 
     gl.enableVertexAttribArray(pos);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-    gl.uniform2f(size, canvas.width, canvas.height);
-    gl.uniform4f(color, ...rgba(rgb_values, alpha));
+    gl.uniform2f(line_loc.uniforms.u_canvas_size, canvas.width, canvas.height);
+    gl.uniform4f(line_loc.uniforms.u_color, ...rgba(rgb_values, alpha));
     gl.drawArrays(gl.LINES, 0, vertices.length / 2);
     gl.disableVertexAttribArray(pos);
   };
@@ -208,23 +241,20 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
       values[base + 2] = Math.max(2, radius_getter(node) * view_state.zoom * 2);
     }
 
-    gl.useProgram(point_program);
+    gl.useProgram(point_loc.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, point_buffer);
     gl.bufferData(gl.ARRAY_BUFFER, values, gl.STREAM_DRAW);
 
-    const pos = gl.getAttribLocation(point_program, "a_position");
-    const size = gl.getAttribLocation(point_program, "a_size");
-    const canvas_loc = gl.getUniformLocation(point_program, "u_canvas_size");
-    const color = gl.getUniformLocation(point_program, "u_color");
-    const soft = gl.getUniformLocation(point_program, "u_softness");
+    const pos = point_loc.attribs.a_position;
+    const size = point_loc.attribs.a_size;
 
     gl.enableVertexAttribArray(pos);
     gl.enableVertexAttribArray(size);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 12, 0);
     gl.vertexAttribPointer(size, 1, gl.FLOAT, false, 12, 8);
-    gl.uniform2f(canvas_loc, canvas.width, canvas.height);
-    gl.uniform4f(color, ...rgba(rgb_values, alpha));
-    gl.uniform1f(soft, softness);
+    gl.uniform2f(point_loc.uniforms.u_canvas_size, canvas.width, canvas.height);
+    gl.uniform4f(point_loc.uniforms.u_color, ...rgba(rgb_values, alpha));
+    gl.uniform1f(point_loc.uniforms.u_softness, softness);
     gl.drawArrays(gl.POINTS, 0, nodes.length);
     gl.disableVertexAttribArray(pos);
     gl.disableVertexAttribArray(size);
@@ -253,23 +283,20 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
       values[base + 2] = Math.max(2, radius_getter(node) * view_state.zoom * 2);
     }
 
-    gl.useProgram(ring_program);
+    gl.useProgram(ring_loc.program);
     gl.bindBuffer(gl.ARRAY_BUFFER, point_buffer);
     gl.bufferData(gl.ARRAY_BUFFER, values, gl.STREAM_DRAW);
 
-    const pos = gl.getAttribLocation(ring_program, "a_position");
-    const size = gl.getAttribLocation(ring_program, "a_size");
-    const canvas_loc = gl.getUniformLocation(ring_program, "u_canvas_size");
-    const color = gl.getUniformLocation(ring_program, "u_color");
-    const thick = gl.getUniformLocation(ring_program, "u_thickness");
+    const pos = ring_loc.attribs.a_position;
+    const size = ring_loc.attribs.a_size;
 
     gl.enableVertexAttribArray(pos);
     gl.enableVertexAttribArray(size);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 12, 0);
     gl.vertexAttribPointer(size, 1, gl.FLOAT, false, 12, 8);
-    gl.uniform2f(canvas_loc, canvas.width, canvas.height);
-    gl.uniform4f(color, ...rgba(rgb_values, alpha));
-    gl.uniform1f(thick, thickness);
+    gl.uniform2f(ring_loc.uniforms.u_canvas_size, canvas.width, canvas.height);
+    gl.uniform4f(ring_loc.uniforms.u_color, ...rgba(rgb_values, alpha));
+    gl.uniform1f(ring_loc.uniforms.u_thickness, thickness);
     gl.drawArrays(gl.POINTS, 0, nodes.length);
     gl.disableVertexAttribArray(pos);
     gl.disableVertexAttribArray(size);
@@ -320,14 +347,12 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
       return;
     }
 
-    gl.useProgram(tex_program);
-    const pos = gl.getAttribLocation(tex_program, "a_position");
-    const size = gl.getAttribLocation(tex_program, "a_size");
-    const canvas_loc = gl.getUniformLocation(tex_program, "u_canvas_size");
-    const tex_loc = gl.getUniformLocation(tex_program, "u_texture");
+    gl.useProgram(tex_loc.program);
+    const pos = tex_loc.attribs.a_position;
+    const size = tex_loc.attribs.a_size;
 
-    gl.uniform2f(canvas_loc, canvas.width, canvas.height);
-    gl.uniform1i(tex_loc, 0);
+    gl.uniform2f(tex_loc.uniforms.u_canvas_size, canvas.width, canvas.height);
+    gl.uniform1i(tex_loc.uniforms.u_texture, 0);
 
     for (const node of clickable_nodes) {
       if (!node.image_src || !textures.has(node.image_src)) {
