@@ -57,7 +57,7 @@ bun run build
 ## Validation
 
 ```bash
-bun run build                       # 237 pages, expected clean
+bun run build                       # 52 pages, expected clean (see docs/progress.md)
 bunx prettier --check .             # format check
 bun run css:hard-gates:check        # ornaments + bg-stack gates
 bun run rubedo:scenes:check         # rubedo scene identity (when applicable)

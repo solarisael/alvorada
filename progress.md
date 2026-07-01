@@ -1,5 +1,7 @@
 # Progress
 
+> **Superseded 2026-07-01:** current true state lives in `docs/progress.md`; plan in `docs/roadmap.md`. This file is the 2026-05-23 handoff snapshot, kept until Track D folds it in.
+
 ## Meta
 
 - Project: solarisael
