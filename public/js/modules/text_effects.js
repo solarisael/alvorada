@@ -209,7 +209,61 @@ const parse_text_fx_intensity_value = (raw_value) => {
   );
 };
 
-const apply_text_fx_intensity_vars = (node_value) => {
+const text_fx_effect_attribute_name = (effect_name, channel_name) => {
+  const dashed_effect_name = effect_name.replaceAll("_", "-");
+
+  return `data-text-fx-${dashed_effect_name}-${channel_name}`;
+};
+
+const text_fx_effect_var_name = (effect_name, channel_name) => {
+  return `--text_fx_${effect_name}_${channel_name}`;
+};
+
+const collect_text_fx_effects_from_node = (node_value) => {
+  if (!(node_value instanceof HTMLElement)) {
+    return [];
+  }
+
+  const class_tokens = Array.from(node_value.classList);
+  const data_tokens = split_text_fx_tokens(node_value.dataset.textFx ?? "");
+
+  return resolve_text_fx_effects_with_stack_rules([
+    ...class_tokens,
+    ...data_tokens,
+  ]);
+};
+
+const apply_text_fx_effect_vars = (node_value, effect_names) => {
+  for (const effect_name of effect_names) {
+    const visual_intensity = parse_text_fx_intensity_value(
+      node_value.getAttribute(
+        text_fx_effect_attribute_name(effect_name, "intensity"),
+      ),
+    );
+    const motion_intensity = parse_text_fx_intensity_value(
+      node_value.getAttribute(text_fx_effect_attribute_name(effect_name, "motion")),
+    );
+    const visual_var_name = text_fx_effect_var_name(effect_name, "intensity");
+    const motion_var_name = text_fx_effect_var_name(effect_name, "motion");
+
+    if (visual_intensity == null) {
+      node_value.style.removeProperty(visual_var_name);
+    } else {
+      node_value.style.setProperty(visual_var_name, String(visual_intensity));
+    }
+
+    if (motion_intensity == null) {
+      node_value.style.removeProperty(motion_var_name);
+    } else {
+      node_value.style.setProperty(motion_var_name, String(motion_intensity));
+    }
+  }
+};
+
+const apply_text_fx_intensity_vars = (
+  node_value,
+  effect_names = collect_text_fx_effects_from_node(node_value),
+) => {
   if (!(node_value instanceof HTMLElement)) {
     return;
   }
@@ -248,23 +302,20 @@ const apply_text_fx_intensity_vars = (node_value) => {
       String(motion_intensity),
     );
   }
+
+  apply_text_fx_effect_vars(node_value, effect_names);
 };
 
-const collect_text_fx_classes_from_node = (node_value) => {
+const collect_text_fx_classes_from_node = (node_value, resolved_effects = null) => {
   if (!(node_value instanceof HTMLElement)) {
     return [];
   }
 
+  const effect_names =
+    resolved_effects ?? collect_text_fx_effects_from_node(node_value);
   const classes_to_apply = new Set();
-  const class_tokens = Array.from(node_value.classList);
-  const data_tokens = split_text_fx_tokens(node_value.dataset.textFx ?? "");
 
-  const resolved_effects = resolve_text_fx_effects_with_stack_rules([
-    ...class_tokens,
-    ...data_tokens,
-  ]);
-
-  for (const effect_name of resolved_effects) {
+  for (const effect_name of effect_names) {
     const resolved_class = resolve_text_fx_class_for_node(
       effect_name,
       node_value,
@@ -283,7 +334,11 @@ const apply_text_fx_classes = (node_value) => {
     return [];
   }
 
-  const effect_classes = collect_text_fx_classes_from_node(node_value);
+  const resolved_effects = collect_text_fx_effects_from_node(node_value);
+  const effect_classes = collect_text_fx_classes_from_node(
+    node_value,
+    resolved_effects,
+  );
 
   if (!effect_classes.length) {
     return [];
@@ -308,7 +363,7 @@ const apply_text_fx_classes = (node_value) => {
     node_value.classList.add(class_name);
   }
 
-  apply_text_fx_intensity_vars(node_value);
+  apply_text_fx_intensity_vars(node_value, resolved_effects);
 
   node_value.dataset.textFxHydrated = "true";
 

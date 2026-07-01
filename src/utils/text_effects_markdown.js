@@ -28,7 +28,11 @@ const text_fx_intensity_max = TEXT_FX_INTENSITY_MAX;
 
 const stack_intensity_regex_fragment = "([0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)";
 const marker_descriptor_regex = new RegExp(
-  `^([a-z0-9_|-]+)(?::${stack_intensity_regex_fragment})?(?::${stack_intensity_regex_fragment})?$`,
+  `^([^:]+)(?::${stack_intensity_regex_fragment})?(?::${stack_intensity_regex_fragment})?$`,
+  "i",
+);
+const marker_effect_token_regex = new RegExp(
+  `^([a-z0-9_-]+)(?:=${stack_intensity_regex_fragment}(?:/${stack_intensity_regex_fragment})?)?$`,
   "i",
 );
 
@@ -58,6 +62,16 @@ const normalize_text_fx_intensity_value = (raw_value) => {
   );
 
   return String(clamped_value);
+};
+
+const text_fx_effect_attribute_name = (effect_name, channel_name) => {
+  const dashed_effect_name = effect_name.replaceAll("_", "-");
+
+  return `data-text-fx-${dashed_effect_name}-${channel_name}`;
+};
+
+const text_fx_effect_style_property_name = (effect_name, channel_name) => {
+  return `--text_fx_${effect_name}_${channel_name}`;
 };
 
 const build_blacklist_lookup = () => {
@@ -98,6 +112,28 @@ const normalize_effect_stack_for_output = (effect_names) => {
   ];
 };
 
+const parse_marker_effect_token = (raw_effect_token) => {
+  const token_match = raw_effect_token.match(marker_effect_token_regex);
+
+  if (!token_match) {
+    return null;
+  }
+
+  const [, raw_effect_name, raw_visual_intensity, raw_motion_intensity] =
+    token_match;
+  const effect_name = normalize_text_fx_name(raw_effect_name);
+
+  if (!effect_name) {
+    return null;
+  }
+
+  return {
+    effect_name,
+    visual_intensity: normalize_text_fx_intensity_value(raw_visual_intensity),
+    motion_intensity: normalize_text_fx_intensity_value(raw_motion_intensity),
+  };
+};
+
 const parse_marker_effect_descriptor = (raw_descriptor) => {
   if (typeof raw_descriptor !== "string") {
     return null;
@@ -120,15 +156,19 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
     .filter(Boolean);
   const warning_reasons = [];
   const accepted_effect_names = [];
+  const effect_settings = {};
   const seen_effect_names = new Set();
 
   for (const effect_token of effect_tokens) {
-    const effect_name = normalize_text_fx_name(effect_token);
+    const parsed_effect_token = parse_marker_effect_token(effect_token);
 
-    if (!effect_name) {
-      warning_reasons.push(`unknown token '${effect_token}'`);
+    if (!parsed_effect_token) {
+      warning_reasons.push(`invalid token '${effect_token}'`);
       continue;
     }
+
+    const { effect_name, visual_intensity, motion_intensity } =
+      parsed_effect_token;
 
     if (seen_effect_names.has(effect_name)) {
       warning_reasons.push(`duplicate token '${effect_name}'`);
@@ -142,6 +182,14 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
       if (text_fx_inline_block_effect_name_set.has(effect_name)) {
         accepted_effect_names.push(effect_name);
         seen_effect_names.add(effect_name);
+
+        if (visual_intensity != null || motion_intensity != null) {
+          effect_settings[effect_name] = {
+            visual_intensity,
+            motion_intensity,
+          };
+        }
+
         continue;
       }
 
@@ -173,6 +221,13 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
 
     accepted_effect_names.push(effect_name);
     seen_effect_names.add(effect_name);
+
+    if (visual_intensity != null || motion_intensity != null) {
+      effect_settings[effect_name] = {
+        visual_intensity,
+        motion_intensity,
+      };
+    }
   }
 
   if (!accepted_effect_names.length) {
@@ -181,6 +236,7 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
 
   return {
     effect_names: normalize_effect_stack_for_output(accepted_effect_names),
+    effect_settings,
     visual_intensity: normalize_text_fx_intensity_value(raw_visual_intensity),
     motion_intensity: normalize_text_fx_intensity_value(raw_motion_intensity),
     warning_reasons,
@@ -221,6 +277,7 @@ const is_inline_stack_effect = (effect_name) => {
 const build_text_fx_data_attributes = ({
   visual_intensity,
   motion_intensity,
+  effect_settings = {},
 }) => {
   const attribute_chunks = [];
 
@@ -232,12 +289,27 @@ const build_text_fx_data_attributes = ({
     attribute_chunks.push(`data-text-fx-motion="${motion_intensity}"`);
   }
 
+  for (const [effect_name, effect_setting] of Object.entries(effect_settings)) {
+    if (effect_setting.visual_intensity != null) {
+      attribute_chunks.push(
+        `${text_fx_effect_attribute_name(effect_name, "intensity")}="${effect_setting.visual_intensity}"`,
+      );
+    }
+
+    if (effect_setting.motion_intensity != null) {
+      attribute_chunks.push(
+        `${text_fx_effect_attribute_name(effect_name, "motion")}="${effect_setting.motion_intensity}"`,
+      );
+    }
+  }
+
   return attribute_chunks.length ? ` ${attribute_chunks.join(" ")}` : "";
 };
 
 const build_text_fx_style_attribute = ({
   visual_intensity,
   motion_intensity,
+  effect_settings = {},
 }) => {
   const style_chunks = [];
 
@@ -247,6 +319,20 @@ const build_text_fx_style_attribute = ({
 
   if (motion_intensity != null) {
     style_chunks.push(`--text_fx_marker_motion:${motion_intensity}`);
+  }
+
+  for (const [effect_name, effect_setting] of Object.entries(effect_settings)) {
+    if (effect_setting.visual_intensity != null) {
+      style_chunks.push(
+        `${text_fx_effect_style_property_name(effect_name, "intensity")}:${effect_setting.visual_intensity}`,
+      );
+    }
+
+    if (effect_setting.motion_intensity != null) {
+      style_chunks.push(
+        `${text_fx_effect_style_property_name(effect_name, "motion")}:${effect_setting.motion_intensity}`,
+      );
+    }
   }
 
   if (!style_chunks.length) {
@@ -412,6 +498,7 @@ const split_text_fx_markers = (raw_text = "", options = {}) => {
         {
           visual_intensity: descriptor.visual_intensity,
           motion_intensity: descriptor.motion_intensity,
+          effect_settings: descriptor.effect_settings,
         },
       ),
     });
@@ -532,6 +619,7 @@ const transform_text_fx_markers_in_tree = (tree_node, options = {}) => {
           : build_text_fx_span_html(open_marker.effect_names, "", {
               visual_intensity: open_marker.visual_intensity,
               motion_intensity: open_marker.motion_intensity,
+              effect_settings: open_marker.effect_settings,
             });
 
         if (opening_tag) {

@@ -37,7 +37,8 @@ Ownership Matrix
   --site_fx_motion_mult: 1;
   --site_fx_lift_mult: 1;
 
-  --reading_plane_shift_y: 0px;
+  --reading_plane_shift_y: 0rem;
+  --reading_plane_width: min(90%, 80rem);
   --site_center_axis_x: 50%;
   --site_center_axis_nudge_x: 0rem;
   --site_center_axis_line_nudge_x: 0.1rem;
@@ -227,6 +228,32 @@ Ownership Matrix
   --site_fx_glow_mult: 1.28;
   --site_fx_motion_mult: 1.18;
   --site_fx_lift_mult: 1.4;
+}
+
+:root[data-user-text="compact"] {
+  --text_body: 0.9375rem;
+  --text_lead: 0.9375rem;
+  --text_h1: 1.875rem;
+  --text_h2: 1.375rem;
+  --text_h3: 1.125rem;
+}
+
+:root[data-user-text="large"] {
+  --text_body: 1.0625rem;
+  --text_lead: 1.0625rem;
+  --text_h1: 2.125rem;
+  --text_h2: 1.625rem;
+  --text_h3: 1.375rem;
+}
+
+:root[data-user-measure="focused"] {
+  --measure_reading_body: clamp(34ch, 76%, 56ch);
+  --reading_plane_width: min(82%, 62rem);
+}
+
+:root[data-user-measure="wide"] {
+  --measure_reading_body: clamp(48ch, 92%, 78ch);
+  --reading_plane_width: min(94%, 92rem);
 }
 
 .sol__page_transition_breath_subtle {

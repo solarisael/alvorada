@@ -230,6 +230,60 @@ describe("text_effects markdown marker processing", () => {
     ]);
   });
 
+  test("supports per-effect intensity controls in stacked markers", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow=0.8|aura=1.4|sigil-pulse=1.2/0.45}}sigil{{/fx}}",
+    );
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain(
+      'class="sol__text_fx sol__text_fx_glow sol__text_fx_aura sol__text_fx_sigil_pulse"',
+    );
+    expect(html_value).toContain('data-text-fx-glow-intensity="0.8"');
+    expect(html_value).toContain('data-text-fx-aura-intensity="1.4"');
+    expect(html_value).toContain('data-text-fx-sigil-pulse-intensity="1.2"');
+    expect(html_value).toContain('data-text-fx-sigil-pulse-motion="0.45"');
+    expect(html_value).not.toContain('data-text-fx-intensity="');
+    expect(html_value).not.toContain('data-text-fx-motion="');
+  });
+
+  test("keeps shared fallback controls separate from per-effect overrides", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow=0.8|aura:1.1:0.6}}beacon{{/fx}}",
+    );
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain(
+      'class="sol__text_fx sol__text_fx_glow sol__text_fx_aura"',
+    );
+    expect(html_value).toContain('data-text-fx-intensity="1.1"');
+    expect(html_value).toContain('data-text-fx-motion="0.6"');
+    expect(html_value).toContain('data-text-fx-glow-intensity="0.8"');
+    expect(html_value).not.toContain('data-text-fx-aura-intensity="');
+    expect(html_value).not.toContain('data-text-fx-aura-motion="');
+  });
+
+  test("clamps per-effect marker controls and rejects invalid values", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow=9|aura=0.01/4}}flare{{/fx}}",
+    );
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain('data-text-fx-glow-intensity="3"');
+    expect(html_value).toContain('data-text-fx-aura-intensity="0.2"');
+    expect(html_value).toContain('data-text-fx-aura-motion="3"');
+
+    expect(split_text_fx_markers("{{fx:glow=abc}}x{{/fx}}")).toEqual([
+      { type: "text", value: "{{fx:glow=abc}}x{{/fx}}" },
+    ]);
+  });
+
   test("auto-sanitizes blacklisted stack combinations and warns once", () => {
     const warning_messages = [];
     const source_text =

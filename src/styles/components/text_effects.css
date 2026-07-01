@@ -1,10 +1,25 @@
 .sol__text_fx {
-  --text_fx_glow_strength: calc(
-    var(--site_fx_glow_mult, 1) * var(--text_fx_marker_intensity, 1)
-  );
-  --text_fx_motion_strength: calc(
-    var(--site_fx_motion_mult, 1) * var(--text_fx_marker_motion, 1)
-  );
+  --text_fx_stack_intensity: var(--text_fx_marker_intensity, 1);
+  --text_fx_stack_motion: var(--text_fx_marker_motion, 1);
+
+  --text_fx_glow_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_glow_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_neon_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_neon_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_chroma_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_chroma_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_blur_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_blur_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_combat_feed_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_combat_feed_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_aura_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_aura_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_etch_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_etch_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_whisper_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_whisper_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_sigil_pulse_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_sigil_pulse_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_veil_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_veil_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_glitch_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_glitch_intensity, var(--text_fx_stack_intensity)));
+
+  --text_fx_flicker_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_flicker_motion, var(--text_fx_stack_motion)));
+  --text_fx_sigil_pulse_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_sigil_pulse_motion, var(--text_fx_stack_motion)));
+  --text_fx_wiggle_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_wiggle_motion, var(--text_fx_stack_motion)));
+  --text_fx_float_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_float_motion, var(--text_fx_stack_motion)));
+  --text_fx_shake_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_shake_motion, var(--text_fx_stack_motion)));
+  --text_fx_glitch_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_glitch_motion, var(--text_fx_stack_motion)));
 
   position: relative;
   display: inline-flex;
@@ -13,6 +28,25 @@
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
+  text-shadow:
+    var(--text_fx_shadow_shadow, 0 0 0 transparent),
+    var(--text_fx_glow_shadow, 0 0 0 transparent),
+    var(--text_fx_neon_shadow, 0 0 0 transparent),
+    var(--text_fx_chroma_shadow, 0 0 0 transparent),
+    var(--text_fx_combat_feed_shadow, 0 0 0 transparent),
+    var(--text_fx_aura_shadow, 0 0 0 transparent),
+    var(--text_fx_etch_shadow, 0 0 0 transparent),
+    var(--text_fx_whisper_shadow, 0 0 0 transparent),
+    var(--text_fx_sigil_pulse_shadow, 0 0 0 transparent),
+    var(--text_fx_veil_shadow, 0 0 0 transparent),
+    var(--text_fx_glitch_shadow, 0 0 0 transparent);
+  animation:
+    var(--text_fx_flicker_animation, none),
+    var(--text_fx_sigil_pulse_animation, none),
+    var(--text_fx_wiggle_animation, none),
+    var(--text_fx_float_animation, none),
+    var(--text_fx_shake_animation, none),
+    var(--text_fx_glitch_animation, none);
 }
 
 .sol__block_fx {
@@ -453,7 +487,7 @@
 }
 
 .sol__text_fx_glow {
-  text-shadow:
+  --text_fx_glow_shadow:
     0 0 calc(0.18em * var(--text_fx_glow_strength))
       color-mix(
         in oklch,
@@ -469,16 +503,16 @@
 }
 
 .sol__text_fx_neon {
-  text-shadow:
-    0 0 calc(0.12em * var(--text_fx_glow_strength))
+  --text_fx_neon_shadow:
+    0 0 calc(0.12em * var(--text_fx_neon_strength))
       color-mix(in oklch, currentColor 72%, transparent),
-    0 0 calc(0.24em * var(--text_fx_glow_strength))
+    0 0 calc(0.24em * var(--text_fx_neon_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 52%,
         transparent
       ),
-    0 0 calc(0.4em * var(--text_fx_glow_strength))
+    0 0 calc(0.4em * var(--text_fx_neon_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 36%,
@@ -487,49 +521,48 @@
 }
 
 .sol__text_fx_shadow {
-  text-shadow:
+  --text_fx_shadow_shadow:
     0.05em 0.05em 0 color-mix(in oklch, black 48%, transparent),
     0.09em 0.09em 0 color-mix(in oklch, black 28%, transparent);
 }
 
 /* intentionally fixed red/blue aberration values — chromatic effect requires these specific hues */
 .sol__text_fx_chroma {
-  text-shadow:
-    calc(-0.05em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.66),
-    calc(0.05em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.66);
+  --text_fx_chroma_shadow:
+    calc(-0.05em * var(--text_fx_chroma_strength)) 0 0 rgb(255 80 130 / 0.66),
+    calc(0.05em * var(--text_fx_chroma_strength)) 0 0 rgb(80 200 255 / 0.66);
 }
 
 .sol__text_fx_blur {
-  filter: blur(calc(0.075em * var(--text_fx_glow_strength)));
+  filter: blur(calc(0.075em * var(--text_fx_blur_strength)));
 }
 
 .sol__text_fx_flicker {
-  animation: sol__text_fx_flicker calc(2.8s / var(--text_fx_motion_strength)) linear
-    infinite;
+  --text_fx_flicker_animation: sol__text_fx_flicker calc(2.8s / var(--text_fx_flicker_motion_strength)) linear infinite;
 }
 
 .sol__text_fx_combat_feed {
   --combat_feed_line_color: color-mix(
     in oklch,
-    currentColor calc(74% + (8% * var(--text_fx_glow_strength))),
+    currentColor calc(74% + (8% * var(--text_fx_combat_feed_strength))),
     transparent
   );
   --combat_feed_bracket_color: var(--combat_feed_line_color);
   --combat_token_bracket_opacity: 0.74;
   --combat_token_bracket_tracking: -0.08em;
   --combat_token_bracket_weight: 640;
+  --text_fx_combat_feed_shadow: 0 0 calc(0.12em * var(--text_fx_combat_feed_strength))
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(36% * var(--text_fx_combat_feed_strength)),
+      transparent
+    );
 
   font-family: var(--default-mono-font-family, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.05em;
   color: var(--combat_feed_line_color);
-  text-shadow: 0 0 calc(0.12em * var(--text_fx_glow_strength))
-    color-mix(
-      in oklch,
-      var(--site_style_accent, currentColor)
-        calc(36% * var(--text_fx_glow_strength)),
-      transparent
-    );
 }
 
 .sol__text_fx.sol__text_fx_combat_feed.sol__text_fx_gradient,
@@ -642,7 +675,7 @@
 
 .sol__combat_token_mega_crit {
   color: color-mix(in oklch, var(--combat_mega_crit) 100%, currentColor);
-  text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
+  text-shadow: 0 0 calc(0.16em * var(--text_fx_combat_feed_strength))
     color-mix(in oklch, var(--combat_crit) 66%, transparent);
 }
 
@@ -677,14 +710,14 @@
 }
 
 .sol__text_fx_aura {
-  text-shadow:
-    0 0 calc(0.24em * var(--text_fx_glow_strength))
+  --text_fx_aura_shadow:
+    0 0 calc(0.24em * var(--text_fx_aura_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 42%,
         transparent
       ),
-    0 0 calc(0.44em * var(--text_fx_glow_strength))
+    0 0 calc(0.44em * var(--text_fx_aura_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 26%,
@@ -693,55 +726,56 @@
 }
 
 .sol__text_fx_etch {
-  text-shadow:
+  --text_fx_etch_shadow:
     0 0.02em 0 color-mix(in oklch, black 44%, transparent),
-    0 0 calc(0.08em * var(--text_fx_glow_strength))
+    0 0 calc(0.08em * var(--text_fx_etch_strength))
       color-mix(in oklch, currentColor 28%, transparent);
   -webkit-text-stroke: 0.018em
     color-mix(in oklch, currentColor 26%, transparent);
 }
 
 .sol__text_fx_whisper {
+  --text_fx_whisper_shadow: 0 0 calc(0.1em * var(--text_fx_whisper_strength))
+    color-mix(in oklch, currentColor 18%, transparent);
+
   color: color-mix(
     in oklch,
-    currentColor calc(68% + (14% * var(--text_fx_glow_strength))),
+    currentColor calc(68% + (14% * var(--text_fx_whisper_strength))),
     transparent
   );
-  text-shadow: 0 0 calc(0.1em * var(--text_fx_glow_strength))
-    color-mix(in oklch, currentColor 18%, transparent);
 }
 
 .sol__text_fx_sigil_pulse {
-  text-shadow:
-    0 0 calc(0.16em * var(--text_fx_glow_strength))
+  --text_fx_sigil_pulse_shadow:
+    0 0 calc(0.16em * var(--text_fx_sigil_pulse_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 44%,
         transparent
       ),
-    0 0 calc(0.3em * var(--text_fx_glow_strength))
+    0 0 calc(0.3em * var(--text_fx_sigil_pulse_strength))
       color-mix(
         in oklch,
         var(--site_style_accent, currentColor) 24%,
         transparent
       );
-  animation: sol__text_fx_sigil_pulse calc(2.4s / var(--text_fx_motion_strength, 1))
-    ease-in-out infinite;
+  --text_fx_sigil_pulse_animation: sol__text_fx_sigil_pulse calc(2.4s / var(--text_fx_sigil_pulse_motion_strength)) ease-in-out infinite;
 }
 
 .sol__text_fx_veil {
-  color: color-mix(
-    in oklch,
-    currentColor calc(82% + (10% * var(--text_fx_glow_strength))),
-    white
-  );
-  text-shadow: 0 0 calc(0.16em * var(--text_fx_glow_strength))
+  --text_fx_veil_shadow: 0 0 calc(0.16em * var(--text_fx_veil_strength))
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)
-        calc(24% * var(--text_fx_glow_strength)),
+        calc(24% * var(--text_fx_veil_strength)),
       transparent
     );
+
+  color: color-mix(
+    in oklch,
+    currentColor calc(82% + (10% * var(--text_fx_veil_strength))),
+    white
+  );
 }
 
 .sol__text_fx_cadence {
@@ -786,26 +820,22 @@
 }
 
 .sol__text_fx_wiggle {
-  animation: sol__text_fx_wiggle calc(1.3s / var(--text_fx_motion_strength))
-    ease-in-out infinite;
+  --text_fx_wiggle_animation: sol__text_fx_wiggle calc(1.3s / var(--text_fx_wiggle_motion_strength)) ease-in-out infinite;
 }
 
 .sol__text_fx_float {
-  animation: sol__text_fx_float calc(2.8s / var(--text_fx_motion_strength))
-    ease-in-out infinite;
+  --text_fx_float_animation: sol__text_fx_float calc(2.8s / var(--text_fx_float_motion_strength)) ease-in-out infinite;
 }
 
 .sol__text_fx_shake {
-  animation: sol__text_fx_shake calc(0.7s / var(--text_fx_motion_strength))
-    steps(2, end) infinite;
+  --text_fx_shake_animation: sol__text_fx_shake calc(0.7s / var(--text_fx_shake_motion_strength)) steps(2, end) infinite;
 }
 
 .sol__text_fx_glitch {
-  text-shadow:
-    calc(-0.04em * var(--text_fx_glow_strength)) 0 0 rgb(255 80 130 / 0.64),
-    calc(0.04em * var(--text_fx_glow_strength)) 0 0 rgb(80 200 255 / 0.64);
-  animation: sol__text_fx_glitch calc(1.05s / var(--text_fx_motion_strength))
-    steps(2) infinite;
+  --text_fx_glitch_shadow:
+    calc(-0.04em * var(--text_fx_glitch_strength)) 0 0 rgb(255 80 130 / 0.64),
+    calc(0.04em * var(--text_fx_glitch_strength)) 0 0 rgb(80 200 255 / 0.64);
+  --text_fx_glitch_animation: sol__text_fx_glitch calc(1.05s / var(--text_fx_glitch_motion_strength)) steps(2) infinite;
 }
 
 @keyframes sol__text_fx_flicker {

@@ -548,7 +548,7 @@
 
   margin-top: 5rem;
   margin-bottom: 5rem;
-  width: min(90%, 80rem);
+  width: var(--reading_plane_width);
   min-width: 21.25rem;
   border: var(--site_border_width_hairline) solid
     color-mix(

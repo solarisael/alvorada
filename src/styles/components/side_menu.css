@@ -1,0 +1,343 @@
+@reference "tailwindcss";
+@reference "../utils.css";
+
+#sol_side_menu {
+  /* geometry */
+  --side_menu_inline: min(24rem, calc(100vw - 3rem));
+  --side_menu_trigger_size: 3.35rem;
+  --side_menu_trigger_right: 1rem;
+  --side_menu_trigger_bottom: 1rem;
+  --side_menu_radius: 1.15rem;
+
+  /* colors */
+  --side_menu_surface_mix: 82%;
+  --side_menu_border_mix: 30%;
+  --side_menu_text_mix: 88%;
+
+  /* effects */
+  --side_menu_blur: calc(12px * var(--site_shell_blur_mult, 1));
+  --side_menu_shadow: 0 1.4rem 2.4rem -1.8rem rgb(0 0 0 / 0.92);
+
+  @apply fixed;
+  z-index: 60;
+
+  inset: 0;
+  pointer-events: none;
+}
+
+#sol_side_menu_trigger,
+#sol_side_menu_panel {
+  pointer-events: auto;
+}
+
+#sol_side_menu_trigger {
+  @apply absolute isolate overflow-visible;
+  @apply flex items-center justify-center;
+  @apply border p-0;
+
+  right: var(--side_menu_trigger_right);
+  bottom: var(--side_menu_trigger_bottom);
+  width: var(--side_menu_trigger_size);
+  height: var(--side_menu_trigger_size);
+  border-radius: 999rem;
+  border-width: var(--site_border_width_hairline);
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) var(--side_menu_border_mix),
+    transparent
+  );
+  background:
+    radial-gradient(
+      circle at 50% 24%,
+      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
+      transparent 62%
+    ),
+    color-mix(
+      in oklch,
+      var(--ui_bg_mantle)
+        calc(var(--side_menu_surface_mix) * var(--site_shell_surface_mult, 1)),
+      transparent
+    );
+  box-shadow:
+    var(--side_menu_shadow),
+    0 0 calc(1.25rem * var(--site_shell_glow_mult, 1))
+      color-mix(in oklch, var(--site_style_accent) 24%, transparent),
+    inset 0 1px 0 color-mix(in oklch, white 18%, transparent);
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 76%,
+    var(--ui_text_primary)
+  );
+  cursor: pointer;
+  backdrop-filter: blur(var(--side_menu_blur));
+  transition:
+    opacity calc(180ms * var(--site_fx_motion_mult, 1)) ease,
+    border-color calc(180ms * var(--site_fx_motion_mult, 1)) ease,
+    box-shadow calc(180ms * var(--site_fx_motion_mult, 1)) ease,
+    transform calc(180ms * var(--site_fx_motion_mult, 1)) ease;
+}
+
+#sol_side_menu[data-side-menu-open="true"] #sol_side_menu_trigger {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.3rem) scale(0.94);
+}
+
+#sol_side_menu_trigger:hover,
+#sol_side_menu_trigger:focus-visible {
+  border-color: color-mix(in oklch, var(--site_style_accent) 66%, transparent);
+  box-shadow:
+    var(--side_menu_shadow),
+    0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--site_style_accent) 34%, transparent),
+    0 0 calc(1.45rem * var(--site_fx_glow_mult, 1))
+      color-mix(in oklch, var(--site_style_accent) 34%, transparent),
+    inset 0 1px 0 color-mix(in oklch, white 24%, transparent);
+  transform: translateY(-0.08rem);
+}
+
+#sol_side_menu_trigger:focus-visible {
+  @apply outline-none;
+}
+
+.sol__side_menu_sun {
+  @apply relative block;
+
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999rem;
+  background:
+    radial-gradient(circle, color-mix(in oklch, white 48%, transparent) 0 18%, transparent 19%),
+    radial-gradient(circle, var(--site_style_accent) 0 58%, transparent 59%);
+  box-shadow:
+    0 0 0.45rem color-mix(in oklch, var(--site_style_accent) 46%, transparent),
+    inset 0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, white 30%, transparent);
+}
+
+.sol__side_menu_sun::before {
+  @apply absolute;
+
+  content: "";
+  inset: -0.42rem;
+  border-radius: inherit;
+  opacity: 0.78;
+  background: repeating-conic-gradient(
+    from 0deg,
+    color-mix(in oklch, var(--site_style_accent) 78%, transparent) 0deg 8deg,
+    transparent 8deg 22deg
+  );
+  mask-image: radial-gradient(circle, transparent 0 46%, black 47% 72%, transparent 73%);
+}
+
+.sol__side_menu_trigger_label {
+  @apply sr-only;
+}
+
+#sol_side_menu_panel {
+  @apply absolute border-l;
+  @apply px-4 py-4;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--side_menu_inline);
+  max-width: calc(100vw - 1rem);
+  overflow-y: auto;
+  border-width: 0;
+  border-left-width: var(--site_border_width_hairline);
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) var(--side_menu_border_mix),
+    transparent
+  );
+  background:
+    radial-gradient(
+      95% 70% at 50% 0%,
+      color-mix(in oklch, var(--site_style_accent) 15%, transparent),
+      transparent 64%
+    ),
+    linear-gradient(
+      166deg,
+      color-mix(
+        in oklch,
+        var(--ui_bg_mantle)
+          calc(var(--side_menu_surface_mix) * var(--site_shell_surface_mult, 1)),
+        transparent
+      ),
+      color-mix(in oklch, var(--ui_bg_crust) 82%, transparent)
+    );
+  box-shadow:
+    var(--side_menu_shadow),
+    -1.2rem 0 2.4rem -2rem rgb(0 0 0 / 0.92),
+    inset 1px 0 0 color-mix(in oklch, white 8%, transparent);
+  color: color-mix(
+    in oklch,
+    var(--ui_text_primary) var(--side_menu_text_mix),
+    white
+  );
+  backdrop-filter: blur(var(--side_menu_blur)) saturate(1.04);
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity calc(200ms * var(--site_fx_motion_mult, 1)) ease,
+    transform calc(220ms * var(--site_fx_motion_mult, 1)) cubic-bezier(0.16, 1, 0.3, 1),
+    visibility calc(200ms * var(--site_fx_motion_mult, 1)) ease;
+}
+
+#sol_side_menu[data-side-menu-open="false"] #sol_side_menu_panel {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+}
+
+#sol_side_menu_panel_header {
+  @apply flex items-center justify-between;
+  @apply gap-3;
+  @apply pb-3;
+
+  border-bottom: var(--site_border_width_hairline) solid
+    color-mix(in oklch, var(--site_style_accent) 18%, transparent);
+}
+
+#sol_side_menu_panel_header p {
+  @apply lowercase;
+
+  color: color-mix(in oklch, var(--site_style_accent) 66%, var(--ui_text_muted));
+}
+
+#sol_side_menu_navbar {
+  @apply grid;
+  @apply gap-2;
+  @apply py-4;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: var(--site_border_width_hairline) solid
+    color-mix(in oklch, var(--site_style_accent) 14%, transparent);
+}
+
+#sol_side_menu_panel_header button,
+.sol__side_menu_nav_button,
+.sol__side_menu_reset {
+  @apply rounded-full border;
+  @apply px-3 py-1.5;
+  @apply lowercase;
+
+  border-width: var(--site_border_width_hairline);
+  border-color: color-mix(in oklch, var(--site_style_accent) 22%, transparent);
+  color: color-mix(in oklch, var(--ui_text_secondary) 88%, white);
+  background: color-mix(in oklch, var(--ui_surface_soft) 48%, transparent);
+  cursor: pointer;
+}
+
+.sol__side_menu_nav_button {
+  @apply text-center;
+}
+
+.sol__side_menu_nav_button[data-active="true"] {
+  border-color: color-mix(in oklch, var(--site_style_accent) 58%, transparent);
+  color: color-mix(in oklch, var(--site_style_accent) 68%, var(--ui_text_primary));
+  background: color-mix(in oklch, var(--site_style_accent) 12%, transparent);
+}
+
+.sol__side_menu_page {
+  @apply flex flex-col;
+  @apply gap-3;
+  @apply pt-4;
+}
+
+.sol__side_menu_page h2 {
+  margin: 0;
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 62%,
+    var(--ui_text_primary)
+  );
+}
+
+.sol__side_menu_note {
+  color: color-mix(in oklch, var(--ui_text_secondary) 84%, var(--ui_text_primary));
+}
+
+.sol__side_menu_group {
+  @apply flex flex-col;
+  @apply gap-1;
+}
+
+.sol__side_menu_label {
+  @apply lowercase;
+
+  color: color-mix(in oklch, var(--ui_text_muted) 86%, var(--ui_text_primary));
+}
+
+#sol_side_menu select,
+.sol__side_menu_reset {
+  @apply w-full;
+  @apply rounded-md border;
+  @apply px-2 py-1.5;
+  @apply lowercase;
+
+  color: color-mix(in oklch, var(--ui_text_primary) 88%, white);
+  border-width: var(--site_border_width_hairline);
+  border-color: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+  background-color: color-mix(in oklch, var(--ui_surface_soft) 62%, transparent);
+}
+
+#sol_side_menu_trigger:focus-visible,
+#sol_side_menu select:focus-visible,
+#sol_side_menu_panel_header button:focus-visible,
+.sol__side_menu_nav_button:focus-visible,
+.sol__side_menu_reset:focus-visible {
+  @apply outline-none;
+
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(52% * var(--site_fx_glow_mult, 1)),
+    transparent
+  );
+  box-shadow: 0 0 0 var(--site_border_width_hairline)
+    color-mix(in oklch, var(--site_style_accent) 42%, transparent);
+}
+
+.sol__side_menu_status_list {
+  @apply grid;
+  @apply gap-2;
+
+  margin: 0;
+}
+
+.sol__side_menu_status_list div {
+  @apply grid;
+  @apply gap-1;
+  @apply rounded-lg border px-3 py-2;
+
+  border-width: var(--site_border_width_hairline);
+  border-color: color-mix(in oklch, var(--site_style_accent) 18%, transparent);
+  background: color-mix(in oklch, var(--ui_surface_soft) 42%, transparent);
+}
+
+.sol__side_menu_status_list dt {
+  @apply lowercase;
+
+  color: color-mix(in oklch, var(--ui_text_muted) 86%, var(--ui_text_primary));
+  font-size: var(--text_fine);
+}
+
+.sol__side_menu_status_list dd {
+  margin: 0;
+  color: color-mix(in oklch, var(--ui_text_primary) 88%, white);
+}
+
+.sol__side_menu_reset {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  #sol_side_menu {
+    --side_menu_inline: min(20rem, calc(100vw - 2rem));
+    --side_menu_trigger_size: 3rem;
+    --side_menu_trigger_right: 0.75rem;
+    --side_menu_trigger_bottom: 5.4rem;
+  }
+}

@@ -84,6 +84,7 @@ body {
   --layout_viewport_pad_x: 1rem;
   --layout_compound_max_inline: 90rem;
   --layout_compound_gap: 1rem;
+  --layout_body_grid_gap: 0.25rem;
 
   @apply flex min-h-screen flex-col;
   @apply gap-1;
@@ -104,7 +105,8 @@ body {
     display: grid;
     grid-template-columns: [viewport-start] 1fr [composition-start] 16fr [composition-end] 1fr [viewport-end];
     align-content: start;
-    row-gap: 0.25rem;
+    column-gap: var(--layout_body_grid_gap);
+    row-gap: var(--layout_body_grid_gap);
     padding-top: 0;
     padding-right: var(--layout_viewport_pad_x);
     padding-bottom: 0;

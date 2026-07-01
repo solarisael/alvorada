@@ -18,7 +18,7 @@ import "../styles/components/wikilink.css";
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
 import Navbar from "../components/mantle/desktop_navbar.astro";
-import StyleSwitcher from "../components/mantle/style_switcher.astro";
+import SideMenu from "../components/mantle/side_menu.astro";
 import Footer from "../components/mantle/footer.astro";
 import Fog from "../components/aether/fog.astro";
 import ContentFrame from "../components/ornament/content_frame.astro";
@@ -31,9 +31,12 @@ const {
   crumb_label_overrides = {},
   crumbs = null,
   theme_color = null,
+  page_title = "",
+  hide_breadcrumbs = false,
 } = Astro.props;
 const phase = phase_prop || frontmatter.phase || "";
 const body_phase = phase || "home";
+const resolved_page_title = page_title || frontmatter.title || "Sol's Rest";
 const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const normalized_pathname = pathname.startsWith(base_path)
   ? pathname.slice(base_path.length) || "/"
@@ -61,8 +64,8 @@ const resolved_body_classes = Array.from(
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Sol's Rest</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <title>{resolved_page_title}</title>
+    <link rel="icon" href={with_base("images/small_render_4.png")} type="image/png" />
 
     {
       /*
@@ -116,11 +119,15 @@ const resolved_body_classes = Array.from(
                 <div class="sol__reading_layer sol__reading_layer_noise"></div>
 
                 <div class="sol__reading_layer_body">
-                  <Breadcrumbers
-                    crumbs={crumbs}
-                    crumb_label_overrides={crumb_label_overrides}
-                    theme_color={theme_color}
-                  />
+                  {
+                    !hide_breadcrumbs && (
+                      <Breadcrumbers
+                        crumbs={crumbs}
+                        crumb_label_overrides={crumb_label_overrides}
+                        theme_color={theme_color}
+                      />
+                    )
+                  }
                   <slot />
                 </div>
               </div>
@@ -133,7 +140,7 @@ const resolved_body_classes = Array.from(
             </div>
           </div>
         </div>
-        <StyleSwitcher />
+        <SideMenu />
       </vessel>
     </container>
   </body>

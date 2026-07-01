@@ -49,18 +49,41 @@ const phase_cards = [
 ];
 ---
 
-<IndexLayout>
+<IndexLayout page_title="Our Hearth" hide_breadcrumbs={true}>
   <vessel data-shape="home_gate" id="sol_home_card_gate">
     <div id="sol_home_gate_intro">
       <div id="sol_home_gate_header">
-        <h1 id="sol_home_gate_title">Hearth</h1>
+        <h1 id="sol_home_gate_title">
+          <span
+            class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura sol__text_fx_glow"
+            data-text-fx-intensity="1.25"
+          >
+            Our Hearth
+          </span>
+        </h1>
       </div>
 
       <div id="sol_home_gate_body">
-        <p>
-          This is the warm room before the work branches. Solarisael gathers
-          here first: the raw, the clarified, the golden, the completed, and the
-          codex that remembers the names.
+        <p class="sol__home_intro_lead">
+          A hearth for
+          <span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="1.1">
+            worlds
+          </span>,
+          <span class="sol__text_fx sol__text_fx_sigil_pulse" data-text-fx-intensity="0.9">
+            tools
+          </span>,
+          records, experiments, and the strange work that refuses to become one
+          tidy thing.
+        </p>
+
+        <p class="sol__home_intro_line">
+          Not a funnel. Not a single project pretending to behave. A living
+          shelf for games, writing, software, the channel, and whatever starts
+          glowing next.
+        </p>
+
+        <p class="sol__home_intro_hint">
+          The gates below are only one map through the archive.
         </p>
       </div>
     </div>

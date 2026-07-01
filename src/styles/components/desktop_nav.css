@@ -71,6 +71,10 @@
   --desktop_nav_rail_pad_x: calc(1.5rem * var(--desktop_nav_compact));
   --desktop_nav_rail_pad_y: calc(0.5rem * var(--desktop_nav_compact));
   --desktop_nav_middle_gap: calc(5rem * var(--desktop_nav_compact));
+  --desktop_nav_composition_width: calc(
+    (100vw - (var(--layout_viewport_pad_x) * 2) - (var(--layout_body_grid_gap) * 2)) * 16 / 18
+  );
+  --desktop_nav_content_inset: calc(var(--site_border_width_standard) + 0.75rem);
 
   /* positioning / stacking */
   @apply fixed top-8 z-50;
@@ -80,7 +84,9 @@
   @apply pointer-events-none;
 
   left: 50%;
-  width: 100%;
+  box-sizing: border-box;
+  width: min(100%, var(--desktop_nav_composition_width));
+  padding-inline: var(--desktop_nav_content_inset);
   column-gap: var(--layout_compound_gap);
 
   transform: translate3d(-50%, 0, 0);
@@ -156,8 +162,8 @@
   /* interaction */
   @apply pointer-events-auto;
 
-  width: min(90vw, 76rem, calc(100vw - 10rem));
-  max-width: calc(100vw - (var(--layout_viewport_pad_x) * 2));
+  width: var(--reading_plane_width);
+  max-width: 100%;
   height: var(--desktop_nav_rail_height);
   padding: var(--desktop_nav_rail_pad_y) var(--desktop_nav_rail_pad_x);
 

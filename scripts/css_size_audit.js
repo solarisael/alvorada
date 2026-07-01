@@ -19,7 +19,7 @@ const scope = scope_arg ? scope_arg.slice("--scope=".length) : "priority-a";
 
 const file_scope_map = {
   "priority-a": [
-    "src/styles/components/style_switcher.css",
+    "src/styles/components/side_menu.css",
     "src/styles/index.css",
   ],
   all: ["src/styles/**/*.css"],
@@ -35,7 +35,7 @@ const files_to_scan =
         "src/styles/components/footer.css",
         "src/styles/components/mobile_nav.css",
         "src/styles/components/desktop_nav.css",
-        "src/styles/components/style_switcher.css",
+        "src/styles/components/side_menu.css",
       ]
     : file_scope_map["priority-a"];
 

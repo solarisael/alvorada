@@ -1,0 +1,220 @@
+---
+import "../../styles/components/side_menu.css";
+import { with_base } from "../../utils/routes.js";
+
+const site_theme_options = [
+  {
+    label: "solarisael",
+    value: "solarisael",
+  },
+];
+
+const site_fx_options = [
+  {
+    label: "subtle",
+    value: "subtle",
+  },
+  {
+    label: "balanced",
+    value: "balanced",
+  },
+  {
+    label: "bold",
+    value: "bold",
+  },
+];
+
+const site_shell_options = [
+  {
+    label: "subtle",
+    value: "subtle",
+  },
+  {
+    label: "medium",
+    value: "medium",
+  },
+  {
+    label: "strong",
+    value: "strong",
+  },
+];
+
+const user_text_options = [
+  {
+    label: "compact",
+    value: "compact",
+  },
+  {
+    label: "normal",
+    value: "normal",
+  },
+  {
+    label: "large",
+    value: "large",
+  },
+];
+
+const user_measure_options = [
+  {
+    label: "focused",
+    value: "focused",
+  },
+  {
+    label: "comfort",
+    value: "comfort",
+  },
+  {
+    label: "wide",
+    value: "wide",
+  },
+];
+---
+
+<mantle
+  data-shape="side_menu"
+  id="sol_side_menu"
+  data-side-menu-open="false"
+  data-side-menu-panel="site"
+>
+  <button
+    id="sol_side_menu_trigger"
+    type="button"
+    data-side-menu-trigger
+    aria-controls="sol_side_menu_panel"
+    aria-expanded="false"
+    aria-label="Open Solarisael menu"
+  >
+    <span class="sol__side_menu_sun" aria-hidden="true"></span>
+    <span class="sol__side_menu_trigger_label">menu</span>
+  </button>
+
+  <aside id="sol_side_menu_panel" data-side-menu-panel-shell>
+    <div id="sol_side_menu_panel_header">
+      <p class="sol__text_caption">Solarisael</p>
+      <button type="button" data-side-menu-close>close</button>
+    </div>
+
+    <nav id="sol_side_menu_navbar" aria-label="Sidebar sections">
+      <button
+        class="sol__side_menu_nav_button"
+        type="button"
+        data-side-menu-toggle
+        data-side-panel="site"
+      >
+        settings
+      </button>
+
+      <button
+        class="sol__side_menu_nav_button"
+        type="button"
+        data-side-menu-toggle
+        data-side-panel="user"
+      >
+        user
+      </button>
+
+      <button
+        class="sol__side_menu_nav_button"
+        type="button"
+        data-side-menu-toggle
+        data-side-panel="account"
+      >
+        account
+      </button>
+    </nav>
+
+    <section class="sol__side_menu_page" data-side-menu-page="site">
+      <h2>Site settings</h2>
+      <p class="sol__side_menu_note">
+        Tune the shell without moving the page out from under your eyes.
+      </p>
+
+      <label class="sol__side_menu_group" for="sol_side_menu_theme">
+        <span class="sol__side_menu_label sol__text_caption">theme</span>
+        <select id="sol_side_menu_theme" data-site-theme-control>
+          {
+            site_theme_options.map((theme_option) => (
+              <option value={theme_option.value}>{theme_option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+
+      <label class="sol__side_menu_group" for="sol_side_menu_fx">
+        <span class="sol__side_menu_label sol__text_caption">intensity</span>
+        <select id="sol_side_menu_fx" data-site-fx-control>
+          {
+            site_fx_options.map((fx_option) => (
+              <option value={fx_option.value}>{fx_option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+
+      <label class="sol__side_menu_group" for="sol_side_menu_shell">
+        <span class="sol__side_menu_label sol__text_caption">shell</span>
+        <select id="sol_side_menu_shell" data-site-shell-control>
+          {
+            site_shell_options.map((shell_option) => (
+              <option value={shell_option.value}>{shell_option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+    </section>
+
+    <section class="sol__side_menu_page" data-side-menu-page="user" hidden>
+      <h2>User settings</h2>
+      <p class="sol__side_menu_note">
+        Reading preferences that follow the person, not the page.
+      </p>
+
+      <label class="sol__side_menu_group" for="sol_side_menu_text">
+        <span class="sol__side_menu_label sol__text_caption">text</span>
+        <select id="sol_side_menu_text" data-user-text-control>
+          {
+            user_text_options.map((text_option) => (
+              <option value={text_option.value}>{text_option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+
+      <label class="sol__side_menu_group" for="sol_side_menu_measure">
+        <span class="sol__side_menu_label sol__text_caption">measure</span>
+        <select id="sol_side_menu_measure" data-user-measure-control>
+          {
+            user_measure_options.map((measure_option) => (
+              <option value={measure_option.value}>{measure_option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+    </section>
+
+    <section class="sol__side_menu_page" data-side-menu-page="account" hidden>
+      <h2>Account</h2>
+      <p class="sol__side_menu_note">
+        Local browser profile only. No fake login, no pretend cloud account.
+      </p>
+
+      <dl class="sol__side_menu_status_list">
+        <div>
+          <dt>profile</dt>
+          <dd>local visitor</dd>
+        </div>
+        <div>
+          <dt>storage</dt>
+          <dd>browser cookies</dd>
+        </div>
+      </dl>
+
+      <button type="button" class="sol__side_menu_reset" data-side-menu-reset>
+        reset local preferences
+      </button>
+    </section>
+  </aside>
+</mantle>
+
+<script type="module" src={with_base("js/modules/side_menu_runtime.js")}
+></script>

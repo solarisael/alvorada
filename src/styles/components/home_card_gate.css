@@ -28,12 +28,60 @@
 }
 
 #sol_home_gate_intro {
-  @apply flex flex-col;
-  @apply gap-3;
+  @apply relative isolate;
+  @apply flex flex-col items-center;
+  @apply gap-5 md:gap-6;
+  @apply px-3 py-8 md:px-6 md:py-12;
+
+  min-height: min(52vh, 34rem);
+  text-align: center;
+  overflow: visible;
+}
+
+#sol_home_gate_intro::before,
+#sol_home_gate_intro::after {
+  @apply pointer-events-none absolute;
+
+  content: "";
+  inset: 0;
+  z-index: -1;
+}
+#sol_home_gate_intro::before {
+  opacity: calc(var(--cinza_fog_halo_mix, 30%) * 0.012);
+  background:
+    radial-gradient(
+      58% 42% at 50% 28%,
+      color-mix(in oklch, var(--site_style_accent) 72%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      72% 48% at 50% 80%,
+      color-mix(in oklch, var(--site_style_accent_alt) 28%, transparent),
+      transparent 72%
+    );
+  filter: blur(calc(10px * var(--site_shell_blur_mult, 1)));
+}
+
+#sol_home_gate_intro::after {
+  opacity: calc(var(--site_style_noise_opacity) * 0.8);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 16%,
+      color-mix(in oklch, var(--site_style_accent) 16%, transparent) 50%,
+      transparent 84% 100%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 0.95rem,
+      color-mix(in oklch, white 10%, transparent) 0.98rem,
+      transparent 1rem
+    );
+  mask-image: radial-gradient(ellipse at center, black 0 58%, transparent 72%);
 }
 
 #sol_home_gate_header {
-  @apply flex flex-col;
+  @apply flex flex-col items-center;
   @apply gap-2;
 }
 
@@ -41,19 +89,54 @@
   @apply font-semibold;
 
   margin: 0;
+  font-family: var(--font_ritual);
+  font-size: clamp(3.25rem, 10vw, 7rem);
+  line-height: 1;
+  letter-spacing: 0.025em;
   color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
 }
 
+#sol_home_gate_title .sol__text_fx {
+  display: inline-block;
+  padding: 0.08em 0.14em 0.12em;
+  margin-inline: -0.14em;
+  overflow: visible;
+}
+
 #sol_home_gate_body {
-  @apply max-w-2xl;
+  @apply flex max-w-4xl flex-col items-center;
+  @apply gap-4 md:gap-5;
 }
 
 #sol_home_gate_body p {
+  max-width: 58rem;
+  margin-inline: auto;
   color: color-mix(
     in oklch,
-    var(--ui_text_secondary) 86%,
+    var(--ui_text_secondary) 88%,
     var(--ui_text_primary)
   );
+}
+
+.sol__home_intro_lead {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.sol__home_intro_line {
+  max-width: 50rem;
+}
+
+.sol__home_intro_hint {
+  @apply lowercase;
+
+  max-width: 36rem;
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 54%,
+    var(--ui_text_secondary)
+  );
+  letter-spacing: 0.04em;
 }
 
 #sol_phase_card_grid {
