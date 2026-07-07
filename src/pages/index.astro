@@ -25,25 +25,28 @@ const phase_cards = [
     phase_name: "Nigredo",
     phase_slug: "nigredo",
     phase_blurb:
-      "Dissolution and shadow-work. Enter the black vessel of becoming.",
+      "The black vessel: poems, fragments, and the honest dark where shape begins.",
     ...nigredo_card_visual,
   },
   {
     phase_name: "Albedo",
     phase_slug: "albedo",
-    phase_blurb: "Clarification and silver breath. Distill signal from noise.",
+    phase_blurb:
+      "The pale mirror: records, reflections, and cleaned signal after the ash settles.",
     ...nigredo_card_visual,
   },
   {
     phase_name: "Citrinitas",
     phase_slug: "citrinitas",
-    phase_blurb: "Dawn-gold awakening. Let meaning crystallize into form.",
+    phase_blurb:
+      "The gold shelf: books, essays, and artifacts catching their first dawn.",
     ...nigredo_card_visual,
   },
   {
     phase_name: "Rubedo",
     phase_slug: "rubedo",
-    phase_blurb: "Union and embodiment. Seal the work in living fire.",
+    phase_blurb:
+      "The red work: Absurd Faith, living fire, and the story becoming body.",
     ...nigredo_card_visual,
   },
 ];
@@ -55,25 +58,26 @@ const phase_cards = [
       <div id="sol_home_gate_header">
         <h1 id="sol_home_gate_title">
           <span
-            class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura sol__text_fx_glow"
-            data-text-fx-intensity="1.25"
+            class="sol__text_fx"
+            data-text-fx="gradient aura glow"
+            data-text-fx-gradient-intensity="1"
+            data-text-fx-aura-intensity="5"
+            data-text-fx-glow-intensity="5"
           >
-            Our Hearth
+            Solarisael
           </span>
         </h1>
       </div>
 
       <div id="sol_home_gate_body">
+
         <p class="sol__home_intro_lead">
-          A hearth for
-          <span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="1.1">
-            worlds
-          </span>,
-          <span class="sol__text_fx sol__text_fx_sigil_pulse" data-text-fx-intensity="0.9">
-            tools
-          </span>,
-          records, experiments, and the strange work that refuses to become one
-          tidy thing.
+          A small space for my <span
+            class="sol__text_fx sol__text_fx_glow sol__text_fx_neon"
+            data-text-fx-intensity="5.0">work</span>, <span
+            class="sol__text_fx sol__text_fx_glow"
+            data-text-fx-intensity="1.5">my thoughts</span>, records,
+          experiments, and the strange work that refuses to become one tidy thing.
         </p>
 
         <p class="sol__home_intro_line">
@@ -85,7 +89,26 @@ const phase_cards = [
         <p class="sol__home_intro_hint">
           The gates below are only one map through the archive.
         </p>
+
+        <p
+          class="sol__home_chalice_text"
+          data-sol-pretext="justify"
+          data-sol-pretext-shape="chalice"
+        >
+          A cup of small fires holds below the threshold; the work pours through
+          it, narrows to a stem, and opens again where the gates begin.
+        </p>
       </div>
+    </div>
+
+    <div id="sol_phase_card_header">
+      <h2
+        id="sol_phase_card_heading"
+        class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura"
+        data-text-fx-intensity="0.85"
+      >
+        The Four Gates
+      </h2>
     </div>
 
     <PhaseCardGrid phase_cards={phase_cards} />

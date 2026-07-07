@@ -3,7 +3,7 @@
 @import "./fonts.css";
 @import "./typography.css";
 @import "./utils.css";
-@import "./components/text_effects.css";
+@import "../../public/vendor/fx/css/index.css";
 
 @theme {
   --default-font-family:
@@ -14,8 +14,16 @@
 
   --color-albedo: oklch(88% 0.025 247.839);
   --color-nigredo: oklch(55.1% 0.027 264.364);
-  --color-citrinitas: oklch(78% 0.075 86.047);
-  --color-rubedo: oklch(66% 0.08 25.331);
+  --color-citrinitas: oklch(76% 0.12 58deg);
+  --color-rubedo: oklch(64% 0.19 26deg);
+  --color-codex: oklch(66% 0.06 290);
+}
+
+:root {
+  --color-albedo: oklch(88% 0.025 247.839);
+  --color-nigredo: oklch(55.1% 0.027 264.364);
+  --color-citrinitas: oklch(76% 0.12 58deg);
+  --color-rubedo: oklch(64% 0.19 26deg);
   --color-codex: oklch(66% 0.06 290);
 }
 

@@ -1,0 +1,445 @@
+/* fx library — text effects (inline spans): base stack + effect classes + keyframes
+   Split from components/text_effects.css 2026-07-02; bytes verbatim.
+   Loaded via css/index.css. Runtime counterpart: public/vendor/fx/js/. */
+
+.sol__text_fx {
+  --text_fx_stack_intensity: var(--text_fx_marker_intensity, 1);
+  --text_fx_stack_motion: var(--text_fx_marker_motion, 1);
+
+  --text_fx_glow_strength: calc(var(--site_fx_glow_mult, 1) * 1.35 * var(--text_fx_glow_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_neon_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_neon_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_chroma_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_chroma_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_blur_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_blur_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_combat_feed_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_combat_feed_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_aura_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_aura_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_etch_strength: calc(var(--site_fx_glow_mult, 1) * 1.35 * var(--text_fx_etch_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_whisper_strength: calc(var(--site_fx_glow_mult, 1) * 1.45 * var(--text_fx_whisper_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_sigil_pulse_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_sigil_pulse_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_veil_strength: calc(var(--site_fx_glow_mult, 1) * 1.45 * var(--text_fx_veil_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_glitch_strength: calc(var(--site_fx_glow_mult, 1) * var(--text_fx_glitch_intensity, var(--text_fx_stack_intensity)));
+
+  --text_fx_shadow_strength: calc(var(--site_fx_glow_mult, 1) * 1.55 * var(--text_fx_shadow_intensity, var(--text_fx_stack_intensity)));
+  --text_fx_flicker_motion_strength: calc(var(--site_fx_motion_mult, 1) * 1.25 * var(--text_fx_flicker_motion, var(--text_fx_stack_motion)));
+  --text_fx_sigil_pulse_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_sigil_pulse_motion, var(--text_fx_stack_motion)));
+  --text_fx_wiggle_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_wiggle_motion, var(--text_fx_stack_motion)));
+  --text_fx_float_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_float_motion, var(--text_fx_stack_motion)));
+  --text_fx_shake_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_shake_motion, var(--text_fx_stack_motion)));
+  --text_fx_glitch_motion_strength: calc(var(--site_fx_motion_mult, 1) * var(--text_fx_glitch_motion, var(--text_fx_stack_motion)));
+
+  position: relative;
+  display: inline;
+  vertical-align: baseline;
+
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-shadow:
+    var(--text_fx_shadow_shadow, 0 0 0 transparent),
+    var(--text_fx_glow_shadow, 0 0 0 transparent),
+    var(--text_fx_neon_shadow, 0 0 0 transparent),
+    var(--text_fx_chroma_shadow, 0 0 0 transparent),
+    var(--text_fx_combat_feed_shadow, 0 0 0 transparent),
+    var(--text_fx_aura_shadow, 0 0 0 transparent),
+    var(--text_fx_etch_shadow, 0 0 0 transparent),
+    var(--text_fx_whisper_shadow, 0 0 0 transparent),
+    var(--text_fx_sigil_pulse_shadow, 0 0 0 transparent),
+    var(--text_fx_veil_shadow, 0 0 0 transparent),
+    var(--text_fx_glitch_shadow, 0 0 0 transparent);
+  animation:
+    var(--text_fx_flicker_animation, none),
+    var(--text_fx_sigil_pulse_animation, none),
+    var(--text_fx_wiggle_animation, none),
+    var(--text_fx_float_animation, none),
+    var(--text_fx_shake_animation, none),
+    var(--text_fx_glitch_animation, none);
+}
+
+.sol__text_fx_wiggle,
+.sol__text_fx_float,
+.sol__text_fx_shake,
+.sol__text_fx_glitch {
+  display: inline-block;
+}
+
+.sol__text_fx_glow {
+  --text_fx_glow_shadow:
+    0 0 calc(0.22em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 58%,
+        transparent
+      ),
+    0 0 calc(0.42em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 36%,
+        transparent
+      ),
+    0 0 calc(0.72em * var(--text_fx_glow_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 20%,
+        transparent
+      );
+}
+
+.sol__text_fx_neon {
+  --text_fx_neon_shadow:
+    0 0 calc(0.12em * var(--text_fx_neon_strength))
+      color-mix(in oklch, currentColor 72%, transparent),
+    0 0 calc(0.24em * var(--text_fx_neon_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 52%,
+        transparent
+      ),
+    0 0 calc(0.4em * var(--text_fx_neon_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 36%,
+        transparent
+      );
+}
+
+.sol__text_fx_shadow {
+  --text_fx_shadow_shadow:
+    calc(0.075em * var(--text_fx_shadow_strength))
+      calc(0.09em * var(--text_fx_shadow_strength))
+      0 color-mix(in oklch, black 86%, transparent),
+    calc(0.16em * var(--text_fx_shadow_strength))
+      calc(0.18em * var(--text_fx_shadow_strength))
+      calc(0.025em * var(--text_fx_shadow_strength))
+      color-mix(in oklch, black 64%, transparent),
+    calc(0.28em * var(--text_fx_shadow_strength))
+      calc(0.3em * var(--text_fx_shadow_strength))
+      calc(0.07em * var(--text_fx_shadow_strength))
+      color-mix(in oklch, black 38%, transparent),
+    0 0 calc(0.24em * var(--text_fx_shadow_strength))
+      color-mix(in oklch, var(--site_style_accent, currentColor) 22%, transparent);
+
+  color: color-mix(in oklch, currentColor 86%, black);
+}
+
+/* intentionally fixed red/blue aberration values — chromatic effect requires these specific hues */
+.sol__text_fx_chroma {
+  --text_fx_chroma_shadow:
+    calc(-0.05em * var(--text_fx_chroma_strength)) 0 0 rgb(255 80 130 / 0.66),
+    calc(0.05em * var(--text_fx_chroma_strength)) 0 0 rgb(80 200 255 / 0.66);
+}
+
+.sol__text_fx_blur {
+  filter: blur(calc(0.075em * var(--text_fx_blur_strength)));
+}
+
+.sol__text_fx_flicker {
+  --text_fx_flicker_animation: sol__text_fx_flicker calc(1.8s / var(--text_fx_flicker_motion_strength)) linear infinite;
+}
+
+.sol__text_fx_gradient {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, currentColor 86%, white),
+    color-mix(in oklch, var(--site_style_accent, currentColor) 92%, white),
+    color-mix(in oklch, currentColor 90%, white)
+  );
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sol__text_fx_aura {
+  --text_fx_aura_shadow:
+    0 0 calc(0.24em * var(--text_fx_aura_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 42%,
+        transparent
+      ),
+    0 0 calc(0.44em * var(--text_fx_aura_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 26%,
+        transparent
+      );
+}
+
+.sol__text_fx_etch {
+  --text_fx_etch_shadow:
+    0 0.045em 0 color-mix(in oklch, black 62%, transparent),
+    0 -0.02em 0 color-mix(in oklch, white 18%, transparent),
+    0 0 calc(0.16em * var(--text_fx_etch_strength))
+      color-mix(in oklch, currentColor 38%, transparent);
+  -webkit-text-stroke: calc(0.022em * var(--text_fx_etch_strength))
+    color-mix(in oklch, currentColor 42%, transparent);
+}
+
+.sol__text_fx_whisper {
+  --text_fx_whisper_shadow:
+    0 0 calc(0.18em * var(--text_fx_whisper_strength))
+      color-mix(in oklch, currentColor 32%, transparent),
+    0 0 calc(0.34em * var(--text_fx_whisper_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 16%,
+        transparent
+      );
+
+  color: color-mix(
+    in oklch,
+    currentColor calc(72% - (8% * var(--text_fx_whisper_strength))),
+    transparent
+  );
+  font-style: italic;
+  letter-spacing: calc(0.012em * var(--text_fx_whisper_strength));
+}
+
+.sol__text_fx_sigil_pulse {
+  --text_fx_sigil_pulse_shadow:
+    0 0 calc(0.16em * var(--text_fx_sigil_pulse_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 44%,
+        transparent
+      ),
+    0 0 calc(0.3em * var(--text_fx_sigil_pulse_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 24%,
+        transparent
+      );
+  --text_fx_sigil_pulse_animation: sol__text_fx_sigil_pulse calc(2.4s / var(--text_fx_sigil_pulse_motion_strength)) ease-in-out infinite;
+}
+
+.sol__text_fx_veil {
+  --text_fx_veil_shadow:
+    0 0 calc(0.24em * var(--text_fx_veil_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 44%,
+        transparent
+      ),
+    0 0 calc(0.52em * var(--text_fx_veil_strength))
+      color-mix(
+        in oklch,
+        var(--site_style_accent, currentColor) 24%,
+        transparent
+      ),
+    0 0 calc(0.85em * var(--text_fx_veil_strength))
+      color-mix(in oklch, white 14%, transparent);
+
+  color: color-mix(
+    in oklch,
+    currentColor calc(78% - (8% * var(--text_fx_veil_strength))),
+    white
+  );
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(
+      in oklch,
+      var(--site_style_accent, currentColor)
+        calc(8% * var(--text_fx_veil_strength)),
+      transparent
+    )
+      48%,
+    transparent 100%
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.sol__text_fx_cadence {
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.sol__text_fx_cadence_soft {
+  font-style: italic;
+  font-weight: 460;
+  letter-spacing: 0.006em;
+}
+
+.sol__text_fx_cadence_oracular {
+  font-style: italic;
+  font-weight: 540;
+  letter-spacing: 0.02em;
+}
+
+.sol__text_fx_cadence_childlike {
+  font-style: italic;
+  font-weight: 480;
+  letter-spacing: 0.014em;
+}
+
+/* intentionally fixed spectrum — not theme-variant */
+.sol__text_fx_rainbow {
+  background: linear-gradient(
+    90deg,
+    #ff4d6d,
+    #ffb703,
+    #8aff80,
+    #4cc9f0,
+    #9b5de5,
+    #ff4d6d
+  );
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sol__text_fx_wiggle {
+  --text_fx_wiggle_animation: sol__text_fx_wiggle calc(1.3s / var(--text_fx_wiggle_motion_strength)) ease-in-out infinite;
+}
+
+.sol__text_fx_float {
+  --text_fx_float_animation: sol__text_fx_float calc(2.8s / var(--text_fx_float_motion_strength)) ease-in-out infinite;
+}
+
+.sol__text_fx_shake {
+  --text_fx_shake_animation: sol__text_fx_shake calc(0.7s / var(--text_fx_shake_motion_strength)) steps(2, end) infinite;
+}
+
+.sol__text_fx_glitch {
+  --text_fx_glitch_shadow:
+    calc(-0.04em * var(--text_fx_glitch_strength)) 0 0 rgb(255 80 130 / 0.64),
+    calc(0.04em * var(--text_fx_glitch_strength)) 0 0 rgb(80 200 255 / 0.64);
+  --text_fx_glitch_animation: sol__text_fx_glitch calc(1.05s / var(--text_fx_glitch_motion_strength)) steps(2) infinite;
+}
+
+@keyframes sol__text_fx_flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  4% {
+    opacity: 0.55;
+  }
+
+  6% {
+    opacity: 0.95;
+  }
+
+  8% {
+    opacity: 0.7;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  46% {
+    opacity: 0.62;
+  }
+
+  49% {
+    opacity: 1;
+  }
+
+  52% {
+    opacity: 0.38;
+  }
+
+  54% {
+    opacity: 0.92;
+  }
+
+  86% {
+    opacity: 0.58;
+  }
+
+  90% {
+    opacity: 1;
+  }
+}
+
+@keyframes sol__text_fx_wiggle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-0.075em) rotate(-0.55deg);
+  }
+
+  50% {
+    transform: translateY(0.075em) rotate(0.55deg);
+  }
+
+  75% {
+    transform: translateY(-0.0375em) rotate(0.35deg);
+  }
+}
+
+@keyframes sol__text_fx_float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-0.4em);
+  }
+}
+
+@keyframes sol__text_fx_shake {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(0.1em, -0.075em);
+  }
+
+  50% {
+    transform: translate(-0.1em, 0.075em);
+  }
+
+  75% {
+    transform: translate(0.075em, 0.1em);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes sol__text_fx_glitch {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-0.075em, 0.04em);
+  }
+
+  40% {
+    transform: translate(0.075em, -0.04em);
+  }
+
+  60% {
+    transform: translate(-0.04em, -0.06em);
+  }
+
+  80% {
+    transform: translate(0.06em, 0.04em);
+  }
+}
+
+@keyframes sol__text_fx_sigil_pulse {
+  0%,
+  100% {
+    opacity: 0.92;
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-0.075em) scale(1.02);
+  }
+}

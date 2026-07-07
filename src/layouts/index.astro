@@ -14,6 +14,7 @@ import "../styles/components/nigredo_page.css";
 import "../styles/components/albedo_page.css";
 import "../styles/components/citrinitas_page.css";
 import "../styles/components/wikilink.css";
+import "../styles/components/pretext_justify.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
@@ -59,6 +60,7 @@ const resolved_body_classes = Array.from(
   data-site-theme="solarisael"
   data-site-shell="medium"
   data-site-fx="balanced"
+  data-base-path={base_path}
 >
   <head>
     <meta charset="UTF-8" />
@@ -82,7 +84,12 @@ const resolved_body_classes = Array.from(
     }
     <script is:inline src={with_base("js/vendor/htmx.min.js")}></script>
     <script is:inline src={with_base("js/vendor/idiomorph-ext.js")}></script>
+    <script is:inline src={with_base("js/vendor/htmx-preload-ext.js")}></script>
     <script src={with_base("js/scripts.js")} type="module"></script>
+    <script>
+      import "../scripts/pretext_justify.js";
+      import "../scripts/shader_chalice_lab.js";
+    </script>
   </head>
   <body
     class:list={resolved_body_classes}

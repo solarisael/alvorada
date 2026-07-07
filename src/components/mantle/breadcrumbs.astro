@@ -44,6 +44,10 @@ const segment_to_label = (segment) => {
   return decoded_segment.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
 };
 
+// These URL parents are organizational folders, not pages. Leave them in the
+// trail for orientation, but do not render dead links.
+const virtual_parent_paths = new Set(["/codex/labs"]);
+
 // Resolve the crumb list — explicit or URL-derived.
 let crumb_items;
 
@@ -64,7 +68,7 @@ if (Array.isArray(crumbs) && crumbs.length > 0) {
         : segment_to_label(segment);
 
     crumb_items.push({
-      href: with_base(current_path),
+      href: virtual_parent_paths.has(current_path) ? null : with_base(current_path),
       label,
     });
   });

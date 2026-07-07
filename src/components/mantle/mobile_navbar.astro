@@ -1,17 +1,24 @@
 ---
 import "../../styles/components/mobile_nav.css";
 import { with_base } from "../../utils/routes.js";
+import { SITE_NAV_ITEMS } from "../../data/site_nav.js";
 
 const home_href = with_base("/");
+const nav_description_by_phase = Object.fromEntries(
+  SITE_NAV_ITEMS.map((nav_item) => [nav_item.phase, nav_item.description]),
+);
+const ix_preview_for = (phase_value) =>
+  `hover:preview:${nav_description_by_phase[phase_value] ?? ""}`;
 ---
 
 <mantle data-shape="mobile_navbar" id="sol_mobile_nav">
-  <div id="sol_mobile_nav_shell">
+  <div id="sol_mobile_nav_shell" preload="mouseover">
     <div class="sol__mobile_nav_side sol__mobile_nav_left">
       <a
         class="sol__mobile_nav_link sol__is_mobile_hearth_link"
         data-mobile-nav-pill
         data-phase="home"
+        data-ix={ix_preview_for("home")}
         href={home_href}
         hx-get={home_href}
       >
@@ -35,6 +42,7 @@ const home_href = with_base("/");
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="nigredo"
+        data-ix={ix_preview_for("nigredo")}
         href={with_base("nigredo")}
         hx-get={with_base("nigredo")}
       >
@@ -62,6 +70,7 @@ const home_href = with_base("/");
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="albedo"
+        data-ix={ix_preview_for("albedo")}
         href={with_base("albedo")}
         hx-get={with_base("albedo")}
       >
@@ -108,6 +117,7 @@ const home_href = with_base("/");
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="citrinitas"
+        data-ix={ix_preview_for("citrinitas")}
         href={with_base("citrinitas")}
         hx-get={with_base("citrinitas")}
       >
@@ -133,6 +143,7 @@ const home_href = with_base("/");
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="rubedo"
+        data-ix={ix_preview_for("rubedo")}
         href={with_base("rubedo")}
         hx-get={with_base("rubedo")}
       >
@@ -162,6 +173,7 @@ const home_href = with_base("/");
         class="sol__mobile_nav_link"
         data-mobile-nav-pill
         data-phase="codex"
+        data-ix={ix_preview_for("codex")}
         href={with_base("codex")}
         hx-get={with_base("codex")}
       >

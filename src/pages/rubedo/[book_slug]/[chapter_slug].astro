@@ -8,7 +8,7 @@
 import ChapterLayout from "../../../layouts/chapter.astro";
 import ContentLink from "../../../components/page/content_link.astro";
 import ChapterIntro from "../../../components/rubedo/chapter_intro.astro";
-import ThreadSwitcher from "../../../components/rubedo/thread_switcher.astro";
+
 import {
   rubedo_book_map,
   rubedo_book_slugs,
@@ -106,12 +106,6 @@ const crumbs = build_crumbs([
 >
   <ChapterIntro chapter={chapter} />
 
-  <ThreadSwitcher
-    book_slug={book_slug}
-    chapter_slug={chapter_slug}
-    thread_keys={chapter_thread_keys}
-    active_thread_key={default_thread_key}
-  />
 
   {
     /*

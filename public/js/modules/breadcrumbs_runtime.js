@@ -19,6 +19,10 @@ const normalize_pathname = (pathname_value) => {
   return trimmed_pathname || "/";
 };
 
+const is_route_swap_target = (target_node) =>
+  target_node instanceof HTMLElement &&
+  (target_node.matches("container") || target_node.id === "content");
+
 /**
  * @param {Event} event
  */
@@ -121,11 +125,12 @@ if (!window_any.__breadcrumb_htmx_after_swap_bound) {
     const htmx_event = /** @type {CustomEvent} */ (event);
     const swap_target = htmx_event.detail?.target;
 
-    if (!(swap_target instanceof HTMLElement) || swap_target.id !== "content") {
+    if (!is_route_swap_target(swap_target)) {
       return;
     }
 
-    apply_constant_crumb_state(window.location.pathname);
+    last_applied_pathname = null;
+    apply_constant_crumb_state(derive_request_pathname(event) ?? window.location.pathname);
   });
 
   window_any.__breadcrumb_htmx_after_swap_bound = true;

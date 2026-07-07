@@ -1,0 +1,189 @@
+[data-sol-pretext="justify"] {
+  text-align: start;
+}
+
+.sol__pretext_justified {
+  display: block;
+  overflow-wrap: normal;
+}
+
+.sol__pretext_line {
+  display: block;
+  white-space: nowrap;
+}
+
+.sol__pretext_fragment {
+  display: inline-block;
+  white-space: pre;
+  vertical-align: baseline;
+}
+
+.sol__pretext_lab {
+  max-width: 38rem;
+  margin-inline: auto;
+}
+
+.sol__pretext_shaped {
+  text-align: center;
+}
+
+.sol__pretext_shaped .sol__pretext_line {
+  margin-inline: auto;
+  text-align: start;
+}
+
+.sol__pretext_shape_lab {
+  width: min(52rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  margin: 1.5rem auto;
+  padding: 1rem;
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      color-mix(in oklch, var(--site_style_accent) 14%, transparent),
+      transparent 36%
+    ),
+    color-mix(in oklch, var(--ui_bg_mantle) 42%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 8%, transparent);
+}
+
+.sol__pretext_shape_lab.sol__pretext_shaped {
+  overflow: visible;
+}
+
+.sol__pretext_shape_lab .sol__pretext_line {
+  border-radius: 999px;
+}
+
+@media (max-width: 640px) {
+  .sol__pretext_shape_lab {
+    width: min(100%, calc(100vw - 1.25rem));
+    max-width: calc(100vw - 1.25rem);
+    padding: 0.75rem;
+    font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+  }
+}
+
+.sol__shader_chalice_lab {
+  width: min(52rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  margin: 2rem auto;
+  --sol_shader_chalice_text_blur: 0rem;
+  --sol_shader_chalice_text_opacity: 0.9;
+  --sol_shader_chalice_inner_padding: clamp(0.7rem, 2vw, 1.35rem);
+}
+
+.sol__shader_chalice_note {
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+  color: color-mix(
+    in oklch,
+    var(--ui_text_secondary) 86%,
+    var(--site_style_accent)
+  );
+  text-align: center;
+}
+
+.sol__shader_chalice_stage {
+  position: relative;
+  isolation: isolate;
+  width: min(34rem, 100%);
+  aspect-ratio: 0.72;
+  margin-inline: auto;
+  overflow: visible;
+}
+
+.sol__shader_chalice_canvas,
+.sol__shader_chalice_aperture {
+  position: absolute;
+  inset: 0;
+}
+
+.sol__shader_chalice_canvas {
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sol__shader_chalice_aperture {
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  clip-path: polygon(
+    12% 6%,
+    88% 6%,
+    76% 22%,
+    60% 59%,
+    55% 76%,
+    76% 94%,
+    24% 94%,
+    45% 76%,
+    40% 59%,
+    24% 22%
+  );
+}
+
+.sol__shader_chalice_text_box {
+  position: absolute;
+  inset: 12% auto auto 50%;
+  width: min(76%, 26rem);
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: var(--sol_shader_chalice_inner_padding);
+  overflow: visible;
+  transform: translateX(-50%);
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 0 42%,
+    rgb(0 0 0 / 0.62) 58%,
+    transparent 88%
+  );
+  mask-image: radial-gradient(
+    ellipse at center,
+    black 0 42%,
+    rgb(0 0 0 / 0.62) 58%,
+    transparent 88%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.sol__shader_chalice_text {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 0;
+  color: color-mix(
+    in oklch,
+    var(--ui_text_primary) 88%,
+    var(--site_style_accent)
+  );
+  font-size: clamp(0.78rem, 1.45vw, 0.96rem);
+  line-height: 1.34;
+  opacity: var(--sol_shader_chalice_text_opacity, 0.9);
+  filter: blur(var(--sol_shader_chalice_text_blur, 0rem));
+  text-shadow: 0 0 0.65rem
+    color-mix(in oklch, var(--site_style_accent) 28%, transparent);
+  will-change: opacity, filter;
+}
+
+@media (max-width: 640px) {
+  .sol__shader_chalice_lab {
+    width: min(100%, calc(100vw - 1.25rem));
+    max-width: calc(100vw - 1.25rem);
+  }
+
+  .sol__shader_chalice_stage {
+    width: min(22rem, 100%);
+  }
+
+  .sol__shader_chalice_text {
+    font-size: clamp(0.72rem, 3.1vw, 0.88rem);
+  }
+}

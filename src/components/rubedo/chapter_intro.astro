@@ -5,11 +5,3 @@ const { chapter = null, fallback_title = "Unknown chapter" } = Astro.props;
 <div class="sol__chapter_header">
   <h1>{chapter?.title ?? fallback_title}</h1>
 </div>
-
-{chapter?.chapter_description && <p>{chapter.chapter_description}</p>}
-
-{
-  chapter?.sol__chapter_snippet && (
-    <p class="sol__chapter_snippet">{chapter.sol__chapter_snippet}</p>
-  )
-}

@@ -33,7 +33,6 @@
   @apply gap-5 md:gap-6;
   @apply px-3 py-8 md:px-6 md:py-12;
 
-  min-height: min(52vh, 34rem);
   text-align: center;
   overflow: visible;
 }
@@ -90,7 +89,7 @@
 
   margin: 0;
   font-family: var(--font_ritual);
-  font-size: clamp(3.25rem, 10vw, 7rem);
+  font-size: clamp(3rem, 8vw, 4rem);
   line-height: 1;
   letter-spacing: 0.025em;
   color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
@@ -99,18 +98,19 @@
 #sol_home_gate_title .sol__text_fx {
   display: inline-block;
   padding: 0.08em 0.14em 0.12em;
-  margin-inline: -0.14em;
+  margin-left: -0.14em;
+  margin-right: -0.14em;
   overflow: visible;
 }
 
 #sol_home_gate_body {
-  @apply flex max-w-4xl flex-col items-center;
-  @apply gap-4 md:gap-5;
+  max-width: 58rem;
+  text-align: start;
 }
 
 #sol_home_gate_body p {
-  max-width: 58rem;
-  margin-inline: auto;
+  max-width: none;
+  margin: 0;
   color: color-mix(
     in oklch,
     var(--ui_text_secondary) 88%,
@@ -121,6 +121,15 @@
 .sol__home_intro_lead {
   font-size: clamp(1.05rem, 2vw, 1.35rem);
   line-height: 1.45;
+}
+
+#sol_home_gate_body .sol__home_chalice_text {
+  max-width: min(30rem, 100%);
+  margin: 1.2rem auto 0;
+  color: color-mix(in oklch, var(--site_style_accent) 58%, var(--ui_text_secondary));
+  font-family: var(--font_ritual);
+  font-size: clamp(0.92rem, 1.45vw, 1.08rem);
+  letter-spacing: 0.035em;
 }
 
 .sol__home_intro_line {
@@ -137,6 +146,31 @@
     var(--ui_text_secondary)
   );
   letter-spacing: 0.04em;
+}
+
+#sol_phase_card_header {
+  @apply flex flex-col items-center;
+
+  text-align: center;
+}
+
+#sol_phase_card_heading {
+  @apply font-semibold;
+
+  margin: 0;
+  font-family: var(--font_ritual);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: 0.025em;
+  color: color-mix(in oklch, var(--ui_text_primary) 90%, white);
+}
+
+#sol_phase_card_heading.sol__text_fx {
+  display: inline-block;
+  padding: 0.06em 0.12em 0.1em;
+  margin-left: -0.12em;
+  margin-right: -0.12em;
+  overflow: visible;
 }
 
 #sol_phase_card_grid {

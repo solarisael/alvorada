@@ -149,3 +149,9 @@ references/
 
 # Debug screenshots / captures at repo root (not under public/ or src/)
 /*.png
+
+
+# Local lab captures and generated bundles
+.tmp/
+scripts/__pycache__/
+*.zip

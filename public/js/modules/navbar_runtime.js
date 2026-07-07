@@ -25,6 +25,10 @@ const normalize_pathname = (pathname_value) => {
   return trimmed_pathname || "/";
 };
 
+const is_route_swap_target = (target_node) =>
+  target_node instanceof HTMLElement &&
+  (target_node.matches("container") || target_node.id === "content");
+
 /**
  * @param {string} current_pathname
  * @param {string} target_pathname
@@ -171,6 +175,18 @@ const derive_request_pathname = (event) => {
 };
 
 /**
+ * Preload prefetches (htmx `preload` extension, mouseover) fire `htmx:beforeRequest`
+ * exactly like real navigations, but only warm the cache — they never swap. They
+ * carry an `HX-Preloaded` header. Applying route-active state for them would flip the
+ * navbar phase/accent/active-pill to a route the user is merely hovering, not visiting.
+ * @param {Event} event
+ */
+const is_preload_request = (event) => {
+  const detail_any = /** @type {any} */ (/** @type {CustomEvent} */ (event).detail);
+  return detail_any?.requestConfig?.headers?.["HX-Preloaded"] === "true";
+};
+
+/**
  * @param {NodeListOf<HTMLElement>} pill_nodes
  */
 const reset_pill_glow = (pill_nodes) => {
@@ -223,9 +239,12 @@ const update_pill_glow = (pill_nodes, pointer_x, pointer_y) => {
 const init_navbar_effects = (root_node = document) => {
   ensure_action_queuer();
 
-  const nav_rails = /** @type {NodeListOf<HTMLElement>} */ (
-    root_node.querySelectorAll("[data-nav-rail]")
-  );
+  const nav_rails = [
+    ...(root_node instanceof HTMLElement && root_node.matches("[data-nav-rail]")
+      ? [root_node]
+      : []),
+    ...root_node.querySelectorAll("[data-nav-rail]"),
+  ];
 
   nav_rails.forEach((nav_rail) => {
     if (nav_rail.dataset.navInit === "true") {
@@ -352,6 +371,10 @@ apply_route_active_state();
 
 if (!window_any.__navbar_htmx_before_request_bound) {
   document.body?.addEventListener("htmx:beforeRequest", (event) => {
+    if (is_preload_request(event)) {
+      return;
+    }
+
     const request_pathname = derive_request_pathname(event);
 
     if (!request_pathname) {
@@ -375,11 +398,13 @@ if (!window_any.__navbar_htmx_after_swap_bound) {
     const htmx_event = /** @type {CustomEvent} */ (event);
     const swap_target = htmx_event.detail?.target;
 
-    if (!(swap_target instanceof HTMLElement) || swap_target.id !== "content") {
+    if (!is_route_swap_target(swap_target)) {
       return;
     }
 
-    apply_route_active_state();
+    last_applied_pathname = null;
+    apply_route_active_state(derive_request_pathname(event) ?? window.location.pathname);
+    init_navbar_effects(document);
   });
 
   window_any.__navbar_htmx_after_swap_bound = true;

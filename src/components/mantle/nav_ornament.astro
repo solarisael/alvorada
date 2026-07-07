@@ -1,0 +1,23 @@
+---
+import { NAV_ORNAMENTS } from "../../data/nav_ornaments.js";
+
+const { kind, class_name = "" } = Astro.props;
+const ornament = NAV_ORNAMENTS[kind];
+
+if (!ornament) {
+  throw new Error(`Unknown nav ornament: ${kind}`);
+}
+---
+
+<span class={class_name} data-nav-ornament={kind}>
+  <svg
+    class="sol__nav_ornament_svg"
+    viewBox={ornament.viewBox}
+    width={ornament.width}
+    focusable="false"
+    height={ornament.height}
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <path fill="currentColor" fill-rule="evenodd" d={ornament.path}></path>
+  </svg>
+</span>

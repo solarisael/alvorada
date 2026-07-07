@@ -10,6 +10,10 @@ const normalize_pathname = (pathname_value) => {
   return trimmed_pathname || "/";
 };
 
+const is_route_swap_target = (target_node) =>
+  target_node instanceof HTMLElement &&
+  (target_node.matches("container") || target_node.id === "content");
+
 /**
  * @param {string} current_pathname
  * @param {string} target_pathname
@@ -135,11 +139,14 @@ if (!window_any.__mobile_nav_after_swap_bound) {
     const htmx_event = /** @type {CustomEvent} */ (event);
     const swap_target = htmx_event.detail?.target;
 
-    if (!(swap_target instanceof HTMLElement) || swap_target.id !== "content") {
+    if (!is_route_swap_target(swap_target)) {
       return;
     }
 
-    apply_mobile_route_active_state();
+    last_applied_pathname = null;
+    apply_mobile_route_active_state(
+      derive_request_pathname(event) ?? window.location.pathname,
+    );
   });
 
   window_any.__mobile_nav_after_swap_bound = true;

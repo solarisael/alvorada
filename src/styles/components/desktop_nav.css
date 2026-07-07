@@ -27,6 +27,12 @@
   --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.16;
 
+  --rail_trace_opacity: 0.42;
+  --rail_trace_glow: color-mix(
+    in oklch,
+    var(--site_style_accent) calc(36% * var(--site_style_strength_mult, 1)),
+    transparent
+  );
   --pill_background: color-mix(
     in oklch,
     var(--ui_surface_soft) calc(62% * var(--site_shell_surface_mult, 1)),
@@ -59,9 +65,12 @@
     var(--ui_bg_crust) calc(100% * var(--site_shell_surface_mult, 1)),
     transparent
   );
-  --center_ring_size: 6.5rem;
-  --center_core_size: 6rem;
+  --center_ring_size: 4.5rem;
+  --center_core_size: 4rem;
   --desktop_nav_compact: 1;
+  --desktop_nav_top_offset: 1.5rem;
+  --desktop_nav_sun_drop: 0rem; /* centered in the rail */
+  --desktop_nav_rail_radius: 999rem;
   --desktop_nav_pill_font_size: calc(0.875rem * var(--desktop_nav_compact));
   --desktop_nav_prefix_font_size: calc(0.875rem * var(--desktop_nav_compact));
   --desktop_nav_pill_pad_x: calc(1rem * var(--desktop_nav_compact));
@@ -71,19 +80,38 @@
   --desktop_nav_rail_pad_x: calc(1.5rem * var(--desktop_nav_compact));
   --desktop_nav_rail_pad_y: calc(0.5rem * var(--desktop_nav_compact));
   --desktop_nav_middle_gap: calc(5rem * var(--desktop_nav_compact));
-  --desktop_nav_composition_width: calc(
-    (100vw - (var(--layout_viewport_pad_x) * 2) - (var(--layout_body_grid_gap) * 2)) * 16 / 18
+  --desktop_nav_ornament_side_width: calc(10.5rem * var(--desktop_nav_compact));
+  --desktop_nav_ornament_side_height: calc(6rem * var(--desktop_nav_compact));
+  --desktop_nav_ornament_side_overhang: calc(
+    4.5rem * var(--desktop_nav_compact)
   );
-  --desktop_nav_content_inset: calc(var(--site_border_width_standard) + 0.75rem);
+  --desktop_nav_ornament_side_opacity: 0.62;
+  --desktop_nav_ornament_center_width: 300%;
+  --desktop_nav_ornament_center_height: 300%;
+  --desktop_nav_ornament_center_opacity: 0.82;
+  --desktop_nav_ornament_color: var(--site_style_accent);
+  --desktop_nav_ornament_side_color: var(--site_style_accent);
+  --desktop_nav_ornament_right_scale: 0.92;
+  --desktop_nav_composition_width: calc(
+    (
+        100vw - (var(--layout_viewport_pad_x) * 2) -
+          (var(--layout_body_grid_gap) * 2)
+      ) *
+      16 / 18
+  );
+  --desktop_nav_content_inset: calc(
+    var(--site_border_width_standard) + 0.75rem
+  );
 
   /* positioning / stacking */
-  @apply fixed top-8 z-50;
+  @apply fixed z-50;
   /* layout */
   @apply flex justify-center;
   /* interaction */
   @apply pointer-events-none;
 
   left: 50%;
+  top: var(--desktop_nav_top_offset);
   box-sizing: border-box;
   width: min(100%, var(--desktop_nav_composition_width));
   padding-inline: var(--desktop_nav_content_inset);
@@ -158,7 +186,7 @@
   /* sizing */
   @apply w-full;
   /* shape / spacing / borders */
-  @apply rounded-full border;
+  @apply border;
   /* interaction */
   @apply pointer-events-auto;
 
@@ -168,6 +196,7 @@
   padding: var(--desktop_nav_rail_pad_y) var(--desktop_nav_rail_pad_x);
 
   border-width: var(--site_border_width_hairline);
+  border-radius: var(--desktop_nav_rail_radius);
   border-color: color-mix(
     in oklch,
     var(--site_style_accent) calc(42% * var(--site_style_strength_mult, 1)),
@@ -199,12 +228,49 @@
   @apply pointer-events-none absolute;
 }
 
+.sol__nav_ornament {
+  @apply pointer-events-none absolute;
+
+  display: block;
+  color: var(--desktop_nav_ornament_color);
+  user-select: none;
+}
+
+.sol__nav_ornament_svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#sol_nav_user_bar > .sol__nav_ornament_side {
+  z-index: 12;
+  top: 50%;
+  width: var(--desktop_nav_ornament_side_width);
+  height: var(--desktop_nav_ornament_side_height);
+  opacity: var(--desktop_nav_ornament_side_opacity);
+  color: var(--desktop_nav_ornament_side_color);
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+.sol__nav_ornament_left {
+  left: calc(-1 * var(--desktop_nav_ornament_side_overhang));
+  transform: translateY(-50%);
+}
+
+.sol__nav_ornament_right {
+  right: calc(-1 * var(--desktop_nav_ornament_side_overhang));
+  transform: translateY(-50%) scale(var(--desktop_nav_ornament_right_scale));
+  transform-origin: center center;
+}
+
 #sol_nav_user_bar.sol__is_pointer_active {
   --cursor_transition_duration: var(--cursor_follow_transition);
 }
 
 .sol__nav_rail_layer_cursor_glow {
-  @apply rounded-full;
+  border-radius: var(--desktop_nav_rail_radius);
 
   inset: var(--site_border_width_standard);
 
@@ -215,6 +281,49 @@
     transparent 68%
   );
   opacity: 0.48;
+}
+
+.sol__nav_rail_layer_outer_trace,
+.sol__nav_rail_layer_inner_trace {
+  border-radius: var(--desktop_nav_rail_radius);
+  opacity: var(--rail_trace_opacity);
+}
+
+.sol__nav_rail_layer_outer_trace {
+  inset: 0;
+  border: var(--site_border_width_hairline) solid transparent;
+  background:
+    linear-gradient(var(--rail_background), var(--rail_background)) padding-box,
+    linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--rail_trace_glow) 11%,
+        transparent 23%,
+        transparent 77%,
+        var(--rail_trace_glow) 89%,
+        transparent 100%
+      )
+      border-box;
+  filter: drop-shadow(0 0 10px var(--rail_trace_glow));
+}
+
+.sol__nav_rail_layer_inner_trace {
+  inset: 0.55rem 0.9rem 0.45rem;
+  border-block-end: var(--site_border_width_hairline) solid
+    color-mix(in oklch, var(--site_style_accent) 24%, transparent);
+  background:
+    radial-gradient(
+      0.42rem 0.42rem at 0% 100%,
+      transparent 56%,
+      color-mix(in oklch, var(--site_style_accent) 30%, transparent) 58%,
+      transparent 72%
+    ),
+    radial-gradient(
+      0.42rem 0.42rem at 100% 100%,
+      transparent 56%,
+      color-mix(in oklch, var(--site_style_accent) 30%, transparent) 58%,
+      transparent 72%
+    );
 }
 
 .sol__nav_links {
@@ -372,11 +481,26 @@
   left: calc(var(--site_center_axis_x) + var(--site_center_axis_nudge_x));
   width: calc(var(--center_ring_size) * var(--desktop_nav_compact));
   height: calc(var(--center_ring_size) * var(--desktop_nav_compact));
-  transform: translate3d(-50%, 0, 0);
+  transform: translate3d(-50%, var(--desktop_nav_sun_drop), 0);
 }
 
 .sol__icon_user_layer {
   @apply pointer-events-none absolute;
+}
+
+#sol_icon_user .sol__nav_ornament_center {
+  z-index: 8;
+  left: 50%;
+  top: 50%;
+  width: var(--desktop_nav_ornament_center_width);
+  height: var(--desktop_nav_ornament_center_height);
+  opacity: var(--desktop_nav_ornament_center_opacity);
+  filter: drop-shadow(
+    0 0 1.1rem
+      color-mix(in oklch, var(--desktop_nav_ornament_color) 42%, transparent)
+  );
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
 }
 
 .sol__icon_user_layer_orbit {
@@ -580,7 +704,9 @@
   animation: cinza_highlight_rotate 18s linear infinite;
 }
 
-:root[data-site-theme="solarisael"] #sol_icon_user:hover .sol__cinza_sun_highlight,
+:root[data-site-theme="solarisael"]
+  #sol_icon_user:hover
+  .sol__cinza_sun_highlight,
 :root[data-site-theme="solarisael"]
   #sol_icon_user:focus-visible
   .sol__cinza_sun_highlight,
@@ -592,7 +718,11 @@
 
 @media (min-width: 769px) and (max-width: 1000px) {
   #sol_desktop_nav {
-    --desktop_nav_compact: clamp(0.75, calc(0.75 + ((100vw - 769px) / 231px) * 0.25), 1);
+    --desktop_nav_compact: clamp(
+      0.75,
+      calc(0.75 + ((100vw - 769px) / 231px) * 0.25),
+      1
+    );
   }
 }
 

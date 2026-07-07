@@ -20,7 +20,7 @@ import {
 // not interpolate or precompute the pattern string.
 const scene_module_map = {
   ...import.meta.glob("../../content/rubedo/**/*.md", { eager: true }),
-  ...import.meta.glob("@vault/zzzz_rubedo/**/*.md", { eager: true }),
+  ...import.meta.glob(["@vault/zzzz_rubedo/**/*.md", "!@vault/zzzz_rubedo/**/refs/**/*.md"], { eager: true }),
 };
 
 const resolve_identity_value = ({

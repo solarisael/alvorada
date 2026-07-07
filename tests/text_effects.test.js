@@ -6,7 +6,7 @@ import {
   parse_combat_token_segments,
   resolve_text_fx_class,
   split_text_fx_tokens,
-} from "../public/js/modules/text_effects.js";
+} from "../public/vendor/fx/js/text_effects.js";
 import {
   normalize_text_fx_name,
   split_text_fx_markers,
@@ -62,7 +62,7 @@ describe("text_effects runtime normalization", () => {
   test("clamps marker intensity inputs", () => {
     expect(parse_text_fx_intensity_value("0.05")).toBe(0.2);
     expect(parse_text_fx_intensity_value("1.3")).toBe(1.3);
-    expect(parse_text_fx_intensity_value("4")).toBe(3);
+    expect(parse_text_fx_intensity_value("6")).toBe(5);
     expect(parse_text_fx_intensity_value("not-a-number")).toBeNull();
   });
 
@@ -158,6 +158,26 @@ describe("text_effects markdown marker processing", () => {
       },
       { type: "text", value: " after" },
     ]);
+  });
+
+  test("transforms nested inline markers without leaking marker text", () => {
+    const nodes = split_text_fx_markers(
+      "before {{fx:glow}}outer {{fx:neon}}inner{{/fx}} outer{{/fx}} after",
+    );
+
+    expect(nodes).toEqual([
+      { type: "text", value: "before " },
+      {
+        type: "html",
+        value:
+          '<span class="sol__text_fx sol__text_fx_glow">outer <span class="sol__text_fx sol__text_fx_neon">inner</span> outer</span>',
+      },
+      { type: "text", value: " after" },
+    ]);
+
+    const rendered_values = nodes.map((node) => node.value).join("");
+    expect(rendered_values).not.toContain("{{fx");
+    expect(rendered_values).not.toContain("{{/fx}}");
   });
 
   test("keeps unknown marker syntax as plain text", () => {
@@ -275,9 +295,9 @@ describe("text_effects markdown marker processing", () => {
     expect(nodes).toHaveLength(1);
     expect(nodes[0].type).toBe("html");
     const html_value = nodes[0].value;
-    expect(html_value).toContain('data-text-fx-glow-intensity="3"');
+    expect(html_value).toContain('data-text-fx-glow-intensity="5"');
     expect(html_value).toContain('data-text-fx-aura-intensity="0.2"');
-    expect(html_value).toContain('data-text-fx-aura-motion="3"');
+    expect(html_value).toContain('data-text-fx-aura-motion="4"');
 
     expect(split_text_fx_markers("{{fx:glow=abc}}x{{/fx}}")).toEqual([
       { type: "text", value: "{{fx:glow=abc}}x{{/fx}}" },
@@ -398,7 +418,7 @@ describe("text_effects markdown marker processing", () => {
       {
         type: "html",
         value:
-          '<span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="3" data-text-fx-motion="0.2" style="--text_fx_marker_intensity:3;--text_fx_marker_motion:0.2">flare</span>',
+          '<span class="sol__text_fx sol__text_fx_glow" data-text-fx-intensity="5" data-text-fx-motion="0.2" style="--text_fx_marker_intensity:5;--text_fx_marker_motion:0.2">flare</span>',
       },
     ]);
   });
@@ -436,6 +456,66 @@ describe("text_effects markdown marker processing", () => {
       },
       { type: "html", value: "</span>" },
     ]);
+  });
+
+  test("transforms inline marker wrappers inside carried block children", () => {
+    const tree = {
+      type: "root",
+      children: [
+        {
+          type: "paragraph",
+          children: [{ type: "text", value: "{{fx:terminal}}" }],
+        },
+        {
+          type: "paragraph",
+          children: [
+            { type: "text", value: "boot " },
+            { type: "text", value: "{{fx:glow}}" },
+            {
+              type: "emphasis",
+              children: [{ type: "text", value: "signal" }],
+            },
+            { type: "text", value: "{{/fx}}" },
+            { type: "text", value: " ready" },
+          ],
+        },
+        {
+          type: "paragraph",
+          children: [{ type: "text", value: "{{/fx}}" }],
+        },
+      ],
+    };
+
+    transform_text_fx_markers_in_tree(tree);
+
+    expect(tree.children).toEqual([
+      {
+        type: "html",
+        value:
+          '<div class="sol__block_fx sol__block_fx_terminal" data-text-fx="terminal">',
+      },
+      {
+        type: "paragraph",
+        children: [
+          { type: "text", value: "boot " },
+          {
+            type: "html",
+            value: '<span class="sol__text_fx sol__text_fx_glow">',
+          },
+          {
+            type: "emphasis",
+            children: [{ type: "text", value: "signal" }],
+          },
+          { type: "html", value: "</span>" },
+          { type: "text", value: " ready" },
+        ],
+      },
+      { type: "html", value: "</div>" },
+    ]);
+
+    const rendered_tree = JSON.stringify(tree);
+    expect(rendered_tree).not.toContain("{{fx");
+    expect(rendered_tree).not.toContain("{{/fx}}");
   });
 
   test("transforms block marker wrappers around sibling markdown nodes", () => {

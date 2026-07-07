@@ -1,0 +1,5 @@
+/* fx library entry — import this once (base.css). */
+@import "./text.css";
+@import "./overlay.css";
+@import "./combat.css";
+@import "./interactions.css";

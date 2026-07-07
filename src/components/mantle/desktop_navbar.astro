@@ -1,5 +1,6 @@
 ---
 import "../../styles/components/desktop_nav.css";
+import NavOrnament from "./nav_ornament.astro";
 import { DESKTOP_NAV_LEFT, DESKTOP_NAV_RIGHT } from "../../data/site_nav.js";
 import { with_base } from "../../utils/routes.js";
 
@@ -11,8 +12,23 @@ const home_href = with_base("/");
   id="sol_desktop_nav"
   class="sol__navbar_preset_rich sol__route_active_tone_medium"
 >
-  <div id="sol_nav_user_bar" class="sol__nav_rail" data-nav-rail>
+  <div
+    id="sol_nav_user_bar"
+    class="sol__nav_rail"
+    data-nav-rail
+    preload="mouseover"
+  >
     <div class="sol__nav_rail_layer sol__nav_rail_layer_cursor_glow"></div>
+    <div class="sol__nav_rail_layer sol__nav_rail_layer_outer_trace"></div>
+    <div class="sol__nav_rail_layer sol__nav_rail_layer_inner_trace"></div>
+    <NavOrnament
+      kind="side_left"
+      class_name="sol__nav_ornament sol__nav_ornament_side sol__nav_ornament_left"
+    />
+    <NavOrnament
+      kind="side_right"
+      class_name="sol__nav_ornament sol__nav_ornament_side sol__nav_ornament_right"
+    />
 
     <div class="sol__nav_links">
       {
@@ -21,6 +37,7 @@ const home_href = with_base("/");
             class="sol__nav_pill"
             data-nav-pill
             data-phase={nav_item.phase}
+            data-ix={`hover:preview:${nav_item.description}`}
             href={with_base(nav_item.href)}
             hx-get={with_base(nav_item.href)}
           >
@@ -35,6 +52,10 @@ const home_href = with_base("/");
 
     <a id="sol_icon_user" href={home_href} hx-get={home_href}>
       <span class="sol__icon_user_layer sol__icon_user_layer_orbit"></span>
+      <NavOrnament
+        kind="center_sun"
+        class_name="sol__nav_ornament sol__nav_ornament_center"
+      />
 
       <div id="sol_icon_user_shell">
         <div class="sol__cinza_sun_halo"></div>
@@ -58,6 +79,7 @@ const home_href = with_base("/");
             class="sol__nav_pill"
             data-nav-pill
             data-phase={nav_item.phase}
+            data-ix={`hover:preview:${nav_item.description}`}
             href={with_base(nav_item.href)}
             hx-get={with_base(nav_item.href)}
           >

@@ -11,7 +11,8 @@ import {
   normalize_text_fx_name,
   text_fx_block_class_for,
   text_fx_text_class_for,
-} from "../../public/js/modules/text_effects_contract.js";
+} from "../../public/vendor/fx/js/contract.js";
+import { escape_html, marker_candidate_from_child } from "./marker_tree_utils.js";
 
 const text_fx_effect_names = TEXT_FX_TEXT_EFFECT_NAMES;
 const text_fx_block_effect_names = TEXT_FX_BLOCK_EFFECT_NAMES;
@@ -36,14 +37,6 @@ const marker_effect_token_regex = new RegExp(
   "i",
 );
 
-const escape_html = (raw_value) => {
-  return String(raw_value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-};
 
 const normalize_text_fx_intensity_value = (raw_value) => {
   if (typeof raw_value !== "string") {
@@ -405,7 +398,7 @@ const build_block_fx_open_html = (effect_name, options = {}) => {
   return `<div class="${TEXT_FX_BLOCK_BASE_CLASS} ${text_fx_block_class_for(safe_effect_name)}" data-text-fx="${safe_effect_name}"${data_attributes}${style_attribute}>`;
 };
 
-const marker_regex = /\{\{fx:([^}]+)\}\}([\s\S]*?)\{\{\/fx\}\}/gi;
+const marker_boundary_regex = /\{\{fx:([^}]+)\}\}|\{\{\/fx\}\}/gi;
 
 const open_marker_only_regex = /^\s*\{\{fx:([^}]+)\}\}\s*$/i;
 const close_marker_only_regex = /^\s*\{\{\/fx\}\}\s*$/i;
@@ -432,30 +425,126 @@ const is_close_marker_only = (raw_text) => {
   return close_marker_only_regex.test(raw_text);
 };
 
+const find_next_text_fx_open_marker = (source_text, start_index = 0) => {
+  marker_boundary_regex.lastIndex = start_index;
+
+  for (const match of source_text.matchAll(marker_boundary_regex)) {
+    if (match[1] !== undefined) {
+      return {
+        index: match.index ?? 0,
+        end_index: (match.index ?? 0) + match[0].length,
+        raw_descriptor: match[1],
+      };
+    }
+  }
+
+  return null;
+};
+
+const find_matching_text_fx_close_marker = (source_text, start_index = 0) => {
+  let depth = 1;
+  marker_boundary_regex.lastIndex = start_index;
+
+  for (const match of source_text.matchAll(marker_boundary_regex)) {
+    if (match[1] !== undefined) {
+      depth += 1;
+      continue;
+    }
+
+    depth -= 1;
+
+    if (depth === 0) {
+      return {
+        index: match.index ?? 0,
+        end_index: (match.index ?? 0) + match[0].length,
+      };
+    }
+  }
+
+  return null;
+};
+
+const text_fx_nodes_to_html = (nodes = []) => {
+  return nodes
+    .map((node) => {
+      if (node.type === "html") {
+        return node.value;
+      }
+
+      return escape_html(node.value ?? "");
+    })
+    .join("");
+};
+
+const build_text_fx_span_html_from_nodes = (
+  descriptor,
+  inner_nodes,
+) => {
+  const opening_html = build_text_fx_span_html(descriptor.effect_names, "", {
+    visual_intensity: descriptor.visual_intensity,
+    motion_intensity: descriptor.motion_intensity,
+    effect_settings: descriptor.effect_settings,
+  });
+
+  if (!opening_html) {
+    return null;
+  }
+
+  return `${opening_html.replace("></span>", ">")}${text_fx_nodes_to_html(
+    inner_nodes,
+  )}</span>`;
+};
+
 const split_text_fx_markers = (raw_text = "", options = {}) => {
   const source_text = String(raw_text);
   const output_nodes = [];
   let cursor = 0;
   const warning_cache = options.warning_cache;
 
-  marker_regex.lastIndex = 0;
+  while (cursor < source_text.length) {
+    const open_marker = find_next_text_fx_open_marker(source_text, cursor);
 
-  for (const match of source_text.matchAll(marker_regex)) {
-    const [full_match, raw_descriptor, effect_inner_text] = match;
-    const match_start = match.index ?? 0;
-
-    if (cursor < match_start) {
+    if (!open_marker) {
       output_nodes.push({
         type: "text",
-        value: source_text.slice(cursor, match_start),
+        value: source_text.slice(cursor),
+      });
+      break;
+    }
+
+    if (cursor < open_marker.index) {
+      output_nodes.push({
+        type: "text",
+        value: source_text.slice(cursor, open_marker.index),
       });
     }
 
-    const descriptor = parse_marker_effect_descriptor(raw_descriptor);
+    const close_marker = find_matching_text_fx_close_marker(
+      source_text,
+      open_marker.end_index,
+    );
+
+    if (!close_marker) {
+      output_nodes.push({
+        type: "text",
+        value: source_text.slice(open_marker.index),
+      });
+      break;
+    }
+
+    const full_match = source_text.slice(
+      open_marker.index,
+      close_marker.end_index,
+    );
+    const effect_inner_text = source_text.slice(
+      open_marker.end_index,
+      close_marker.index,
+    );
+    const descriptor = parse_marker_effect_descriptor(open_marker.raw_descriptor);
 
     if (!descriptor) {
       output_nodes.push({ type: "text", value: full_match });
-      cursor = match_start + full_match.length;
+      cursor = close_marker.end_index;
       continue;
     }
 
@@ -468,7 +557,7 @@ const split_text_fx_markers = (raw_text = "", options = {}) => {
       !text_fx_inline_block_effect_names.includes(first_effect_name)
     ) {
       output_nodes.push({ type: "text", value: full_match });
-      cursor = match_start + full_match.length;
+      cursor = close_marker.end_index;
       continue;
     }
 
@@ -478,7 +567,7 @@ const split_text_fx_markers = (raw_text = "", options = {}) => {
       )
     ) {
       output_nodes.push({ type: "text", value: full_match });
-      cursor = match_start + full_match.length;
+      cursor = close_marker.end_index;
       continue;
     }
 
@@ -490,55 +579,26 @@ const split_text_fx_markers = (raw_text = "", options = {}) => {
       warning_cache,
     );
 
+    const inner_nodes = split_text_fx_markers(effect_inner_text, {
+      ...options,
+      warning_cache,
+    });
+    const html_value = build_text_fx_span_html_from_nodes(
+      descriptor,
+      inner_nodes,
+    );
+
     output_nodes.push({
       type: "html",
-      value: build_text_fx_span_html(
-        descriptor.effect_names,
-        effect_inner_text,
-        {
-          visual_intensity: descriptor.visual_intensity,
-          motion_intensity: descriptor.motion_intensity,
-          effect_settings: descriptor.effect_settings,
-        },
-      ),
+      value: html_value ?? full_match,
     });
 
-    cursor = match_start + full_match.length;
-  }
-
-  if (cursor < source_text.length) {
-    output_nodes.push({
-      type: "text",
-      value: source_text.slice(cursor),
-    });
+    cursor = close_marker.end_index;
   }
 
   return output_nodes;
 };
 
-const marker_candidate_from_child = (child_node) => {
-  if (child_node?.type === "text" && typeof child_node.value === "string") {
-    return {
-      text: child_node.value,
-      source_kind: "text",
-    };
-  }
-
-  if (
-    child_node?.type === "paragraph" &&
-    Array.isArray(child_node.children) &&
-    child_node.children.length === 1 &&
-    child_node.children[0]?.type === "text" &&
-    typeof child_node.children[0]?.value === "string"
-  ) {
-    return {
-      text: child_node.children[0].value,
-      source_kind: "paragraph",
-    };
-  }
-
-  return null;
-};
 
 const transform_text_fx_markers_in_tree = (tree_node, options = {}) => {
   if (!tree_node || !Array.isArray(tree_node.children)) {

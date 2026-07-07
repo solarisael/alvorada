@@ -24,6 +24,7 @@
     "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.8",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/virtual-core": "^3.16.0",
@@ -36,6 +37,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^20.10.6",
     "vite": "^7.3.1"
   }
 }

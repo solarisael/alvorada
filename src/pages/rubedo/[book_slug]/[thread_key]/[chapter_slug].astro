@@ -2,7 +2,7 @@
 import ChapterLayout from "../../../../layouts/chapter.astro";
 import ContentLink from "../../../../components/page/content_link.astro";
 import ChapterIntro from "../../../../components/rubedo/chapter_intro.astro";
-import ThreadSwitcher from "../../../../components/rubedo/thread_switcher.astro";
+
 import {
   rubedo_book_map,
   rubedo_book_slugs,
@@ -141,20 +141,8 @@ const crumbs = build_crumbs([
 >
   <ChapterIntro chapter={chapter} />
 
-  <ThreadSwitcher
-    book_slug={book_slug}
-    chapter_slug={chapter_slug}
-    thread_keys={chapter_thread_keys}
-    active_thread_key={thread_key}
-    inert_active
-  />
 
   <div id="sol_chapter_thread_content" data-thread-key={thread_key}>
-    {
-      thread_scene?.scene_title && (
-        <p class="sol__thread_scene_label">{thread_scene.scene_title}</p>
-      )
-    }
     {
       ResolvedSceneComponent ? (
         <ResolvedSceneComponent />
