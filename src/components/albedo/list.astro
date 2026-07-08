@@ -6,14 +6,12 @@
  * washed register: no redaction, light/water container tints.
  */
 
-import ContentLink from "../page/content_link.astro";
-import {
-  ALBEDO_CONTAINERS,
-  ALBEDO_STATE_TO_CONTAINER,
-} from "../../data/albedo_taxonomy.js";
+import EntryRow from "./entry_row.astro";
+import { ALBEDO_CONTAINERS } from "../../data/albedo_taxonomy.js";
 import { with_base } from "../../utils/routes.js";
 
 const { archive_index = [] } = Astro.props;
+const INITIAL_ENTRY_COUNT = 5;
 
 const ornament_srcs = {
   corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
@@ -27,6 +25,7 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
   index,
   key: `${entry.slug}:${index}`,
 }));
+const initial_entries = archive_index.slice(0, INITIAL_ENTRY_COUNT);
 ---
 
 <albedo data-shape="list" class="sol__albedo_archive" data-albedo-archive>
@@ -102,7 +101,18 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
   <!-- Feed pane: window-scrolled virtual track. -->
   <div class="sol__albedo_scroll_pane" data-albedo-scroll>
     <div class="sol__albedo_inner_track" data-albedo-inner>
-      <ol class="sol__albedo_list" data-albedo-list></ol>
+      <ol class="sol__albedo_list" data-albedo-list>
+        {
+          initial_entries.map((entry, index) => (
+            <EntryRow
+              entry={entry}
+              index={index}
+              ornament_srcs={ornament_srcs}
+              prerendered
+            />
+          ))
+        }
+      </ol>
     </div>
   </div>
 </albedo>
@@ -114,146 +124,11 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
 />
 
 {
-  archive_index.map((entry, index) => {
-    const body_id = `sol_albedo_entry_body_${index}`;
-    const tone = entry.featured ? "bloom" : "still";
-    const state_list = entry.states ?? [];
-    const EntryContent = entry.Content;
-
-    return (
-      <template data-albedo-entry-template data-index={index}>
-        <li
-          class="sol__albedo_entry_row"
-          data-align={entry.align}
-          data-albedo-entry
-          data-entry-index={index}
-          data-states={state_list.join(" ")}
-          data-expanded="false"
-        >
-          <albedo
-            data-shape="entry"
-            class="sol__albedo_entry"
-            data-tone={tone}
-            data-container={entry.primary_container}
-          >
-            <article class="sol__albedo_entry_card">
-              <span class="sol__albedo_entry_layer sol__albedo_entry_layer_surface" />
-              <span class="sol__albedo_entry_layer sol__albedo_entry_layer_sheen" />
-              <span class="sol__albedo_entry_layer sol__albedo_entry_layer_frame" />
-              <div class="sol__albedo_entry_layer sol__albedo_entry_layer_ornament">
-                <img
-                  class="sol__albedo_entry_ornament sol__albedo_entry_ornament_corner_tl"
-                  src={ornament_srcs.corner_tl}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="sol__albedo_entry_ornament sol__albedo_entry_ornament_corner_tr"
-                  src={ornament_srcs.corner_tr}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="sol__albedo_entry_ornament sol__albedo_entry_ornament_corner_bl"
-                  src={ornament_srcs.corner_bl}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="sol__albedo_entry_ornament sol__albedo_entry_ornament_corner_br"
-                  src={ornament_srcs.corner_br}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-
-              <div class="sol__albedo_entry_layer_body">
-                <header class="sol__albedo_entry_header">
-                  <ContentLink
-                    href={entry.href}
-                    class="sol__albedo_entry_title"
-                    data-untitled={entry.title_untitled}
-                  >
-                    {entry.display_title}
-                  </ContentLink>
-
-                  {entry.excerpt && (
-                    <div class="sol__albedo_entry_excerpt">
-                      {entry.excerpt.split(/\n{2,}/).map((paragraph) => (
-                        <p>{paragraph}</p>
-                      ))}
-                    </div>
-                  )}
-
-                  <div class="sol__albedo_entry_states" aria-label="states">
-                    {state_list.map((state) => (
-                      <span
-                        class="sol__albedo_pill"
-                        data-state={state}
-                        data-container={
-                          ALBEDO_STATE_TO_CONTAINER[state] ?? "morning-dew"
-                        }
-                      >
-                        {state}
-                      </span>
-                    ))}
-                  </div>
-
-                  <time
-                    class="sol__albedo_entry_date"
-                    datetime={entry.published_at}
-                  >
-                    {entry.published_at}
-                  </time>
-                </header>
-
-                {entry.preview && (
-                  <div class="sol__albedo_entry_preview" data-albedo-preview>
-                    {entry.preview.split(/\n{2,}/).map((paragraph) => (
-                      <p>{paragraph}</p>
-                    ))}
-                  </div>
-                )}
-
-                <div
-                  id={body_id}
-                  class="sol__albedo_entry_full sol__chapter_content"
-                  data-albedo-full
-                  hidden
-                >
-                  <EntryContent />
-                </div>
-
-                <footer class="sol__albedo_entry_actions">
-                  {entry.can_expand && (
-                    <button
-                      class="sol__albedo_entry_expand sol__text_kicker"
-                      type="button"
-                      data-albedo-expand
-                      aria-controls={body_id}
-                      aria-expanded="false"
-                    >
-                      read more
-                    </button>
-                  )}
-                  <ContentLink
-                    href={entry.href}
-                    class="sol__albedo_entry_open sol__text_kicker"
-                  >
-                    open entry
-                  </ContentLink>
-                </footer>
-              </div>
-            </article>
-          </albedo>
-        </li>
-      </template>
-    );
-  })
+  archive_index.map((entry, index) => (
+    <template data-albedo-entry-template data-index={index}>
+      <EntryRow entry={entry} index={index} ornament_srcs={ornament_srcs} />
+    </template>
+  ))
 }
 
 <noscript>
@@ -261,7 +136,7 @@ const virtual_entries = archive_index.map(({ Content, ...entry }, index) => ({
     {
       archive_index.slice(0, 12).map((entry) => (
         <li>
-          <ContentLink href={entry.href}>{entry.display_title}</ContentLink>
+          <a href={entry.href}>{entry.display_title}</a>
         </li>
       ))
     }

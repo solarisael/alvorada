@@ -1,0 +1,146 @@
+---
+import ContentLink from "../page/content_link.astro";
+import {
+  NIGREDO_STATE_TO_CONTAINER,
+  NIGREDO_STATE_LABEL,
+  NIGREDO_STATE_GLOSS,
+} from "../../data/nigredo_taxonomy.js";
+
+const { entry, index, ornament_srcs, prerendered = false } = Astro.props;
+const body_id = `sol_nigredo_entry_body_${index}`;
+const tone = entry.featured ? "rupture" : "quiet";
+const state_list = entry.states ?? [];
+const EntryContent = entry.Content;
+---
+
+<li
+  class="sol__nigredo_entry_row"
+  data-align={entry.align}
+  data-nigredo-entry
+  data-entry-index={index}
+  data-states={state_list.join(" ")}
+  data-expanded="false"
+  data-prerendered={prerendered ? "true" : undefined}
+>
+  <nigredo
+    data-shape="entry"
+    class="sol__nigredo_entry"
+    data-tone={tone}
+    data-container={entry.primary_container}
+  >
+    <article class="sol__nigredo_entry_card">
+      <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_surface" />
+      <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ash" />
+      <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_frame" />
+      <div class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament">
+        <img
+          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tl"
+          src={ornament_srcs.corner_tl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tr"
+          src={ornament_srcs.corner_tr}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_bl"
+          src={ornament_srcs.corner_bl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_br"
+          src={ornament_srcs.corner_br}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="sol__nigredo_entry_layer_body">
+        <header class="sol__nigredo_entry_header">
+          <ContentLink
+            href={entry.href}
+            class="sol__nigredo_entry_title"
+            data-redacted={entry.title_redacted}
+          >
+            {entry.display_title}
+          </ContentLink>
+
+          {
+            entry.excerpt && (
+              <div class="sol__nigredo_entry_excerpt">
+                {entry.excerpt.split(/\n{2,}/).map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            )
+          }
+
+          <div class="sol__nigredo_entry_states" aria-label="states">
+            {
+              state_list.map((state) => (
+                <span
+                  class="sol__nigredo_pill"
+                  data-state={state}
+                  data-container={NIGREDO_STATE_TO_CONTAINER[state] ?? "cinder"}
+                  title={NIGREDO_STATE_GLOSS[state] || undefined}
+                >
+                  {NIGREDO_STATE_LABEL[state] ?? state}
+                </span>
+              ))
+            }
+          </div>
+
+          <time class="sol__nigredo_entry_date" datetime={entry.published_at}>
+            {entry.published_at}
+          </time>
+        </header>
+
+        {
+          entry.preview && (
+            <div class="sol__nigredo_entry_preview" data-nigredo-preview>
+              {entry.preview.split(/\n{2,}/).map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          )
+        }
+
+        <div
+          id={body_id}
+          class="sol__nigredo_entry_full sol__chapter_content"
+          data-nigredo-full
+          hidden
+        >
+          <EntryContent />
+        </div>
+
+        <footer class="sol__nigredo_entry_actions">
+          {
+            entry.can_expand && (
+              <button
+                class="sol__nigredo_entry_expand sol__text_kicker"
+                type="button"
+                data-nigredo-expand
+                aria-controls={body_id}
+                aria-expanded="false"
+              >
+                read more
+              </button>
+            )
+          }
+          <ContentLink href={entry.href} class="sol__nigredo_entry_open sol__text_kicker">
+            open entry
+          </ContentLink>
+        </footer>
+      </div>
+    </article>
+  </nigredo>
+</li>
