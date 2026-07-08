@@ -16,7 +16,7 @@ const content_link_attrs = (href) => {
     hx_get: href,
     hx_target: "#sol_content",
     hx_select: "#sol_content",
-    hx_swap: "morph swap:160ms settle:160ms",
+    hx_swap: "morph swap:220ms settle:260ms",
   };
 };
 

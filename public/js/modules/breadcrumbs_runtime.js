@@ -1,3 +1,9 @@
+import {
+  derive_request_pathname,
+  is_route_swap_target,
+  normalize_pathname,
+} from "./htmx_route_lifecycle.js";
+
 const window_any = /** @type {any} */ (window);
 let last_applied_pathname = null;
 const phase_color_by_name = {
@@ -10,44 +16,6 @@ const phase_color_by_name = {
 };
 const phase_names = new Set(Object.keys(phase_color_by_name));
 
-/**
- * @param {string} pathname_value
- */
-const normalize_pathname = (pathname_value) => {
-  const trimmed_pathname = pathname_value.replace(/\/+$/, "");
-
-  return trimmed_pathname || "/";
-};
-
-const is_route_swap_target = (target_node) =>
-  target_node instanceof HTMLElement &&
-  (target_node.matches("container") || target_node.id === "content");
-
-/**
- * @param {Event} event
- */
-const derive_request_pathname = (event) => {
-  const htmx_event = /** @type {CustomEvent} */ (event);
-  const detail_any = /** @type {any} */ (htmx_event.detail);
-  const raw_request_path =
-    detail_any?.pathInfo?.finalRequestPath ??
-    detail_any?.requestConfig?.path ??
-    detail_any?.path;
-
-  if (typeof raw_request_path === "string") {
-    return normalize_pathname(
-      new URL(raw_request_path, window.location.origin).pathname,
-    );
-  }
-
-  const trigger_node = detail_any?.elt;
-
-  if (trigger_node instanceof HTMLAnchorElement) {
-    return normalize_pathname(new URL(trigger_node.href).pathname);
-  }
-
-  return null;
-};
 
 /**
  * @param {string} pathname_value
@@ -100,25 +68,6 @@ const apply_constant_crumb_state = (pathname_value) => {
 
 apply_constant_crumb_state(window.location.pathname);
 
-if (!window_any.__breadcrumb_htmx_before_request_bound) {
-  document.body?.addEventListener("htmx:beforeRequest", (event) => {
-    const request_pathname = derive_request_pathname(event);
-
-    if (!request_pathname) {
-      return;
-    }
-
-    const current_pathname = normalize_pathname(window.location.pathname);
-
-    if (request_pathname === current_pathname) {
-      return;
-    }
-
-    apply_constant_crumb_state(request_pathname);
-  });
-
-  window_any.__breadcrumb_htmx_before_request_bound = true;
-}
 
 if (!window_any.__breadcrumb_htmx_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {

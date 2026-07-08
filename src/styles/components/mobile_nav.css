@@ -96,6 +96,9 @@
     );
     box-shadow: var(--mobile_dock_shadow);
     backdrop-filter: blur(var(--mobile_dock_blur));
+    transition:
+      border-color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease,
+      box-shadow calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
   }
 
   #sol_mobile_nav_shell {

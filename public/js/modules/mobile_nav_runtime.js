@@ -1,59 +1,13 @@
+import {
+  derive_request_pathname,
+  is_route_swap_target,
+  is_section_path_active,
+  normalize_pathname,
+} from "./htmx_route_lifecycle.js";
+
 const window_any = /** @type {any} */ (window);
 let last_applied_pathname = null;
 
-/**
- * @param {string} pathname_value
- */
-const normalize_pathname = (pathname_value) => {
-  const trimmed_pathname = pathname_value.replace(/\/+$/, "");
-
-  return trimmed_pathname || "/";
-};
-
-const is_route_swap_target = (target_node) =>
-  target_node instanceof HTMLElement &&
-  (target_node.matches("container") || target_node.id === "content");
-
-/**
- * @param {string} current_pathname
- * @param {string} target_pathname
- */
-const is_section_path_active = (current_pathname, target_pathname) => {
-  if (target_pathname === "/") {
-    return current_pathname === "/";
-  }
-
-  return (
-    current_pathname === target_pathname ||
-    current_pathname.startsWith(`${target_pathname}/`)
-  );
-};
-
-/**
- * @param {Event} event
- */
-const derive_request_pathname = (event) => {
-  const htmx_event = /** @type {CustomEvent} */ (event);
-  const detail_any = /** @type {any} */ (htmx_event.detail);
-  const raw_request_path =
-    detail_any?.pathInfo?.finalRequestPath ??
-    detail_any?.requestConfig?.path ??
-    detail_any?.path;
-
-  if (typeof raw_request_path === "string") {
-    return normalize_pathname(
-      new URL(raw_request_path, window.location.origin).pathname,
-    );
-  }
-
-  const trigger_node = detail_any?.elt;
-
-  if (trigger_node instanceof HTMLAnchorElement) {
-    return normalize_pathname(new URL(trigger_node.href).pathname);
-  }
-
-  return null;
-};
 
 /**
  * @param {string | null} [pathname_override=null]
@@ -114,25 +68,6 @@ if (!window_any.__mobile_nav_route_listener_bound) {
   window_any.__mobile_nav_route_listener_bound = true;
 }
 
-if (!window_any.__mobile_nav_before_request_bound) {
-  document.body?.addEventListener("htmx:beforeRequest", (event) => {
-    const request_pathname = derive_request_pathname(event);
-
-    if (!request_pathname) {
-      return;
-    }
-
-    const current_pathname = normalize_pathname(window.location.pathname);
-
-    if (request_pathname === current_pathname) {
-      return;
-    }
-
-    apply_mobile_route_active_state(request_pathname);
-  });
-
-  window_any.__mobile_nav_before_request_bound = true;
-}
 
 if (!window_any.__mobile_nav_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {

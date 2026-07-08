@@ -1,3 +1,9 @@
+import {
+  derive_request_pathname,
+  is_route_swap_target,
+  is_section_path_active,
+  normalize_pathname,
+} from "./htmx_route_lifecycle.js";
 import { debounce, throttle, queuer_preparator } from "./performance.js";
 
 const window_any = /** @type {any} */ (window);
@@ -16,33 +22,6 @@ const PHASE_NAMES = new Set([
 ]);
 let last_applied_pathname = null;
 
-/**
- * @param {string} pathname_value
- */
-const normalize_pathname = (pathname_value) => {
-  const trimmed_pathname = pathname_value.replace(/\/+$/, "");
-
-  return trimmed_pathname || "/";
-};
-
-const is_route_swap_target = (target_node) =>
-  target_node instanceof HTMLElement &&
-  (target_node.matches("container") || target_node.id === "content");
-
-/**
- * @param {string} current_pathname
- * @param {string} target_pathname
- */
-const is_section_path_active = (current_pathname, target_pathname) => {
-  if (target_pathname === "/") {
-    return current_pathname === "/";
-  }
-
-  return (
-    current_pathname === target_pathname ||
-    current_pathname.startsWith(`${target_pathname}/`)
-  );
-};
 
 /**
  * @param {string} pathname_value
@@ -148,43 +127,6 @@ const apply_route_active_state = (pathname_override = null) => {
   last_applied_pathname = current_pathname;
 };
 
-/**
- * @param {Event} event
- */
-const derive_request_pathname = (event) => {
-  const htmx_event = /** @type {CustomEvent} */ (event);
-  const detail_any = /** @type {any} */ (htmx_event.detail);
-  const raw_request_path =
-    detail_any?.pathInfo?.finalRequestPath ??
-    detail_any?.requestConfig?.path ??
-    detail_any?.path;
-
-  if (typeof raw_request_path === "string") {
-    return normalize_pathname(
-      new URL(raw_request_path, window.location.origin).pathname,
-    );
-  }
-
-  const trigger_node = detail_any?.elt;
-
-  if (trigger_node instanceof HTMLAnchorElement) {
-    return normalize_pathname(new URL(trigger_node.href).pathname);
-  }
-
-  return null;
-};
-
-/**
- * Preload prefetches (htmx `preload` extension, mouseover) fire `htmx:beforeRequest`
- * exactly like real navigations, but only warm the cache — they never swap. They
- * carry an `HX-Preloaded` header. Applying route-active state for them would flip the
- * navbar phase/accent/active-pill to a route the user is merely hovering, not visiting.
- * @param {Event} event
- */
-const is_preload_request = (event) => {
-  const detail_any = /** @type {any} */ (/** @type {CustomEvent} */ (event).detail);
-  return detail_any?.requestConfig?.headers?.["HX-Preloaded"] === "true";
-};
 
 /**
  * @param {NodeListOf<HTMLElement>} pill_nodes
@@ -369,29 +311,6 @@ init_navbar_effects();
 init_navbar_visibility();
 apply_route_active_state();
 
-if (!window_any.__navbar_htmx_before_request_bound) {
-  document.body?.addEventListener("htmx:beforeRequest", (event) => {
-    if (is_preload_request(event)) {
-      return;
-    }
-
-    const request_pathname = derive_request_pathname(event);
-
-    if (!request_pathname) {
-      return;
-    }
-
-    const current_pathname = normalize_pathname(window.location.pathname);
-
-    if (request_pathname === current_pathname) {
-      return;
-    }
-
-    apply_route_active_state(request_pathname);
-  });
-
-  window_any.__navbar_htmx_before_request_bound = true;
-}
 
 if (!window_any.__navbar_htmx_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {

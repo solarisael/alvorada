@@ -257,19 +257,22 @@ Ownership Matrix
 }
 
 .sol__page_transition_breath_subtle {
-  --page_fade_out_ms: 70ms;
-  --page_fade_gap_ms: 0ms;
-  --page_fade_in_ms: 120ms;
+  --page_fade_out_ms: 110ms;
+  --page_fade_gap_ms: 20ms;
+  --page_fade_in_ms: 170ms;
+  --page_color_shift_ms: 260ms;
 }
 
 .sol__page_transition_breath_noticeable {
-  --page_fade_out_ms: 160ms;
-  --page_fade_gap_ms: 0ms;
-  --page_fade_in_ms: 160ms;
+  --page_fade_out_ms: 220ms;
+  --page_fade_gap_ms: 24ms;
+  --page_fade_in_ms: 260ms;
+  --page_color_shift_ms: 360ms;
 }
 
 container.sol__htmx_request,
-container.htmx-request {
+container.htmx-request,
+#sol_content.htmx-request {
   animation-duration: calc(
     (
         var(--page_fade_out_ms) + var(--page_fade_gap_ms) +
@@ -292,7 +295,8 @@ container.htmx-request {
 }
 
 container.sol__htmx_swapping,
-container.htmx-swapping {
+container.htmx-swapping,
+#sol_content.htmx-swapping {
   animation-name: page_content_fade_out;
   animation-duration: calc(
     var(--page_fade_out_ms) * var(--site_fx_motion_mult)
@@ -312,7 +316,9 @@ container.htmx-swapping {
 
 container.sol__htmx_added,
 container.htmx-added,
-container.htmx-settling {
+container.htmx-settling,
+#sol_content.htmx-added,
+#sol_content.htmx-settling {
   animation-name: page_content_fade_in;
   animation-duration: calc(var(--page_fade_in_ms) * var(--site_fx_motion_mult));
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
@@ -347,5 +353,15 @@ container.htmx-settling {
 
   to {
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sol__page_transition_breath_subtle,
+  .sol__page_transition_breath_noticeable {
+    --page_fade_out_ms: 1ms;
+    --page_fade_gap_ms: 0ms;
+    --page_fade_in_ms: 1ms;
+    --page_color_shift_ms: 1ms;
   }
 }

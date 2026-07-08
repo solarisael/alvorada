@@ -10,7 +10,7 @@ const dispatch_map_navigation = (node_entry) => {
     htmx_api.ajax("GET", node_entry.link.hx_get || node_entry.link.href, {
       target: node_entry.link.hx_target || "#sol_content",
       select: node_entry.link.hx_select || "#sol_content",
-      swap: node_entry.link.hx_swap || "morph swap:160ms settle:160ms",
+      swap: node_entry.link.hx_swap || "morph swap:220ms settle:260ms",
       pushURL: String(node_entry.link.hx_push_url) === "true",
     });
 

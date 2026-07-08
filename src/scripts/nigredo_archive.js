@@ -284,6 +284,7 @@ export function init_nigredo_archive() {
 
       if (node.parentElement !== list_el) {
         list_el.appendChild(node);
+        globalThis.htmx?.process?.(node);
       }
     }
 

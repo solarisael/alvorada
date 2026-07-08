@@ -135,6 +135,9 @@
   border-width: var(--site_border_width_standard);
   box-shadow: var(--content_layer_shadow_stack);
   backdrop-filter: blur(var(--site_style_blur)) saturate(1.04);
+  transition:
+    border-color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease,
+    box-shadow calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
 }
 
 .sol__content_layer_surface {
