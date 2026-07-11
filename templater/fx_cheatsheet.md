@@ -2,16 +2,25 @@
 
 Use canonical markers in notes:
 
-`{{fx:effect_name[|effect_name...][:visual_intensity][:motion_intensity]}}your_text{{/fx}}`
+`{{fx:effect_name[|effect_name...][:value][:value][:value]}}your_text{{/fx}}`
 
-- Intensity range is clamped to `0.2` -> `3`.
+- Values are unlabeled: numbers fill visual, then motion intensity (clamped `0.2` -> `5`); a color-shaped token may appear in any position.
 - Single intensity affects visual only.
-- Motion intensity only applies when the third value is present.
+- In per-effect stacks, values follow `effect=value/value...` (for example, `neon=1.2/0.9/gold`).
 - Stack order is left-to-right (`glow|flicker|shadow` keeps that class order).
 - Stack mode is text-effects only; block effects remain single-effect wrappers.
 - Blacklisted pairings are auto-sanitized with build/dev warnings.
 - Soft line breaks are enabled globally, so single newlines render as `<br>`.
 - **Block effects require blank lines** around the open and close markers so each lands on its own paragraph in the Markdown AST. Content lines inside a block also need blank lines between them if they should be separate paragraphs.
+
+## Color
+
+- Accepted colors: CSS named colors (`gold`, `crimson`, ...), hex (`#fc0`, `#ffcc00`, including 4/8-digit forms), or palette tokens (`accent`, `accent_alt`, `nigredo`, `albedo`, `citrinitas`, `rubedo`, `codex`).
+- Color-capable effects: `aura`, `glow`, `gradient`, `neon`, `shadow`, `sigil_pulse`, `veil`, `whisper`.
+- Color is position-insensitive: `{{fx:neon:gold:1.2}}` equals `{{fx:neon:1.2:gold}}`.
+- Per-effect stacks use slash-separated values after `=`: `{{fx:glow=gold|aura:1.1}}` and `{{fx:neon=1.2/0.9/gold}}`.
+- Fixed palettes: `chroma`, `rainbow`, and `glitch` refuse color args; supplied colors are dropped with a build warning.
+- Unknown color words (for example, `banana`) are syntax errors; the whole marker stays literal.
 
 ## Effects
 

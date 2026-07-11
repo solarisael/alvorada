@@ -429,6 +429,82 @@ describe("text_effects markdown marker processing", () => {
     expect(nodes).toEqual([{ type: "text", value: "{{fx:glow:abc}}x{{/fx}}" }]);
   });
 
+  test("applies stack-level color from marker values in any position", () => {
+    const gold_first = split_text_fx_markers("{{fx:neon:gold:1.2}}x{{/fx}}");
+    const gold_last = split_text_fx_markers("{{fx:neon:1.2:gold}}x{{/fx}}");
+
+    for (const nodes of [gold_first, gold_last]) {
+      expect(nodes).toHaveLength(1);
+      expect(nodes[0].type).toBe("html");
+      const html_value = nodes[0].value;
+      expect(html_value).toContain('data-text-fx-color="gold"');
+      expect(html_value).toContain('data-text-fx-intensity="1.2"');
+      expect(html_value).toContain("--text_fx_marker_color:gold");
+      expect(html_value).toContain("--text_fx_marker_intensity:1.2");
+    }
+  });
+
+  test("resolves palette color tokens to site custom properties", () => {
+    const nodes = split_text_fx_markers("{{fx:glow:nigredo}}x{{/fx}}");
+
+    expect(nodes).toHaveLength(1);
+    const html_value = nodes[0].value;
+    expect(html_value).toContain('data-text-fx-color="nigredo"');
+    expect(html_value).toContain("--text_fx_marker_color:var(--color-nigredo)");
+  });
+
+  test("accepts hex color values", () => {
+    const nodes = split_text_fx_markers("{{fx:neon:#fc0}}x{{/fx}}");
+
+    expect(nodes).toHaveLength(1);
+    const html_value = nodes[0].value;
+    expect(html_value).toContain('data-text-fx-color="#fc0"');
+    expect(html_value).toContain("--text_fx_marker_color:#fc0");
+  });
+
+  test("applies per-effect color in stacked markers", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow=gold|aura:1.1}}beacon{{/fx}}",
+    );
+
+    expect(nodes).toHaveLength(1);
+    const html_value = nodes[0].value;
+    expect(html_value).toContain('data-text-fx-glow-color="gold"');
+    expect(html_value).toContain("--text_fx_glow_color:gold");
+    expect(html_value).toContain('data-text-fx-intensity="1.1"');
+    expect(html_value).not.toContain('data-text-fx-aura-color="');
+  });
+
+  test("drops color on effects with a fixed palette", () => {
+    const nodes = split_text_fx_markers("{{fx:chroma=red}}x{{/fx}}");
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain("sol__text_fx_chroma");
+    expect(html_value).not.toContain("data-text-fx-chroma-color");
+    expect(html_value).not.toContain("--text_fx_chroma_color");
+  });
+
+  test("drops stack color when no effect in the stack has a color channel", () => {
+    const nodes = split_text_fx_markers("{{fx:shake:red}}x{{/fx}}");
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain("sol__text_fx_shake");
+    expect(html_value).not.toContain("data-text-fx-color");
+    expect(html_value).not.toContain("--text_fx_marker_color");
+  });
+
+  test("keeps unknown color words as plain text", () => {
+    const nodes = split_text_fx_markers("{{fx:glow:banana}}x{{/fx}}");
+
+    expect(nodes).toEqual([
+      { type: "text", value: "{{fx:glow:banana}}x{{/fx}}" },
+    ]);
+  });
+
   test("transforms marker wrappers around inline markdown nodes", () => {
     const tree = {
       type: "paragraph",

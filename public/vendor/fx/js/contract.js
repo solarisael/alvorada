@@ -51,6 +51,20 @@ const TEXT_FX_STACK_BLACKLIST_PAIRS = Object.freeze([
 const TEXT_FX_INTENSITY_MIN = 0.2;
 const TEXT_FX_INTENSITY_MAX = 5;
 
+// Effects whose accent/halo layers accept a color override. Everything else
+// either has no color role (motion + cadence effects) or an intentionally
+// fixed palette (chroma, rainbow, glitch — the aberration hues ARE the effect).
+const TEXT_FX_COLOR_CAPABLE_EFFECT_NAMES = Object.freeze([
+  "aura",
+  "glow",
+  "gradient",
+  "neon",
+  "shadow",
+  "sigil_pulse",
+  "veil",
+  "whisper",
+]);
+
 const TEXT_FX_EFFECT_NAMES = Object.freeze([
   ...TEXT_FX_TEXT_EFFECT_NAMES,
   ...TEXT_FX_BLOCK_EFFECT_NAMES,
@@ -182,7 +196,10 @@ const parse_ix_descriptor = (raw_descriptor) => {
     return null;
   }
 
-  const trigger_name = raw_value.slice(0, first_colon_index).trim().toLowerCase();
+  const trigger_name = raw_value
+    .slice(0, first_colon_index)
+    .trim()
+    .toLowerCase();
   const remainder = raw_value.slice(first_colon_index + 1);
   const second_colon_index = remainder.indexOf(":");
 
@@ -190,10 +207,16 @@ const parse_ix_descriptor = (raw_descriptor) => {
     return null;
   }
 
-  const action_name = remainder.slice(0, second_colon_index).trim().toLowerCase();
+  const action_name = remainder
+    .slice(0, second_colon_index)
+    .trim()
+    .toLowerCase();
   const payload_value = remainder.slice(second_colon_index + 1);
 
-  if (!IX_TRIGGER_NAMES.includes(trigger_name) || !IX_ACTION_NAMES.includes(action_name)) {
+  if (
+    !IX_TRIGGER_NAMES.includes(trigger_name) ||
+    !IX_ACTION_NAMES.includes(action_name)
+  ) {
     return null;
   }
 
@@ -211,6 +234,7 @@ export {
   TEXT_FX_ALIAS_MAP,
   TEXT_FX_BLOCK_BASE_CLASS,
   TEXT_FX_BLOCK_EFFECT_NAMES,
+  TEXT_FX_COLOR_CAPABLE_EFFECT_NAMES,
   TEXT_FX_EFFECT_CLASS_MAP,
   TEXT_FX_EFFECT_KIND_MAP,
   TEXT_FX_EFFECT_NAMES,

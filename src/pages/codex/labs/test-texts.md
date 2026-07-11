@@ -71,7 +71,6 @@ He whispered a prayer to no one and everyone.
 
 <p class="sol__pretext_lab sol__pretext_shape_lab" data-sol-pretext="justify" data-sol-pretext-shape="chalice">Chalice shape: a wide lip, a narrowing bowl, a thin stem, and a foot that opens again. This is closer to the Pretext demo idea: line widths are computed per row, so the paragraph itself becomes the cup instead of wrapping around some other object. More text makes the cup easier to judge. The upper mouth should hold several full lines, the bowl should taper gradually, the stem should become visibly narrow without breaking readability, and the foot should widen just enough to make the final line feel placed. This is the candidate shape for the home screen because it feels like a vessel, a threshold, and a little altar made entirely out of words. With a longer passage, the chalice gets to prove its actual behavior: the lip should feel ceremonial rather than merely broad, the bowl should have enough depth to gather thought, the stem should be delicate but not useless, and the base should arrive like a quiet landing. If this holds together, we can later feed it devotional copy, navigation hints, or small myth-texts and decide whether the shape feels alive on the page or only clever in the lab.</p>
 
-
 ### Shader Chalice Lab
 
 <section class="sol__shader_chalice_lab" data-sol-shader-chalice-lab>
@@ -186,3 +185,14 @@ Note: these lines intentionally trigger auto-sanitize warnings while preserving 
 {{fx:cadence:1.05}}"I carry an old light and a younger hope."{{/fx}}
 {{fx:cadence_oracular:1.1}}"I do not need certainty. I need one honest step."{{/fx}}
 {{fx:cadence_childlike:1.15}}"And if I fall, I will still laugh on the way down."{{/fx}}
+
+## Color Ladder (Field Notes)
+
+{{fx:neon:gold}}A small gold fire answered from the cliffside.{{/fx}}
+{{fx:glow:#7fd0ff}}Blue light gathered where his knuckles had split.{{/fx}}
+{{fx:aura:nigredo}}The dark halo closed around the wound.{{/fx}}
+{{fx:veil:rubedo}}A red veil lifted from the buried vow.{{/fx}}
+{{fx:aura:codex}}The archive breathed once behind his eyes.{{/fx}}
+{{fx:neon:1.4:crimson}}The warning burned crimson through the rain.{{/fx}}
+{{fx:glow=gold|aura:1.2}}Gold and pale radiance braided around his hands.{{/fx}}
+{{fx:whisper:codex}}A hidden name crossed the wind and vanished.{{/fx}}
