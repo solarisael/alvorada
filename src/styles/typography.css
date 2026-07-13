@@ -72,6 +72,36 @@
   --cadence_color_mix: 24%;
 }
 
+:root[data-site-scale="90"] {
+  --text_nano: 9px;
+  --text_micro: 9.9px;
+  --text_fine: 10.8px;
+  --text_base: 14.4px;
+  --text_body: 14.4px;
+  --text_lead: 14.4px;
+  --text_h1: 28.8px;
+  --text_h2: 21.6px;
+  --text_h3: 18px;
+  --text_h4: 14.4px;
+  --text_h5: 14.4px;
+  --text_h6: 14.4px;
+}
+
+:root[data-site-scale="80"] {
+  --text_nano: 8px;
+  --text_micro: 8.8px;
+  --text_fine: 9.6px;
+  --text_base: 12.8px;
+  --text_body: 12.8px;
+  --text_lead: 12.8px;
+  --text_h1: 25.6px;
+  --text_h2: 19.2px;
+  --text_h3: 16px;
+  --text_h4: 12.8px;
+  --text_h5: 12.8px;
+  --text_h6: 12.8px;
+}
+
 html {
   font-size: var(--text_base);
   line-height: var(--leading_ui);

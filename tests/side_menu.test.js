@@ -5,6 +5,8 @@ import {
   LEGACY_HOME_FX_COOKIE_NAME,
   LEGACY_HOME_THEME_COOKIE_NAME,
   SITE_FX_DEFAULT,
+  SITE_SCALE_COOKIE_NAME,
+  SITE_SCALE_DEFAULT,
   SITE_MENU_OPEN_COOKIE_NAME,
   SITE_MENU_OPEN_DEFAULT,
   SITE_MENU_PANEL_COOKIE_NAME,
@@ -32,6 +34,7 @@ import {
   resolve_saved_style,
   resolve_saved_user_settings,
   site_menu_panel_options,
+  site_scale_options,
   site_theme_options,
   user_measure_options,
   user_text_options,
@@ -113,22 +116,25 @@ describe("side_menu option safety", () => {
 
   test("resolve_saved_style falls back on invalid cookie values", () => {
     const resolved_style = resolve_saved_style(
-      "site_theme=nope; site_fx=not_real; site_shell=invalid",
+      "site_theme=nope; site_fx=not_real; site_shell=invalid; site_scale=huge",
     );
 
     expect(resolved_style.saved_theme_class).toBe(SITE_THEME_DEFAULT);
     expect(resolved_style.saved_fx_class).toBe(SITE_FX_DEFAULT);
     expect(resolved_style.saved_shell_class).toBe(SITE_SHELL_DEFAULT);
+    expect(resolved_style.saved_scale_class).toBe(SITE_SCALE_DEFAULT);
   });
 
   test("resolve_saved_style accepts valid cookie values", () => {
     const resolved_style = resolve_saved_style(
-      "site_theme=solarisael; site_fx=subtle; site_shell=strong",
+      "site_theme=solarisael; site_fx=subtle; site_shell=strong; site_scale=80",
     );
 
     expect(resolved_style.saved_theme_class).toBe("solarisael");
     expect(resolved_style.saved_fx_class).toBe("subtle");
     expect(resolved_style.saved_shell_class).toBe("strong");
+    expect(resolved_style.saved_scale_class).toBe("80");
+    expect(site_scale_options).toEqual(["100", "90", "80"]);
   });
 
   test("resolve_saved_style supports legacy cookies", () => {
@@ -214,11 +220,12 @@ describe("side_menu root state", () => {
       removeAttribute: () => {},
     };
 
-    apply_site_style_state(fake_root, "minimal_astral", "medium", "balanced");
+    apply_site_style_state(fake_root, "minimal_astral", "medium", "balanced", "90");
 
     expect(attributes["data-site-theme"]).toBe("minimal_astral");
     expect(attributes["data-site-shell"]).toBe("medium");
     expect(attributes["data-site-fx"]).toBe("balanced");
+    expect(attributes["data-site-scale"]).toBe("90");
   });
 
   test("apply_user_settings_state sets data attributes", () => {

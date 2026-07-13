@@ -1,0 +1,94 @@
+---
+import IndexLayout from "../layouts/index.astro";
+import PhaseCardGrid from "../components/home/phase_card_grid.astro";
+import { with_base } from "../utils/routes.js";
+
+const cinza_card_ornament_base = {
+  corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
+  corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
+  corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
+  corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
+  side_left: with_base("ornaments/cinza/card_side_flourish.svg"),
+  side_right: with_base("ornaments/cinza/card_side_flourish.svg"),
+};
+
+const gate_visual = {
+  ornament: {
+    ...cinza_card_ornament_base,
+    sigil: with_base("ornaments/cinza/sigil_eye.svg"),
+  },
+};
+
+const phase_cards = [
+  {
+    phase_name: "Nigredo",
+    phase_slug: "nigredo",
+    phase_blurb:
+      "The black vessel: poems, fragments, and the honest dark where shape begins.",
+    ...gate_visual,
+  },
+  {
+    phase_name: "Albedo",
+    phase_slug: "albedo",
+    phase_blurb:
+      "The pale mirror: records, reflections, and cleaned signal after the ash settles.",
+    ...gate_visual,
+  },
+  {
+    phase_name: "Citrinitas",
+    phase_slug: "citrinitas",
+    phase_blurb:
+      "The gold shelf: books, essays, and artifacts catching their first dawn.",
+    ...gate_visual,
+  },
+  {
+    phase_name: "Rubedo",
+    phase_slug: "rubedo",
+    phase_blurb:
+      "The red work: Absurd Faith, living fire, and the story becoming body.",
+    ...gate_visual,
+  },
+];
+---
+
+<IndexLayout page_title="Writing">
+  <vessel data-shape="home_gate" id="sol_home_card_gate">
+    <div id="sol_home_gate_intro">
+      <div id="sol_home_gate_header">
+        <h1 id="sol_home_gate_title">
+          <span
+            class="sol__text_fx"
+            data-text-fx="gradient aura glow"
+            data-text-fx-gradient-intensity="1"
+            data-text-fx-aura-intensity="5"
+            data-text-fx-glow-intensity="5"
+          >
+            Writing
+          </span>
+        </h1>
+      </div>
+
+      <div id="sol_home_gate_body">
+        <p class="sol__home_intro_lead">
+          The written body of Solarisael, held in four alchemical movements.
+        </p>
+        <p class="sol__home_intro_line">
+          Enter where the work meets you. The gates are a way through, not a
+          required order.
+        </p>
+      </div>
+    </div>
+
+    <div id="sol_phase_card_header">
+      <h2
+        id="sol_phase_card_heading"
+        class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura"
+        data-text-fx-intensity="0.85"
+      >
+        The Four Gates
+      </h2>
+    </div>
+
+    <PhaseCardGrid phase_cards={phase_cards} />
+  </vessel>
+</IndexLayout>

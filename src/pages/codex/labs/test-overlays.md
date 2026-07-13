@@ -12,6 +12,62 @@ authors_note: Overlay effect sandbox in narrative flow order.
 
 # Overlay Sandbox (Narrative Flow)
 
+## Vision Banner — Sea Apparition
+
+<section class="sol__vision_banner" data-vision-banner="sea" data-sol-vision-banner aria-labelledby="sol_vision_banner_title">
+  <div class="sol__vision_banner_field" aria-hidden="true">
+    <canvas class="sol__vision_banner_canvas" data-sol-vision-banner-canvas></canvas>
+    <img
+      class="sol__vision_banner_image"
+      src="/images/solarisaeia_sea_render_3_farther.png"
+      alt=""
+    />
+    <div class="sol__vision_banner_grain"></div>
+  </div>
+  <div class="sol__vision_banner_copy">
+    <p class="sol__vision_banner_kicker">A page-opening apparition</p>
+    <h2 id="sol_vision_banner_title">The Sea Remembers Her Name</h2>
+    <p>
+      Artwork held as atmosphere rather than a rectangle: sharp at its heart,
+      dissolving into the room at every edge.
+    </p>
+  </div>
+</section>
+
+This is the first composition test. The image, title, atmosphere, and page
+background should read as one opening gesture rather than a banner placed
+above the page.
+
+## Vision Banner — Inverted Bowl
+
+<section class="sol__vision_banner sol__vision_banner_page_top" data-vision-banner="sea-bowl" data-sol-vision-banner data-vision-variant="inverted-bowl" aria-labelledby="sol_vision_banner_bowl_title">
+  <div class="sol__vision_banner_field" aria-hidden="true">
+    <canvas class="sol__vision_banner_canvas" data-sol-vision-banner-canvas></canvas>
+    <img
+      class="sol__vision_banner_image"
+      src="/images/solarisaeia_sea_render_3_farther.png"
+      alt=""
+    />
+    <div class="sol__vision_banner_grain"></div>
+  </div>
+  <div class="sol__vision_banner_copy">
+    <p class="sol__vision_banner_kicker">Full-width threshold</p>
+    <h2 id="sol_vision_banner_bowl_title">Where the Vision Opens</h2>
+    <p>
+      Narrow above, widening toward the page: a stained image field opening
+      outward before it dissolves into the content below.
+    </p>
+  </div>
+</section>
+
+<div class="sol__vision_banner_content_threshold">
+  <p class="sol__vision_banner_kicker">The content begins here</p>
+  <p>
+    This contained block tests whether the inverted bowl reaches the page
+    threshold without leaving a rectangular seam.
+  </p>
+</div>
+
 {{fx:terminal:1.2:0.9}}
 
 [SYSTEM] Boot sequence complete.

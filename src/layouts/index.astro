@@ -15,6 +15,7 @@ import "../styles/components/albedo_page.css";
 import "../styles/components/citrinitas_page.css";
 import "../styles/components/wikilink.css";
 import "../styles/components/pretext_justify.css";
+import "../styles/components/vision_banner_lab.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
@@ -60,6 +61,7 @@ const resolved_body_classes = Array.from(
   data-site-theme="solarisael"
   data-site-shell="medium"
   data-site-fx="balanced"
+  data-site-scale="100"
   data-base-path={base_path}
 >
   <head>
@@ -89,6 +91,7 @@ const resolved_body_classes = Array.from(
     <script>
       import "../scripts/pretext_justify.js";
       import "../scripts/shader_chalice_lab.js";
+      import "../scripts/vision_banner_lab.js";
     </script>
   </head>
   <body

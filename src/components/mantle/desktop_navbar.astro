@@ -32,19 +32,28 @@ const home_href = with_base("/");
 
     <div class="sol__nav_links">
       {
-        DESKTOP_NAV_LEFT.map((nav_item) => (
-          <a
-            class="sol__nav_pill"
-            data-nav-pill
-            data-phase={nav_item.phase}
-            data-ix={`hover:preview:${nav_item.description}`}
-            href={with_base(nav_item.href)}
-            hx-get={with_base(nav_item.href)}
-          >
-            <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
-            {nav_item.label}
-          </a>
-        ))
+        DESKTOP_NAV_LEFT.map((nav_item) =>
+          nav_item.disabled ? (
+            <span
+              class="sol__nav_pill sol__nav_pill_disabled"
+              aria-disabled="true"
+            >
+              <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
+              {nav_item.label}
+            </span>
+          ) : (
+            <a
+              class="sol__nav_pill"
+              data-nav-pill
+              data-phase={nav_item.phase}
+              href={with_base(nav_item.href)}
+              hx-get={with_base(nav_item.href)}
+            >
+              <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
+              {nav_item.label}
+            </a>
+          ),
+        )
       }
     </div>
 
@@ -74,19 +83,28 @@ const home_href = with_base("/");
 
     <div class="sol__nav_links">
       {
-        DESKTOP_NAV_RIGHT.map((nav_item) => (
-          <a
-            class="sol__nav_pill"
-            data-nav-pill
-            data-phase={nav_item.phase}
-            data-ix={`hover:preview:${nav_item.description}`}
-            href={with_base(nav_item.href)}
-            hx-get={with_base(nav_item.href)}
-          >
-            <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
-            {nav_item.label}
-          </a>
-        ))
+        DESKTOP_NAV_RIGHT.map((nav_item) =>
+          nav_item.disabled ? (
+            <span
+              class="sol__nav_pill sol__nav_pill_disabled"
+              aria-disabled="true"
+            >
+              <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
+              {nav_item.label}
+            </span>
+          ) : (
+            <a
+              class="sol__nav_pill"
+              data-nav-pill
+              data-phase={nav_item.phase}
+              href={with_base(nav_item.href)}
+              hx-get={with_base(nav_item.href)}
+            >
+              <span class="sol__nav_pill_layer sol__nav_pill_layer_ring" />
+              {nav_item.label}
+            </a>
+          ),
+        )
       }
     </div>
   </div>

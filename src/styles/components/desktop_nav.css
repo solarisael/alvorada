@@ -378,6 +378,15 @@
     background-color var(--pill_transition) ease;
 }
 
+.sol__nav_pill_disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.sol__nav_pill_disabled:hover {
+  transform: none;
+}
+
 .sol__nav_pill_layer {
   @apply pointer-events-none absolute;
 }

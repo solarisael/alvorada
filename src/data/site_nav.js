@@ -7,41 +7,29 @@ export const SITE_NAV_ITEMS = [
     description: "the door you always come back to.",
   },
   {
-    label: "nigredo",
-    short_label: "nig",
-    phase: "nigredo",
-    href: "nigredo",
-    description: "the dissolving — everything unmade before it's remade.",
+    label: "writing",
+    short_label: "wri",
+    phase: "writing",
+    href: "writing",
+    description: "the written body — four gates through the work.",
   },
   {
-    label: "albedo",
-    short_label: "alb",
-    phase: "albedo",
-    href: "albedo",
-    description: "the washing clean — clarity surfacing from the wreck.",
+    label: "work",
+    short_label: "work",
+    phase: "work",
+    href: "work",
+    description: "tools, systems, and things built beyond this room.",
+    disabled: true,
   },
   {
-    label: "citrinitas",
-    short_label: "cit",
-    phase: "citrinitas",
-    href: "citrinitas",
-    description: "the dawning gold — what's been earned starts to show.",
-  },
-  {
-    label: "rubedo",
-    short_label: "rub",
-    phase: "rubedo",
-    href: "rubedo",
-    description: "the reddening — the finished work, alive and whole.",
-  },
-  {
-    label: "codex",
-    short_label: "cdx",
-    phase: "codex",
-    href: "codex",
-    description: "the reference shelf — names, terms, and threads gathered.",
+    label: "about",
+    short_label: "about",
+    phase: "about",
+    href: "about",
+    description: "the creature tending the hearth.",
+    disabled: true,
   },
 ];
 
-export const DESKTOP_NAV_LEFT = SITE_NAV_ITEMS.slice(0, 3);
-export const DESKTOP_NAV_RIGHT = SITE_NAV_ITEMS.slice(3);
+export const DESKTOP_NAV_LEFT = SITE_NAV_ITEMS.slice(0, 2);
+export const DESKTOP_NAV_RIGHT = SITE_NAV_ITEMS.slice(2);

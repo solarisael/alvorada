@@ -3,6 +3,7 @@ const window_any = /** @type {any} */ (globalThis);
 const SITE_THEME_COOKIE_NAME = "site_theme";
 const SITE_SHELL_COOKIE_NAME = "site_shell";
 const SITE_FX_COOKIE_NAME = "site_fx";
+const SITE_SCALE_COOKIE_NAME = "site_scale";
 const SITE_MENU_OPEN_COOKIE_NAME = "site_menu_open";
 const SITE_MENU_PANEL_COOKIE_NAME = "site_menu_panel";
 const USER_TEXT_COOKIE_NAME = "user_text";
@@ -14,6 +15,7 @@ const LEGACY_HOME_FX_COOKIE_NAME = "home_fx";
 const SITE_THEME_DEFAULT = "solarisael";
 const SITE_SHELL_DEFAULT = "medium";
 const SITE_FX_DEFAULT = "balanced";
+const SITE_SCALE_DEFAULT = "100";
 const SITE_MENU_OPEN_DEFAULT = false;
 const SITE_MENU_PANEL_DEFAULT = "site";
 const USER_TEXT_DEFAULT = "normal";
@@ -23,6 +25,7 @@ const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
 const site_theme_options = ["solarisael"];
 const site_shell_options = ["subtle", "medium", "strong"];
 const site_fx_options = ["subtle", "balanced", "bold"];
+const site_scale_options = ["100", "90", "80"];
 const site_menu_panel_options = ["site", "user", "account"];
 const user_text_options = ["compact", "normal", "large"];
 const user_measure_options = ["focused", "comfort", "wide"];
@@ -109,7 +112,13 @@ const has_site_root = (node_value) => {
   );
 };
 
-const apply_site_style_state = (site_root, theme_name, shell_name, fx_name) => {
+const apply_site_style_state = (
+  site_root,
+  theme_name,
+  shell_name,
+  fx_name,
+  scale_name = SITE_SCALE_DEFAULT,
+) => {
   if (!has_site_root(site_root)) {
     return;
   }
@@ -117,6 +126,7 @@ const apply_site_style_state = (site_root, theme_name, shell_name, fx_name) => {
   site_root.setAttribute("data-site-theme", theme_name);
   site_root.setAttribute("data-site-shell", shell_name);
   site_root.setAttribute("data-site-fx", fx_name);
+  site_root.setAttribute("data-site-scale", scale_name);
 };
 
 const apply_user_settings_state = (site_root, text_name, measure_name) => {
@@ -179,11 +189,17 @@ const resolve_saved_style = (cookie_header = null) => {
     site_fx_options,
     SITE_FX_DEFAULT,
   );
+  const saved_scale_class = get_safe_option(
+    read_cookie_value(SITE_SCALE_COOKIE_NAME, cookie_header),
+    site_scale_options,
+    SITE_SCALE_DEFAULT,
+  );
 
   return {
     saved_theme_class,
     saved_shell_class,
     saved_fx_class,
+    saved_scale_class,
   };
 };
 
@@ -269,6 +285,7 @@ const sync_side_menu_controls = (
   theme_name,
   shell_name,
   fx_name,
+  scale_name,
   text_name,
   measure_name,
   menu_open,
@@ -283,6 +300,7 @@ const sync_side_menu_controls = (
   const theme_select_node = menu_node.querySelector("[data-site-theme-control]");
   const shell_select_node = menu_node.querySelector("[data-site-shell-control]");
   const fx_select_node = menu_node.querySelector("[data-site-fx-control]");
+  const scale_select_node = menu_node.querySelector("[data-site-scale-control]");
   const text_select_node = menu_node.querySelector("[data-user-text-control]");
   const measure_select_node = menu_node.querySelector("[data-user-measure-control]");
 
@@ -296,6 +314,10 @@ const sync_side_menu_controls = (
 
   if (fx_select_node instanceof HTMLSelectElement) {
     fx_select_node.value = fx_name;
+  }
+
+  if (scale_select_node instanceof HTMLSelectElement) {
+    scale_select_node.value = scale_name;
   }
 
   if (text_select_node instanceof HTMLSelectElement) {
@@ -314,8 +336,12 @@ const apply_saved_preferences = () => {
     return;
   }
 
-  const { saved_theme_class, saved_shell_class, saved_fx_class } =
-    resolve_saved_style();
+  const {
+    saved_theme_class,
+    saved_shell_class,
+    saved_fx_class,
+    saved_scale_class,
+  } = resolve_saved_style();
   const { saved_text_class, saved_measure_class } = resolve_saved_user_settings();
   const { saved_menu_open, saved_menu_panel } = resolve_saved_menu_state();
 
@@ -324,6 +350,7 @@ const apply_saved_preferences = () => {
     saved_theme_class,
     saved_shell_class,
     saved_fx_class,
+    saved_scale_class,
   );
   apply_user_settings_state(
     document.documentElement,
@@ -334,6 +361,7 @@ const apply_saved_preferences = () => {
     saved_theme_class,
     saved_shell_class,
     saved_fx_class,
+    saved_scale_class,
     saved_text_class,
     saved_measure_class,
     saved_menu_open,
@@ -361,6 +389,7 @@ const bind_side_menu_controls = () => {
   const theme_select_node = menu_node.querySelector("[data-site-theme-control]");
   const shell_select_node = menu_node.querySelector("[data-site-shell-control]");
   const fx_select_node = menu_node.querySelector("[data-site-fx-control]");
+  const scale_select_node = menu_node.querySelector("[data-site-scale-control]");
   const text_select_node = menu_node.querySelector("[data-user-text-control]");
   const measure_select_node = menu_node.querySelector("[data-user-measure-control]");
   const close_node = menu_node.querySelector("[data-side-menu-close]");
@@ -387,16 +416,25 @@ const bind_side_menu_controls = () => {
       site_fx_options,
       SITE_FX_DEFAULT,
     );
+    const selected_scale_name = get_safe_option(
+      scale_select_node instanceof HTMLSelectElement
+        ? scale_select_node.value
+        : SITE_SCALE_DEFAULT,
+      site_scale_options,
+      SITE_SCALE_DEFAULT,
+    );
 
     apply_site_style_state(
       document.documentElement,
       selected_theme_name,
       selected_shell_name,
       selected_fx_name,
+      selected_scale_name,
     );
     write_cookie_value(SITE_THEME_COOKIE_NAME, selected_theme_name);
     write_cookie_value(SITE_SHELL_COOKIE_NAME, selected_shell_name);
     write_cookie_value(SITE_FX_COOKIE_NAME, selected_fx_name);
+    write_cookie_value(SITE_SCALE_COOKIE_NAME, selected_scale_name);
   };
 
   const commit_user_state = () => {
@@ -474,6 +512,10 @@ const bind_side_menu_controls = () => {
     fx_select_node.addEventListener("change", commit_site_state);
   }
 
+  if (scale_select_node instanceof HTMLSelectElement) {
+    scale_select_node.addEventListener("change", commit_site_state);
+  }
+
   if (text_select_node instanceof HTMLSelectElement) {
     text_select_node.addEventListener("change", commit_user_state);
   }
@@ -488,6 +530,7 @@ const bind_side_menu_controls = () => {
         SITE_THEME_COOKIE_NAME,
         SITE_SHELL_COOKIE_NAME,
         SITE_FX_COOKIE_NAME,
+        SITE_SCALE_COOKIE_NAME,
         USER_TEXT_COOKIE_NAME,
         USER_MEASURE_COOKIE_NAME,
       ]) {
@@ -499,6 +542,7 @@ const bind_side_menu_controls = () => {
         SITE_THEME_DEFAULT,
         SITE_SHELL_DEFAULT,
         SITE_FX_DEFAULT,
+        SITE_SCALE_DEFAULT,
       );
       apply_user_settings_state(
         document.documentElement,
@@ -509,6 +553,7 @@ const bind_side_menu_controls = () => {
         SITE_THEME_DEFAULT,
         SITE_SHELL_DEFAULT,
         SITE_FX_DEFAULT,
+        SITE_SCALE_DEFAULT,
         USER_TEXT_DEFAULT,
         USER_MEASURE_DEFAULT,
         true,
@@ -556,6 +601,8 @@ export {
   LEGACY_HOME_THEME_COOKIE_NAME,
   SITE_FX_COOKIE_NAME,
   SITE_FX_DEFAULT,
+  SITE_SCALE_COOKIE_NAME,
+  SITE_SCALE_DEFAULT,
   SITE_MENU_OPEN_COOKIE_NAME,
   SITE_MENU_OPEN_DEFAULT,
   SITE_MENU_PANEL_COOKIE_NAME,
@@ -584,6 +631,7 @@ export {
   resolve_saved_style,
   resolve_saved_user_settings,
   site_fx_options,
+  site_scale_options,
   site_menu_panel_options,
   site_shell_options,
   site_theme_options,
