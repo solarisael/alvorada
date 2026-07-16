@@ -35,7 +35,6 @@ const phase_cards = [
     phase_blurb:
       "Original tools, enormous systems, and the things I have built for people beyond this room.",
     visual_phase_slug: "citrinitas",
-    disabled: true,
     ...nigredo_card_visual,
   },
   {
@@ -44,38 +43,28 @@ const phase_cards = [
     phase_blurb:
       "The creature tending the hearth, what Solarisael is, and how to find me.",
     visual_phase_slug: "rubedo",
-    disabled: true,
     ...nigredo_card_visual,
   },
 ];
 ---
 
-<IndexLayout page_title="Our Hearth" hide_breadcrumbs={true}>
+<IndexLayout
+  page_title="Our Hearth"
+  banner_title="Solarisael"
+  hide_breadcrumbs={true}
+>
   <vessel data-shape="home_gate" id="sol_home_card_gate">
     <div id="sol_home_gate_intro">
-      <div id="sol_home_gate_header">
-        <h1 id="sol_home_gate_title">
-          <span
-            class="sol__text_fx"
-            data-text-fx="gradient aura glow"
-            data-text-fx-gradient-intensity="1"
-            data-text-fx-aura-intensity="5"
-            data-text-fx-glow-intensity="5"
-          >
-            Solarisael
-          </span>
-        </h1>
-      </div>
-
       <div id="sol_home_gate_body">
-
         <p class="sol__home_intro_lead">
           A small space for my <span
             class="sol__text_fx sol__text_fx_glow sol__text_fx_neon"
-            data-text-fx-intensity="5.0">work</span>, <span
+            data-text-fx-intensity="5.0">work</span
+          >, <span
             class="sol__text_fx sol__text_fx_glow"
-            data-text-fx-intensity="1.5">my thoughts</span>, records,
-          experiments, and the strange work that refuses to become one tidy thing.
+            data-text-fx-intensity="1.5">my thoughts</span
+          >, records, experiments, and the strange work that refuses to become
+          one tidy thing.
         </p>
 
         <p class="sol__home_intro_line">
@@ -84,9 +73,7 @@ const phase_cards = [
           glowing next.
         </p>
 
-        <p class="sol__home_intro_hint">
-          Choose a wing. Writing is open; Work and About are taking shape.
-        </p>
+        <p class="sol__home_intro_hint">Choose a wing.</p>
 
         <p
           class="sol__home_chalice_text"

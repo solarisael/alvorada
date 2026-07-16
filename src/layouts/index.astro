@@ -15,7 +15,7 @@ import "../styles/components/albedo_page.css";
 import "../styles/components/citrinitas_page.css";
 import "../styles/components/wikilink.css";
 import "../styles/components/pretext_justify.css";
-import "../styles/components/vision_banner_lab.css";
+import "../styles/components/vision_banner.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
@@ -24,6 +24,7 @@ import SideMenu from "../components/mantle/side_menu.astro";
 import Footer from "../components/mantle/footer.astro";
 import Fog from "../components/aether/fog.astro";
 import ContentFrame from "../components/ornament/content_frame.astro";
+import VisionBanner from "../components/page/vision_banner.astro";
 import { base_path, with_base } from "../utils/routes.js";
 
 const {
@@ -35,6 +36,10 @@ const {
   theme_color = null,
   page_title = "",
   hide_breadcrumbs = false,
+  banner_title = "",
+  banner_kicker = "",
+  banner_description = "",
+  banner_image_path = "images/solarisaeia_sea_render_3_farther.png",
 } = Astro.props;
 const phase = phase_prop || frontmatter.phase || "";
 const body_phase = phase || "home";
@@ -69,7 +74,11 @@ const resolved_body_classes = Array.from(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>{resolved_page_title}</title>
-    <link rel="icon" href={with_base("images/small_render_4.png")} type="image/png" />
+    <link
+      rel="icon"
+      href={with_base("images/small_render_4.png")}
+      type="image/png"
+    />
 
     {
       /*
@@ -91,67 +100,82 @@ const resolved_body_classes = Array.from(
     <script>
       import "../scripts/pretext_justify.js";
       import "../scripts/shader_chalice_lab.js";
-      import "../scripts/vision_banner_lab.js";
+      import "../scripts/vision_banner.js";
     </script>
   </head>
   <body
     class:list={resolved_body_classes}
     data-phase={body_phase}
     hx-ext="morph,head-support,preload,sse"
-    hx-target="container"
-    hx-select="container"
+    hx-target="#sol_page_shell"
+    hx-select="#sol_page_shell"
     hx-swap="morph:outerHTML swap:220ms settle:260ms"
     hx-push-url="true"
   >
     <Navbar />
     <MobileNavbar />
-    <container data-phase={phase || undefined}>
-      <vessel data-shape="page_main" id="sol_page_main">
-        <div id="sol_content_stage">
-          <div class="sol__content_stage_layer sol__content_stage_layer_fog">
-          </div>
-          <div class="sol__content_stage_layer sol__content_stage_layer_rails">
-          </div>
+    <main id="sol_page_shell">
+      {
+        banner_title && (
+          <VisionBanner
+            title={banner_title}
+            kicker={banner_kicker}
+            description={banner_description}
+            image_path={banner_image_path}
+          />
+        )
+      }
+      <container data-phase={phase || undefined}>
+        <vessel data-shape="page_main" id="sol_page_main">
+          <div id="sol_content_stage">
+            <div class="sol__content_stage_layer sol__content_stage_layer_fog">
+            </div>
+            <div
+              class="sol__content_stage_layer sol__content_stage_layer_rails"
+            >
+            </div>
 
-          <Fog />
+            <Fog />
 
-          <div id="sol_content">
-            <div class="sol__content_layer sol__content_layer_surface"></div>
-            <div class="sol__content_layer sol__content_layer_noise"></div>
-            <div class="sol__content_layer sol__content_layer_deco"></div>
+            <div id="sol_content">
+              <div class="sol__content_layer sol__content_layer_surface"></div>
+              <div class="sol__content_layer sol__content_layer_noise"></div>
+              <div class="sol__content_layer sol__content_layer_deco"></div>
 
-            <ContentFrame />
+              <ContentFrame />
 
-            <div class="sol__content_layer_body">
-              <div id="sol_main_reading_container">
-                <div class="sol__reading_layer sol__reading_layer_surface">
+              <div class="sol__content_layer_body">
+                <div id="sol_main_reading_container">
+                  <div class="sol__reading_layer sol__reading_layer_surface">
+                  </div>
+                  <div class="sol__reading_layer sol__reading_layer_noise">
+                  </div>
+
+                  <div class="sol__reading_layer_body">
+                    {
+                      !hide_breadcrumbs && (
+                        <Breadcrumbers
+                          crumbs={crumbs}
+                          crumb_label_overrides={crumb_label_overrides}
+                          theme_color={theme_color}
+                        />
+                      )
+                    }
+                    <slot />
+                  </div>
                 </div>
-                <div class="sol__reading_layer sol__reading_layer_noise"></div>
 
-                <div class="sol__reading_layer_body">
-                  {
-                    !hide_breadcrumbs && (
-                      <Breadcrumbers
-                        crumbs={crumbs}
-                        crumb_label_overrides={crumb_label_overrides}
-                        theme_color={theme_color}
-                      />
-                    )
-                  }
-                  <slot />
+                <div id="sol_content_footer_lane">
+                  <slot name="footer">
+                    <Footer phase={phase} />
+                  </slot>
                 </div>
-              </div>
-
-              <div id="sol_content_footer_lane">
-                <slot name="footer">
-                  <Footer phase={phase} />
-                </slot>
               </div>
             </div>
           </div>
-        </div>
-        <SideMenu />
-      </vessel>
-    </container>
+          <SideMenu />
+        </vessel>
+      </container>
+    </main>
   </body>
 </html>

@@ -162,14 +162,21 @@ const hydrate_banner = (banner) => {
   if (active_banners.has(banner)) return;
   const canvas = banner.querySelector(CANVAS_SELECTOR);
   if (!(canvas instanceof HTMLCanvasElement)) return;
-  const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true });
+  const gl = canvas.getContext("webgl2", {
+    alpha: true,
+    premultipliedAlpha: true,
+  });
   if (!gl) return;
   const program = create_program(gl);
   if (!program) return;
 
   const position = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, position);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 3, -1, -1, 3]),
+    gl.STATIC_DRAW,
+  );
   const position_location = gl.getAttribLocation(program, "a_position");
   gl.enableVertexAttribArray(position_location);
   gl.vertexAttribPointer(position_location, 2, gl.FLOAT, false, 0, 0);
@@ -238,13 +245,19 @@ const hydrate_banner = (banner) => {
   };
 };
 
-export const hydrate_vision_banner_labs = (root = document) => {
-  for (const banner of root.querySelectorAll?.(BANNER_SELECTOR) ?? []) hydrate_banner(banner);
-  if (root instanceof HTMLElement && root.matches(BANNER_SELECTOR)) hydrate_banner(root);
+export const hydrate_vision_banners = (root = document) => {
+  for (const banner of root.querySelectorAll?.(BANNER_SELECTOR) ?? [])
+    hydrate_banner(banner);
+  if (root instanceof HTMLElement && root.matches(BANNER_SELECTOR))
+    hydrate_banner(root);
 };
 
 if (typeof document !== "undefined") {
-  const hydrate = () => hydrate_vision_banner_labs(document);
-  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", hydrate, { once: true }) : hydrate();
-  document.addEventListener("htmx:afterSwap", (event) => hydrate_vision_banner_labs(event?.detail?.target ?? document));
+  const hydrate = () => hydrate_vision_banners(document);
+  document.readyState === "loading"
+    ? document.addEventListener("DOMContentLoaded", hydrate, { once: true })
+    : hydrate();
+  document.addEventListener("htmx:afterSwap", (event) =>
+    hydrate_vision_banners(event?.detail?.target ?? document),
+  );
 }

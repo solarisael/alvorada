@@ -222,8 +222,12 @@
       cubic-bezier(0.22, 0.61, 0.36, 1),
     --cursor_y var(--cursor_transition_duration)
       cubic-bezier(0.22, 0.61, 0.36, 1),
-    border-color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease,
-    box-shadow calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
+    border-color
+      calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+      ease,
+    box-shadow
+      calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+      ease;
 }
 
 .sol__nav_rail_layer {
@@ -235,7 +239,8 @@
 
   display: block;
   color: var(--desktop_nav_ornament_color);
-  transition: color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
+  transition: color
+    calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
   user-select: none;
 }
 
@@ -244,6 +249,12 @@
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+
+.sol__nav_ornament_mask {
+  background-color: currentColor;
+  -webkit-mask: var(--nav_ornament_mask_url) center / contain no-repeat;
+  mask: var(--nav_ornament_mask_url) center / contain no-repeat;
 }
 
 #sol_nav_user_bar > .sol__nav_ornament_side {
@@ -512,7 +523,7 @@
       color-mix(in oklch, var(--desktop_nav_ornament_color) 42%, transparent)
   );
   mix-blend-mode: screen;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -23%) scaleY(-1);
 }
 
 .sol__icon_user_layer_orbit {

@@ -128,6 +128,10 @@ body {
   }
 }
 
+#sol_page_shell {
+  display: contents;
+}
+
 body.sol__body_grid .sol__content_grid,
 body.sol__body_grid container {
   display: grid;

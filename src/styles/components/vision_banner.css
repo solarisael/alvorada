@@ -1,7 +1,11 @@
 @reference "tailwindcss";
 
 .sol__vision_banner {
-  --vision-accent: color-mix(in oklch, var(--site_style_accent_alt) 72%, #9fd5e8);
+  --vision-accent: color-mix(
+    in oklch,
+    var(--site_style_accent_alt) 72%,
+    #9fd5e8
+  );
   --vision-ink: color-mix(in oklch, var(--ui_bg_mantle) 88%, transparent);
   --vision-height: clamp(28rem, 58vw, 46rem);
 
@@ -55,18 +59,30 @@
   opacity: 0;
 }
 
-
-
 .sol__vision_banner_grain {
   opacity: 0.22;
   mix-blend-mode: soft-light;
   background-image:
-    repeating-radial-gradient(circle at 18% 27%, transparent 0 1px, rgb(255 255 255 / 0.11) 1px 2px),
-    linear-gradient(115deg, transparent 32%, rgb(255 255 255 / 0.08) 48%, transparent 64%);
-  background-size: 5px 5px, 100% 100%;
-  mask-image: radial-gradient(ellipse 66% 60% at 50% 50%, black, transparent 82%);
+    repeating-radial-gradient(
+      circle at 18% 27%,
+      transparent 0 1px,
+      rgb(255 255 255 / 0.11) 1px 2px
+    ),
+    linear-gradient(
+      115deg,
+      transparent 32%,
+      rgb(255 255 255 / 0.08) 48%,
+      transparent 64%
+    );
+  background-size:
+    5px 5px,
+    100% 100%;
+  mask-image: radial-gradient(
+    ellipse 66% 60% at 50% 50%,
+    black,
+    transparent 82%
+  );
 }
-
 
 .sol__vision_banner_copy {
   width: min(46rem, 78%);
@@ -88,7 +104,7 @@
   text-transform: uppercase;
 }
 
-.sol__vision_banner_copy h2 {
+.sol__vision_banner_copy :is(h1, h2) {
   margin: 0;
   color: color-mix(in oklch, var(--ui_text_primary) 90%, white);
   font-family: var(--font_display);
@@ -120,6 +136,16 @@
   transform: translateX(var(--vision-viewport-shift, 0px));
 }
 
+.sol__vision_banner_major {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100vw, 96rem);
+  margin-top: 1rem;
+  margin-right: 0;
+  margin-bottom: -13rem;
+  margin-left: 0;
+}
+
 .sol__vision_banner_page_top .sol__vision_banner_copy {
   width: min(52rem, 82vw);
   padding-top: clamp(16rem, 36vw, 31rem);
@@ -136,7 +162,8 @@
   width: min(52rem, calc(100% - 2rem));
   margin: 0 auto clamp(4rem, 8vw, 7rem);
   padding: clamp(2rem, 5vw, 3.5rem);
-  border: 1px solid color-mix(in oklch, var(--site_style_accent) 18%, transparent);
+  border: 1px solid
+    color-mix(in oklch, var(--site_style_accent) 18%, transparent);
   background: color-mix(in oklch, var(--ui_bg_mantle) 84%, transparent);
   box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.34);
   backdrop-filter: blur(12px);
@@ -149,7 +176,6 @@
   color: var(--ui_text_secondary);
 }
 
-
 @media (max-width: 768px) {
   .sol__vision_banner {
     --vision-height: min(42rem, 136vw);
@@ -161,13 +187,12 @@
     object-position: 32% 42%;
   }
 
-
   .sol__vision_banner_copy {
     width: 100%;
     padding: 15rem 1.4rem 3.4rem;
   }
 
-  .sol__vision_banner_copy h2 {
+  .sol__vision_banner_copy :is(h1, h2) {
     font-size: clamp(2.35rem, 12vw, 3.6rem);
   }
 
@@ -177,6 +202,13 @@
     margin-right: 0;
     margin-bottom: -3.5rem;
     margin-left: calc(100% - 100vw);
+  }
+
+  .sol__vision_banner_major {
+    width: 100vw;
+    margin-top: 0;
+    margin-inline: calc(50% - 50vw);
+    margin-bottom: -8rem;
   }
 
   .sol__vision_banner_page_top .sol__vision_banner_copy {
@@ -189,4 +221,3 @@
     padding: 1.75rem 1.25rem;
   }
 }
-

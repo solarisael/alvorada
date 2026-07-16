@@ -1,0 +1,45 @@
+---
+import { with_base } from "../../utils/routes.js";
+
+const {
+  title,
+  kicker = "",
+  description = "",
+  image_path = "images/solarisaeia_sea_render_3_farther.png",
+  variant = "circular",
+  page_top = true,
+} = Astro.props;
+
+const banner_id = `sol_vision_banner_${String(title)
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "_")
+  .replace(/^_+|_+$/g, "")}`;
+const title_id = `${banner_id}_title`;
+const image_src = with_base(image_path);
+---
+
+<section
+  id={banner_id}
+  class:list={[
+    "sol__vision_banner",
+    "sol__vision_banner_major",
+    { sol__vision_banner_page_top: page_top },
+  ]}
+  data-sol-vision-banner
+  data-vision-banner={banner_id}
+  data-vision-variant={variant}
+  aria-labelledby={title_id}
+>
+  <div class="sol__vision_banner_field" aria-hidden="true">
+    <canvas class="sol__vision_banner_canvas" data-sol-vision-banner-canvas
+    ></canvas>
+    <img class="sol__vision_banner_image" src={image_src} alt="" />
+    <div class="sol__vision_banner_grain"></div>
+  </div>
+
+  <div class="sol__vision_banner_copy">
+    {kicker && <p class="sol__vision_banner_kicker">{kicker}</p>}
+    <h1 id={title_id}>{title}</h1>
+    {description && <p>{description}</p>}
+  </div>
+</section>

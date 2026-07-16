@@ -19,7 +19,6 @@ export const SITE_NAV_ITEMS = [
     phase: "work",
     href: "work",
     description: "tools, systems, and things built beyond this room.",
-    disabled: true,
   },
   {
     label: "about",
@@ -27,7 +26,6 @@ export const SITE_NAV_ITEMS = [
     phase: "about",
     href: "about",
     description: "the creature tending the hearth.",
-    disabled: true,
   },
 ];
 
