@@ -8,7 +8,7 @@ const mobile_nav_left = SITE_NAV_ITEMS.slice(0, 2);
 const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
 ---
 
-<mantle data-shape="mobile_navbar" id="sol_mobile_nav">
+<nav aria-label="Primary mobile" data-shape="mobile_navbar" id="sol_mobile_nav">
   <div id="sol_mobile_nav_shell" preload="mouseover">
     <div class="sol__mobile_nav_side sol__mobile_nav_left">
       {
@@ -18,7 +18,7 @@ const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
               class="sol__mobile_nav_link sol__mobile_nav_link_disabled"
               aria-disabled="true"
             >
-              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline" />
               <span class="sol__mobile_nav_label">{nav_item.short_label}</span>
             </span>
           ) : (
@@ -29,7 +29,7 @@ const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
               href={with_base(nav_item.href)}
               hx-get={with_base(nav_item.href)}
             >
-              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline" />
               <span class="sol__mobile_nav_label">{nav_item.short_label}</span>
             </a>
           ),
@@ -64,7 +64,7 @@ const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
               class="sol__mobile_nav_link sol__mobile_nav_link_disabled"
               aria-disabled="true"
             >
-              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline" />
               <span class="sol__mobile_nav_label">{nav_item.short_label}</span>
             </span>
           ) : (
@@ -75,7 +75,7 @@ const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
               href={with_base(nav_item.href)}
               hx-get={with_base(nav_item.href)}
             >
-              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline"></span>
+              <span class="sol__mobile_nav_layer sol__mobile_nav_layer_topline" />
               <span class="sol__mobile_nav_label">{nav_item.short_label}</span>
             </a>
           ),
@@ -83,6 +83,7 @@ const mobile_nav_right = SITE_NAV_ITEMS.slice(2);
       }
     </div>
   </div>
-</mantle>
+</nav>
 
-<script type="module" src={with_base("js/modules/mobile_nav_runtime.js")}></script>
+<script type="module" src={with_base("js/modules/mobile_nav_runtime.js")}
+></script>

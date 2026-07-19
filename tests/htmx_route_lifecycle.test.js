@@ -29,9 +29,7 @@ describe("htmx route lifecycle path helpers", () => {
 
   test("treats a section as active for its own route and descendants only", () => {
     expect(is_section_path_active("/rubedo", "/rubedo")).toBe(true);
-    expect(is_section_path_active("/rubedo/chapter-001", "/rubedo")).toBe(
-      true,
-    );
+    expect(is_section_path_active("/rubedo/chapter-001", "/rubedo")).toBe(true);
     expect(is_section_path_active("/rubedo-archive", "/rubedo")).toBe(false);
     expect(is_section_path_active("/codex", "/rubedo")).toBe(false);
     expect(is_section_path_active("/rubedo", "/")).toBe(false);
@@ -40,25 +38,29 @@ describe("htmx route lifecycle path helpers", () => {
 });
 
 describe("htmx route lifecycle swap target detection", () => {
-  test("accepts the shell container and sol_content as route swap targets", () => {
+  test("accepts the shell container, page shell, and sol_content as route swap targets", () => {
     const shell_container = document.createElement("container");
+    const page_shell = document.createElement("main");
+    page_shell.id = "sol_page_shell";
     const content_target = document.createElement("section");
     content_target.id = "sol_content";
 
     expect(is_route_swap_target(shell_container)).toBe(true);
+    expect(is_route_swap_target(page_shell)).toBe(true);
     expect(is_route_swap_target(content_target)).toBe(true);
   });
 
   test("rejects unrelated elements and non-element nodes", () => {
     const unrelated_target = document.createElement("main");
+    unrelated_target.id = "other_main";
     const nested_fragment = document.createElement("article");
     nested_fragment.id = "sol_content_inner";
 
     expect(is_route_swap_target(unrelated_target)).toBe(false);
     expect(is_route_swap_target(nested_fragment)).toBe(false);
-    expect(is_route_swap_target(document.createTextNode("not an element"))).toBe(
-      false,
-    );
+    expect(
+      is_route_swap_target(document.createTextNode("not an element")),
+    ).toBe(false);
   });
 });
 
@@ -113,7 +115,9 @@ describe("htmx route lifecycle request path derivation", () => {
 
   test("returns null when the event contains no request path or anchor trigger", () => {
     expect(
-      derive_request_pathname(htmx_event({ elt: document.createElement("button") })),
+      derive_request_pathname(
+        htmx_event({ elt: document.createElement("button") }),
+      ),
     ).toBeNull();
     expect(derive_request_pathname(htmx_event({}))).toBeNull();
   });

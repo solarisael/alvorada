@@ -209,6 +209,31 @@ describe("text_effects markdown marker processing", () => {
       },
     ]);
   });
+  test("supports stack-level intensity, motion, and speed marker controls", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:flicker:1.2:0.7:1.8}}signal{{/fx}}",
+    );
+
+    expect(nodes).toEqual([
+      {
+        type: "html",
+        value:
+          '<span class="sol__text_fx sol__text_fx_flicker" data-text-fx-intensity="1.2" data-text-fx-motion="0.7" data-text-fx-speed="1.8" style="--text_fx_marker_intensity:1.2;--text_fx_marker_motion:0.7;--text_fx_marker_speed:1.8">signal</span>',
+      },
+    ]);
+  });
+
+  test("keeps one- and two-number stack markers free of speed controls", () => {
+    const one_number = split_text_fx_markers("{{fx:glow:1.2}}sigil{{/fx}}");
+    const two_numbers = split_text_fx_markers(
+      "{{fx:flicker:1.2:0.7}}signal{{/fx}}",
+    );
+
+    expect(one_number[0].value).not.toContain("data-text-fx-speed=");
+    expect(one_number[0].value).not.toContain("--text_fx_marker_speed:");
+    expect(two_numbers[0].value).not.toContain("data-text-fx-speed=");
+    expect(two_numbers[0].value).not.toContain("--text_fx_marker_speed:");
+  });
 
   test("supports mystical effect markers", () => {
     const nodes = split_text_fx_markers("{{fx:aura:1.4}}beacon{{/fx}}");
@@ -250,6 +275,24 @@ describe("text_effects markdown marker processing", () => {
     ]);
   });
 
+  test("supports per-effect speed in three-number settings", () => {
+    const nodes = split_text_fx_markers(
+      "{{fx:glow=0.8/0.6/1.7|aura=1.4}}sigil{{/fx}}",
+    );
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].type).toBe("html");
+    const html_value = nodes[0].value;
+    expect(html_value).toContain('data-text-fx-glow-intensity="0.8"');
+    expect(html_value).toContain('data-text-fx-glow-motion="0.6"');
+    expect(html_value).toContain('data-text-fx-glow-speed="1.7"');
+    expect(html_value).toContain("--text_fx_glow_intensity:0.8");
+    expect(html_value).toContain("--text_fx_glow_motion:0.6");
+    expect(html_value).toContain("--text_fx_glow_speed:1.7");
+    expect(html_value).not.toContain('data-text-fx-speed="');
+    expect(html_value).not.toContain("--text_fx_marker_speed:");
+  });
+
   test("supports per-effect intensity controls in stacked markers", () => {
     const nodes = split_text_fx_markers(
       "{{fx:glow=0.8|aura=1.4|sigil-pulse=1.2/0.45}}sigil{{/fx}}",
@@ -267,6 +310,8 @@ describe("text_effects markdown marker processing", () => {
     expect(html_value).toContain('data-text-fx-sigil-pulse-motion="0.45"');
     expect(html_value).not.toContain('data-text-fx-intensity="');
     expect(html_value).not.toContain('data-text-fx-motion="');
+    expect(html_value).not.toContain('data-text-fx-sigil-pulse-speed="');
+    expect(html_value).not.toContain("--text_fx_sigil_pulse_speed:");
   });
 
   test("keeps shared fallback controls separate from per-effect overrides", () => {

@@ -272,7 +272,8 @@ Ownership Matrix
 
 container.sol__htmx_request,
 container.htmx-request,
-#sol_content.htmx-request {
+#sol_content.htmx-request,
+#sol_page_shell.htmx-request {
   animation-duration: calc(
     (
         var(--page_fade_out_ms) + var(--page_fade_gap_ms) +
@@ -296,7 +297,8 @@ container.htmx-request,
 
 container.sol__htmx_swapping,
 container.htmx-swapping,
-#sol_content.htmx-swapping {
+#sol_content.htmx-swapping,
+#sol_page_shell.htmx-swapping {
   animation-name: page_content_fade_out;
   animation-duration: calc(
     var(--page_fade_out_ms) * var(--site_fx_motion_mult)
@@ -318,7 +320,9 @@ container.sol__htmx_added,
 container.htmx-added,
 container.htmx-settling,
 #sol_content.htmx-added,
-#sol_content.htmx-settling {
+#sol_content.htmx-settling,
+#sol_page_shell.htmx-added,
+#sol_page_shell.htmx-settling {
   animation-name: page_content_fade_in;
   animation-duration: calc(var(--page_fade_in_ms) * var(--site_fx_motion_mult));
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);

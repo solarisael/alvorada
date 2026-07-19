@@ -52,3 +52,46 @@
 #sol_footer a {
   @apply text-center;
 }
+
+[data-cycle-align="start"] .sol__pretext_line {
+  margin-inline: 0 auto;
+}
+
+[data-cycle-align="center"] .sol__pretext_line {
+  margin-inline: auto;
+}
+
+[data-cycle-align="end"] .sol__pretext_line {
+  margin-inline: auto 0;
+}
+
+.sol__pretext_transitioning .sol__pretext_fragment {
+  will-change: transform, opacity, filter;
+}
+
+#sol_footer [data-footer-cycle] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.sol__footer_step {
+  @apply shrink-0 cursor-pointer border-none bg-transparent px-2 select-none;
+  color: color-mix(in oklch, var(--site_style_accent) 55%, transparent);
+  font-size: 1.35rem;
+  line-height: 1;
+  transition:
+    color calc(180ms * var(--site_fx_motion_mult, 1)) ease,
+    transform calc(180ms * var(--site_fx_motion_mult, 1)) ease;
+}
+
+.sol__footer_step:hover {
+  color: var(--site_style_accent);
+}
+
+.sol__footer_step[data-footer-cycle-step="prev"]:hover {
+  transform: translateX(-0.125rem);
+}
+
+.sol__footer_step[data-footer-cycle-step="next"]:hover {
+  transform: translateX(0.125rem);
+}

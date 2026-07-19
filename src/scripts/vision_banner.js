@@ -158,8 +158,10 @@ const sync_viewport_breakout = (banner) => {
   }
 };
 
+const hydrating_banners = new WeakSet();
+
 const hydrate_banner = (banner) => {
-  if (active_banners.has(banner)) return;
+  if (active_banners.has(banner) || hydrating_banners.has(banner)) return;
   const canvas = banner.querySelector(CANVAS_SELECTOR);
   if (!(canvas instanceof HTMLCanvasElement)) return;
   const gl = canvas.getContext("webgl2", {
@@ -170,6 +172,7 @@ const hydrate_banner = (banner) => {
   const program = create_program(gl);
   if (!program) return;
 
+  hydrating_banners.add(banner);
   const position = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, position);
   gl.bufferData(
@@ -184,8 +187,11 @@ const hydrate_banner = (banner) => {
   const fallback_image = banner.querySelector(".sol__vision_banner_image");
   const image = new Image();
   image.decoding = "async";
-  image.src = fallback_image?.currentSrc || fallback_image?.src || "";
-  image.onload = () => {
+  let initialized = false;
+  const initialize = () => {
+    if (initialized) return;
+    initialized = true;
+    hydrating_banners.delete(banner);
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -243,6 +249,10 @@ const hydrate_banner = (banner) => {
     };
     state.frame = requestAnimationFrame(draw);
   };
+  image.onload = initialize;
+  image.onerror = () => hydrating_banners.delete(banner);
+  image.src = fallback_image?.currentSrc || fallback_image?.src || "";
+  if (image.complete && image.naturalWidth > 0) initialize();
 };
 
 export const hydrate_vision_banners = (root = document) => {

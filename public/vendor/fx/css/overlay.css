@@ -3,13 +3,18 @@
    Loaded via css/index.css. Runtime counterpart: public/vendor/fx/js/. */
 
 .sol__block_fx {
+  --block_fx_stack_intensity: var(--block_fx_marker_intensity, 1);
+  --block_fx_stack_motion: var(--block_fx_marker_motion, 1);
+  --block_fx_stack_speed: var(--block_fx_marker_speed, 1);
+  --block_fx_speed_strength: calc(
+    var(--site_fx_motion_mult, 1) * var(--block_fx_marker_speed, 1)
+  );
   --block_fx_glow_strength: calc(
-    var(--site_fx_glow_mult, 1) * var(--block_fx_marker_intensity, 1)
+    var(--site_fx_glow_mult, 1) * var(--block_fx_stack_intensity)
   );
   --block_fx_motion_strength: calc(
-    var(--site_fx_motion_mult, 1) * var(--block_fx_marker_motion, 1)
+    var(--site_fx_motion_mult, 1) * var(--block_fx_stack_motion)
   );
-
   position: relative;
   display: block;
   margin-top: 1.2em;
@@ -72,8 +77,8 @@
     color-mix(in oklch, white 28%, transparent) 0.19rem,
     transparent 0.22rem
   );
-  animation: block_fx_terminal_scan
-    calc(5s / var(--block_fx_motion_strength, 1)) linear infinite;
+  animation: block_fx_terminal_scan calc(5s / var(--block_fx_speed_strength, 1))
+    linear infinite;
 }
 
 .sol__block_fx_terminal p,
@@ -208,13 +213,10 @@
 
 /* Glow pulse lives on ::before — box-shadow animation never runs on the host, avoids paint thrash */
 .sol__block_fx_skill_popup::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+  animation: block_fx_skill_popup_glow
+    calc(2.6s / var(--block_fx_speed_strength, 1)) ease-in-out infinite;
   border-radius: inherit;
   pointer-events: none;
-  animation: block_fx_skill_popup_glow
-    calc(2.6s / var(--block_fx_motion_strength, 1)) ease-in-out infinite;
 }
 
 .sol__block_fx_inventory {
@@ -445,7 +447,7 @@
   }
 
   100% {
-    transform: translateY(0.22rem);
+    transform: translateY(calc(0.22rem * var(--block_fx_motion_strength, 1)));
   }
 }
 
@@ -453,27 +455,43 @@
   0%,
   100% {
     box-shadow:
-      0 0 calc(0.6rem * var(--block_fx_glow_strength))
+      0 0
+        calc(
+          0.6rem * var(--block_fx_glow_strength) *
+            var(--block_fx_motion_strength, 1)
+        )
         color-mix(
           in oklch,
           var(--site_style_accent, currentColor)
             calc(18% + (12% * var(--block_fx_glow_strength))),
           transparent
         ),
-      inset 0 0 calc(0.32rem * var(--block_fx_glow_strength))
+      inset 0 0
+        calc(
+          0.32rem * var(--block_fx_glow_strength) *
+            var(--block_fx_motion_strength, 1)
+        )
         color-mix(in oklch, white 6%, transparent);
   }
 
   50% {
     box-shadow:
-      0 0 calc(1rem * var(--block_fx_glow_strength))
+      0 0
+        calc(
+          1rem * var(--block_fx_glow_strength) *
+            var(--block_fx_motion_strength, 1)
+        )
         color-mix(
           in oklch,
           var(--site_style_accent, currentColor)
             calc(26% + (14% * var(--block_fx_glow_strength))),
           transparent
         ),
-      inset 0 0 calc(0.45rem * var(--block_fx_glow_strength))
+      inset 0 0
+        calc(
+          0.45rem * var(--block_fx_glow_strength) *
+            var(--block_fx_motion_strength, 1)
+        )
         color-mix(in oklch, white 10%, transparent);
   }
 }

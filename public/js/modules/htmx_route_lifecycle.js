@@ -14,7 +14,7 @@ export const normalize_pathname = (pathname_value) => {
 
 export const is_route_swap_target = (target_node) =>
   target_node instanceof HTMLElement &&
-  (target_node.matches("container") || target_node.id === "sol_content");
+  target_node.matches("container, #sol_content, #sol_page_shell");
 
 export const derive_request_pathname = (event) => {
   const htmx_event = /** @type {CustomEvent} */ (event);
@@ -55,7 +55,9 @@ export const is_section_path_active = (current_pathname, target_pathname) => {
  * Preload requests do not swap content, so route-active state must ignore them.
  */
 export const is_preload_request = (event) => {
-  const detail_any = /** @type {any} */ (/** @type {CustomEvent} */ (event).detail);
+  const detail_any = /** @type {any} */ (
+    /** @type {CustomEvent} */ (event).detail
+  );
 
   return detail_any?.requestConfig?.headers?.["HX-Preloaded"] === "true";
 };

@@ -239,10 +239,18 @@ const apply_text_fx_effect_vars = (node_value, effect_names) => {
       ),
     );
     const motion_intensity = parse_text_fx_intensity_value(
-      node_value.getAttribute(text_fx_effect_attribute_name(effect_name, "motion")),
+      node_value.getAttribute(
+        text_fx_effect_attribute_name(effect_name, "motion"),
+      ),
+    );
+    const speed_intensity = parse_text_fx_intensity_value(
+      node_value.getAttribute(
+        text_fx_effect_attribute_name(effect_name, "speed"),
+      ),
     );
     const visual_var_name = text_fx_effect_var_name(effect_name, "intensity");
     const motion_var_name = text_fx_effect_var_name(effect_name, "motion");
+    const speed_var_name = text_fx_effect_var_name(effect_name, "speed");
 
     if (visual_intensity == null) {
       node_value.style.removeProperty(visual_var_name);
@@ -254,6 +262,12 @@ const apply_text_fx_effect_vars = (node_value, effect_names) => {
       node_value.style.removeProperty(motion_var_name);
     } else {
       node_value.style.setProperty(motion_var_name, String(motion_intensity));
+    }
+
+    if (speed_intensity == null) {
+      node_value.style.removeProperty(speed_var_name);
+    } else {
+      node_value.style.setProperty(speed_var_name, String(speed_intensity));
     }
   }
 };
@@ -271,6 +285,9 @@ const apply_text_fx_intensity_vars = (
   );
   const motion_intensity = parse_text_fx_intensity_value(
     node_value.dataset.textFxMotion,
+  );
+  const speed_intensity = parse_text_fx_intensity_value(
+    node_value.dataset.textFxSpeed,
   );
 
   if (visual_intensity == null) {
@@ -301,10 +318,27 @@ const apply_text_fx_intensity_vars = (
     );
   }
 
+  if (speed_intensity == null) {
+    node_value.style.removeProperty("--text_fx_marker_speed");
+    node_value.style.removeProperty("--block_fx_marker_speed");
+  } else {
+    node_value.style.setProperty(
+      "--text_fx_marker_speed",
+      String(speed_intensity),
+    );
+    node_value.style.setProperty(
+      "--block_fx_marker_speed",
+      String(speed_intensity),
+    );
+  }
+
   apply_text_fx_effect_vars(node_value, effect_names);
 };
 
-const collect_text_fx_classes_from_node = (node_value, resolved_effects = null) => {
+const collect_text_fx_classes_from_node = (
+  node_value,
+  resolved_effects = null,
+) => {
   if (!(node_value instanceof HTMLElement)) {
     return [];
   }
@@ -376,9 +410,14 @@ const find_text_fx_nodes = (root_node = document) => {
     return [];
   }
 
-  const text_fx_nodes = Array.from(root_node.querySelectorAll(text_fx_node_selector));
+  const text_fx_nodes = Array.from(
+    root_node.querySelectorAll(text_fx_node_selector),
+  );
 
-  if (root_node instanceof HTMLElement && root_node.matches(text_fx_node_selector)) {
+  if (
+    root_node instanceof HTMLElement &&
+    root_node.matches(text_fx_node_selector)
+  ) {
     return [root_node, ...text_fx_nodes];
   }
 

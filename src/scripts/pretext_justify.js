@@ -18,7 +18,8 @@ let resize_observer = null;
 const MIN_SHAPED_LINE_WIDTH_RATIO = 0.34;
 const SHAPED_LAYOUT_SAFETY_LINE_COUNT = 96;
 
-const is_browser = () => typeof document !== "undefined" && typeof window !== "undefined";
+const is_browser = () =>
+  typeof document !== "undefined" && typeof window !== "undefined";
 
 const normalize_space = (space_value) => (space_value.length > 0 ? " " : "");
 
@@ -134,14 +135,22 @@ const layout_shaped_pretext_lines = ({ prepared, width, shape }) => {
 
     let cursor;
 
-    for (let line_index = 0; line_index < SHAPED_LAYOUT_SAFETY_LINE_COUNT; line_index += 1) {
+    for (
+      let line_index = 0;
+      line_index < SHAPED_LAYOUT_SAFETY_LINE_COUNT;
+      line_index += 1
+    ) {
       const targetWidth = shaped_line_width({
         shape,
         width,
         lineIndex: line_index,
         lineCount: line_count,
       });
-      const range = layoutNextRichInlineLineRange(prepared, targetWidth, cursor);
+      const range = layoutNextRichInlineLineRange(
+        prepared,
+        targetWidth,
+        cursor,
+      );
 
       if (!range) {
         break;
@@ -164,7 +173,10 @@ const layout_shaped_pretext_lines = ({ prepared, width, shape }) => {
 };
 
 const read_fx_meta = (element) => {
-  if (!(element instanceof HTMLElement) || !element.matches(FX_SOURCE_SELECTOR)) {
+  if (
+    !(element instanceof HTMLElement) ||
+    !element.matches(FX_SOURCE_SELECTOR)
+  ) {
     return null;
   }
 
@@ -176,7 +188,10 @@ const read_fx_meta = (element) => {
       continue;
     }
 
-    if (attribute.name === "data-text-fx" || attribute.name.startsWith("data-text-fx-")) {
+    if (
+      attribute.name === "data-text-fx" ||
+      attribute.name.startsWith("data-text-fx-")
+    ) {
       if (!HYDRATION_DATA_ATTRS.has(attribute.name)) {
         attributes[attribute.name] = attribute.value;
       }
@@ -190,9 +205,17 @@ const read_fx_meta = (element) => {
   return attributes;
 };
 
-
-const push_text_items = ({ items, metadata, text, styleElement, meta, pendingSpaceRef }) => {
-  const { tokens, pendingSpace } = split_text_for_pretext_items(`${pendingSpaceRef.value}${text}`);
+const push_text_items = ({
+  items,
+  metadata,
+  text,
+  styleElement,
+  meta,
+  pendingSpaceRef,
+}) => {
+  const { tokens, pendingSpace } = split_text_for_pretext_items(
+    `${pendingSpaceRef.value}${text}`,
+  );
   pendingSpaceRef.value = pendingSpace;
 
   if (!tokens.length) {
@@ -204,7 +227,6 @@ const push_text_items = ({ items, metadata, text, styleElement, meta, pendingSpa
   const letterSpacing = read_letter_spacing(style);
 
   for (const token of tokens) {
-
     items.push({
       text: token,
       font,
@@ -256,7 +278,9 @@ const extract_pretext_source = (root) => {
 };
 
 const count_justifiable_gaps = (line) =>
-  line.fragments.filter((fragment, index) => index > 0 && fragment.gapBefore > 0).length;
+  line.fragments.filter(
+    (fragment, index) => index > 0 && fragment.gapBefore > 0,
+  ).length;
 
 const apply_fragment_meta = (fragment_element, meta) => {
   fragment_element.classList.add("sol__pretext_fragment");
@@ -275,7 +299,13 @@ const apply_fragment_meta = (fragment_element, meta) => {
   }
 };
 
-const render_pretext_lines = ({ root, lines, metadata, width, shape = null }) => {
+const render_pretext_lines = ({
+  root,
+  lines,
+  metadata,
+  width,
+  shape = null,
+}) => {
   const rendered_lines = lines.map((line, line_index) => {
     const is_last_line = line_index === lines.length - 1;
     const line_width = line.targetWidth ?? width;
@@ -298,7 +328,9 @@ const render_pretext_lines = ({ root, lines, metadata, width, shape = null }) =>
       const meta = metadata[fragment.itemIndex] ?? null;
       apply_fragment_meta(fragment_element, meta);
       const should_add_gap = fragment_index > 0 && fragment.gapBefore > 0;
-      fragment_element.textContent = should_add_gap ? ` ${fragment.text}` : fragment.text;
+      fragment_element.textContent = should_add_gap
+        ? ` ${fragment.text}`
+        : fragment.text;
       fragment_element.dataset.solPretextItem = String(fragment.itemIndex);
 
       if (should_add_gap && gap_extra > 0) {
@@ -329,6 +361,10 @@ const render_pretext_lines = ({ root, lines, metadata, width, shape = null }) =>
   root.replaceChildren(...rendered_nodes);
 };
 
+export const reset_pretext_source = (root) => {
+  source_cache.delete(root);
+};
+
 export const layout_pretext_root = (root) => {
   if (!(root instanceof HTMLElement)) {
     return false;
@@ -357,8 +393,12 @@ export const layout_pretext_root = (root) => {
     ? layout_shaped_pretext_lines({ prepared, width, shape })
     : (() => {
         const ranges = [];
-        walkRichInlineLineRanges(prepared, width, (range) => ranges.push(range));
-        return ranges.map((range) => materializeRichInlineLineRange(prepared, range));
+        walkRichInlineLineRanges(prepared, width, (range) =>
+          ranges.push(range),
+        );
+        return ranges.map((range) =>
+          materializeRichInlineLineRange(prepared, range),
+        );
       })();
 
   render_pretext_lines({
@@ -423,6 +463,8 @@ if (is_browser()) {
 
   document.addEventListener("htmx:afterSwap", (event) => {
     const swap_target = event?.detail?.target;
-    hydrate_when_ready(swap_target instanceof HTMLElement ? swap_target : document);
+    hydrate_when_ready(
+      swap_target instanceof HTMLElement ? swap_target : document,
+    );
   });
 }

@@ -7,7 +7,8 @@ import { with_base } from "../../utils/routes.js";
 const home_href = with_base("/");
 ---
 
-<mantle
+<nav
+  aria-label="Primary"
   data-shape="desktop_navbar"
   id="sol_desktop_nav"
   class="sol__navbar_preset_rich sol__route_active_tone_medium"
@@ -108,6 +109,6 @@ const home_href = with_base("/");
       }
     </div>
   </div>
-</mantle>
+</nav>
 
 <script type="module" src={with_base("js/modules/navbar_runtime.js")}></script>

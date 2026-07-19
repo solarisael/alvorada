@@ -1,7 +1,7 @@
 # Progress — current true state
 
-- Updated: 2026-07-01 (night) by Kodo (claude-fable-5)
-- Build: **pass** — `bun run build`, 52 pages, zero errors (verified tonight after the image pass)
+- Updated: 2026-07-17 by Kodo (claude-fable-5)
+- Build: **pass** — `bun run build`, 62 pages, zero errors (verified 2026-07-17 after the footer-cycle pass)
 - Shipped image weight: `public/images` ≈ **360KB** (was ~4.9MB before 2026-07-01)
 
 ## Hosting decision (changes everything)
@@ -31,3 +31,7 @@ GitHub will NOT be the public face — Sol wants neocities, nekoweb, or own-host
 ## Done 2026-07-01
 
 See `history/2026-07-01.md`.
+
+## Done 2026-07-17
+
+See `history/2026-07-17.md` — footer sentence cycler + pretext dust/fog transitions + nav semantics.

@@ -124,9 +124,9 @@ const normalize_text_fx_color_value = (raw_value) => {
   return null;
 };
 
-// Marker value segments carry no channel labels: numbers fill visual then
-// motion, a color-shaped token is the color. Any unknown or extra segment is
-// a syntax error — the caller rejects the token/marker so typos stay visible.
+// Marker value segments carry no channel labels: numbers fill visual, motion,
+// then speed; a color-shaped token is the color. Any unknown or extra segment
+// is a syntax error — the caller rejects the token/marker so typos stay visible.
 const classify_marker_value_segments = (
   raw_segments,
   warning_reasons,
@@ -134,6 +134,7 @@ const classify_marker_value_segments = (
 ) => {
   let visual_intensity = null;
   let motion_intensity = null;
+  let speed_intensity = null;
   let color = null;
   let invalid = false;
 
@@ -147,6 +148,8 @@ const classify_marker_value_segments = (
         visual_intensity = normalize_text_fx_intensity_value(raw_segment);
       } else if (motion_intensity == null) {
         motion_intensity = normalize_text_fx_intensity_value(raw_segment);
+      } else if (speed_intensity == null) {
+        speed_intensity = normalize_text_fx_intensity_value(raw_segment);
       } else {
         warning_reasons.push(
           `extra intensity '${raw_segment}'${context_label}`,
@@ -174,7 +177,13 @@ const classify_marker_value_segments = (
     invalid = true;
   }
 
-  return { visual_intensity, motion_intensity, color, invalid };
+  return {
+    visual_intensity,
+    motion_intensity,
+    speed_intensity,
+    color,
+    invalid,
+  };
 };
 
 const text_fx_effect_attribute_name = (effect_name, channel_name) => {
@@ -239,12 +248,17 @@ const parse_marker_effect_token = (raw_effect_token, warning_reasons) => {
     return null;
   }
 
-  const { visual_intensity, motion_intensity, color, invalid } =
-    classify_marker_value_segments(
-      raw_effect_values ? raw_effect_values.split("/") : [],
-      warning_reasons,
-      ` in '${raw_effect_token}'`,
-    );
+  const {
+    visual_intensity,
+    motion_intensity,
+    speed_intensity,
+    color,
+    invalid,
+  } = classify_marker_value_segments(
+    raw_effect_values ? raw_effect_values.split("/") : [],
+    warning_reasons,
+    ` in '${raw_effect_token}'`,
+  );
 
   if (invalid) {
     return null;
@@ -255,10 +269,22 @@ const parse_marker_effect_token = (raw_effect_token, warning_reasons) => {
       `color '${color.token}' dropped: '${effect_name}' has no color channel`,
     );
 
-    return { effect_name, visual_intensity, motion_intensity, color: null };
+    return {
+      effect_name,
+      visual_intensity,
+      motion_intensity,
+      speed_intensity,
+      color: null,
+    };
   }
 
-  return { effect_name, visual_intensity, motion_intensity, color };
+  return {
+    effect_name,
+    visual_intensity,
+    motion_intensity,
+    speed_intensity,
+    color,
+  };
 };
 
 const parse_marker_effect_descriptor = (raw_descriptor) => {
@@ -297,8 +323,13 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
       continue;
     }
 
-    const { effect_name, visual_intensity, motion_intensity, color } =
-      parsed_effect_token;
+    const {
+      effect_name,
+      visual_intensity,
+      motion_intensity,
+      speed_intensity,
+      color,
+    } = parsed_effect_token;
 
     if (seen_effect_names.has(effect_name)) {
       warning_reasons.push(`duplicate token '${effect_name}'`);
@@ -316,11 +347,13 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
         if (
           visual_intensity != null ||
           motion_intensity != null ||
+          speed_intensity != null ||
           color != null
         ) {
           effect_settings[effect_name] = {
             visual_intensity,
             motion_intensity,
+            speed_intensity,
             color,
           };
         }
@@ -357,10 +390,16 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
     accepted_effect_names.push(effect_name);
     seen_effect_names.add(effect_name);
 
-    if (visual_intensity != null || motion_intensity != null || color != null) {
+    if (
+      visual_intensity != null ||
+      motion_intensity != null ||
+      speed_intensity != null ||
+      color != null
+    ) {
       effect_settings[effect_name] = {
         visual_intensity,
         motion_intensity,
+        speed_intensity,
         color,
       };
     }
@@ -370,8 +409,13 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
     return null;
   }
 
-  const { visual_intensity, motion_intensity, color, invalid } =
-    classify_marker_value_segments(segments.slice(1), warning_reasons, "");
+  const {
+    visual_intensity,
+    motion_intensity,
+    speed_intensity,
+    color,
+    invalid,
+  } = classify_marker_value_segments(segments.slice(1), warning_reasons, "");
 
   if (invalid) {
     return null;
@@ -396,6 +440,7 @@ const parse_marker_effect_descriptor = (raw_descriptor) => {
     effect_settings,
     visual_intensity,
     motion_intensity,
+    speed_intensity,
     color: stack_color,
     warning_reasons,
     raw_descriptor,
@@ -435,6 +480,7 @@ const is_inline_stack_effect = (effect_name) => {
 const build_text_fx_data_attributes = ({
   visual_intensity,
   motion_intensity,
+  speed_intensity,
   color,
   effect_settings = {},
 }) => {
@@ -446,6 +492,10 @@ const build_text_fx_data_attributes = ({
 
   if (motion_intensity != null) {
     attribute_chunks.push(`data-text-fx-motion="${motion_intensity}"`);
+  }
+
+  if (speed_intensity != null) {
+    attribute_chunks.push(`data-text-fx-speed="${speed_intensity}"`);
   }
 
   if (color != null) {
@@ -465,6 +515,12 @@ const build_text_fx_data_attributes = ({
       );
     }
 
+    if (effect_setting.speed_intensity != null) {
+      attribute_chunks.push(
+        `${text_fx_effect_attribute_name(effect_name, "speed")}="${effect_setting.speed_intensity}"`,
+      );
+    }
+
     if (effect_setting.color != null) {
       attribute_chunks.push(
         `${text_fx_effect_attribute_name(effect_name, "color")}="${effect_setting.color.token}"`,
@@ -478,6 +534,7 @@ const build_text_fx_data_attributes = ({
 const build_text_fx_style_attribute = ({
   visual_intensity,
   motion_intensity,
+  speed_intensity,
   color,
   effect_settings = {},
 }) => {
@@ -489,6 +546,10 @@ const build_text_fx_style_attribute = ({
 
   if (motion_intensity != null) {
     style_chunks.push(`--text_fx_marker_motion:${motion_intensity}`);
+  }
+
+  if (speed_intensity != null) {
+    style_chunks.push(`--text_fx_marker_speed:${speed_intensity}`);
   }
 
   if (color != null) {
@@ -505,6 +566,12 @@ const build_text_fx_style_attribute = ({
     if (effect_setting.motion_intensity != null) {
       style_chunks.push(
         `${text_fx_effect_style_property_name(effect_name, "motion")}:${effect_setting.motion_intensity}`,
+      );
+    }
+
+    if (effect_setting.speed_intensity != null) {
+      style_chunks.push(
+        `${text_fx_effect_style_property_name(effect_name, "speed")}:${effect_setting.speed_intensity}`,
       );
     }
 
@@ -525,6 +592,7 @@ const build_text_fx_style_attribute = ({
 const build_block_fx_style_attribute = ({
   visual_intensity,
   motion_intensity,
+  speed_intensity,
 }) => {
   const style_chunks = [];
 
@@ -534,6 +602,10 @@ const build_block_fx_style_attribute = ({
 
   if (motion_intensity != null) {
     style_chunks.push(`--block_fx_marker_motion:${motion_intensity}`);
+  }
+
+  if (speed_intensity != null) {
+    style_chunks.push(`--block_fx_marker_speed:${speed_intensity}`);
   }
 
   if (!style_chunks.length) {
@@ -667,6 +739,7 @@ const build_text_fx_span_html_from_nodes = (descriptor, inner_nodes) => {
   const opening_html = build_text_fx_span_html(descriptor.effect_names, "", {
     visual_intensity: descriptor.visual_intensity,
     motion_intensity: descriptor.motion_intensity,
+    speed_intensity: descriptor.speed_intensity,
     color: descriptor.color,
     effect_settings: descriptor.effect_settings,
   });
@@ -861,10 +934,12 @@ const transform_text_fx_markers_in_tree = (tree_node, options = {}) => {
           ? build_block_fx_open_html(first_effect_name, {
               visual_intensity: open_marker.visual_intensity,
               motion_intensity: open_marker.motion_intensity,
+              speed_intensity: open_marker.speed_intensity,
             })
           : build_text_fx_span_html(open_marker.effect_names, "", {
               visual_intensity: open_marker.visual_intensity,
               motion_intensity: open_marker.motion_intensity,
+              speed_intensity: open_marker.speed_intensity,
               color: open_marker.color,
               effect_settings: open_marker.effect_settings,
             });
