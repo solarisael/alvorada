@@ -1,0 +1,348 @@
+import {
+  derive_request_pathname,
+  is_route_swap_target,
+  is_section_path_active,
+  normalize_pathname,
+} from "./htmx_route_lifecycle.js";
+import { debounce, throttle, queuer_preparator } from "./performance.js";
+
+const window_any = /** @type {any} */ (window);
+const POINTER_MOVE_DEBOUNCE_MS = 16;
+const POINTER_LEAVE_DEBOUNCE_MS = 16;
+const NAV_SCROLL_THROTTLE_MS = 16;
+const NAV_REVEAL_TOP_OFFSET_PX = 96;
+const NAV_SCROLL_DELTA_THRESHOLD_PX = 8;
+const PHASE_NAMES = new Set([
+  "home",
+  "nigredo",
+  "albedo",
+  "citrinitas",
+  "rubedo",
+  "codex",
+]);
+let last_applied_pathname = null;
+
+
+/**
+ * @param {string} pathname_value
+ */
+const derive_phase_from_pathname = (pathname_value) => {
+  const path_segments = normalize_pathname(pathname_value)
+    .split("/")
+    .filter(Boolean);
+
+  for (const path_segment of path_segments) {
+    if (PHASE_NAMES.has(path_segment)) {
+      return path_segment;
+    }
+  }
+
+  return "home";
+};
+
+/**
+ * @param {string} pathname_value
+ */
+const sync_route_phase = (pathname_value) => {
+  const route_phase = derive_phase_from_pathname(pathname_value);
+
+  if (document.body?.dataset.phase === route_phase) {
+    return;
+  }
+
+  document.body?.setAttribute("data-phase", route_phase);
+};
+
+const ensure_action_queuer = () => {
+  if (window_any.action_queuer) {
+    return;
+  }
+
+  queuer_preparator();
+};
+
+/**
+ * @param {string | null} [pathname_override=null]
+ */
+const apply_route_active_state = (pathname_override = null) => {
+  const current_pathname = normalize_pathname(
+    pathname_override ?? window.location.pathname,
+  );
+
+  sync_route_phase(current_pathname);
+
+  const nav_node = document.querySelector("#sol_desktop_nav");
+
+  if (!(nav_node instanceof HTMLElement)) {
+    return;
+  }
+
+  if (last_applied_pathname === current_pathname) {
+    return;
+  }
+
+  const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+    nav_node.querySelectorAll("[data-nav-pill]")
+  );
+
+  pill_nodes.forEach((pill_node) => {
+    if (!(pill_node instanceof HTMLAnchorElement)) {
+      return;
+    }
+
+    const href_value = pill_node.getAttribute("href");
+
+    if (!href_value) {
+      return;
+    }
+
+    const target_pathname = normalize_pathname(
+      new URL(href_value, window.location.origin).pathname,
+    );
+    const is_exact_match = current_pathname === target_pathname;
+    const is_active =
+      pill_node.dataset.phase === "home"
+        ? is_exact_match
+        : is_section_path_active(current_pathname, target_pathname);
+
+    pill_node.classList.toggle("sol__is_route_active", is_active);
+    pill_node.classList.toggle("is-route-current", is_exact_match);
+  });
+
+  const home_node = nav_node.querySelector("#sol_icon_user");
+
+  if (!(home_node instanceof HTMLAnchorElement)) {
+    return;
+  }
+
+  const home_href_value = home_node.getAttribute("href");
+  const home_target_pathname = home_href_value
+    ? normalize_pathname(
+        new URL(home_href_value, window.location.origin).pathname,
+      )
+    : "/";
+  const is_home_active = current_pathname === home_target_pathname;
+  home_node.classList.toggle("sol__is_route_active", is_home_active);
+  home_node.classList.toggle("is-route-current", is_home_active);
+  last_applied_pathname = current_pathname;
+};
+
+
+/**
+ * @param {NodeListOf<HTMLElement>} pill_nodes
+ */
+const reset_pill_glow = (pill_nodes) => {
+  pill_nodes.forEach((pill_node) => {
+    pill_node.style.setProperty("--pill_pointer_glow", "0");
+  });
+};
+
+/**
+ * @param {NodeListOf<HTMLElement>} pill_nodes
+ * @param {number} pointer_x
+ * @param {number} pointer_y
+ */
+const update_pill_glow = (pill_nodes, pointer_x, pointer_y) => {
+  const glow_radius = 180;
+  let nearest_pill = null;
+  let nearest_distance = Number.POSITIVE_INFINITY;
+
+  pill_nodes.forEach((pill_node) => {
+    const pill_box = pill_node.getBoundingClientRect();
+    const center_x = pill_box.left + pill_box.width / 2;
+    const center_y = pill_box.top + pill_box.height / 2;
+    const delta_x = pointer_x - center_x;
+    const delta_y = pointer_y - center_y;
+    const distance = Math.hypot(delta_x, delta_y);
+
+    if (distance < nearest_distance) {
+      nearest_distance = distance;
+      nearest_pill = pill_node;
+    }
+  });
+
+  pill_nodes.forEach((pill_node) => {
+    const is_nearest = pill_node === nearest_pill;
+
+    if (!is_nearest || nearest_distance > glow_radius) {
+      pill_node.style.setProperty("--pill_pointer_glow", "0");
+      return;
+    }
+
+    const proximity = Math.max(0, 1 - nearest_distance / glow_radius);
+    const glow_power = proximity.toFixed(3);
+    pill_node.style.setProperty("--pill_pointer_glow", glow_power);
+  });
+};
+
+/**
+ * @param {Document | Element} [root_node=document]
+ */
+const init_navbar_effects = (root_node = document) => {
+  ensure_action_queuer();
+
+  const nav_rails = [
+    ...(root_node instanceof HTMLElement && root_node.matches("[data-nav-rail]")
+      ? [root_node]
+      : []),
+    ...root_node.querySelectorAll("[data-nav-rail]"),
+  ];
+
+  nav_rails.forEach((nav_rail) => {
+    if (nav_rail.dataset.navInit === "true") {
+      return;
+    }
+
+    nav_rail.dataset.navInit = "true";
+
+    const pill_nodes = /** @type {NodeListOf<HTMLElement>} */ (
+      nav_rail.querySelectorAll("[data-nav-pill]")
+    );
+
+    if (!pill_nodes.length) {
+      return;
+    }
+
+    const move_debounce_name = `nav_rail_move_${Math.random().toString(36).slice(2)}`;
+    const leave_debounce_name = `nav_rail_leave_${Math.random().toString(36).slice(2)}`;
+    let is_pointer_inside = false;
+
+    const apply_pointer_effects = (client_x, client_y) => {
+      const rail_box = nav_rail.getBoundingClientRect();
+      const cursor_x = client_x - rail_box.left;
+      const cursor_y = client_y - rail_box.top;
+
+      nav_rail.classList.add("sol__is_pointer_active");
+      nav_rail.style.setProperty("--cursor_x", `${cursor_x}px`);
+      nav_rail.style.setProperty("--cursor_y", `${cursor_y}px`);
+
+      update_pill_glow(pill_nodes, client_x, client_y);
+    };
+
+    nav_rail.addEventListener("pointerenter", () => {
+      is_pointer_inside = true;
+      nav_rail.classList.add("sol__is_pointer_active");
+    });
+
+    nav_rail.addEventListener("pointermove", (event) => {
+      const pointer_event = /** @type {PointerEvent} */ (event);
+
+      throttle(
+        apply_pointer_effects,
+        POINTER_MOVE_DEBOUNCE_MS,
+        move_debounce_name,
+        [pointer_event.clientX, pointer_event.clientY],
+      );
+    });
+
+    nav_rail.addEventListener("pointerleave", () => {
+      is_pointer_inside = false;
+
+      debounce(
+        () => {
+          if (is_pointer_inside) {
+            return;
+          }
+
+          nav_rail.classList.remove("sol__is_pointer_active");
+          nav_rail.style.setProperty("--cursor_x", "50%");
+          nav_rail.style.setProperty("--cursor_y", "50%");
+          reset_pill_glow(pill_nodes);
+        },
+        POINTER_LEAVE_DEBOUNCE_MS,
+        leave_debounce_name,
+      );
+    });
+  });
+};
+
+const init_navbar_visibility = () => {
+  if (window_any.__navbar_visibility_listener_bound) {
+    return;
+  }
+
+  const nav_node = document.querySelector("#sol_desktop_nav");
+
+  if (!(nav_node instanceof HTMLElement)) {
+    return;
+  }
+
+  ensure_action_queuer();
+
+  let last_scroll_y = window.scrollY;
+  const scroll_throttle_name = `nav_scroll_${Math.random().toString(36).slice(2)}`;
+
+  const update_nav_visibility = () => {
+    const current_scroll_y = window.scrollY;
+
+    if (current_scroll_y <= NAV_REVEAL_TOP_OFFSET_PX) {
+      nav_node.classList.remove("sol__is_nav_hidden");
+      last_scroll_y = current_scroll_y;
+      return;
+    }
+
+    const scroll_delta = current_scroll_y - last_scroll_y;
+
+    if (Math.abs(scroll_delta) < NAV_SCROLL_DELTA_THRESHOLD_PX) {
+      return;
+    }
+
+    const should_hide_nav = scroll_delta > 0;
+    nav_node.classList.toggle("sol__is_nav_hidden", should_hide_nav);
+    last_scroll_y = current_scroll_y;
+  };
+
+  nav_node.addEventListener("focusin", () => {
+    nav_node.classList.remove("sol__is_nav_hidden");
+  });
+
+  window.addEventListener("scroll", () => {
+    throttle(
+      update_nav_visibility,
+      NAV_SCROLL_THROTTLE_MS,
+      scroll_throttle_name,
+    );
+  });
+
+  window_any.__navbar_visibility_listener_bound = true;
+};
+
+init_navbar_effects();
+init_navbar_visibility();
+apply_route_active_state();
+
+
+if (!window_any.__navbar_htmx_after_swap_bound) {
+  document.body?.addEventListener("htmx:afterSwap", (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const swap_target = htmx_event.detail?.target;
+
+    if (!is_route_swap_target(swap_target)) {
+      return;
+    }
+
+    last_applied_pathname = null;
+    apply_route_active_state(derive_request_pathname(event) ?? window.location.pathname);
+    init_navbar_effects(document);
+  });
+
+  window_any.__navbar_htmx_after_swap_bound = true;
+}
+
+if (!window_any.__navbar_route_listener_bound) {
+  window.addEventListener("popstate", () => {
+    apply_route_active_state();
+  });
+
+  window_any.__navbar_route_listener_bound = true;
+}
+
+if (!window_any.__navbar_htmx_listener_bound) {
+  document.body?.addEventListener("htmx:load", (event) => {
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    const load_root = htmx_event.detail?.elt ?? document;
+    init_navbar_effects(load_root);
+  });
+
+  window_any.__navbar_htmx_listener_bound = true;
+}
