@@ -171,6 +171,7 @@ const hydrate_banner = (banner) => {
   if (!gl) return;
   const program = create_program(gl);
   if (!program) return;
+  banner.classList.add("sol__vision_banner_hydrating");
 
   hydrating_banners.add(banner);
   const position = gl.createBuffer();
@@ -204,7 +205,15 @@ const hydrate_banner = (banner) => {
     const reduced_motion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const state = { banner, canvas, gl, program, image, frame: 0 };
+    const state = {
+      banner,
+      canvas,
+      gl,
+      program,
+      image,
+      frame: 0,
+      visual_ready: false,
+    };
     active_banners.set(banner, state);
     banner.classList.add("sol__vision_banner_webgl_ready");
     sync_viewport_breakout(banner);
@@ -245,12 +254,20 @@ const hydrate_banner = (banner) => {
         banner.dataset.visionVariant === "inverted-bowl" ? 1 : 0,
       );
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (!state.visual_ready) {
+        state.visual_ready = true;
+        banner.classList.add("sol__vision_banner_visual_ready");
+        banner.classList.remove("sol__vision_banner_hydrating");
+      }
       state.frame = requestAnimationFrame(draw);
     };
     state.frame = requestAnimationFrame(draw);
   };
   image.onload = initialize;
-  image.onerror = () => hydrating_banners.delete(banner);
+  image.onerror = () => {
+    hydrating_banners.delete(banner);
+    banner.classList.remove("sol__vision_banner_hydrating");
+  };
   image.src = fallback_image?.currentSrc || fallback_image?.src || "";
   if (image.complete && image.naturalWidth > 0) initialize();
 };

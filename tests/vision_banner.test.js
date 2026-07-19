@@ -106,6 +106,7 @@ const fallback = document.createElement("img");
 fallback.className = "sol__vision_banner_image";
 fallback.src = "/images/banner.webp";
 banner.append(canvas, fallback);
+document.body.append(banner);
 const { hydrate_vision_banners } =
   await import("../src/scripts/vision_banner.js");
 hydrate_vision_banners(banner);
@@ -118,12 +119,25 @@ describe("vision banner cached-image hydration", () => {
     expect(banner.classList.contains("sol__vision_banner_webgl_ready")).toBe(
       true,
     );
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(true);
+    expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
+      false,
+    );
+
+    frame_callbacks[0](0);
+
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
+      false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
+      true,
+    );
 
     hydrate_vision_banners(banner);
     hydrate_vision_banners(banner);
 
     expect(texture_calls).toHaveLength(1);
-    expect(frame_callbacks).toHaveLength(1);
+    expect(frame_callbacks).toHaveLength(2);
     expect(observer_targets).toHaveLength(1);
   });
 });

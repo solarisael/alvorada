@@ -28,6 +28,17 @@
 .sol__vision_banner_field {
   z-index: -1;
   overflow: hidden;
+  opacity: 1;
+  transition: opacity 520ms ease;
+}
+
+.sol__vision_banner_hydrating .sol__vision_banner_field {
+  opacity: 0;
+  transition: none;
+}
+
+.sol__vision_banner_visual_ready .sol__vision_banner_field {
+  opacity: 1;
 }
 
 .sol__vision_banner_canvas,
@@ -219,5 +230,11 @@
   .sol__vision_banner_content_threshold {
     width: calc(100% - 1rem);
     padding: 1.75rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sol__vision_banner_field {
+    transition: none;
   }
 }
