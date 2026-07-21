@@ -14,8 +14,12 @@ import { rehype_base_path } from "./scripts/rehype_base_path.js";
 //
 // Configurable via SOLARISAEL_OBSIDIAN_ROOT env var. Same value used by
 // src/content.config.js — keep these in sync if the path changes.
-const OBSIDIAN_VAULT_ROOT =
+const configured_obsidian_vault_root =
   process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
+const OBSIDIAN_VAULT_ROOT =
+  process.platform === "win32" || configured_obsidian_vault_root.startsWith("/")
+    ? configured_obsidian_vault_root
+    : fileURLToPath(new URL("./src/content", import.meta.url));
 
 // Deploy target — defaults to github pages (subpath hosting). For
 // root-hosts (neocities, nekoweb, own domain later) override via env:
