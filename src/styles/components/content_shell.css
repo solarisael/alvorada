@@ -373,6 +373,12 @@
   mask-position: center;
   mask-repeat: no-repeat;
 }
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl,
+:root[data-site-theme="solarisael"] .sol__content_ornament_corner_br {
+  filter: drop-shadow(0.12rem 0.16rem 0.12rem rgb(0 0 0 / 42%));
+}
 
 :root[data-site-theme="solarisael"] .sol__content_layer_ornament_svg {
   display: block;
@@ -447,7 +453,7 @@
   top: var(--cinza_reliquary_offset_top);
   width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
   height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  transform: rotate(90deg);
+  transform: scaleX(-1);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl {
@@ -457,7 +463,7 @@
   );
   width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
   height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  transform: rotate(270deg);
+  transform: scaleY(-1);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_br {
@@ -467,7 +473,7 @@
   );
   width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
   height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  transform: rotate(180deg);
+  transform: scale(-1);
 }
 
 /* Line horizontal extent: starts after the corner ends + a clearance gap, mirrored on right.

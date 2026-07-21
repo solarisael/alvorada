@@ -23,7 +23,7 @@ export const ALBEDO_CONTAINERS = [
   {
     key: "clear-waters",
     label: "clear waters",
-    states: ["clarity", "understanding", "acceptance"],
+    states: ["clarity", "understanding", "nachträglichkeit (afterwardness)", "acceptance"],
   },
   {
     key: "sunset-ocean",

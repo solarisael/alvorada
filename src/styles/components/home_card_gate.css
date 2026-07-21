@@ -123,6 +123,10 @@
   line-height: 1.45;
 }
 
+.sol__about_intro_lead {
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+}
+
 #sol_home_gate_body.sol__home_gate_body_hearth {
   text-align: center;
 }
