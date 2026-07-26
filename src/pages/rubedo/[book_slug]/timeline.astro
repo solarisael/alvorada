@@ -26,6 +26,8 @@ export const getStaticPaths = () => {
 const { book_slug } = Astro.params;
 
 const book_entry = rubedo_book_map[book_slug] ?? null;
+const display_title = book_entry?.title ?? `Rubedo — ${book_slug}`;
+const timeline_title = `${display_title} — constellation`;
 
 // JSON endpoint the constellation will fetch on load.
 const timeline_data_href = with_base(`/rubedo/data/${book_slug}.json`);
@@ -46,12 +48,14 @@ const crumb_label_overrides = {
 ---
 
 <IndexLayout
+  phase="rubedo"
+  page_title={timeline_title}
   body_class="sol__pov_cinza"
   crumb_label_overrides={crumb_label_overrides}
 >
   <rubedo data-shape="timeline_page" class="sol__rubedo_timeline_page">
     <div class="sol__rubedo_timeline_header">
-      <h1>{book_entry?.title ?? "Rubedo Book"} — constellation</h1>
+      <h1>{timeline_title}</h1>
     </div>
 
     {book_entry?.synopsis && <p>{book_entry.synopsis}</p>}

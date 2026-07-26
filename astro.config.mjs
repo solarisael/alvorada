@@ -1,25 +1,22 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "node:url";
+import { resolve_obsidian_vault_root } from "./src/config/obsidian_vault_root.js";
 import { remark_text_effects } from "./scripts/remark_text_effects.js";
 import { remark_interactions } from "./scripts/remark_interactions.js";
 import { remark_soft_breaks } from "./scripts/remark_soft_breaks.js";
 import { remark_wikilinks } from "./scripts/remark_wikilinks.js";
 import rehypeRaw from "rehype-raw";
 import { rehype_base_path } from "./scripts/rehype_base_path.js";
+import {
+  invalidate_wikilink_registry,
+  is_wikilink_registry_source,
+} from "./src/utils/wikilink_registry.js";
 
-// Obsidian vault root — single source of truth for solarisael content
-// (nigredo/albedo/citrinitas via astro content collections; rubedo book
-// scenes via vite's import.meta.glob through the `@vault` alias below).
-//
-// Configurable via SOLARISAEL_OBSIDIAN_ROOT env var. Same value used by
-// src/content.config.js — keep these in sync if the path changes.
-const configured_obsidian_vault_root =
-  process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
-const OBSIDIAN_VAULT_ROOT =
-  process.platform === "win32" || configured_obsidian_vault_root.startsWith("/")
-    ? configured_obsidian_vault_root
-    : fileURLToPath(new URL("./src/content", import.meta.url));
+// Both Astro content loaders and Vite's @vault alias resolve through the same
+// configured root. Set SOLARISAEL_OBSIDIAN_ROOT for an external Obsidian vault;
+// otherwise local/CI builds use the checked-in content directory unless the
+// conventional Windows vault exists.
+const OBSIDIAN_VAULT_ROOT = resolve_obsidian_vault_root();
 
 // Deploy target — defaults to github pages (subpath hosting). For
 // root-hosts (neocities, nekoweb, own domain later) override via env:
@@ -72,15 +69,26 @@ const obsidian_rubedo_hot_reload = () => {
     apply: "serve",
     configureServer(server) {
       server.watcher.add(rubedo_watch_root);
+      server.watcher.add(vault_root);
       if (typeof server.watcher.on === "function") {
-        server.watcher.on("change", (file) => {
+        const handle_vault_event = (file) => {
+          if (is_wikilink_registry_source(file)) {
+            invalidate_wikilink_registry();
+          }
           if (is_rendered_rubedo_scene(file)) {
             reload_rubedo_modules(server);
           }
-        });
+        };
+
+        for (const event_name of ["add", "change", "unlink"]) {
+          server.watcher.on(event_name, handle_vault_event);
+        }
       }
     },
     handleHotUpdate({ file, server, timestamp }) {
+      if (is_wikilink_registry_source(file)) {
+        invalidate_wikilink_registry();
+      }
       if (!is_rendered_rubedo_scene(file)) {
         return;
       }
@@ -94,7 +102,7 @@ const obsidian_rubedo_hot_reload = () => {
   };
 };
 
-export { obsidian_rubedo_hot_reload };
+export { OBSIDIAN_VAULT_ROOT, obsidian_rubedo_hot_reload };
 
 export default defineConfig({
   site: SITE,

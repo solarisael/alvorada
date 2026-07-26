@@ -1,23 +1,12 @@
 ---
 import IndexLayout from "../layouts/index.astro";
 import PhaseCardGrid from "../components/home/phase_card_grid.astro";
-import { with_base } from "../utils/routes.js";
+import HomeGate from "../components/home/home_gate.astro";
+import { CINZA_PHASE_CARD_ORNAMENT } from "../data/card_ornaments.js";
 // home_card_gate.css moved to layout-level for htmx-nav availability
 
-const cinza_card_ornament_base = {
-  corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
-  corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
-  corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
-  corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
-  side_left: with_base("ornaments/cinza/card_side_flourish.svg"),
-  side_right: with_base("ornaments/cinza/card_side_flourish.svg"),
-};
-
 const nigredo_card_visual = {
-  ornament: {
-    ...cinza_card_ornament_base,
-    sigil: with_base("ornaments/cinza/sigil_eye.svg"),
-  },
+  ornament: CINZA_PHASE_CARD_ORNAMENT,
 };
 
 const phase_cards = [
@@ -53,9 +42,8 @@ const phase_cards = [
   banner_title="Solarisael"
   hide_breadcrumbs={true}
 >
-  <vessel data-shape="home_gate" id="sol_home_card_gate">
-    <div id="sol_home_gate_intro">
-      <div id="sol_home_gate_body" class="sol__home_gate_body_hearth">
+  <HomeGate intro_body_class="sol__home_gate_body_hearth">
+    <Fragment slot="intro">
         <p class="sol__home_intro_lead">
           Call me <span
             class="sol__text_fx"
@@ -202,19 +190,10 @@ const phase_cards = [
             ><strong>somewhat palatable</strong></span
           >.
         </p>
-      </div>
-    </div>
+    </Fragment>
 
-    <div id="sol_phase_card_header">
-      <h2
-        id="sol_phase_card_heading"
-        class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura"
-        data-text-fx-intensity="0.85"
-      >
-        Three Paths
-      </h2>
-    </div>
+    <Fragment slot="heading">Three Paths</Fragment>
 
     <PhaseCardGrid phase_cards={phase_cards} />
-  </vessel>
+</HomeGate>
 </IndexLayout>

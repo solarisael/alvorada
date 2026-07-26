@@ -2,7 +2,13 @@
 import ContentLink from "../page/content_link.astro";
 import { ALBEDO_STATE_TO_CONTAINER } from "../../data/albedo_taxonomy.js";
 
-const { entry, index, ornament_srcs, prerendered = false } = Astro.props;
+const {
+  entry,
+  index,
+  ornament_srcs,
+  prerendered = false,
+  set_size = null,
+} = Astro.props;
 const body_id = `sol_albedo_entry_body_${index}`;
 const tone = entry.featured ? "bloom" : "still";
 const state_list = entry.states ?? [];
@@ -17,6 +23,8 @@ const EntryContent = entry.Content;
   data-states={state_list.join(" ")}
   data-expanded="false"
   data-prerendered={prerendered ? "true" : undefined}
+  aria-posinset={index + 1}
+  aria-setsize={set_size ?? undefined}
 >
   <albedo
     data-shape="entry"
@@ -28,7 +36,10 @@ const EntryContent = entry.Content;
       <span class="sol__albedo_entry_layer sol__albedo_entry_layer_surface" />
       <span class="sol__albedo_entry_layer sol__albedo_entry_layer_sheen" />
       <span class="sol__albedo_entry_layer sol__albedo_entry_layer_frame" />
-      <div class="sol__albedo_entry_layer sol__albedo_entry_layer_ornament">
+      <ornament
+        data-shape="albedo_entry_ornament"
+        class="sol__albedo_entry_layer sol__albedo_entry_layer_ornament"
+      >
         <img
           class="sol__albedo_entry_ornament sol__albedo_entry_ornament_corner_tl"
           src={ornament_srcs.corner_tl}
@@ -57,7 +68,7 @@ const EntryContent = entry.Content;
           loading="lazy"
           decoding="async"
         />
-      </div>
+</ornament>
 
       <div class="sol__albedo_entry_layer_body">
         <header class="sol__albedo_entry_header">

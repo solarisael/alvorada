@@ -16,11 +16,7 @@
   --mobile_dock_blur: calc(10px * var(--site_shell_blur_mult, 1));
 
   /* Link sizing */
-  --mobile_side_divider_mix: 8%;
   --mobile_link_min_height: 4.75rem;
-  --mobile_link_icon_size: 1.5rem;
-  --mobile_link_icon_right_size: 1.25rem;
-  --mobile_link_label_size: 10px;
   --mobile_link_label_right_size: 9px;
   --mobile_link_label_tracking: 0.12em;
 
@@ -40,7 +36,6 @@
   --mobile_active_outer_glow_strong_mix: calc(
     78% * var(--site_fx_glow_mult, 1)
   );
-  --mobile_active_icon_glow_mix: 66%;
   --mobile_active_label_mix: 72%;
   --mobile_active_label_glow_mix: 56%;
   --mobile_active_topline_glow_mix: 64%;
@@ -171,16 +166,7 @@
     transition: opacity var(--mobile_link_transition_fast) ease;
   }
 
-  .sol__mobile_nav_icon {
-    @apply inline-flex items-center justify-center;
 
-    width: var(--mobile_link_icon_size);
-    height: var(--mobile_link_icon_size);
-  }
-
-  .sol__mobile_nav_icon svg {
-    @apply h-full w-full;
-  }
 
   .sol__mobile_nav_label {
     @apply font-medium;
@@ -285,10 +271,6 @@
     opacity: 0.46;
   }
 
-  .sol__mobile_nav_right .sol__mobile_nav_icon {
-    width: var(--mobile_link_icon_right_size);
-    height: var(--mobile_link_icon_right_size);
-  }
 
   .sol__mobile_nav_right .sol__mobile_nav_label {
     font-size: var(--mobile_link_label_right_size);
@@ -411,16 +393,6 @@
       );
   }
 
-  .sol__mobile_nav_link.sol__is_route_active .sol__mobile_nav_icon {
-    filter: drop-shadow(
-      0 0 8px
-        color-mix(
-          in oklch,
-          var(--mobile_neon_color) var(--mobile_active_icon_glow_mix),
-          transparent
-        )
-    );
-  }
 
   .sol__mobile_nav_link.sol__is_route_active .sol__mobile_nav_label {
     color: color-mix(
@@ -585,5 +557,19 @@
 
   to {
     transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sol_mobile_nav,
+  #sol_mobile_nav .sol__mobile_nav_link,
+  #sol_mobile_nav .sol__mobile_nav_layer_topline,
+  #sol_mobile_nav .sol__mobile_nav_label {
+    transition-duration: 1ms;
+  }
+
+  #sol_mobile_nav .sol__mobile_cinza_sun_highlight {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
   }
 }

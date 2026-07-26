@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import "../styles/base.css";
 import "../styles/index.css";
 import "../styles/components/content_shell.css";
@@ -8,7 +7,7 @@ import "../styles/components/rubedo_timeline.css";
 // Page-specific CSS hoisted to layout level so htmx-nav has it available.
 // Astro page-scoped imports only inject on native page load; htmx swaps don't
 // pull the response's <style> tags, so cards/entries render unstyled. Keep these
-// here unless head-support extension starts merging style tags reliably.
+// here so htmx swaps always have the page styles available.
 import "../styles/components/home_card_gate.css";
 import "../styles/components/nigredo_page.css";
 import "../styles/components/albedo_page.css";
@@ -16,6 +15,7 @@ import "../styles/components/citrinitas_page.css";
 import "../styles/components/wikilink.css";
 import "../styles/components/pretext_justify.css";
 import "../styles/components/vision_banner.css";
+import "../styles/components/about_page.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
 import MobileNavbar from "../components/mantle/mobile_navbar.astro";
@@ -24,6 +24,7 @@ import SideMenu from "../components/mantle/side_menu.astro";
 import Footer from "../components/mantle/footer.astro";
 import Fog from "../components/aether/fog.astro";
 import ContentFrame from "../components/ornament/content_frame.astro";
+import ReadingFrame from "../components/ornament/reading_frame.astro";
 import VisionBanner from "../components/page/vision_banner.astro";
 import { base_path, with_base } from "../utils/routes.js";
 
@@ -44,10 +45,6 @@ const {
 const phase = phase_prop || frontmatter.phase || "";
 const body_phase = phase || "home";
 const resolved_page_title = page_title || frontmatter.title || "Sol's Rest";
-const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
-const normalized_pathname = pathname.startsWith(base_path)
-  ? pathname.slice(base_path.length) || "/"
-  : pathname;
 const manual_body_classes = String(body_class).split(/\s+/).filter(Boolean);
 
 const resolved_body_classes = Array.from(
@@ -102,18 +99,26 @@ const resolved_body_classes = Array.from(
       import "../scripts/footer_cycle.js";
       import "../scripts/shader_chalice_lab.js";
       import "../scripts/pretext_transition_lab.js";
+      import "../scripts/about_pretext.js";
       import "../scripts/vision_banner.js";
     </script>
   </head>
   <body
     class:list={resolved_body_classes}
     data-phase={body_phase}
-    hx-ext="morph,head-support,preload,sse"
+    hx-ext="morph,preload"
     hx-target="#sol_page_shell"
     hx-select="#sol_page_shell"
     hx-swap="morph:outerHTML swap:220ms settle:260ms"
     hx-push-url="true"
   >
+    <p
+      id="sol_route_status"
+      class="sr-only"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></p>
     <Navbar />
     <MobileNavbar />
     <main id="sol_page_shell">
@@ -132,22 +137,48 @@ const resolved_body_classes = Array.from(
           <div id="sol_content_stage">
             <div class="sol__content_stage_layer sol__content_stage_layer_fog">
             </div>
-            <div
+            <ornament
+              data-shape="content_stage_rails"
               class="sol__content_stage_layer sol__content_stage_layer_rails"
+              aria-hidden="true"
             >
-            </div>
+              <div
+                class="sol__content_stage_rail sol__content_stage_rail_left"
+              ></div>
+              <div
+                class="sol__content_stage_rail sol__content_stage_rail_right"
+              ></div>
+            </ornament>
 
             <Fog />
+            <ContentFrame />
 
             <div id="sol_content">
               <div class="sol__content_layer sol__content_layer_surface"></div>
               <div class="sol__content_layer sol__content_layer_noise"></div>
-              <div class="sol__content_layer sol__content_layer_deco"></div>
+              <ornament
+                data-shape="content_deco"
+                class="sol__content_layer sol__content_layer_deco"
+                aria-hidden="true"
+              >
+                <div
+                  class="sol__content_deco_piece sol__content_deco_rail sol__content_deco_rail_left"
+                ></div>
+                <div
+                  class="sol__content_deco_piece sol__content_deco_rail sol__content_deco_rail_right"
+                ></div>
+                <div
+                  class="sol__content_deco_piece sol__content_deco_halo sol__content_deco_halo_top"
+                ></div>
+                <div
+                  class="sol__content_deco_piece sol__content_deco_halo sol__content_deco_halo_bottom"
+                ></div>
+              </ornament>
 
-              <ContentFrame />
 
               <div class="sol__content_layer_body">
                 <div id="sol_main_reading_container">
+                  <ReadingFrame />
                   <div class="sol__reading_layer sol__reading_layer_surface">
                   </div>
                   <div class="sol__reading_layer sol__reading_layer_noise">

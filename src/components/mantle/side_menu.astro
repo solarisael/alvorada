@@ -103,42 +103,73 @@ const user_measure_options = [
     <span class="sol__side_menu_trigger_label">menu</span>
   </button>
 
-  <aside id="sol_side_menu_panel" data-side-menu-panel-shell>
+  <aside
+    id="sol_side_menu_panel"
+    role="dialog"
+    aria-labelledby="sol_side_menu_title"
+    aria-hidden="true"
+    data-side-menu-panel-shell
+  >
     <div id="sol_side_menu_panel_header">
-      <p class="sol__text_caption">Solarisael</p>
-      <button type="button" data-side-menu-close>close</button>
+      <p id="sol_side_menu_title" class="sol__text_caption">Solarisael</p>
+      <button
+        type="button"
+        data-side-menu-close
+        aria-label="Close Solarisael menu"
+      >
+        close
+      </button>
     </div>
 
     <nav id="sol_side_menu_navbar" aria-label="Sidebar sections">
       <button
+        id="sol_side_menu_tab_site"
         class="sol__side_menu_nav_button"
         type="button"
         data-side-menu-toggle
         data-side-panel="site"
+        aria-controls="sol_side_menu_page_site"
+        aria-expanded="true"
+        aria-pressed="true"
       >
         settings
       </button>
 
       <button
+        id="sol_side_menu_tab_user"
         class="sol__side_menu_nav_button"
         type="button"
         data-side-menu-toggle
         data-side-panel="user"
+        aria-controls="sol_side_menu_page_user"
+        aria-expanded="false"
+        aria-pressed="false"
       >
         user
       </button>
 
       <button
+        id="sol_side_menu_tab_account"
         class="sol__side_menu_nav_button"
         type="button"
         data-side-menu-toggle
         data-side-panel="account"
+        aria-controls="sol_side_menu_page_account"
+        aria-expanded="false"
+        aria-pressed="false"
       >
         account
       </button>
     </nav>
 
-    <section class="sol__side_menu_page" data-side-menu-page="site">
+    <section
+      id="sol_side_menu_page_site"
+      class="sol__side_menu_page"
+      data-side-menu-page="site"
+      aria-labelledby="sol_side_menu_tab_site"
+      aria-hidden="false"
+    >
+
       <h2>Site settings</h2>
       <p class="sol__side_menu_note">
         Tune the shell without moving the page out from under your eyes.
@@ -189,7 +220,14 @@ const user_measure_options = [
       </label>
     </section>
 
-    <section class="sol__side_menu_page" data-side-menu-page="user" hidden>
+    <section
+      id="sol_side_menu_page_user"
+      class="sol__side_menu_page"
+      data-side-menu-page="user"
+      aria-labelledby="sol_side_menu_tab_user"
+      aria-hidden="true"
+      hidden
+    >
       <h2>User settings</h2>
       <p class="sol__side_menu_note">
         Reading preferences that follow the person, not the page.
@@ -218,7 +256,14 @@ const user_measure_options = [
       </label>
     </section>
 
-    <section class="sol__side_menu_page" data-side-menu-page="account" hidden>
+    <section
+      id="sol_side_menu_page_account"
+      class="sol__side_menu_page"
+      data-side-menu-page="account"
+      aria-labelledby="sol_side_menu_tab_account"
+      aria-hidden="true"
+      hidden
+    >
       <h2>Account</h2>
       <p class="sol__side_menu_note">
         Local browser profile only. No fake login, no pretend cloud account.

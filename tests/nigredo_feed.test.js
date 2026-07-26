@@ -65,7 +65,6 @@ describe("nigredo feed helpers", () => {
     expect(view.excerpt).toBe("Let me get through this.");
     expect(view.preview).toBe("There are gardens beneath the ice.");
     expect(view.can_expand).toBe(false);
-    expect(view.body_present).toBe(true);
   });
 
   test("body preview is truncated for feed cards", () => {

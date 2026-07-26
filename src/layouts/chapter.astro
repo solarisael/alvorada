@@ -2,6 +2,7 @@
 import IndexLayout from "./index.astro";
 
 const {
+  page_title = null,
   phase = "rubedo",
   body_class = "sol__pov_cinza",
   previous_chapter_link = null,
@@ -13,6 +14,7 @@ const {
 ---
 
 <IndexLayout
+  page_title={page_title}
   phase={phase}
   body_class={body_class}
   crumbs={crumbs}

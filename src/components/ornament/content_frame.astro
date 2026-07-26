@@ -19,43 +19,72 @@ const reliquary_flourish = with_base(
   data-shape="content_frame"
   class="sol__content_layer sol__content_layer_ornament_svg"
 >
-  <span
+  <img
     class="sol__content_ornament sol__content_ornament_corner_tl"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
-  <span
+    src={reliquary_corner}
+    alt=""
+  />
+  <img
     class="sol__content_ornament sol__content_ornament_corner_tr"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
-  <span
+    src={reliquary_corner}
+    alt=""
+  />
+  <img
     class="sol__content_ornament sol__content_ornament_corner_bl"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
-  <span
+    src={reliquary_corner}
+    alt=""
+  />
+  <img
     class="sol__content_ornament sol__content_ornament_corner_br"
-    style={`--ornament_mask_url: url(${reliquary_corner})`}></span>
-  <!-- Top divider: container with flourishes at each end and a thin bar between them.
-       The container itself is the alignment unit; flourishes flank naturally via flex.
-       Each child uses css mask-image so background-color picks up var(--site_style_accent). -->
+    src={reliquary_corner}
+    alt=""
+  />
   <div class="sol__content_ornament sol__content_ornament_line_top">
-    <span
+    <svg
       class="sol__content_ornament_line_flourish_start"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
-    <span class="sol__content_ornament_line_bar"></span>
-    <span
+      viewBox="0 0 44 14"
+      aria-hidden="true"
+    >
+      <use href={`${reliquary_flourish}#reliquary-divider-flourish`}></use>
+    </svg>
+    <div class="sol__content_ornament_line_bar"></div>
+    <svg
       class="sol__content_ornament_line_flourish_end"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
+      viewBox="0 0 44 14"
+      aria-hidden="true"
+    >
+      <use href={`${reliquary_flourish}#reliquary-divider-flourish`}></use>
+    </svg>
   </div>
   <div class="sol__content_ornament sol__content_ornament_line_bottom">
-    <span
+    <svg
       class="sol__content_ornament_line_flourish_start"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
-    <span class="sol__content_ornament_line_bar"></span>
-    <span
+      viewBox="0 0 44 14"
+      aria-hidden="true"
+    >
+      <use href={`${reliquary_flourish}#reliquary-divider-flourish`}></use>
+    </svg>
+    <div class="sol__content_ornament_line_bar"></div>
+    <svg
       class="sol__content_ornament_line_flourish_end"
-      style={`--ornament_mask_url: url(${reliquary_flourish})`}></span>
+      viewBox="0 0 44 14"
+      aria-hidden="true"
+    >
+      <use href={`${reliquary_flourish}#reliquary-divider-flourish`}></use>
+    </svg>
   </div>
-  <span
+  <svg
     class="sol__content_ornament sol__content_ornament_sigil_top"
-    style={`--ornament_mask_url: url(${reliquary_sigil})`}></span>
-  <span
+    viewBox="0 0 48 48"
+    aria-hidden="true"
+  >
+    <use href={`${reliquary_sigil}#reliquary-sigil-concentric`}></use>
+  </svg>
+  <svg
     class="sol__content_ornament sol__content_ornament_sigil_bottom"
-    style={`--ornament_mask_url: url(${reliquary_center})`}></span>
+    viewBox="0 0 48 24"
+    aria-hidden="true"
+  >
+    <use href={`${reliquary_center}#reliquary-divider-center`}></use>
+  </svg>
 </ornament>

@@ -34,17 +34,8 @@ export const getStaticPaths = () => {
 
 const { chapter, book_entry } = Astro.props;
 const { book_slug, chapter_slug } = Astro.params;
+const display_title = chapter?.title ?? chapter_slug;
 
-// All thread keys for this chapter — drives the Eyes nav slots.
-const chapter_thread_keys = [
-  ...new Set(
-    (chapter?.scenes ?? []).map((scene) => scene.thread_key).filter(Boolean),
-  ),
-].sort((left_key, right_key) => {
-  if (left_key === default_thread_key) return -1;
-  if (right_key === default_thread_key) return 1;
-  return left_key.localeCompare(right_key);
-});
 
 // Chapters arrive pre-sorted by timeline_position from the runtime — index
 // straight into them for the prev/next pager, no re-sort.
@@ -92,7 +83,7 @@ const crumbs = build_crumbs([
     href: with_base(`/rubedo/${book_slug}`),
   },
   {
-    label: chapter?.title ?? chapter_slug,
+    label: display_title,
     href: with_base(`/rubedo/${book_slug}/${chapter_slug}`),
   },
 ]);
@@ -100,6 +91,7 @@ const crumbs = build_crumbs([
 
 <ChapterLayout
   body_class="sol__pov_cinza"
+  page_title={display_title}
   previous_chapter_link={previous_chapter_link}
   next_chapter_link={next_chapter_link}
   crumbs={crumbs}

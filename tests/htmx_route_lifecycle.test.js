@@ -12,6 +12,9 @@ const {
   is_section_path_active,
   normalize_pathname,
 } = await import("../public/js/modules/htmx_route_lifecycle.js");
+const { announce_and_focus_route } = await import(
+  "../public/js/modules/route_accessibility.js"
+);
 
 const htmx_event = (detail) =>
   new CustomEvent("htmx:beforeRequest", { detail });
@@ -142,5 +145,23 @@ describe("htmx route lifecycle preload detection", () => {
       is_preload_request(htmx_event({ requestConfig: { headers: {} } })),
     ).toBe(false);
     expect(is_preload_request(htmx_event({}))).toBe(false);
+  });
+});
+
+describe("route accessibility handoff", () => {
+  test("announces and focuses the swapped page heading", () => {
+    document.body.innerHTML = `
+      <p id="sol_route_status" role="status"></p>
+      <main id="sol_page_shell"><h1>New chapter</h1></main>
+    `;
+
+    announce_and_focus_route();
+
+    const heading = document.querySelector("h1");
+    expect(document.activeElement).toBe(heading);
+    expect(heading?.getAttribute("tabindex")).toBe("-1");
+    expect(document.querySelector("#sol_route_status")?.textContent).toBe(
+      "Loaded New chapter.",
+    );
   });
 });

@@ -1,21 +1,6 @@
 @reference "tailwindcss";
 @reference "../utils.css";
 
-.sol__rubedo_timeline_page {
-  /* Quick Tune Variables (edit here first) */
-
-  /* Panel surfaces */
-  --rubedo_timeline_panel_border: color-mix(
-    in oklch,
-    var(--site_style_accent) 36%,
-    transparent
-  );
-  --rubedo_timeline_panel_surface: color-mix(
-    in oklch,
-    var(--ui_surface_raised) 38%,
-    transparent
-  );
-}
 
 .sol__rubedo_timeline_header {
   @apply mb-4;

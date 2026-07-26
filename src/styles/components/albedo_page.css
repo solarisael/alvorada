@@ -56,7 +56,6 @@ container[data-phase="albedo"] {
 
   /* feed */
   --albedo_feed_gap: 0.72rem;
-  --albedo_filter_gap: 0.35rem;
 
   /* lane alignment */
   --albedo_entry_left_width: 92%;

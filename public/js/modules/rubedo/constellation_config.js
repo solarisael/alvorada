@@ -39,7 +39,7 @@ const RUBEDO_CONSTELLATION_THREADS = Object.freeze({
   image_src: Object.freeze({
     cinza: "/images/eyes/cinza.jpg",
     suul: "/images/eyes/suul.jpg",
-    solarisael: "/images/eyes/solarisael.jpg",
+    solarisael: "/images/small_render_4.png",
   }),
   trail_rotation: Object.freeze({
     cinza: 334,

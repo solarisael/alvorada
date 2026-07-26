@@ -1,3 +1,4 @@
+import { register_node_disposal } from "./node_disposal_bridge.js";
 const BANNER_SELECTOR = "[data-sol-vision-banner]";
 const CANVAS_SELECTOR = "[data-sol-vision-banner-canvas]";
 const active_banners = new WeakMap();
@@ -161,7 +162,13 @@ const sync_viewport_breakout = (banner) => {
 const hydrating_banners = new WeakSet();
 
 const hydrate_banner = (banner) => {
-  if (active_banners.has(banner) || hydrating_banners.has(banner)) return;
+  if (
+    active_banners.has(banner) ||
+    hydrating_banners.has(banner) ||
+    banner.isConnected !== true
+  )
+    return;
+
   const canvas = banner.querySelector(CANVAS_SELECTOR);
   if (!(canvas instanceof HTMLCanvasElement)) return;
   const gl = canvas.getContext("webgl2", {
@@ -169,107 +176,307 @@ const hydrate_banner = (banner) => {
     premultipliedAlpha: true,
   });
   if (!gl) return;
-  const program = create_program(gl);
-  if (!program) return;
-  banner.classList.add("sol__vision_banner_hydrating");
+
+  const state = {
+    banner,
+    canvas,
+    gl,
+    program: null,
+    position: null,
+    texture: null,
+    image: null,
+    image_source: "",
+    image_width: 0,
+    image_height: 0,
+    frame: null,
+    breakoutObserver: null,
+    initialized: false,
+    visual_ready: false,
+    disposed: false,
+  };
+  let unregister_node_disposal = () => {};
+  const listener_cleanups = [];
+
+  const is_alive = () => !state.disposed && banner.isConnected === true;
+
+  const dispose = () => {
+    if (state.disposed) return;
+    state.disposed = true;
+
+    for (const cleanup_listener of listener_cleanups.splice(0)) {
+      try {
+        cleanup_listener();
+      } catch {
+        // Continue releasing the remaining WebGL resources.
+      }
+    }
+    if (state.frame !== null && typeof cancelAnimationFrame === "function") {
+      cancelAnimationFrame(state.frame);
+      state.frame = null;
+    }
+    state.breakoutObserver?.disconnect();
+    state.breakoutObserver = null;
+
+    active_banners.delete(banner);
+    hydrating_banners.delete(banner);
+    banner.classList.remove(
+      "sol__vision_banner_hydrating",
+      "sol__vision_banner_webgl_ready",
+      "sol__vision_banner_visual_ready",
+    );
+
+    if (state.position && typeof gl.deleteBuffer === "function") {
+      gl.deleteBuffer(state.position);
+      state.position = null;
+    }
+    if (state.texture && typeof gl.deleteTexture === "function") {
+      gl.deleteTexture(state.texture);
+      state.texture = null;
+    }
+    if (state.program && typeof gl.deleteProgram === "function") {
+      gl.deleteProgram(state.program);
+      state.program = null;
+    }
+
+    unregister_node_disposal();
+    unregister_node_disposal = () => {};
+  };
 
   hydrating_banners.add(banner);
-  const position = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, position);
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array([-1, -1, 3, -1, -1, 3]),
-    gl.STATIC_DRAW,
-  );
-  const position_location = gl.getAttribLocation(program, "a_position");
-  gl.enableVertexAttribArray(position_location);
-  gl.vertexAttribPointer(position_location, 2, gl.FLOAT, false, 0, 0);
+  try {
+    const unregister = register_node_disposal(banner, dispose);
+    unregister_node_disposal =
+      typeof unregister === "function" ? unregister : () => {};
 
-  const fallback_image = banner.querySelector(".sol__vision_banner_image");
-  const image = new Image();
-  image.decoding = "async";
-  let initialized = false;
-  const initialize = () => {
-    if (initialized) return;
-    initialized = true;
-    hydrating_banners.delete(banner);
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    const program = create_program(gl);
+    if (!program) {
+      dispose();
+      return;
+    }
+    state.program = program;
+    banner.classList.add("sol__vision_banner_hydrating");
 
-    const reduced_motion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const state = {
-      banner,
-      canvas,
-      gl,
-      program,
-      image,
-      frame: 0,
-      visual_ready: false,
+    state.position = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, state.position);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
+    const position_location = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(position_location);
+    gl.vertexAttribPointer(position_location, 2, gl.FLOAT, false, 0, 0);
+
+    const fallback_image = banner.querySelector(".sol__vision_banner_image");
+    const dom_image =
+      fallback_image instanceof HTMLImageElement ? fallback_image : null;
+    const image =
+      dom_image?.complete && dom_image.naturalWidth > 0
+        ? dom_image
+        : new Image();
+    if (image !== dom_image) {
+      image.decoding = "async";
+      image.src = dom_image?.currentSrc || dom_image?.src || "";
+    }
+
+    const picture =
+      dom_image?.closest?.("picture") ?? banner.querySelector("picture");
+    const source_nodes = Array.from(
+      picture?.querySelectorAll?.("source") ?? [],
+    );
+
+    const get_loaded_image = (event_target = null) => {
+      if (dom_image?.complete && dom_image.naturalWidth > 0) return dom_image;
+      if (
+        (event_target === dom_image || event_target === image) &&
+        event_target.naturalWidth > 0
+      )
+        return event_target;
+      if (image.complete && image.naturalWidth > 0) return image;
+      return null;
     };
-    active_banners.set(banner, state);
-    banner.classList.add("sol__vision_banner_webgl_ready");
-    sync_viewport_breakout(banner);
-    const breakout_observer =
-      typeof ResizeObserver === "function"
-        ? new ResizeObserver(() => sync_viewport_breakout(banner))
-        : null;
-    breakout_observer?.observe(banner.parentElement ?? banner);
-    state.breakoutObserver = breakout_observer;
+    const get_image_source = (candidate) =>
+      candidate === dom_image
+        ? candidate.currentSrc || candidate.src || ""
+        : candidate.currentSrc ||
+          candidate.src ||
+          dom_image?.currentSrc ||
+          dom_image?.src ||
+          "";
 
-    const draw = (time) => {
-      if (!document.contains(banner)) {
-        state.breakoutObserver?.disconnect();
-        active_banners.delete(banner);
+    const upload_texture = (candidate) => {
+      if (!is_alive() || !candidate || candidate.naturalWidth <= 0)
+        return false;
+
+      const next_source = get_image_source(candidate);
+      if (state.texture && state.image_source === next_source) return false;
+      if (!state.texture) {
+        state.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, state.texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      } else {
+        gl.bindTexture(gl.TEXTURE_2D, state.texture);
+      }
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        candidate,
+      );
+      state.image = candidate;
+      state.image_source = next_source;
+      state.image_width = candidate.naturalWidth;
+      state.image_height = candidate.naturalHeight;
+      return true;
+    };
+
+    const initialize = () => {
+      if (state.disposed) return;
+      if (banner.isConnected !== true) {
+        dispose();
         return;
       }
-      const size = resize_canvas(canvas, gl);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.useProgram(program);
-      gl.uniform2f(
-        gl.getUniformLocation(program, "u_canvas_size"),
-        size[0],
-        size[1],
-      );
-      gl.uniform2f(
-        gl.getUniformLocation(program, "u_image_size"),
-        image.naturalWidth,
-        image.naturalHeight,
-      );
-      gl.uniform1f(gl.getUniformLocation(program, "u_time"), time);
-      gl.uniform1f(
-        gl.getUniformLocation(program, "u_motion"),
-        reduced_motion ? 0 : 1,
-      );
-      gl.uniform1f(
-        gl.getUniformLocation(program, "u_variant"),
-        banner.dataset.visionVariant === "inverted-bowl" ? 1 : 0,
-      );
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      if (!state.visual_ready) {
-        state.visual_ready = true;
-        banner.classList.add("sol__vision_banner_visual_ready");
-        banner.classList.remove("sol__vision_banner_hydrating");
+      if (state.initialized) return;
+      const loaded_image = get_loaded_image();
+      if (!loaded_image || !upload_texture(loaded_image)) return;
+
+      state.initialized = true;
+      hydrating_banners.delete(banner);
+      const reduced_motion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      active_banners.set(banner, state);
+      banner.classList.add("sol__vision_banner_webgl_ready");
+      sync_viewport_breakout(banner);
+
+      const handle_resize = () => {
+        if (!is_alive()) {
+          dispose();
+          return;
+        }
+        sync_viewport_breakout(banner);
+        refresh_texture();
+      };
+      const breakout_observer =
+        typeof ResizeObserver === "function"
+          ? new ResizeObserver(handle_resize)
+          : null;
+      state.breakoutObserver = breakout_observer;
+      breakout_observer?.observe(banner.parentElement ?? banner);
+      if (typeof window.addEventListener === "function") {
+        window.addEventListener("resize", handle_resize, { passive: true });
+        listener_cleanups.push(() =>
+          window.removeEventListener("resize", handle_resize),
+        );
       }
+
+      const draw = (time) => {
+        state.frame = null;
+        if (!is_alive()) {
+          dispose();
+          return;
+        }
+        const size = resize_canvas(canvas, gl);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.useProgram(program);
+        gl.uniform2f(
+          gl.getUniformLocation(program, "u_canvas_size"),
+          size[0],
+          size[1],
+        );
+        gl.uniform2f(
+          gl.getUniformLocation(program, "u_image_size"),
+          state.image_width,
+          state.image_height,
+        );
+        gl.uniform1f(gl.getUniformLocation(program, "u_time"), time);
+        gl.uniform1f(
+          gl.getUniformLocation(program, "u_motion"),
+          reduced_motion ? 0 : 1,
+        );
+        gl.uniform1f(
+          gl.getUniformLocation(program, "u_variant"),
+          banner.dataset.visionVariant === "inverted-bowl" ? 1 : 0,
+        );
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        if (!state.visual_ready) {
+          state.visual_ready = true;
+          banner.classList.add("sol__vision_banner_visual_ready");
+          banner.classList.remove("sol__vision_banner_hydrating");
+        }
+        if (is_alive()) state.frame = requestAnimationFrame(draw);
+      };
       state.frame = requestAnimationFrame(draw);
     };
-    state.frame = requestAnimationFrame(draw);
-  };
-  image.onload = initialize;
-  image.onerror = () => {
-    hydrating_banners.delete(banner);
-    banner.classList.remove("sol__vision_banner_hydrating");
-  };
-  image.src = fallback_image?.currentSrc || fallback_image?.src || "";
-  if (image.complete && image.naturalWidth > 0) initialize();
+
+    const refresh_texture = (event_target = null) => {
+      if (state.disposed) return;
+      if (banner.isConnected !== true) {
+        dispose();
+        return;
+      }
+      const loaded_image = get_loaded_image(event_target);
+      if (!loaded_image) return;
+      if (!state.initialized) {
+        initialize();
+        return;
+      }
+      upload_texture(loaded_image);
+    };
+
+    const handle_image_error = (target) => {
+      if (state.disposed) return;
+      if (banner.isConnected !== true) {
+        dispose();
+        return;
+      }
+      if (state.initialized || target !== image) return;
+      dispose();
+    };
+
+    const listen_for_image = (target, event_name, callback) => {
+      if (!target) return;
+      if (typeof target.addEventListener === "function") {
+        target.addEventListener(event_name, callback);
+        listener_cleanups.push(() =>
+          target.removeEventListener?.(event_name, callback),
+        );
+      } else {
+        const property_name = `on${event_name}`;
+        const previous_callback = target[property_name];
+        target[property_name] = callback;
+        listener_cleanups.push(() => {
+          if (target[property_name] === callback)
+            target[property_name] = previous_callback;
+        });
+      }
+    };
+    const image_targets = [
+      ...new Set([image, dom_image, ...source_nodes].filter(Boolean)),
+    ];
+    for (const image_target of image_targets) {
+      listen_for_image(image_target, "load", () =>
+        refresh_texture(image_target),
+      );
+      listen_for_image(image_target, "error", () =>
+        handle_image_error(image_target),
+      );
+    }
+
+    if (image.complete) {
+      image.naturalWidth > 0 ? initialize() : handle_image_error(image);
+    }
+  } catch (error_value) {
+    dispose();
+    throw error_value;
+  }
 };
 
 export const hydrate_vision_banners = (root = document) => {

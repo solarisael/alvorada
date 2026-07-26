@@ -41,7 +41,7 @@ Rules that made it this shape — keep them:
   `../../public/vendor/fx/css/index.css`. No shims or old paths remain.
 
 Sandboxes for visual work: `/codex/labs/test-texts` and `/codex/labs/test-overlays`.
-Dev server: `bun run serve:start && bun run serve:wait` → port 4322, base `/solarisael/`.
+Dev server: `bun run dev:start && bun run dev:wait` → port 4322, base `/solarisael/`.
 
 ## Act 1 — tuning pass (still pending; Sol drives taste, you drive dials)
 

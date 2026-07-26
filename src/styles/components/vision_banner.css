@@ -6,7 +6,6 @@
     var(--site_style_accent_alt) 72%,
     #9fd5e8
   );
-  --vision-ink: color-mix(in oklch, var(--ui_bg_mantle) 88%, transparent);
   --vision-height: clamp(28rem, 58vw, 46rem);
 
   position: relative;
@@ -118,7 +117,7 @@
 .sol__vision_banner_copy :is(h1, h2) {
   margin: 0;
   color: color-mix(in oklch, var(--ui_text_primary) 90%, white);
-  font-family: var(--font_display);
+  font-family: var(--font_editorial);
   font-size: clamp(2.15rem, 6vw, 5.4rem);
   font-weight: 420;
   letter-spacing: -0.035em;

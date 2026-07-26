@@ -19,7 +19,10 @@ import {
 // Vite's static analyzer requires alias usage at the glob callsite — do
 // not interpolate or precompute the pattern string.
 const scene_module_map = {
-  ...import.meta.glob("../../content/rubedo/**/*.md", { eager: true }),
+  ...import.meta.glob(
+    ["../../content/rubedo/**/*.md", "!../../content/rubedo/**/refs/**/*.md"],
+    { eager: true },
+  ),
   ...import.meta.glob(["@vault/zzzz_rubedo/**/*.md", "!@vault/zzzz_rubedo/**/refs/**/*.md"], { eager: true }),
 };
 

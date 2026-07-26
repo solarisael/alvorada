@@ -12,7 +12,6 @@ container[data-phase="citrinitas"] {
   /* surface — dark substrate (matches nigredo's model; the gold accent does
      the tinting via color-mix, so the dark ground reads warm/golden). */
   --citrinitas_base: oklch(13% 0.014 90);
-  --citrinitas_base_deep: oklch(10% 0.014 90);
   --citrinitas_ink: oklch(88% 0.02 90);
   --citrinitas_ink_soft: oklch(64% 0.025 85);
   --citrinitas_card_radius: 14px;

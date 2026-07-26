@@ -5,20 +5,19 @@
   /* Quick Tune Variables (edit here first) */
 
   /* Geometry */
-  --home_gate_card_radius: 18px;
+  --home_gate_card_radius: 0.25rem;
   --home_gate_card_border_width: var(--site_border_width_hairline);
-  --home_gate_grid_gap: 1.1rem;
   --home_gate_card_min: 11.25rem;
 
   --home_gate_surface_mix: 56%;
-  --home_gate_border_mix: 26%;
+  --home_gate_border_mix: 44%;
   --home_gate_halo_mix: 28%;
   --home_gate_text_mix: 84%;
 
   --home_gate_blur: 2px;
   --home_gate_shadow_strength: 0.6;
   --home_gate_star_opacity: 0.16;
-  --home_gate_ring_opacity: 0.22;
+  --home_gate_ring_opacity: 0.88;
 
   --home_gate_hover_lift: -1.2%;
   --home_gate_transition_ms: 260ms;
@@ -37,71 +36,71 @@
   overflow: visible;
 }
 
-#sol_home_gate_intro::before,
-#sol_home_gate_intro::after {
+.sol__home_intro_deco {
   @apply pointer-events-none absolute;
 
-  content: "";
   inset: 0;
   z-index: -1;
 }
-#sol_home_gate_intro::before {
-  opacity: calc(var(--cinza_fog_halo_mix, 30%) * 0.012);
-  background:
-    radial-gradient(
-      58% 42% at 50% 28%,
-      color-mix(in oklch, var(--site_style_accent) 72%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      72% 48% at 50% 80%,
-      color-mix(in oklch, var(--site_style_accent_alt) 28%, transparent),
-      transparent 72%
-    );
+
+.sol__home_intro_deco_halo,
+.sol__home_intro_deco_rule {
+  @apply absolute;
+
+  display: block;
+}
+
+.sol__home_intro_deco_halo {
+  left: 50%;
+  width: 1px;
+  height: 1px;
+  transform: translate(-50%, -50%);
   filter: blur(calc(10px * var(--site_shell_blur_mult, 1)));
 }
 
-#sol_home_gate_intro::after {
+.sol__home_intro_deco_halo_top {
+  top: 28%;
+  color: color-mix(in oklch, var(--site_style_accent) 72%, transparent);
+  box-shadow: 0 0 5rem 3rem currentColor;
+  opacity: calc(var(--cinza_fog_halo_mix, 30%) * 0.012);
+}
+
+.sol__home_intro_deco_halo_bottom {
+  top: 80%;
+  color: color-mix(in oklch, var(--site_style_accent_alt) 28%, transparent);
+  box-shadow: 0 0 6rem 3.5rem currentColor;
+  opacity: calc(var(--cinza_fog_halo_mix, 30%) * 0.012);
+}
+
+.sol__home_intro_deco_rule {
+  left: 50%;
+  width: 68%;
+  height: 0;
+  transform: translateX(-50%);
+  border-top: var(--site_border_width_hairline) solid
+    color-mix(in oklch, white 10%, transparent);
   opacity: calc(var(--site_style_noise_opacity) * 0.8);
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0 16%,
-      color-mix(in oklch, var(--site_style_accent) 16%, transparent) 50%,
-      transparent 84% 100%
-    ),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 0.95rem,
-      color-mix(in oklch, white 10%, transparent) 0.98rem,
-      transparent 1rem
-    );
-  mask-image: radial-gradient(ellipse at center, black 0 58%, transparent 72%);
 }
 
-#sol_home_gate_header {
-  @apply flex flex-col items-center;
-  @apply gap-2;
+.sol__home_intro_deco_rule_top {
+  top: 35%;
 }
 
-#sol_home_gate_title {
-  @apply font-semibold;
-
-  margin: 0;
-  font-family: var(--font_ritual);
-  font-size: clamp(3rem, 8vw, 4rem);
-  line-height: 1;
-  letter-spacing: 0.025em;
-  color: color-mix(in oklch, var(--ui_text_primary) 92%, white);
+.sol__home_intro_deco_rule_middle {
+  top: 50%;
+  border-color: color-mix(
+    in oklch,
+    var(--site_style_accent) 16%,
+    transparent
+  );
 }
 
-#sol_home_gate_title .sol__text_fx {
-  display: inline-block;
-  padding: 0.08em 0.14em 0.12em;
-  margin-left: -0.14em;
-  margin-right: -0.14em;
-  overflow: visible;
+.sol__home_intro_deco_rule_bottom {
+  top: 65%;
 }
+
+
+
 
 #sol_home_gate_body {
   max-width: 58rem;
@@ -123,9 +122,6 @@
   line-height: 1.45;
 }
 
-.sol__about_intro_lead {
-  font-size: clamp(1.35rem, 3vw, 1.9rem);
-}
 
 #sol_home_gate_body.sol__home_gate_body_hearth {
   text-align: center;
@@ -144,34 +140,11 @@
   text-align: right;
 }
 
-#sol_home_gate_body .sol__home_chalice_text {
-  max-width: min(30rem, 100%);
-  margin: 1.2rem auto 0;
-  color: color-mix(
-    in oklch,
-    var(--site_style_accent) 58%,
-    var(--ui_text_secondary)
-  );
-  font-family: var(--font_ritual);
-  font-size: clamp(0.92rem, 1.45vw, 1.08rem);
-  letter-spacing: 0.035em;
-}
 
 .sol__home_intro_line {
   max-width: 50rem;
 }
 
-.sol__home_intro_hint {
-  @apply lowercase;
-
-  max-width: 36rem;
-  color: color-mix(
-    in oklch,
-    var(--site_style_accent) 54%,
-    var(--ui_text_secondary)
-  );
-  letter-spacing: 0.04em;
-}
 
 #sol_phase_card_header {
   @apply flex flex-col items-center;
@@ -209,17 +182,12 @@
 }
 
 .sol__phase_card_link {
-  @apply relative isolate overflow-hidden;
+  @apply relative isolate;
   @apply flex h-full flex-col;
   @apply gap-4;
   @apply px-4 py-4 md:px-5 md:py-5;
   @apply no-underline;
 
-  --phase_card_layer_border_color: color-mix(
-    in oklch,
-    var(--phase_color, var(--site_style_accent_alt)) var(--home_gate_border_mix),
-    transparent
-  );
   --phase_card_layer_shadow_stack:
     0 20px 32px -26px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.08)),
     inset 0 1px 0 color-mix(in oklch, white 9%, transparent);
@@ -240,7 +208,11 @@
 
   border-radius: var(--home_gate_card_radius);
   border: var(--home_gate_card_border_width) solid
-    var(--phase_card_layer_border_color);
+    color-mix(
+      in oklch,
+      var(--phase_color, var(--site_style_accent_alt)) var(--home_gate_border_mix),
+      transparent
+    );
   min-height: 16rem;
   box-shadow: var(--phase_card_layer_shadow_stack);
   backdrop-filter: blur(var(--home_gate_blur));
@@ -258,6 +230,8 @@
 }
 
 .sol__phase_card_backdrop {
+  overflow: hidden;
+  border-radius: inherit;
   z-index: 0;
 }
 
@@ -280,31 +254,40 @@
 
 .sol__phase_card_layer_phase_halo {
   z-index: 1;
-  background: radial-gradient(
-    120% 100% at 80% -10%,
+  box-shadow: inset -4rem 3rem 5rem -4rem
     color-mix(
       in oklch,
       var(--phase_color, var(--site_style_accent_alt)) var(--home_gate_halo_mix),
       transparent
-    ),
-    transparent 66%
-  );
+    );
 }
 
 .sol__phase_card_layer_star_points {
   z-index: 1;
   opacity: var(--home_gate_star_opacity);
-  background:
-    radial-gradient(
-      circle at 24% 26%,
-      color-mix(in oklch, white 56%, transparent) 0 0.6px,
-      transparent 0.7px
-    ),
-    radial-gradient(
-      circle at 76% 62%,
-      color-mix(in oklch, white 46%, transparent) 0 0.7px,
-      transparent 0.8px
-    );
+}
+
+.sol__phase_card_star {
+  @apply absolute;
+
+  display: block;
+  width: 0;
+  height: 0;
+  color: color-mix(in oklch, white 56%, transparent);
+  box-shadow:
+    0 0 0 0.6px currentColor,
+    0 0 0.4rem 0.08rem currentColor;
+}
+
+.sol__phase_card_star_one {
+  left: 24%;
+  top: 26%;
+}
+
+.sol__phase_card_star_two {
+  left: 76%;
+  top: 62%;
+  color: color-mix(in oklch, white 46%, transparent);
 }
 
 .sol__phase_card_layer_aura_top,
@@ -399,22 +382,21 @@
 
 :root[data-site-theme="solarisael"] {
   --home_gate_surface_mix: 42%;
-  --home_gate_border_mix: 24%;
-  --home_gate_halo_mix: 26%;
+  --home_gate_border_mix: 36%;
+  --home_gate_halo_mix: 30%;
   --home_gate_blur: 2.6px;
-  --home_gate_text_mix: 82%;
+  --home_gate_text_mix: 84%;
   --home_gate_star_opacity: 0.08;
-  --home_gate_ring_opacity: 0.5;
+  --home_gate_ring_opacity: 0.62;
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_link {
-  --phase_ornament_inset: 0.5rem;
+  --phase_ornament_corner_axis_inset: -0.06rem;
   --phase_ornament_tl_size: 2.25rem;
   --phase_ornament_tr_size: 2.45rem;
   --phase_ornament_bl_size: 2.05rem;
   --phase_ornament_br_size: 2.35rem;
   --phase_ornament_sigil_size: 1.35rem;
-  --phase_ornament_sigil_offset: 0.75rem;
   --phase_ornament_side_inline: 0.9rem;
   --phase_ornament_side_block: 76%;
 
@@ -423,70 +405,34 @@
     0 0 0 var(--site_border_width_hairline)
       color-mix(
         in oklch,
-        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 1.25),
+        var(--phase_color) calc(var(--cinza_reliquary_line_mix) * 1.25),
         transparent
       ),
     inset 0 0 0 var(--site_border_width_hairline)
       color-mix(
         in oklch,
-        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.8),
+        var(--phase_color) calc(var(--cinza_reliquary_line_mix) * 0.9),
         transparent
       ),
     inset 0 1px 0 color-mix(in oklch, white 22%, transparent);
 
   --phase_card_layer_hover_border_color: color-mix(
     in oklch,
-    var(--phase_color, var(--site_style_accent_alt)) 72%,
+    var(--phase_color) 76%,
     transparent
   );
   --phase_card_layer_hover_shadow_stack:
     0 26px 38px -20px rgb(0 0 0 / calc(var(--home_gate_shadow_strength) + 0.2)),
     0 0 0 var(--site_border_width_hairline)
-      color-mix(
-        in oklch,
-        var(--phase_color, var(--site_style_accent_alt)) 44%,
-        transparent
-      ),
+      color-mix(in oklch, var(--phase_color) 48%, transparent),
     inset 0 0 0 var(--site_border_width_hairline)
-      color-mix(
-        in oklch,
-        var(--phase_color, var(--site_style_accent_alt)) 30%,
-        transparent
-      ),
+      color-mix(in oklch, var(--phase_color) 34%, transparent),
     inset 0 1px 0 color-mix(in oklch, white 14%, transparent);
 }
 
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_frame_corner_tl {
-  left: -0.1rem;
-  top: -0.1rem;
-  width: 2.15rem;
-  height: 2.15rem;
-}
-
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_frame_corner_tr {
-  right: -0.1rem;
-  top: -0.1rem;
-  width: 2.15rem;
-  height: 2.15rem;
-}
-
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_frame_corner_bl {
-  left: -0.1rem;
-  bottom: -0.1rem;
-  width: 2.15rem;
-  height: 2.15rem;
-}
-
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_frame_corner_br {
-  right: -0.1rem;
-  bottom: -0.1rem;
-  width: 2.15rem;
-  height: 2.15rem;
-}
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornaments {
   display: block;
-  opacity: calc(var(--home_gate_ring_opacity) * 1.08);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left,
@@ -494,88 +440,168 @@
   object-fit: fill;
 }
 
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top,
-:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_bottom {
-  background-color: var(--site_style_accent);
-  mask-image: var(--ornament_mask_url);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-}
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_tl {
-  left: var(--phase_ornament_inset);
-  top: var(--phase_ornament_inset);
+  left: var(--phase_ornament_corner_axis_inset);
+  top: var(--phase_ornament_corner_axis_inset);
   width: var(--phase_ornament_tl_size);
   height: var(--phase_ornament_tl_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_tr {
-  right: var(--phase_ornament_inset);
-  top: var(--phase_ornament_inset);
+  right: var(--phase_ornament_corner_axis_inset);
+  top: var(--phase_ornament_corner_axis_inset);
   width: var(--phase_ornament_tr_size);
   height: var(--phase_ornament_tr_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_bl {
-  left: var(--phase_ornament_inset);
-  bottom: var(--phase_ornament_inset);
+  left: var(--phase_ornament_corner_axis_inset);
+  bottom: var(--phase_ornament_corner_axis_inset);
   width: var(--phase_ornament_bl_size);
   height: var(--phase_ornament_bl_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_corner_br {
-  right: var(--phase_ornament_inset);
-  bottom: var(--phase_ornament_inset);
+  right: var(--phase_ornament_corner_axis_inset);
+  bottom: var(--phase_ornament_corner_axis_inset);
   width: var(--phase_ornament_br_size);
   height: var(--phase_ornament_br_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top {
   left: 50%;
-  top: 0.35rem;
   width: var(--phase_ornament_sigil_size);
   height: var(--phase_ornament_sigil_size);
-  transform: translateX(-50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_bottom {
   left: 50%;
-  bottom: 0.35rem;
   width: var(--phase_ornament_sigil_size);
   height: var(--phase_ornament_sigil_size);
-  transform: translateX(-50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left {
-  left: var(--phase_ornament_inset);
   top: 50%;
   width: var(--phase_ornament_side_inline);
   height: var(--phase_ornament_side_block);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_right {
+  top: 50%;
+  width: var(--phase_ornament_side_inline);
+  height: var(--phase_ornament_side_block);
+}
+
+/* Cards inherit the border-grown identity: ornaments cross the frame instead
+   of hovering safely inside a generic rounded rectangle. */
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornaments {
+  overflow: visible;
+  opacity: var(--home_gate_ring_opacity);
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.28) contrast(1.08)
+    drop-shadow(
+      0 0 0.5rem
+        color-mix(
+          in oklch,
+          var(--phase_color, var(--site_style_accent)) 36%,
+          transparent
+        )
+    );
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament {
+  filter: saturate(1.3) contrast(1.08)
+    drop-shadow(
+      0 0 0.3rem
+        color-mix(in oklch, var(--phase_color) 28%, transparent)
+    );
+}
+
+:root[data-site-theme="solarisael"] img.sol__phase_card_ornament {
+  filter: sepia(0.52) saturate(1.55) hue-rotate(350deg) brightness(0.98)
+    contrast(1.08)
+    drop-shadow(
+      0 0 0.3rem
+        color-mix(in oklch, var(--phase_color) 30%, transparent)
+    );
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_nigredo img.sol__phase_card_ornament {
+  filter: grayscale(0.36) sepia(0.18) saturate(1.2) hue-rotate(170deg)
+    brightness(0.96) contrast(1.1)
+    drop-shadow(0 0 0.3rem color-mix(in oklch, var(--phase_color) 34%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_albedo img.sol__phase_card_ornament {
+  filter: grayscale(0.16) sepia(0.2) saturate(0.95) hue-rotate(175deg)
+    brightness(1.06) contrast(1.08)
+    drop-shadow(0 0 0.3rem color-mix(in oklch, var(--phase_color) 34%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_citrinitas img.sol__phase_card_ornament {
+  filter: sepia(0.74) saturate(1.65) hue-rotate(350deg) brightness(1.02)
+    contrast(1.08)
+    drop-shadow(0 0 0.3rem color-mix(in oklch, var(--phase_color) 34%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_rubedo img.sol__phase_card_ornament {
+  filter: sepia(0.58) saturate(1.95) hue-rotate(332deg) brightness(0.96)
+    contrast(1.1)
+    drop-shadow(0 0 0.3rem color-mix(in oklch, var(--phase_color) 36%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top,
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_bottom {
+  color: color-mix(in oklch, var(--phase_color) 82%, white);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_link {
+  --phase_ornament_tl_size: 2.9rem;
+  --phase_ornament_tr_size: 3.05rem;
+  --phase_ornament_bl_size: 2.75rem;
+  --phase_ornament_br_size: 3rem;
+  --phase_ornament_sigil_size: 1.7rem;
+  --phase_ornament_side_inline: 1.15rem;
+  --phase_ornament_side_block: 82%;
+}
+
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_top {
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_center_bottom {
+  bottom: 0;
+  transform: translate(-50%, 50%);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left,
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_right {
+  opacity: 0.72;
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_left {
+  left: -0.05rem;
   transform: translateY(-50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_ornament_side_right {
-  right: var(--phase_ornament_inset);
-  top: 50%;
-  width: var(--phase_ornament_side_inline);
-  height: var(--phase_ornament_side_block);
+  right: -0.05rem;
   transform: translateY(-50%) rotate(180deg);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_layer_star_points {
-  background:
-    radial-gradient(
-      circle at 24% 26%,
-      color-mix(in oklch, white 64%, transparent) 0 0.6px,
-      transparent 0.74px
-    ),
-    radial-gradient(
-      circle at 76% 62%,
-      color-mix(in oklch, white 52%, transparent) 0 0.7px,
-      transparent 0.82px
-    );
   opacity: calc(var(--home_gate_star_opacity) * 1.05);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_star_one {
+  color: color-mix(in oklch, white 64%, transparent);
+}
+
+:root[data-site-theme="solarisael"] .sol__phase_card_star_two {
+  color: color-mix(in oklch, white 52%, transparent);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_layer_aura_top,
@@ -584,27 +610,17 @@
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_layer_aura_top {
-  background: radial-gradient(
-    140% 120% at 70% -20%,
-    color-mix(in oklch, var(--site_style_accent) 18%, transparent),
-    transparent 68%
-  );
+  box-shadow: inset -2rem 3rem 5rem -4rem
+    color-mix(in oklch, var(--site_style_accent) 18%, transparent);
 }
 
 :root[data-site-theme="solarisael"] .sol__phase_card_layer_aura_bottom {
-  background: linear-gradient(
-    155deg,
+  box-shadow: inset 0 -4rem 5rem -4rem
     color-mix(
       in oklch,
-      var(--phase_color, var(--site_style_accent_alt)) 8%,
+      var(--phase_color, var(--site_style_accent_alt)) 12%,
       transparent
-    ),
-    color-mix(
-      in oklch,
-      var(--ui_bg_mantle) var(--home_gate_surface_mix),
-      transparent
-    )
-  );
+    );
   opacity: 1;
 }
 

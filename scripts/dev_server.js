@@ -54,8 +54,8 @@ function start() {
   console.log(`url=${URL}`);
   console.log(`log=${OUT_LOG}`);
   console.log(`err=${ERR_LOG}`);
-  console.log("wait=bun run serve:wait");
-  console.log("stop=bun run serve:stop");
+  console.log("wait=bun run dev:wait");
+  console.log("stop=bun run dev:stop");
 }
 
 async function wait() {
@@ -93,7 +93,7 @@ async function check() {
   const started_at = performance.now();
   start();
   const start_ms = Math.round(performance.now() - started_at);
-  if (start_ms > 2_000) fail(`serve:start too slow: ${start_ms}ms`);
+  if (start_ms > 2_000) fail(`dev:start too slow: ${start_ms}ms`);
 
   await wait_for_health();
   const pid = read_pid();

@@ -19,6 +19,9 @@ const PHASE_NAMES = new Set([
   "citrinitas",
   "rubedo",
   "codex",
+  "writing",
+  "work",
+  "about",
 ]);
 let last_applied_pathname = null;
 
@@ -107,6 +110,11 @@ const apply_route_active_state = (pathname_override = null) => {
 
     pill_node.classList.toggle("sol__is_route_active", is_active);
     pill_node.classList.toggle("is-route-current", is_exact_match);
+    if (is_exact_match) {
+      pill_node.setAttribute("aria-current", "page");
+    } else {
+      pill_node.removeAttribute("aria-current");
+    }
   });
 
   const home_node = nav_node.querySelector("#sol_icon_user");
@@ -124,6 +132,11 @@ const apply_route_active_state = (pathname_override = null) => {
   const is_home_active = current_pathname === home_target_pathname;
   home_node.classList.toggle("sol__is_route_active", is_home_active);
   home_node.classList.toggle("is-route-current", is_home_active);
+  if (is_home_active) {
+    home_node.setAttribute("aria-current", "page");
+  } else {
+    home_node.removeAttribute("aria-current");
+  }
   last_applied_pathname = current_pathname;
 };
 

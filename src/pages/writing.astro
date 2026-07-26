@@ -1,22 +1,11 @@
 ---
 import IndexLayout from "../layouts/index.astro";
 import PhaseCardGrid from "../components/home/phase_card_grid.astro";
-import { with_base } from "../utils/routes.js";
-
-const cinza_card_ornament_base = {
-  corner_tl: with_base("ornaments/cinza/card_corner_a.svg"),
-  corner_tr: with_base("ornaments/cinza/card_corner_b.svg"),
-  corner_bl: with_base("ornaments/cinza/card_corner_c.svg"),
-  corner_br: with_base("ornaments/cinza/card_corner_d.svg"),
-  side_left: with_base("ornaments/cinza/card_side_flourish.svg"),
-  side_right: with_base("ornaments/cinza/card_side_flourish.svg"),
-};
+import HomeGate from "../components/home/home_gate.astro";
+import { CINZA_PHASE_CARD_ORNAMENT } from "../data/card_ornaments.js";
 
 const gate_visual = {
-  ornament: {
-    ...cinza_card_ornament_base,
-    sigil: with_base("ornaments/cinza/sigil_eye.svg"),
-  },
+  ornament: CINZA_PHASE_CARD_ORNAMENT,
 };
 
 const phase_cards = [
@@ -50,10 +39,9 @@ const phase_cards = [
 ];
 ---
 
-<IndexLayout page_title="Writing" banner_title="Writing">
-  <vessel data-shape="home_gate" id="sol_home_card_gate">
-    <div id="sol_home_gate_intro">
-      <div id="sol_home_gate_body">
+<IndexLayout page_title="Writing" phase="writing" banner_title="Writing">
+  <HomeGate>
+    <Fragment slot="intro">
         <p class="sol__home_intro_lead">
           My amateur <span
             class="sol__text_fx"
@@ -95,19 +83,10 @@ const phase_cards = [
           So… please. If you have any critiques, do send me a message… you can
           find my contact in the <strong>About</strong> page.
         </p>
-      </div>
-    </div>
+    </Fragment>
 
-    <div id="sol_phase_card_header">
-      <h2
-        id="sol_phase_card_heading"
-        class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura"
-        data-text-fx-intensity="0.85"
-      >
-        The Four Gates
-      </h2>
-    </div>
+    <Fragment slot="heading">The Four Gates</Fragment>
 
     <PhaseCardGrid phase_cards={phase_cards} />
-  </vessel>
+</HomeGate>
 </IndexLayout>

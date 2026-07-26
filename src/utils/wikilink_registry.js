@@ -7,55 +7,58 @@
 // silently picking one and shadowing the other.
 //
 // Resolution model:
-//   - posts (nigredo/albedo/citrinitas) are indexed by BOTH frontmatter
-//     `slug` AND filename stem (both are valid `[[]]` lookup keys; slug
-//     is canonical since Sol's slug-as-URL design says so, filename keeps
-//     obsidian's native autocomplete working when filename ≠ slug)
-//   - rubedo scenes + codex entries are indexed by filename stem only
-//     (no `slug` field in their frontmatter — rubedo derives URL from
-//     book_slug+thread+chapter; codex from path)
+//   - posts (nigredo/albedo) are indexed by frontmatter `slug` and filename
+//     stem; slug is canonical while filename keeps Obsidian lookup working.
+//   - Citrinitas metadata registers the booklet slug and chapters register
+//     filename stem + chapter_id, both pointing at their rendered routes.
+//   - Rubedo scenes are indexed only when the renderer's duplicated
+//     field/tag identity is complete and equal; refs are excluded.
+//   - Codex entries are indexed by relative path, filename stem, and aliases.
 //   - target value = { url, title, excerpt, phase, source_path }
-//   - URL = `<base>/<phase>/<slug>` for posts/codex, derived from frontmatter
-//          for rubedo (book_slug + thread_key + chapter_slug)
-//   - title = frontmatter.title || frontmatter.scene_title || frontmatter.slug
-//             || filename-stem-titlecased
-//   - excerpt = frontmatter.excerpt || frontmatter.scene_excerpt || first
-//               paragraph of body, clamped to ~240 chars
-//   - phase = the alchemical phase the file belongs to (drives popup tinting)
+//   - URL paths always begin with the configured deploy base.
 //
-// Sources scanned (all globbed sync via node:fs at module load):
+// Sources scanned (all walked sync via node:fs at module load):
 //   - obsidian/z_nigredo/**/YYYY-*.md       → phase=nigredo
 //   - obsidian/zz_albedo/**/YYYY-*.md       → phase=albedo
-//   - obsidian/zzz_citrinitas/**/YYYY-*.md  → phase=citrinitas
-//   - obsidian/zzzz_rubedo/**/*.md          → phase=rubedo (validated)
-//   - src/content/rubedo/**/*.md            → phase=rubedo (legacy, transition)
+//   - obsidian/zzz_citrinitas/**/*.md      → phase=citrinitas booklets
+//   - obsidian/zzzz_rubedo/**/*.md         → phase=rubedo (validated, no refs)
+//   - src/content/rubedo/**/*.md           → phase=rubedo (legacy, transition)
 //   - obsidian/codex/**/*.md                → phase=codex (path-routed)
 //
-// The base URL prefix (e.g. `/solarisael`) is the same one in astro.config.mjs
-// `base`. Kept as a top-of-file constant here — if the astro `base` ever
-// changes, sync both. Single source-of-truth would require reading the
-// astro config at plugin-load time which is awkward; hard pinning is fine
-// since the value rarely moves.
-//
+// The base URL prefix comes from SOLARISAEL_BASE, matching astro.config.mjs.
 // The registry is built lazily on first access and cached. Returns a frozen
 // snapshot of the underlying Map.
+//
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolve_obsidian_vault_root } from "../config/obsidian_vault_root.js";
+import { derive_chapter_slug } from "../data/book/book_runtime.js";
+import {
+  normalize_identity_token,
+  parse_tag_identity,
+  validate_scene_identity_consistency,
+} from "../data/rubedo/scene_identity.js";
+import {
+  citrinitas_booklet_path,
+  citrinitas_chapter_path,
+} from "../data/citrinitas/route_data.js";
 
-const SOLARISAEL_BASE_URL = "/solarisael";
+const SOLARISAEL_BASE_URL = String(
+  process.env.SOLARISAEL_BASE ?? "/solarisael",
+).replace(/\/+$/, "");
 
-// Mirrors content.config.js / astro.config.mjs. Keep these in sync if the
-// vault ever relocates.
-const OBSIDIAN_VAULT_ROOT =
-  process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
+const OBSIDIAN_VAULT_ROOT = resolve_obsidian_vault_root();
 
 const PROJECT_ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
+// The vault root is shared with Astro's content loaders and Vite alias.
+// URL paths use the same deploy base configured by astro.config.mjs.
+
 // Source descriptors. `scan_root` is the absolute filesystem root; `phase`
 // is the alchemical-phase label; `pattern_kind` controls which subset of
-// files counts as a wikilink target (date-prefix for posts, any markdown
-// for rubedo + codex).
+// files counts as a wikilink target (date-prefix posts, booklet records,
+// valid Rubedo scenes, or any Codex markdown).
 const REGISTRY_SOURCES = [
   {
     phase: "nigredo",
@@ -72,8 +75,8 @@ const REGISTRY_SOURCES = [
   {
     phase: "citrinitas",
     scan_root: path.join(OBSIDIAN_VAULT_ROOT, "zzz_citrinitas"),
-    pattern_kind: "dated_post",
-    url_strategy: "post_slug",
+    pattern_kind: "citrinitas_booklet",
+    url_strategy: "citrinitas_booklet",
   },
   {
     phase: "rubedo",
@@ -183,6 +186,40 @@ const file_matches_source_pattern = (source, file_name) => {
   return file_name.endsWith(".md");
 };
 
+const normalized_path = (file_path) =>
+  path.resolve(file_path).replaceAll("\\", "/").toLowerCase();
+
+const is_rubedo_ref_file = (source, file_path) => {
+  if (source.url_strategy !== "rubedo_scene") {
+    return false;
+  }
+
+  const relative_path = path
+    .relative(source.scan_root, file_path)
+    .replaceAll(path.sep, "/")
+    .toLowerCase();
+
+  return relative_path.split("/").includes("refs");
+};
+
+const is_wikilink_registry_source = (file_path = "") => {
+  if (typeof file_path !== "string" || !file_path.trim()) {
+    return false;
+  }
+
+  const changed_path = normalized_path(file_path);
+  return REGISTRY_SOURCES.some((source) => {
+    const source_root = normalized_path(source.scan_root);
+    if (
+      source.url_strategy === "rubedo_scene" &&
+      is_rubedo_ref_file(source, file_path)
+    ) {
+      return false;
+    }
+    return changed_path === source_root || changed_path.startsWith(`${source_root}/`);
+  });
+};
+
 const walk_markdown_files = (scan_root) => {
   if (!fs.existsSync(scan_root)) {
     return [];
@@ -245,12 +282,9 @@ const titlecase_filename_stem = (stem) => {
     .replace(/\b([a-z])/g, (m, ch) => ch.toUpperCase());
 };
 
-const derive_chapter_slug = (timeline_position) => {
+const derive_scene_chapter_slug = (timeline_position) => {
   const numeric = Number(timeline_position);
-  if (!Number.isFinite(numeric)) {
-    return null;
-  }
-  return String(Math.max(0, Math.floor(numeric))).padStart(3, "0");
+  return derive_chapter_slug(Number.isFinite(numeric) ? numeric : 0);
 };
 
 const build_url_for_target = ({
@@ -268,16 +302,28 @@ const build_url_for_target = ({
         : file_stem;
     return `${SOLARISAEL_BASE_URL}/${phase}/${slug}`;
   }
+  if (url_strategy === "citrinitas_booklet") {
+    const book_slug = normalize_identity_token(frontmatter?.book_slug);
+    if (!book_slug) {
+      return null;
+    }
+
+    const chapter_id = normalize_identity_token(frontmatter?.chapter_id);
+    if (!chapter_id) {
+      return `${SOLARISAEL_BASE_URL}${citrinitas_booklet_path(book_slug)}`;
+    }
+
+    const chapter_slug = derive_chapter_slug(
+      Number.isFinite(Number(frontmatter?.position))
+        ? Number(frontmatter.position)
+        : 0,
+    );
+    return `${SOLARISAEL_BASE_URL}${citrinitas_chapter_path(book_slug, chapter_slug)}`;
+  }
   if (url_strategy === "rubedo_scene") {
-    const book_slug =
-      typeof frontmatter?.book_slug === "string"
-        ? frontmatter.book_slug.trim()
-        : "";
-    const thread_key =
-      typeof frontmatter?.thread_key === "string"
-        ? frontmatter.thread_key.trim()
-        : "";
-    const chapter_slug = derive_chapter_slug(frontmatter?.timeline_position);
+    const book_slug = normalize_identity_token(frontmatter?.book_slug);
+    const thread_key = normalize_identity_token(frontmatter?.thread_key);
+    const chapter_slug = derive_scene_chapter_slug(frontmatter?.timeline_position);
     if (!book_slug || !thread_key || !chapter_slug) {
       // Scene is missing required identity — wikilinks shouldn't point at
       // a route the rubedo loader will skip. Return null; caller will mark
@@ -341,6 +387,9 @@ const build_registry = () => {
       if (!file_matches_source_pattern(source, file_name)) {
         continue;
       }
+      if (is_rubedo_ref_file(source, file_path)) {
+        continue;
+      }
       const file_stem = file_name.replace(/\.md$/i, "");
       if (is_doc_file_to_skip(file_stem)) {
         continue;
@@ -354,17 +403,18 @@ const build_registry = () => {
       }
       const frontmatter = parse_simple_frontmatter(raw_body) || {};
 
-      // For rubedo, only register scenes that have the phase:rubedo tag —
-      // matches the runtime validator's contract so wikilinks don't point
-      // at files the loader will skip.
+      // The renderer accepts only scenes whose duplicated field/tag identity
+      // is complete and equal. Reuse its validator so registry and renderer
+      // expose exactly the same Rubedo source set.
       if (source.url_strategy === "rubedo_scene") {
         const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
-        const has_phase_rubedo = tags.some(
-          (tag) =>
-            typeof tag === "string" &&
-            tag.trim().toLowerCase() === "phase:rubedo",
-        );
-        if (!has_phase_rubedo) {
+        const parsed_tag_identity = parse_tag_identity(tags);
+        if (
+          !validate_scene_identity_consistency({
+            frontmatter,
+            parsed_tag_identity,
+          }).is_valid
+        ) {
           continue;
         }
       }
@@ -385,29 +435,57 @@ const build_registry = () => {
         typeof frontmatter.slug === "string" && frontmatter.slug.trim()
           ? frontmatter.slug.trim()
           : null;
+      const chapter_id_value =
+        typeof frontmatter.chapter_id === "string" &&
+        frontmatter.chapter_id.trim()
+          ? frontmatter.chapter_id.trim()
+          : null;
+      const book_slug_value =
+        typeof frontmatter.book_slug === "string" &&
+        frontmatter.book_slug.trim()
+          ? frontmatter.book_slug.trim()
+          : null;
+      const is_citrinitas_booklet_meta =
+        source.url_strategy === "citrinitas_booklet" && !chapter_id_value;
 
       const title =
         (typeof frontmatter.title === "string" && frontmatter.title.trim()) ||
         (typeof frontmatter.scene_title === "string" &&
           frontmatter.scene_title.trim()) ||
-        (slug_value ?? titlecase_filename_stem(file_stem));
+        (typeof frontmatter.chapter_title === "string" &&
+          frontmatter.chapter_title.trim()) ||
+        (typeof frontmatter.book_title === "string" &&
+          frontmatter.book_title.trim()) ||
+        (slug_value ??
+          chapter_id_value ??
+          book_slug_value ??
+          titlecase_filename_stem(file_stem));
 
       // Excerpt source order:
-      //   1. frontmatter.excerpt        (posts — albedo/citrinitas/nigredo)
+      //   1. frontmatter.excerpt        (posts)
       //   2. frontmatter.scene_excerpt  (rubedo scenes)
-      //   3. frontmatter.summary        (codex entries)
-      //   4. first paragraph of body    (fallback for anything without a
-      //                                  hand-written preview)
+      //   3. chapter_excerpt/book_synopsis (booklets)
+      //   4. frontmatter.summary         (codex entries)
+      //   5. first paragraph of body
       const excerpt = clamp_excerpt(
         (typeof frontmatter.excerpt === "string" &&
           frontmatter.excerpt.trim()) ||
           (typeof frontmatter.scene_excerpt === "string" &&
             frontmatter.scene_excerpt.trim()) ||
+          (typeof frontmatter.chapter_excerpt === "string" &&
+            frontmatter.chapter_excerpt.trim()) ||
+          (typeof frontmatter.book_synopsis === "string" &&
+            frontmatter.book_synopsis.trim()) ||
           (typeof frontmatter.summary === "string" &&
             frontmatter.summary.trim()) ||
           extract_first_paragraph(raw_body),
       );
 
+      const aliases = Array.isArray(frontmatter.aliases)
+        ? frontmatter.aliases.filter(
+            (alias) => typeof alias === "string" && alias.trim(),
+          )
+        : [];
       const target = Object.freeze({
         url,
         title,
@@ -416,27 +494,65 @@ const build_registry = () => {
         source_path: file_path,
         file_stem,
         slug: slug_value,
+        aliases: Object.freeze([...aliases]),
       });
 
-      // Always register filename-stem (obsidian-native lookup).
-      register_key({
-        map: targets_by_key,
-        key: file_stem,
-        target,
-        conflicts,
-        key_kind: "filename",
-      });
+      // A booklet's `_book.md` is metadata for the `/citrinitas/:book_slug`
+      // index, not a lookup target named `_book` (that filename repeats per
+      // booklet). Chapters retain filename lookup and also expose chapter_id.
+      if (!is_citrinitas_booklet_meta) {
+        register_key({
+          map: targets_by_key,
+          key: file_stem,
+          target,
+          conflicts,
+          key_kind: "filename",
+        });
+      }
 
-      // Also register frontmatter slug when it differs from the stem.
-      // Posts: slug IS canonical (Sol's stated source of truth for URL).
-      // Rubedo: no slug field, this is a no-op. Codex: same, no-op.
-      if (slug_value && slug_value.toLowerCase() !== file_stem.toLowerCase()) {
+      if (is_citrinitas_booklet_meta && book_slug_value) {
+        register_key({
+          map: targets_by_key,
+          key: book_slug_value,
+          target,
+          conflicts,
+          key_kind: "booklet_slug",
+        });
+      }
+
+      if (
+        slug_value &&
+        slug_value.toLowerCase() !== file_stem.toLowerCase()
+      ) {
         register_key({
           map: targets_by_key,
           key: slug_value,
           target,
           conflicts,
           key_kind: "slug",
+        });
+      }
+
+      if (
+        chapter_id_value &&
+        chapter_id_value.toLowerCase() !== file_stem.toLowerCase()
+      ) {
+        register_key({
+          map: targets_by_key,
+          key: chapter_id_value,
+          target,
+          conflicts,
+          key_kind: "chapter_id",
+        });
+      }
+
+      for (const alias of aliases) {
+        register_key({
+          map: targets_by_key,
+          key: alias,
+          target,
+          conflicts,
+          key_kind: "alias",
         });
       }
     }
@@ -449,7 +565,7 @@ const build_registry = () => {
     );
     throw new Error(
       "[wikilink_registry] Duplicate lookup keys detected — obsidian's `[[name]]` " +
-        "resolution requires unique filenames AND slugs vault-wide. Rename one of " +
+        "resolution requires unique filenames, slugs, chapter ids, and aliases. Rename one of " +
         "each pair to disambiguate:\n" +
         lines.join("\n"),
     );
@@ -467,6 +583,10 @@ const get_wikilink_registry = () => {
   return cached_registry;
 };
 
+const invalidate_wikilink_registry = () => {
+  cached_registry = null;
+};
+
 const resolve_wikilink_token = (raw_token) => {
   if (typeof raw_token !== "string") {
     return null;
@@ -482,8 +602,8 @@ const resolve_wikilink_token = (raw_token) => {
   if (!clean_token) {
     return null;
   }
-  const registry = get_wikilink_registry();
-  return registry.get(clean_token) ?? null;
+
+  return get_wikilink_registry().get(clean_token) ?? null;
 };
 
 export {
@@ -491,6 +611,8 @@ export {
   build_registry,
   clamp_excerpt,
   get_wikilink_registry,
+  invalidate_wikilink_registry,
+  is_wikilink_registry_source,
   parse_simple_frontmatter,
   resolve_wikilink_token,
   titlecase_filename_stem,

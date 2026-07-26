@@ -56,7 +56,6 @@
 
   --ui_accent: oklch(73.5% 0.075 80); /* aged gold */
   --ui_accent_2: oklch(80% 0.07 80); /* soft gold */
-  --ui_focus: oklch(73.5% 0.075 80);
 }
 
 /* Thread identity colors — per character, not per theme.
@@ -85,12 +84,10 @@
 
   --ui_accent: oklch(73.5% 0.075 80);
   --ui_accent_2: oklch(80% 0.07 80);
-  --ui_focus: oklch(73.5% 0.075 80);
 }
 
 body {
   --layout_viewport_pad_x: 1rem;
-  --layout_compound_max_inline: 90rem;
   --layout_compound_gap: 1rem;
   --layout_body_grid_gap: 0.25rem;
 
@@ -173,6 +170,3 @@ vessel[data-shape="page_main"] {
   @apply flex grow flex-col gap-1;
 }
 
-#sol_content {
-  @apply flex grow flex-col;
-}

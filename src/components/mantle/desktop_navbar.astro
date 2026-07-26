@@ -20,8 +20,10 @@ const home_href = with_base("/");
     preload="mouseover"
   >
     <div class="sol__nav_rail_layer sol__nav_rail_layer_cursor_glow"></div>
-    <div class="sol__nav_rail_layer sol__nav_rail_layer_outer_trace"></div>
-    <div class="sol__nav_rail_layer sol__nav_rail_layer_inner_trace"></div>
+    <ornament data-shape="desktop_nav_traces" aria-hidden="true">
+      <div class="sol__nav_rail_layer sol__nav_rail_layer_outer_trace"></div>
+      <div class="sol__nav_rail_layer sol__nav_rail_layer_inner_trace"></div>
+    </ornament>
     <NavOrnament
       kind="side_left"
       class_name="sol__nav_ornament sol__nav_ornament_side sol__nav_ornament_left"

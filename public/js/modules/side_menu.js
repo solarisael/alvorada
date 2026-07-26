@@ -256,9 +256,19 @@ const set_menu_state = (menu_node, is_open, panel_name) => {
   menu_node.dataset.sideMenuPanel = safe_panel_name;
 
   const trigger_node = menu_node.querySelector("[data-side-menu-trigger]");
+  const panel_node = menu_node.querySelector("[data-side-menu-panel-shell]");
 
   if (trigger_node instanceof HTMLButtonElement) {
     trigger_node.setAttribute("aria-expanded", is_open ? "true" : "false");
+    trigger_node.setAttribute(
+      "aria-label",
+      is_open ? "Close Solarisael menu" : "Open Solarisael menu",
+    );
+  }
+
+  if (panel_node instanceof HTMLElement) {
+    panel_node.setAttribute("aria-hidden", is_open ? "false" : "true");
+    panel_node.inert = !is_open;
   }
 
   for (const toggle_node of menu_node.querySelectorAll("[data-side-menu-toggle]")) {
@@ -270,6 +280,7 @@ const set_menu_state = (menu_node, is_open, panel_name) => {
     const is_active_panel = toggle_panel === safe_panel_name;
     toggle_node.dataset.active = is_active_panel ? "true" : "false";
     toggle_node.setAttribute("aria-pressed", is_active_panel ? "true" : "false");
+    toggle_node.setAttribute("aria-expanded", is_active_panel ? "true" : "false");
   }
 
   for (const page_node of menu_node.querySelectorAll("[data-side-menu-page]")) {
@@ -277,7 +288,9 @@ const set_menu_state = (menu_node, is_open, panel_name) => {
       continue;
     }
 
-    page_node.hidden = page_node.dataset.sideMenuPage !== safe_panel_name;
+    const is_active_page = page_node.dataset.sideMenuPage === safe_panel_name;
+    page_node.hidden = !is_active_page;
+    page_node.setAttribute("aria-hidden", is_active_page ? "false" : "true");
   }
 };
 
@@ -468,6 +481,16 @@ const bind_side_menu_controls = () => {
     write_cookie_value(SITE_MENU_PANEL_COOKIE_NAME, panel_name);
   };
 
+  const close_menu = () => {
+    commit_menu_state(
+      false,
+      menu_node.dataset.sideMenuPanel ?? SITE_MENU_PANEL_DEFAULT,
+    );
+    if (trigger_node instanceof HTMLButtonElement) {
+      trigger_node.focus();
+    }
+  };
+
   if (trigger_node instanceof HTMLButtonElement) {
     trigger_node.addEventListener("click", () => {
       const next_open_state = menu_node.dataset.sideMenuOpen !== "true";
@@ -475,6 +498,13 @@ const bind_side_menu_controls = () => {
         next_open_state,
         menu_node.dataset.sideMenuPanel ?? SITE_MENU_PANEL_DEFAULT,
       );
+      if (next_open_state && close_node instanceof HTMLButtonElement) {
+        window.setTimeout(() => {
+          if (menu_node.dataset.sideMenuOpen === "true") {
+            close_node.focus();
+          }
+        }, 0);
+      }
     });
   }
 
@@ -495,10 +525,20 @@ const bind_side_menu_controls = () => {
   }
 
   if (close_node instanceof HTMLButtonElement) {
-    close_node.addEventListener("click", () => {
-      commit_menu_state(false, menu_node.dataset.sideMenuPanel ?? SITE_MENU_PANEL_DEFAULT);
-    });
+    close_node.addEventListener("click", close_menu);
   }
+
+  menu_node.addEventListener("keydown", (event) => {
+    if (
+      event.key !== "Escape" ||
+      menu_node.dataset.sideMenuOpen !== "true"
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    close_menu();
+  });
 
   if (theme_select_node instanceof HTMLSelectElement) {
     theme_select_node.addEventListener("change", commit_site_state);

@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { NIGREDO_STATES } from "../src/data/nigredo_taxonomy.js";
+import { resolve_obsidian_vault_root } from "../src/config/obsidian_vault_root.js";
 
 const PHASE_DIRS = {
   nigredo: "z_nigredo",
@@ -26,8 +27,7 @@ if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
   fail("slug must be kebab-case: lowercase letters, numbers, and hyphens");
 }
 
-const vault_root =
-  process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
+const vault_root = resolve_obsidian_vault_root();
 const target_dir = path.join(
   vault_root,
   PHASE_DIRS[phase],

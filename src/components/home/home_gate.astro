@@ -1,0 +1,29 @@
+---
+import HomeGateIntroDeco from "./home_gate_intro_deco.astro";
+
+const { intro_body_class = "" } = Astro.props;
+const has_heading = Astro.slots.has("heading");
+---
+
+<vessel data-shape="home_gate" id="sol_home_card_gate">
+  <div id="sol_home_gate_intro">
+    <HomeGateIntroDeco />
+    <div id="sol_home_gate_body" class={intro_body_class || undefined}>
+      <slot name="intro" />
+    </div>
+  </div>
+
+  {has_heading && (
+    <div id="sol_phase_card_header">
+      <h2
+        id="sol_phase_card_heading"
+        class="sol__text_fx sol__text_fx_gradient sol__text_fx_aura"
+        data-text-fx-intensity="0.85"
+      >
+        <slot name="heading" />
+      </h2>
+    </div>
+  )}
+
+  <slot />
+</vessel>

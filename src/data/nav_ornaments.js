@@ -1,5 +1,5 @@
 // Generated/curated navbar ornaments. Keep source recipes in scripts/extract_svg_mask.py.
-// Side ornaments render inline; the selected center sun uses an external CSS mask.
+// Side ornaments render inline; the selected center sun uses an explicit image element.
 export const NAV_ORNAMENTS = Object.freeze({
   side_left: {
     viewBox: "0 0 133 76",

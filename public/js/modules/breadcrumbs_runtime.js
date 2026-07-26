@@ -60,6 +60,11 @@ const apply_constant_crumb_state = (pathname_value) => {
     const crumb_label_node = crumb_item_node.querySelector("a, span");
     if (crumb_label_node instanceof HTMLElement) {
       crumb_label_node.classList.toggle("sol__is_current_link", is_current);
+      if (is_current) {
+        crumb_label_node.setAttribute("aria-current", "page");
+      } else {
+        crumb_label_node.removeAttribute("aria-current");
+      }
     }
   });
 

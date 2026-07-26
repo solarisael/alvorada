@@ -70,10 +70,7 @@
 @utility ctp-text {
   --ctp-text-theme-headings: var(--color-stone-100);
   --ctp-text-theme-body: var(--color-stone-50);
-  --ctp-text-theme-lead: var(--color-stone-200);
-  --ctp-text-theme-links: var(--color-stone-200);
   --ctp-text-theme-bold: var(--color-stone-300);
-  --ctp-text-theme-counters: var(--color-stone-400);
 
   h1,
   h2,

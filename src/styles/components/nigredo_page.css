@@ -25,7 +25,6 @@ container[data-phase="nigredo"] {
   --nigredo_surface_mix: 52%;
   --nigredo_border_mix: 22%;
   --nigredo_halo_mix: 20%;
-  --nigredo_text_mix: 80%;
   --nigredo_blur: 2px;
   --nigredo_shadow_strength: 0.68;
   --nigredo_ash_opacity: 0.18;
@@ -49,7 +48,6 @@ container[data-phase="nigredo"] {
 
   /* feed */
   --nigredo_feed_gap: 0.72rem;
-  --nigredo_filter_gap: 0.35rem;
 
   /* lane alignment */
   --nigredo_entry_left_width: 92%;

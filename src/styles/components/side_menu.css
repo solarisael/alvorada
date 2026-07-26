@@ -7,7 +7,6 @@
   --side_menu_trigger_size: 3.35rem;
   --side_menu_trigger_right: 1rem;
   --side_menu_trigger_bottom: 1rem;
-  --side_menu_radius: 1.15rem;
 
   /* colors */
   --side_menu_surface_mix: 82%;
@@ -339,5 +338,12 @@
     --side_menu_trigger_size: 3rem;
     --side_menu_trigger_right: 0.75rem;
     --side_menu_trigger_bottom: 5.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sol_side_menu_trigger,
+  #sol_side_menu_panel {
+    transition-duration: 1ms;
   }
 }

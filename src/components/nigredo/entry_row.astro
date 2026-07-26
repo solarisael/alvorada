@@ -6,7 +6,13 @@ import {
   NIGREDO_STATE_GLOSS,
 } from "../../data/nigredo_taxonomy.js";
 
-const { entry, index, ornament_srcs, prerendered = false } = Astro.props;
+const {
+  entry,
+  index,
+  ornament_srcs,
+  prerendered = false,
+  set_size = null,
+} = Astro.props;
 const body_id = `sol_nigredo_entry_body_${index}`;
 const tone = entry.featured ? "rupture" : "quiet";
 const state_list = entry.states ?? [];
@@ -21,6 +27,8 @@ const EntryContent = entry.Content;
   data-states={state_list.join(" ")}
   data-expanded="false"
   data-prerendered={prerendered ? "true" : undefined}
+  aria-posinset={index + 1}
+  aria-setsize={set_size ?? undefined}
 >
   <nigredo
     data-shape="entry"
@@ -32,7 +40,10 @@ const EntryContent = entry.Content;
       <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_surface" />
       <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ash" />
       <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_frame" />
-      <div class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament">
+      <ornament
+        data-shape="nigredo_entry_ornament"
+        class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament"
+      >
         <img
           class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tl"
           src={ornament_srcs.corner_tl}
@@ -61,7 +72,7 @@ const EntryContent = entry.Content;
           loading="lazy"
           decoding="async"
         />
-      </div>
+</ornament>
 
       <div class="sol__nigredo_entry_layer_body">
         <header class="sol__nigredo_entry_header">

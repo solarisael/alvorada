@@ -9,16 +9,48 @@ const { book_slug, timeline_data_href } = Astro.props;
   data-book-slug={book_slug}
   data-timeline-data-href={timeline_data_href}
 >
+  <p
+    id="sol_rubedo_timeline_instructions"
+    class="sol__rubedo_timeline_instructions sr-only"
+  >
+    Interactive Rubedo constellation timeline for {book_slug}. Focus the map
+    and use the arrow keys to pan, plus or minus to zoom, 0 or C to center on
+    the active chapter, and Enter or Space to open the selected chapter.
+  </p>
+  <p
+    id="sol_rubedo_timeline_keyboard_status"
+    class="sr-only"
+    role="status"
+    aria-live="polite"
+    data-rubedo-keyboard-status
+  >
+    No chapter selected.
+  </p>
   <canvas
     id="sol_rubedo_timeline_canvas"
     class="sol__rubedo_timeline_canvas"
-    tabindex="0"></canvas>
+    role="application"
+    aria-label={`Rubedo constellation timeline for ${book_slug}`}
+    aria-describedby="sol_rubedo_timeline_instructions sol_rubedo_timeline_keyboard_status"
+    aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown + - 0 c Enter Space"
+    tabindex="0"
+  >
+    This interactive timeline requires JavaScript and canvas support. Use the
+    chapter links above to read this book.
+  </canvas>
 
   <div
     id="sol_rubedo_timeline_hover_preview"
     class="sol__rubedo_timeline_hover_preview"
   >
   </div>
+
+  <noscript>
+    <p class="sol__rubedo_timeline_fallback">
+      This interactive constellation needs JavaScript. Use the chapter links
+      above to read this book.
+    </p>
+  </noscript>
 
   <ul class="sol__rubedo_timeline_legend">
     <li>white path — cinza thread</li>

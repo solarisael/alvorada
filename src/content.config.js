@@ -5,10 +5,11 @@
 // authoring happens in Obsidian (templater, dataview, daily notes) and the
 // site renders without an explicit migration step.
 //
-// To move the vault: set SOLARISAEL_OBSIDIAN_ROOT, or edit the constant
-// below. Per-phase subdirs are pinned to the vault's existing naming
-// (`z_` / `zz_` / `zzz_` / `zzzz_` for sort-order convenience in Obsidian's
-// file pane — the alchemical sequence matches the prefix length).
+// To move the vault, set SOLARISAEL_OBSIDIAN_ROOT. The shared resolver in
+// src/config/obsidian_vault_root.js is the only root selection source. Per-phase
+// subdirs are pinned to the vault's existing naming (`z_` / `zz_` / `zzz_` /
+// `zzzz_` for sort-order convenience in Obsidian's file pane — the alchemical
+// sequence matches the prefix length).
 //
 // The rubedo collection stays declared-but-empty here: rubedo book content
 // is consumed through `import.meta.glob` in `book_timeline_runtime.js`, not
@@ -18,11 +19,11 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { resolve_obsidian_vault_root } from "./config/obsidian_vault_root.js";
 import { NIGREDO_STATES } from "./data/nigredo_taxonomy.js";
 import { ALBEDO_STATES } from "./data/albedo_taxonomy.js";
 
-const OBSIDIAN_VAULT_ROOT =
-  process.env.SOLARISAEL_OBSIDIAN_ROOT ?? "C:/Solarisael/Obsidian/obsidian";
+export const OBSIDIAN_VAULT_ROOT = resolve_obsidian_vault_root();
 
 // Astro's glob loader resolves `base` via fileURLToPath — it expects a
 // file:// URL, NOT a bare absolute path. Convert with pathToFileURL.

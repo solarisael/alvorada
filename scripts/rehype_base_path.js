@@ -18,7 +18,7 @@ const rehype_base_path = (base_path = "/") => {
   return (tree) => {
     const visit_node = (node) => {
       if (node?.type === "element" && node.properties) {
-        for (const attribute_name of ["href", "src"]) {
+        for (const attribute_name of ["href", "src", "hx-get"]) {
           const raw_value = node.properties[attribute_name];
 
           if (typeof raw_value !== "string") {

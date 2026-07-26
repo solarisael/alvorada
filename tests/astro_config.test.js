@@ -1,7 +1,11 @@
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, test } from "bun:test";
 
 const original_obsidian_root = process.env.SOLARISAEL_OBSIDIAN_ROOT;
 let config_import_counter = 0;
+let temporary_vault_root = null;
 
 const restore_obsidian_root = () => {
   if (original_obsidian_root === undefined) {
@@ -21,6 +25,10 @@ const import_config_with_vault_root = async (vault_root) => {
 
 afterEach(() => {
   restore_obsidian_root();
+  if (temporary_vault_root) {
+    rmSync(temporary_vault_root, { recursive: true, force: true });
+    temporary_vault_root = null;
+  }
 });
 
 const create_vite_server_fake = () => {
@@ -68,7 +76,10 @@ const create_vite_server_fake = () => {
 
 describe("obsidian_rubedo_hot_reload", () => {
   test("reloads configured rubedo scene paths while ignoring refs and other vault files", async () => {
-    const vault_root = "D:/Solarisael Test Vault";
+    temporary_vault_root = mkdtempSync(
+      path.join(tmpdir(), "solarisael-vault-"),
+    );
+    const vault_root = temporary_vault_root.replaceAll("\\", "/");
     const { obsidian_rubedo_hot_reload } = await import_config_with_vault_root(
       vault_root,
     );
@@ -78,15 +89,18 @@ describe("obsidian_rubedo_hot_reload", () => {
 
     plugin.configureServer(server);
 
-    expect(watched_roots).toEqual(["D:/Solarisael Test Vault/zzzz_rubedo"]);
+    expect(watched_roots).toEqual([
+      `${vault_root}/zzzz_rubedo`,
+      vault_root,
+    ]);
 
     const ignored_non_rubedo_result = plugin.handleHotUpdate({
-      file: "D:/Solarisael Test Vault/nigredo/scene.md",
+      file: `${vault_root}/nigredo/scene.md`,
       server,
       timestamp: 100,
     });
     const ignored_refs_result = plugin.handleHotUpdate({
-      file: "D:/Solarisael Test Vault/zzzz_rubedo/refs/note.md",
+      file: `${vault_root}/zzzz_rubedo/refs/note.md`,
       server,
       timestamp: 101,
     });
@@ -97,7 +111,7 @@ describe("obsidian_rubedo_hot_reload", () => {
     expect(websocket_messages).toEqual([]);
 
     const hot_update_result = plugin.handleHotUpdate({
-      file: "D:\\Solarisael Test Vault\\zzzz_rubedo\\chapter-001.md",
+      file: `${vault_root.replaceAll("/", "\\")}\\zzzz_rubedo\\chapter-001.md`,
       server,
       timestamp: 102,
     });
@@ -116,5 +130,21 @@ describe("obsidian_rubedo_hot_reload", () => {
       },
     ]);
     expect(websocket_messages).toEqual([{ type: "full-reload" }]);
+  });
+
+  test("uses the configured root for the Vite alias and exported config root", async () => {
+    temporary_vault_root = mkdtempSync(
+      path.join(tmpdir(), "solarisael-vault-"),
+    );
+    const vault_root = temporary_vault_root.replaceAll("\\", "/");
+    const {
+      OBSIDIAN_VAULT_ROOT,
+      default: astro_config,
+    } = await import_config_with_vault_root(vault_root);
+
+    expect(OBSIDIAN_VAULT_ROOT).toBe(vault_root.replaceAll("/", path.sep));
+    expect(astro_config.vite.resolve.alias["@vault"]).toBe(
+      vault_root.replaceAll("/", path.sep),
+    );
   });
 });

@@ -4,19 +4,20 @@ import { with_base } from "../../utils/routes.js";
 
 const { kind, class_name = "" } = Astro.props;
 const ornament = NAV_ORNAMENTS[kind];
-const mask_url = ornament?.mask ? with_base(ornament.mask) : "";
+const image_url = ornament?.mask ? with_base(ornament.mask) : "";
 
 if (!ornament) {
   throw new Error(`Unknown nav ornament: ${kind}`);
 }
 ---
 
-<span class={class_name} data-nav-ornament={kind}>
+<ornament data-shape="nav_ornament" class={class_name} data-nav-ornament={kind}>
   {
-    mask_url ? (
-      <span
-        class="sol__nav_ornament_svg sol__nav_ornament_mask"
-        style={`--nav_ornament_mask_url: url(${mask_url})`}
+    image_url ? (
+      <img
+        class="sol__nav_ornament_svg sol__nav_ornament_image"
+        src={image_url}
+        alt=""
       />
     ) : (
       <svg
@@ -31,4 +32,4 @@ if (!ornament) {
       </svg>
     )
   }
-</span>
+</ornament>

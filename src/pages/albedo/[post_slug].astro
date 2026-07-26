@@ -20,6 +20,7 @@ const display_title = entry.data.title ?? entry.data.slug;
 ---
 
 <IndexLayout
+  page_title={display_title}
   phase="albedo"
   crumbs={build_crumbs([
     { label: "albedo", href: with_base("/albedo") },

@@ -87,6 +87,8 @@ const active_theme_color =
 <mantle
   data-shape="breadcrumbs"
   id="sol_breadcrumbs"
+  role="navigation"
+  aria-label="Breadcrumb"
   data-phase={active_phase}
   style={`--crumb_theme_color: ${active_theme_color};`}
 >
@@ -102,12 +104,16 @@ const active_theme_color =
             {crumb_item.href ? (
               <a
                 href={crumb_item.href}
+                aria-current={is_current ? "page" : undefined}
                 class:list={{ sol__is_current_link: is_current }}
               >
                 {crumb_item.label}
               </a>
             ) : (
-              <span class:list={{ sol__is_current_link: is_current }}>
+              <span
+                aria-current={is_current ? "page" : undefined}
+                class:list={{ sol__is_current_link: is_current }}
+              >
                 {crumb_item.label}
               </span>
             )}

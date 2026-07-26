@@ -16,6 +16,8 @@
 #sol_desktop_nav {
   /* Quick Tune Variables (edit here first) */
 
+  --desktop_nav_reference_gold: var(--sol_ornament_color);
+  --desktop_nav_reference_gold_bright: var(--sol_ornament_color);
   --cursor_x: 50%;
   --cursor_y: 50%;
 
@@ -27,10 +29,10 @@
   --rail_glass_blur: calc(10px * var(--site_shell_blur_mult, 1));
   --rail_light_opacity: 0.16;
 
-  --rail_trace_opacity: 0.42;
+  --rail_trace_opacity: 0.52;
   --rail_trace_glow: color-mix(
     in oklch,
-    var(--site_style_accent) calc(36% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(46% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --pill_background: color-mix(
@@ -40,7 +42,7 @@
   );
   --pill_border: color-mix(
     in oklch,
-    var(--site_style_accent) calc(24% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(30% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --pill_glow_scale: var(--site_fx_glow_mult, 1);
@@ -52,12 +54,12 @@
 
   --center_shell_border: color-mix(
     in oklch,
-    var(--site_style_accent) calc(68% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(72% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --center_shell_glow: color-mix(
     in oklch,
-    var(--site_style_accent) calc(50% * var(--site_shell_glow_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(54% * var(--site_shell_glow_mult, 1)),
     transparent
   );
   --center_core_background: color-mix(
@@ -83,14 +85,14 @@
   --desktop_nav_ornament_side_width: calc(10.5rem * var(--desktop_nav_compact));
   --desktop_nav_ornament_side_height: calc(6rem * var(--desktop_nav_compact));
   --desktop_nav_ornament_side_overhang: calc(
-    4.5rem * var(--desktop_nav_compact)
+    var(--desktop_nav_ornament_side_width) * 0.5
   );
   --desktop_nav_ornament_side_opacity: 0.62;
   --desktop_nav_ornament_center_width: 300%;
   --desktop_nav_ornament_center_height: 300%;
-  --desktop_nav_ornament_center_opacity: 0.82;
-  --desktop_nav_ornament_color: var(--site_style_accent);
-  --desktop_nav_ornament_side_color: var(--site_style_accent);
+  --desktop_nav_ornament_center_opacity: 0.86;
+  --desktop_nav_ornament_color: var(--sol_ornament_color);
+  --desktop_nav_ornament_side_color: var(--sol_ornament_color);
   --desktop_nav_ornament_right_scale: 0.92;
   --desktop_nav_composition_width: calc(
     (
@@ -199,13 +201,13 @@
   border-radius: var(--desktop_nav_rail_radius);
   border-color: color-mix(
     in oklch,
-    var(--site_style_accent) calc(42% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(52% * var(--site_style_strength_mult, 1)),
     transparent
   );
   background:
     radial-gradient(
       88% 140% at 50% 50%,
-      color-mix(in oklch, var(--site_style_accent) 8%, transparent) 0%,
+      color-mix(in oklch, var(--desktop_nav_reference_gold) 8%, transparent) 0%,
       transparent 68%
     ),
     radial-gradient(
@@ -251,10 +253,10 @@
   overflow: visible;
 }
 
-.sol__nav_ornament_mask {
-  background-color: currentColor;
-  -webkit-mask: var(--nav_ornament_mask_url) center / contain no-repeat;
-  mask: var(--nav_ornament_mask_url) center / contain no-repeat;
+.sol__nav_ornament_image {
+  object-fit: contain;
+  filter: sepia(0.78) saturate(1.72) hue-rotate(2deg) brightness(0.98)
+    contrast(1.1);
 }
 
 #sol_nav_user_bar > .sol__nav_ornament_side {
@@ -264,7 +266,7 @@
   height: var(--desktop_nav_ornament_side_height);
   opacity: var(--desktop_nav_ornament_side_opacity);
   color: var(--desktop_nav_ornament_side_color);
-  filter: none;
+  filter: brightness(var(--sol_ornament_luminance));
   mix-blend-mode: normal;
 }
 
@@ -297,47 +299,27 @@
   opacity: 0.48;
 }
 
-.sol__nav_rail_layer_outer_trace,
-.sol__nav_rail_layer_inner_trace {
-  border-radius: var(--desktop_nav_rail_radius);
-  opacity: var(--rail_trace_opacity);
-}
-
 .sol__nav_rail_layer_outer_trace {
   inset: 0;
-  border: var(--site_border_width_hairline) solid transparent;
-  background:
-    linear-gradient(var(--rail_background), var(--rail_background)) padding-box,
-    linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--rail_trace_glow) 11%,
-        transparent 23%,
-        transparent 77%,
-        var(--rail_trace_glow) 89%,
-        transparent 100%
-      )
-      border-box;
-  filter: drop-shadow(0 0 10px var(--rail_trace_glow));
+  border: var(--site_border_width_hairline) solid var(--rail_trace_glow);
+  border-radius: var(--desktop_nav_rail_radius);
+  opacity: var(--rail_trace_opacity);
+  box-shadow:
+    inset 0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--desktop_nav_reference_gold_bright) 34%, transparent),
+    0 0 10px var(--rail_trace_glow);
 }
 
 .sol__nav_rail_layer_inner_trace {
   inset: 0.55rem 0.9rem 0.45rem;
+  border-radius: var(--desktop_nav_rail_radius);
   border-block-end: var(--site_border_width_hairline) solid
-    color-mix(in oklch, var(--site_style_accent) 24%, transparent);
-  background:
-    radial-gradient(
-      0.42rem 0.42rem at 0% 100%,
-      transparent 56%,
-      color-mix(in oklch, var(--site_style_accent) 30%, transparent) 58%,
-      transparent 72%
-    ),
-    radial-gradient(
-      0.42rem 0.42rem at 100% 100%,
-      transparent 56%,
-      color-mix(in oklch, var(--site_style_accent) 30%, transparent) 58%,
-      transparent 72%
-    );
+    color-mix(in oklch, var(--desktop_nav_reference_gold) 38%, transparent);
+  opacity: var(--rail_trace_opacity);
+  box-shadow:
+    inset 0 -1px 0
+      color-mix(in oklch, var(--desktop_nav_reference_gold_bright) 18%, transparent),
+    0 0 8px color-mix(in oklch, var(--desktop_nav_reference_gold) 22%, transparent);
 }
 
 .sol__nav_links {
@@ -518,37 +500,25 @@
   width: var(--desktop_nav_ornament_center_width);
   height: var(--desktop_nav_ornament_center_height);
   opacity: var(--desktop_nav_ornament_center_opacity);
-  filter: drop-shadow(
-    0 0 1.1rem
-      color-mix(in oklch, var(--desktop_nav_ornament_color) 42%, transparent)
-  );
+  filter: brightness(var(--sol_ornament_luminance))
+    drop-shadow(
+      0 0 1.1rem
+        color-mix(in oklch, var(--desktop_nav_ornament_color) 42%, transparent)
+    );
   mix-blend-mode: screen;
-  transform: translate(-50%, -23%) scaleY(-1);
+  transform: translate(-50%, -50%) scaleY(-1);
 }
 
 .sol__icon_user_layer_orbit {
   @apply rounded-full;
 
   inset: -2px;
-  padding: 2px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 306deg,
-    color-mix(in oklch, var(--site_style_accent) 22%, transparent) 321deg,
-    color-mix(in oklch, var(--site_style_accent) 88%, transparent) 334deg,
-    color-mix(in oklch, var(--site_style_accent) 44%, transparent) 342deg,
-    transparent 350deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  border: 2px solid transparent;
+  border-top-color: color-mix(in oklch, var(--desktop_nav_reference_gold) 28%, transparent);
+  border-right-color: color-mix(in oklch, var(--desktop_nav_reference_gold) 88%, transparent);
   opacity: 0;
   filter: drop-shadow(
-    0 0 8px color-mix(in oklch, var(--site_style_accent) 62%, transparent)
+    0 0 8px color-mix(in oklch, var(--desktop_nav_reference_gold) 62%, transparent)
   );
 }
 
@@ -621,7 +591,11 @@
 }
 
 :root[data-site-theme="solarisael"] #sol_desktop_nav {
-  --cinza_sun_tint: color-mix(in oklch, white 88%, var(--site_style_accent));
+  --cinza_sun_tint: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold_bright) 88%,
+    var(--desktop_nav_reference_gold)
+  );
   --cinza_sun_neon_opacity: 0.94;
   --cinza_sun_halo_opacity: 0.82;
   --cinza_sun_highlight_opacity: 0.82;
@@ -629,12 +603,12 @@
   --cinza_sun_contrast: 1.2;
   --center_shell_border: color-mix(
     in oklch,
-    var(--site_style_accent) calc(34% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(42% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --center_shell_glow: color-mix(
     in oklch,
-    var(--site_style_accent) calc(42% * var(--site_shell_glow_mult, 1)),
+    var(--desktop_nav_reference_gold) calc(50% * var(--site_shell_glow_mult, 1)),
     transparent
   );
   --center_core_background: color-mix(
@@ -645,7 +619,11 @@
 }
 
 :root[data-site-theme="solarisael"][data-site-shell="medium"] #sol_desktop_nav {
-  --cinza_sun_tint: color-mix(in oklch, white 90%, var(--site_style_accent));
+  --cinza_sun_tint: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold_bright) 90%,
+    var(--desktop_nav_reference_gold)
+  );
   --cinza_sun_neon_opacity: 1;
   --cinza_sun_halo_opacity: 0.9;
   --cinza_sun_highlight_opacity: 0.94;
@@ -654,7 +632,11 @@
 }
 
 :root[data-site-theme="solarisael"][data-site-shell="strong"] #sol_desktop_nav {
-  --cinza_sun_tint: color-mix(in oklch, white 94%, var(--site_style_accent));
+  --cinza_sun_tint: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold_bright) 94%,
+    var(--desktop_nav_reference_gold)
+  );
   --cinza_sun_neon_opacity: 1;
   --cinza_sun_halo_opacity: 1;
   --cinza_sun_highlight_opacity: 1.04;
@@ -710,8 +692,12 @@
   height: 105%;
   border-radius: 50%;
   border: var(--site_border_width_standard) solid transparent;
-  border-top-color: color-mix(in oklch, white 94%, var(--cinza_sun_tint));
-  border-right-color: color-mix(in oklch, white 74%, var(--cinza_sun_tint));
+  border-top-color: var(--desktop_nav_reference_gold_bright);
+  border-right-color: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold) 74%,
+    var(--desktop_nav_reference_gold_bright)
+  );
   opacity: calc(
     var(--cinza_sun_highlight_opacity) * var(--cinza_sun_neon_opacity)
   );

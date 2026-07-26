@@ -32,29 +32,43 @@
   opacity: calc(var(--cinza_fog_halo_mix) * 0.008);
   background: radial-gradient(
     120% 100% at 50% 50%,
-    color-mix(in oklch, var(--site_style_accent) 38%, transparent),
+    color-mix(in oklch, var(--sol_ornament_gold) 38%, transparent),
     transparent 72%
   );
 }
 
 :root[data-site-theme="solarisael"] .sol__content_stage_layer_rails {
-  inset: 0.5rem 0.75rem 0.5rem 0.75rem;
-  --content_layer_cinza_rail_gradient: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--site_style_accent) 36%, transparent),
-    transparent 18%
-  );
+  inset: 0.5rem 0.75rem;
   opacity: calc(
     var(--cinza_reliquary_opacity) * 0.54 * var(--cinza_tune_rails_in_stage)
   );
-  background:
-    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_left)
-      var(--cinza_reliquary_axis_center) / 0.08rem
-      var(--cinza_reliquary_axis_effective_span) no-repeat,
-    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_right)
-      var(--cinza_reliquary_axis_center) / 0.08rem
-      var(--cinza_reliquary_axis_effective_span) no-repeat;
+  background: none;
   filter: blur(0.4px);
+}
+
+.sol__content_stage_rail {
+  @apply absolute;
+
+  top: var(--cinza_reliquary_offset_top);
+  bottom: var(--cinza_reliquary_offset_bottom);
+  width: 0;
+  border-inline-start: 0.08rem solid
+    color-mix(in oklch, var(--sol_ornament_gold) 48%, transparent);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 18%,
+    black 82%,
+    transparent
+  );
+}
+
+.sol__content_stage_rail_left {
+  left: var(--cinza_reliquary_rail_left);
+}
+
+.sol__content_stage_rail_right {
+  left: var(--cinza_reliquary_rail_right);
 }
 
 #sol_content_fog_backdrop {
@@ -87,7 +101,7 @@
 :root[data-site-theme="solarisael"] .sol__content_fog_layer_top {
   background: radial-gradient(
     120% 90% at 50% 0%,
-    color-mix(in oklch, var(--site_style_accent) 36%, transparent),
+    color-mix(in oklch, var(--sol_ornament_gold) 36%, transparent),
     transparent 62%
   );
 }
@@ -114,11 +128,10 @@
 
   view-transition-name: page_content;
   z-index: 2;
-  --content_footer_reserve: 6.5rem;
 
   --content_layer_edge_stroke: color-mix(
     in oklch,
-    var(--site_style_accent)
+    var(--sol_ornament_gold)
       calc(var(--site_style_edge_mix) * var(--site_style_strength_mult)),
     transparent
   );
@@ -128,7 +141,7 @@
 
   border-color: color-mix(
     in oklch,
-    var(--site_style_accent)
+    var(--sol_ornament_gold)
       calc(var(--site_style_border_mix) * var(--site_style_strength_mult)),
     transparent
   );
@@ -217,18 +230,17 @@
     inset 0 0 0 var(--site_border_width_standard)
       color-mix(
         in oklch,
-        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.42),
+        var(--sol_ornament_gold) calc(var(--cinza_reliquary_line_mix) * 0.42),
         transparent
       ),
     0 24px 42px -34px rgb(0 0 0 / 0.92),
     0 0 80px -52px
       color-mix(
         in oklch,
-        var(--site_style_accent) calc(var(--cinza_fog_halo_mix) * 1.4),
+        var(--sol_ornament_gold) calc(var(--cinza_fog_halo_mix) * 1.4),
         transparent
       );
 }
-
 :root[data-site-theme="solarisael"] .sol__content_layer_surface {
   /* bg-stack-exception: cinza shell needs tri-layer depth halo + base gradient */
   background:
@@ -300,47 +312,81 @@
 }
 
 :root[data-site-theme="solarisael"] .sol__content_layer_deco {
-  --content_layer_cinza_rail_gradient: linear-gradient(
-    180deg,
-    color-mix(
-      in oklch,
-      var(--site_style_accent) calc(36% * var(--cinza_tune_rails_in_content)),
-      transparent
-    ),
-    transparent 18%
-  );
   opacity: calc(
     var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity)
   );
-  /* bg-stack-exception: cinza deco keeps rail + dual atmospheric radial glows */
-  background:
-    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_left)
-      var(--cinza_reliquary_axis_center) / 0.08rem
-      var(--cinza_reliquary_axis_effective_span) no-repeat,
-    var(--content_layer_cinza_rail_gradient) var(--cinza_reliquary_rail_right)
-      var(--cinza_reliquary_axis_center) / 0.08rem
-      var(--cinza_reliquary_axis_effective_span) no-repeat,
-    radial-gradient(
-      112% 128% at 50% -8%,
-      color-mix(
-        in oklch,
-        var(--site_style_accent) calc(var(--cinza_sun_bleed_mix) * 0.8),
-        transparent
-      ),
-      transparent 60%
-    ),
-    radial-gradient(
-      120% 100% at 50% 108%,
-      color-mix(
-        in oklch,
-        var(--ui_surface_raised)
-          calc(
-            var(--cinza_fog_halo_mix) * 0.8 *
-              var(--site_shell_bottom_light_mult)
-          ),
-        transparent
-      ),
-      transparent 70%
+  background: none;
+}
+
+.sol__content_deco_piece {
+  @apply absolute;
+
+  display: block;
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_rail {
+  top: var(--cinza_reliquary_offset_top);
+  bottom: var(--cinza_reliquary_offset_bottom);
+  width: 0;
+  border-inline-start: 0.08rem solid
+    color-mix(
+      in oklch,
+      var(--sol_ornament_gold) calc(44% * var(--cinza_tune_rails_in_content)),
+      transparent
+    );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 18%,
+    black 82%,
+    transparent
+  );
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_rail_left {
+  left: var(--cinza_reliquary_rail_left);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_rail_right {
+  left: var(--cinza_reliquary_rail_right);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_halo {
+  left: 50%;
+  width: min(68%, 48rem);
+  height: 0;
+  transform: translateX(-50%);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_halo_top {
+  top: 0;
+  border-top: var(--site_border_width_hairline) solid
+    color-mix(
+      in oklch,
+      var(--sol_ornament_gold) calc(var(--cinza_sun_bleed_mix) * 0.8),
+      transparent
+    );
+  box-shadow: 0 0 5rem 2.5rem
+    color-mix(
+      in oklch,
+      var(--sol_ornament_gold) calc(var(--cinza_sun_bleed_mix) * 0.28),
+      transparent
+    );
+}
+
+:root[data-site-theme="solarisael"] .sol__content_deco_halo_bottom {
+  bottom: 0;
+  border-top: var(--site_border_width_hairline) solid
+    color-mix(
+      in oklch,
+      var(--sol_ornament_secondary) calc(var(--cinza_fog_halo_mix) * 0.8),
+      transparent
+    );
+  box-shadow: 0 0 5.5rem 2.8rem
+    color-mix(
+      in oklch,
+      var(--sol_ornament_secondary) calc(var(--cinza_fog_halo_mix) * 0.24),
+      transparent
     );
 }
 
@@ -356,23 +402,6 @@
   object-fit: contain;
 }
 
-/* Reliquary ornaments use css mask-image so the SVG silhouette gets painted in
-   var(--site_style_accent) — the route's accent color flows through automatically.
-   Each consuming element passes its own SVG via inline --ornament_mask_url. */
-:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl,
-:root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr,
-:root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl,
-:root[data-site-theme="solarisael"] .sol__content_ornament_corner_br,
-:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top,
-:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom,
-:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start,
-:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
-  background-color: var(--site_style_accent);
-  mask-image: var(--ornament_mask_url);
-  mask-size: contain;
-  mask-position: center;
-  mask-repeat: no-repeat;
-}
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl,
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr,
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl,
@@ -382,27 +411,6 @@
 
 :root[data-site-theme="solarisael"] .sol__content_layer_ornament_svg {
   display: block;
-  opacity: calc(
-    var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity) * 0.92
-  );
-  filter: saturate(var(--cinza_bw_saturation))
-    contrast(var(--cinza_bw_contrast))
-    drop-shadow(
-      0 0 18px
-        color-mix(
-          in oklch,
-          var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 1.46),
-          transparent
-        )
-    )
-    drop-shadow(
-      0 0 36px
-        color-mix(
-          in oklch,
-          var(--site_style_accent) calc(var(--cinza_reliquary_strong_mix) * 0.8),
-          transparent
-        )
-    );
 }
 
 /* Line containers — flex with flourish at each end and a thin bar between.
@@ -425,93 +433,74 @@
   object-fit: contain;
 }
 
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start {
+  margin-inline-end: -0.6rem;
+}
+
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
+  margin-inline-start: -0.6rem;
   transform: scaleX(-1);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bar {
   flex: 1 1 auto;
-  height: 1px;
-  background: var(--site_style_accent);
-  opacity: 0.42;
+  height: 0;
+  border-top: 1px solid currentColor;
   min-width: 0;
 }
 
-/* Content frame corners use single reliquary card_corner.svg rotated per-position.
-   The SVG was authored for TL placement (curl extends down+right from the top-left).
-   Rotate 90 / 180 / 270 for the other three corners; rotation is around element center.
-   Per-corner sizes equalized at 7.1rem since rotated single source replaces 4 distinct cinza files. */
+/* The reliquary corner is an asymmetric L, so its visual junction—not its box
+   midpoint—sits on the frame intersection. Mirror the optical offset per side. */
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tl {
-  left: var(--cinza_reliquary_offset_left);
-  top: var(--cinza_reliquary_offset_top);
-  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  left: 0;
+  top: 0;
+  width: var(--reliquary_content_corner_width);
+  height: var(--reliquary_content_corner_width);
+  translate: -25% -13%;
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_tr {
-  right: var(--cinza_reliquary_offset_right);
-  top: var(--cinza_reliquary_offset_top);
-  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  right: 0;
+  top: 0;
+  width: var(--reliquary_content_corner_width);
+  height: var(--reliquary_content_corner_width);
+  translate: 25% -13%;
   transform: scaleX(-1);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_bl {
-  left: var(--cinza_reliquary_offset_left);
-  bottom: calc(
-    var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
-  );
-  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  left: 0;
+  bottom: 0;
+  width: var(--reliquary_content_corner_width);
+  height: var(--reliquary_content_corner_width);
+  translate: -25% 13%;
   transform: scaleY(-1);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_corner_br {
-  right: var(--cinza_reliquary_offset_right);
-  bottom: calc(
-    var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
-  );
-  width: calc(7.1rem * var(--cinza_reliquary_corner_scale));
-  height: calc(7.1rem * var(--cinza_reliquary_corner_scale));
+  right: 0;
+  bottom: 0;
+  width: var(--reliquary_content_corner_width);
+  height: var(--reliquary_content_corner_width);
+  translate: 25% 13%;
   transform: scale(-1);
 }
 
-/* Line horizontal extent: starts after the corner ends + a clearance gap, mirrored on right.
-   Corner width = 7.1rem * --cinza_reliquary_corner_scale (from corner sizing rules above).
-   --reliquary_line_corner_clearance is the breathing room between corner and flourish. */
 :root[data-site-theme="solarisael"] {
-  --reliquary_line_corner_clearance: 1rem;
+  --reliquary_content_corner_width: calc(
+    7.1rem * var(--cinza_reliquary_corner_scale)
+  );
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
-  left: calc(
-    var(--cinza_reliquary_offset_left) +
-      7.1rem * var(--cinza_reliquary_corner_scale) +
-      var(--reliquary_line_corner_clearance)
-  );
-  right: calc(
-    var(--cinza_reliquary_offset_right) +
-      7.1rem * var(--cinza_reliquary_corner_scale) +
-      var(--reliquary_line_corner_clearance)
-  );
-  top: var(--cinza_reliquary_offset_top);
+  left: 0;
+  right: 0;
   height: var(--cinza_reliquary_line_block_size);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
-  left: calc(
-    var(--cinza_reliquary_offset_left) +
-      7.1rem * var(--cinza_reliquary_corner_scale) +
-      var(--reliquary_line_corner_clearance)
-  );
-  right: calc(
-    var(--cinza_reliquary_offset_right) +
-      7.1rem * var(--cinza_reliquary_corner_scale) +
-      var(--reliquary_line_corner_clearance)
-  );
-  bottom: calc(
-    var(--cinza_reliquary_offset_bottom) + var(--content_footer_reserve)
-  );
+  left: 0;
+  right: 0;
   height: var(--cinza_reliquary_line_block_size);
 }
 
@@ -519,12 +508,7 @@
    Horizontal: center axis. Vertical: line top + line height / 2 (so sigil center == line center). */
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {
   left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
-      var(--site_center_axis_sigil_nudge_x)
-  );
-  top: calc(
-    var(--cinza_reliquary_offset_top) +
-      var(--cinza_reliquary_line_block_size) / 2
+    var(--site_center_axis_x) + var(--site_center_axis_nudge_x)
   );
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
@@ -533,13 +517,7 @@
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom {
   left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x) +
-      var(--site_center_axis_sigil_nudge_x)
-  );
-  bottom: calc(
-    var(--cinza_reliquary_offset_bottom) +
-      var(--content_footer_reserve) +
-      var(--cinza_reliquary_line_block_size) / 2
+    var(--site_center_axis_x) + var(--site_center_axis_nudge_x)
   );
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
@@ -548,11 +526,176 @@
 
 
 
+/* Border-grown ornament language: the frame interrupts the rule instead of
+   floating inside a rounded panel. */
+:root[data-site-theme="solarisael"] {
+  --sol_ornament_color: var(--ui_accent);
+  --sol_ornament_gold: var(--sol_ornament_color);
+  --sol_ornament_gold_bright: var(--sol_ornament_color);
+  --sol_ornament_secondary: var(--sol_ornament_color);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_layer_ornament_svg {
+  opacity: clamp(
+    0.88,
+    calc(
+      var(--site_style_deco_opacity) * var(--cinza_reliquary_opacity) * 1.52
+    ),
+    0.98
+  );
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.28) contrast(1.08)
+    drop-shadow(0 0 18px color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
+    drop-shadow(0 0 36px color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_start {
+  color: var(--sol_ornament_gold_bright);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom,
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_flourish_end {
+  color: var(--sol_ornament_secondary);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_bar {
+  border-color: var(--sol_ornament_gold);
+  color: var(--sol_ornament_gold);
+  opacity: 0.82;
+}
+
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
+  top: calc(var(--cinza_reliquary_line_block_size) * -0.5);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_line_bottom {
+  bottom: calc(var(--cinza_reliquary_line_block_size) * -0.5);
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {
+  top: 0;
+}
+
+:root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom {
+  bottom: 0;
+}
+
+.sol__reading_frame_ornaments {
+  @apply pointer-events-none absolute;
+
+  display: none;
+  inset: 0;
+  z-index: 12;
+  overflow: visible;
+}
+
+.sol__reading_frame_ornament {
+  @apply absolute;
+
+  display: block;
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_ornaments {
+  display: block;
+  --reading_frame_corner_size: clamp(3.6rem, 7vw, 5.25rem);
+  --reading_frame_crest_size: clamp(2.2rem, 4.5vw, 3.2rem);
+  --reading_frame_flourish_inline: clamp(3rem, 7vw, 4.8rem);
+  --reading_frame_flourish_block: 1.1rem;
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_ornament {
+  color: var(--sol_ornament_gold);
+  opacity: 0.92;
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32) contrast(1.08)
+    drop-shadow(0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
+    drop-shadow(0 0 1rem color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+}
+
+:root[data-site-theme="solarisael"] img.sol__reading_frame_ornament {
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32) contrast(1.08)
+    drop-shadow(0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
+    drop-shadow(0 0 1rem color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_crest_bottom,
+:root[data-site-theme="solarisael"] .sol__reading_frame_flourish_right {
+  color: var(--sol_ornament_secondary);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_tl,
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_tr,
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_bl,
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_br {
+  width: var(--reading_frame_corner_size);
+  height: var(--reading_frame_corner_size);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_tl {
+  left: 0;
+  top: 0;
+  translate: -25% -13%;
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_tr {
+  right: 0;
+  top: 0;
+  translate: 25% -13%;
+  transform: scaleX(-1);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_bl {
+  left: 0;
+  bottom: 0;
+  translate: -25% 13%;
+  transform: scaleY(-1);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_corner_br {
+  right: 0;
+  bottom: 0;
+  translate: 25% 13%;
+  transform: scale(-1);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_crest_top,
+:root[data-site-theme="solarisael"] .sol__reading_frame_crest_bottom {
+  left: 50%;
+  width: var(--reading_frame_crest_size);
+  height: var(--reading_frame_crest_size);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_crest_top {
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_crest_bottom {
+  bottom: 0;
+  transform: translate(-50%, 50%);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_flourish_left,
+:root[data-site-theme="solarisael"] .sol__reading_frame_flourish_right {
+  top: 50%;
+  width: var(--reading_frame_flourish_inline);
+  height: var(--reading_frame_flourish_block);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_flourish_left {
+  left: 0;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+:root[data-site-theme="solarisael"] .sol__reading_frame_flourish_right {
+  right: 0;
+  transform: translate(50%, -50%) rotate(-90deg);
+}
+
 #sol_main_reading_container {
   @apply relative isolate;
   @apply w-full;
   @apply mx-auto;
-  @apply rounded-2xl;
   @apply px-5 py-6 md:px-8 md:py-8;
 
   margin-top: 5rem;
@@ -562,7 +705,7 @@
   border: var(--site_border_width_hairline) solid
     color-mix(
       in oklch,
-      var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.42),
+      var(--sol_ornament_gold) calc(var(--cinza_reliquary_line_mix) * 1.12),
       transparent
     );
   box-shadow:
@@ -570,7 +713,7 @@
     inset 0 0 0 var(--site_border_width_hairline)
       color-mix(
         in oklch,
-        var(--site_style_accent) calc(var(--cinza_reliquary_line_mix) * 0.18),
+        var(--sol_ornament_gold) calc(var(--cinza_reliquary_line_mix) * 0.18),
         transparent
       ),
     0 24px 42px -34px rgb(0 0 0 / 0.96);
@@ -649,13 +792,15 @@
   @apply relative z-10;
 }
 
-.sol__chapter_content {
-}
 
 @media (max-width: 768px) {
   #sol_page_main {
     @apply pb-22;
     padding-top: 1rem;
+  }
+
+  #sol_content_stage {
+    margin-inline: 0.25rem;
   }
 
   #sol_main_reading_container {
