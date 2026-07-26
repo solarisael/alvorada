@@ -216,7 +216,9 @@ const is_wikilink_registry_source = (file_path = "") => {
     ) {
       return false;
     }
-    return changed_path === source_root || changed_path.startsWith(`${source_root}/`);
+    return (
+      changed_path === source_root || changed_path.startsWith(`${source_root}/`)
+    );
   });
 };
 
@@ -323,7 +325,9 @@ const build_url_for_target = ({
   if (url_strategy === "rubedo_scene") {
     const book_slug = normalize_identity_token(frontmatter?.book_slug);
     const thread_key = normalize_identity_token(frontmatter?.thread_key);
-    const chapter_slug = derive_scene_chapter_slug(frontmatter?.timeline_position);
+    const chapter_slug = derive_scene_chapter_slug(
+      frontmatter?.timeline_position,
+    );
     if (!book_slug || !thread_key || !chapter_slug) {
       // Scene is missing required identity — wikilinks shouldn't point at
       // a route the rubedo loader will skip. Return null; caller will mark
@@ -520,10 +524,7 @@ const build_registry = () => {
         });
       }
 
-      if (
-        slug_value &&
-        slug_value.toLowerCase() !== file_stem.toLowerCase()
-      ) {
+      if (slug_value && slug_value.toLowerCase() !== file_stem.toLowerCase()) {
         register_key({
           map: targets_by_key,
           key: slug_value,

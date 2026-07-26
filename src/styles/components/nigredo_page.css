@@ -202,13 +202,18 @@ container[data-phase="nigredo"] {
 .sol__nigredo_filter_group_label:hover,
 .sol__nigredo_filter_group_label:focus-visible {
   border-color: color-mix(in oklch, var(--site_style_accent) 42%, transparent);
-  color: color-mix(in oklch, var(--site_style_accent) 78%, oklch(74% 0.012 258));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 78%,
+    oklch(74% 0.012 258)
+  );
 }
 
 .sol__nigredo_filter_group_label[data-active="true"] {
   border-color: color-mix(in oklch, var(--site_style_accent) 62%, transparent);
   box-shadow:
-    0 0 0 var(--site_border_width_hairline) color-mix(in oklch, var(--site_style_accent) 42%, transparent),
+    0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--site_style_accent) 42%, transparent),
     0 0 8px color-mix(in oklch, var(--site_style_accent) 18%, transparent);
   filter: saturate(1.14) brightness(1.06);
 }
@@ -399,7 +404,8 @@ container[data-phase="nigredo"] {
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
   box-shadow:
     0 22px 32px -18px rgb(0 0 0 / calc(var(--nigredo_shadow_strength) + 0.14)),
-    0 0 0 var(--site_border_width_hairline) color-mix(in oklch, var(--site_style_accent) 32%, transparent),
+    0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--site_style_accent) 32%, transparent),
     inset 0 1px 0 color-mix(in oklch, white 12%, transparent);
 }
 
@@ -781,7 +787,6 @@ container[data-phase="nigredo"] {
     grid-template-columns: 1fr;
     gap: 0.28rem;
   }
-
 }
 
 @media (max-width: 639px) {

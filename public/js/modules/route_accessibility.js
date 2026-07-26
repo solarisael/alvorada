@@ -1,8 +1,7 @@
 import { is_route_swap_target } from "./htmx_route_lifecycle.js";
 
 const route_status_selector = "#sol_route_status";
-const route_focus_selector =
-  "#sol_page_shell h1, #sol_main_reading_container";
+const route_focus_selector = "#sol_page_shell h1, #sol_main_reading_container";
 
 const announce_and_focus_route = () => {
   const focus_node = document.querySelector(route_focus_selector);

@@ -60,7 +60,7 @@
 
 - `astro.config.mjs`: `@vault` alias resolving to `OBSIDIAN_VAULT_ROOT`, `server.fs.allow` extended for outside-workspace reads.
 - `src/data/rubedo/book_timeline_runtime.js`: dual-glob — `import.meta.glob` of `../../content/rubedo/**/*.md` AND `@vault/zzzz_rubedo/**/*.md`. Sol can move books over at any pace, build keeps working throughout.
-- `obsidian/zzzz_rubedo/`: scaffolded with README + _template + `absurd-faith/` subdir ready to receive.
+- `obsidian/zzzz_rubedo/`: scaffolded with README + \_template + `absurd-faith/` subdir ready to receive.
 
 ### Wikilink infrastructure (obsidian-style `[[]]` and `![[]]`)
 

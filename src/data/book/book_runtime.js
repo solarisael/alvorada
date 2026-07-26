@@ -171,7 +171,9 @@ const order_and_freeze = (books) => {
 // The composer: three named passes, read as a sentence.
 const build_book_map = (module_map, config) =>
   Object.freeze(
-    order_and_freeze(fold_records_into_books(collect_records(module_map, config))),
+    order_and_freeze(
+      fold_records_into_books(collect_records(module_map, config)),
+    ),
   );
 
 // Stable, sorted slug list for galleries and getStaticPaths.

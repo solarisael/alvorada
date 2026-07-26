@@ -14,13 +14,13 @@ GitHub will NOT be the public face — Sol wants neocities, nekoweb, or own-host
 
 ## Section readiness (vault = source of truth)
 
-| Section | State |
-|---|---|
-| /nigredo | **READY** — 12 real posts (2026-05-05 → 2026-06-13) |
-| /albedo | thin — 2 posts, live |
-| /citrinitas | mostly ready — 20 seraph-collection poems; `example-garden` placeholder still ships (gate or remove) |
-| /rubedo | empty — **A Squall is ship-ready** (cold-read confirmed 2026-07-01) pending one question: `**marker for interaction**` markers — scaffolding or diegesis? |
-| /codex | empty — wikilink targets unresolvable until first entries land |
+| Section     | State                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /nigredo    | **READY** — 12 real posts (2026-05-05 → 2026-06-13)                                                                                                       |
+| /albedo     | thin — 2 posts, live                                                                                                                                      |
+| /citrinitas | mostly ready — 20 seraph-collection poems; `example-garden` placeholder still ships (gate or remove)                                                      |
+| /rubedo     | empty — **A Squall is ship-ready** (cold-read confirmed 2026-07-01) pending one question: `**marker for interaction**` markers — scaffolding or diegesis? |
+| /codex      | empty — wikilink targets unresolvable until first entries land                                                                                            |
 
 ## Known broken / stale
 

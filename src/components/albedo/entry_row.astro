@@ -33,9 +33,12 @@ const EntryContent = entry.Content;
     data-container={entry.primary_container}
   >
     <article class="sol__albedo_entry_card">
-      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_surface" />
-      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_sheen" />
-      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_frame" />
+      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_surface"
+      ></span>
+      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_sheen"
+      ></span>
+      <span class="sol__albedo_entry_layer sol__albedo_entry_layer_frame"
+      ></span>
       <ornament
         data-shape="albedo_entry_ornament"
         class="sol__albedo_entry_layer sol__albedo_entry_layer_ornament"
@@ -68,7 +71,7 @@ const EntryContent = entry.Content;
           loading="lazy"
           decoding="async"
         />
-</ornament>
+      </ornament>
 
       <div class="sol__albedo_entry_layer_body">
         <header class="sol__albedo_entry_header">
@@ -96,7 +99,9 @@ const EntryContent = entry.Content;
                 <span
                   class="sol__albedo_pill"
                   data-state={state}
-                  data-container={ALBEDO_STATE_TO_CONTAINER[state] ?? "morning-dew"}
+                  data-container={
+                    ALBEDO_STATE_TO_CONTAINER[state] ?? "morning-dew"
+                  }
                 >
                   {state}
                 </span>
@@ -142,7 +147,10 @@ const EntryContent = entry.Content;
               </button>
             )
           }
-          <ContentLink href={entry.href} class="sol__albedo_entry_open sol__text_kicker">
+          <ContentLink
+            href={entry.href}
+            class="sol__albedo_entry_open sol__text_kicker"
+          >
             open entry
           </ContentLink>
         </footer>

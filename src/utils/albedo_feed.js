@@ -12,7 +12,12 @@ import { ALBEDO_STATE_TO_CONTAINER } from "../data/albedo_taxonomy.js";
 // Where nigredo pushed "extreme" states to the right lane, albedo leans the
 // quietest, most-settled states left and lets the more outward-reaching ones
 // (wonder, hope, anticipation) take the right lane. Purely a layout cadence.
-const REACHING_STATES = new Set(["wonder", "hope", "anticipation", "belonging"]);
+const REACHING_STATES = new Set([
+  "wonder",
+  "hope",
+  "anticipation",
+  "belonging",
+]);
 const ALBEDO_PREVIEW_CHAR_LIMIT = 320;
 
 function albedo_body_to_preview_source(body = "") {

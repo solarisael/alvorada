@@ -11,12 +11,7 @@ const to_rgb = (rgb_text = "214 217 226") => {
 };
 
 const rgba = (rgb_values, alpha) => {
-  return [
-    rgb_values[0] / 255,
-    rgb_values[1] / 255,
-    rgb_values[2] / 255,
-    alpha,
-  ];
+  return [rgb_values[0] / 255, rgb_values[1] / 255, rgb_values[2] / 255, alpha];
 };
 
 const world_to_screen = (x, y, view_state, canvas) => {
@@ -24,8 +19,10 @@ const world_to_screen = (x, y, view_state, canvas) => {
   const center_y = canvas.height * 0.5;
 
   return {
-    x: (x - view_state.center_x) * view_state.zoom + center_x + view_state.pan_x,
-    y: (y - view_state.center_y) * view_state.zoom + center_y + view_state.pan_y,
+    x:
+      (x - view_state.center_x) * view_state.zoom + center_x + view_state.pan_x,
+    y:
+      (y - view_state.center_y) * view_state.zoom + center_y + view_state.pan_y,
   };
 };
 
@@ -34,8 +31,10 @@ const screen_to_world = (x, y, view_state, canvas) => {
   const center_y = canvas.height * 0.5;
 
   return {
-    x: (x - center_x - view_state.pan_x) / view_state.zoom + view_state.center_x,
-    y: (y - center_y - view_state.pan_y) / view_state.zoom + view_state.center_y,
+    x:
+      (x - center_x - view_state.pan_x) / view_state.zoom + view_state.center_x,
+    y:
+      (y - center_y - view_state.pan_y) / view_state.zoom + view_state.center_y,
   };
 };
 

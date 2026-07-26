@@ -13,14 +13,11 @@ const category_labels = {
   relics: "Relics",
 };
 
-const codex_entries = await getCollection(
-  "codex",
-  ({ data, id }) => {
-    if (data?.draft) return false;
-    const stem = String(id).split("/").pop()?.toLowerCase() ?? "";
-    return stem !== "readme" && stem !== "_template";
-  },
-);
+const codex_entries = await getCollection("codex", ({ data, id }) => {
+  if (data?.draft) return false;
+  const stem = String(id).split("/").pop()?.toLowerCase() ?? "";
+  return stem !== "readme" && stem !== "_template";
+});
 
 const category_slugs = [
   ...new Set(
@@ -35,7 +32,9 @@ const categories = category_slugs.map((slug) => ({
   slug,
   label:
     category_labels[slug] ??
-    slug.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    slug
+      .replace(/[-_]+/g, " ")
+      .replace(/\b\w/g, (letter) => letter.toUpperCase()),
 }));
 
 const labs = [

@@ -32,7 +32,8 @@
   --rail_trace_opacity: 0.52;
   --rail_trace_glow: color-mix(
     in oklch,
-    var(--desktop_nav_reference_gold) calc(46% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold)
+      calc(46% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --pill_background: color-mix(
@@ -42,7 +43,8 @@
   );
   --pill_border: color-mix(
     in oklch,
-    var(--desktop_nav_reference_gold) calc(30% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold)
+      calc(30% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --pill_glow_scale: var(--site_fx_glow_mult, 1);
@@ -54,7 +56,8 @@
 
   --center_shell_border: color-mix(
     in oklch,
-    var(--desktop_nav_reference_gold) calc(72% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold)
+      calc(72% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --center_shell_glow: color-mix(
@@ -201,7 +204,8 @@
   border-radius: var(--desktop_nav_rail_radius);
   border-color: color-mix(
     in oklch,
-    var(--desktop_nav_reference_gold) calc(52% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold)
+      calc(52% * var(--site_style_strength_mult, 1)),
     transparent
   );
   background:
@@ -306,7 +310,11 @@
   opacity: var(--rail_trace_opacity);
   box-shadow:
     inset 0 0 0 var(--site_border_width_hairline)
-      color-mix(in oklch, var(--desktop_nav_reference_gold_bright) 34%, transparent),
+      color-mix(
+        in oklch,
+        var(--desktop_nav_reference_gold_bright) 34%,
+        transparent
+      ),
     0 0 10px var(--rail_trace_glow);
 }
 
@@ -318,8 +326,13 @@
   opacity: var(--rail_trace_opacity);
   box-shadow:
     inset 0 -1px 0
-      color-mix(in oklch, var(--desktop_nav_reference_gold_bright) 18%, transparent),
-    0 0 8px color-mix(in oklch, var(--desktop_nav_reference_gold) 22%, transparent);
+      color-mix(
+        in oklch,
+        var(--desktop_nav_reference_gold_bright) 18%,
+        transparent
+      ),
+    0 0 8px
+      color-mix(in oklch, var(--desktop_nav_reference_gold) 22%, transparent);
 }
 
 .sol__nav_links {
@@ -514,11 +527,20 @@
 
   inset: -2px;
   border: 2px solid transparent;
-  border-top-color: color-mix(in oklch, var(--desktop_nav_reference_gold) 28%, transparent);
-  border-right-color: color-mix(in oklch, var(--desktop_nav_reference_gold) 88%, transparent);
+  border-top-color: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold) 28%,
+    transparent
+  );
+  border-right-color: color-mix(
+    in oklch,
+    var(--desktop_nav_reference_gold) 88%,
+    transparent
+  );
   opacity: 0;
   filter: drop-shadow(
-    0 0 8px color-mix(in oklch, var(--desktop_nav_reference_gold) 62%, transparent)
+    0 0 8px
+      color-mix(in oklch, var(--desktop_nav_reference_gold) 62%, transparent)
   );
 }
 
@@ -603,7 +625,8 @@
   --cinza_sun_contrast: 1.2;
   --center_shell_border: color-mix(
     in oklch,
-    var(--desktop_nav_reference_gold) calc(42% * var(--site_style_strength_mult, 1)),
+    var(--desktop_nav_reference_gold)
+      calc(42% * var(--site_style_strength_mult, 1)),
     transparent
   );
   --center_shell_glow: color-mix(

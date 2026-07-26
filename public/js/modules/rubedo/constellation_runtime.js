@@ -66,7 +66,11 @@ const init_constellation = async (interactive_section) => {
   }
 
   const base_path = base_path_from_data_href(data_href);
-  const payload = build_constellation_payload_from_json(book_data, base_path, null);
+  const payload = build_constellation_payload_from_json(
+    book_data,
+    base_path,
+    null,
+  );
   const root_node = interactive_section;
   const canvas = root_node.querySelector("#sol_rubedo_timeline_canvas");
 

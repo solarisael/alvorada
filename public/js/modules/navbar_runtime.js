@@ -25,7 +25,6 @@ const PHASE_NAMES = new Set([
 ]);
 let last_applied_pathname = null;
 
-
 /**
  * @param {string} pathname_value
  */
@@ -139,7 +138,6 @@ const apply_route_active_state = (pathname_override = null) => {
   }
   last_applied_pathname = current_pathname;
 };
-
 
 /**
  * @param {NodeListOf<HTMLElement>} pill_nodes
@@ -324,7 +322,6 @@ init_navbar_effects();
 init_navbar_visibility();
 apply_route_active_state();
 
-
 if (!window_any.__navbar_htmx_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {
     const htmx_event = /** @type {CustomEvent} */ (event);
@@ -335,7 +332,9 @@ if (!window_any.__navbar_htmx_after_swap_bound) {
     }
 
     last_applied_pathname = null;
-    apply_route_active_state(derive_request_pathname(event) ?? window.location.pathname);
+    apply_route_active_state(
+      derive_request_pathname(event) ?? window.location.pathname,
+    );
     init_navbar_effects(document);
   });
 

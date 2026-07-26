@@ -34,7 +34,10 @@ const target_dir = path.join(
   date.slice(0, 4),
   date.slice(5, 7),
 );
-const target_file = path.join(target_dir, `${date}_${slug.replaceAll("-", "_")}.md`);
+const target_file = path.join(
+  target_dir,
+  `${date}_${slug.replaceAll("-", "_")}.md`,
+);
 
 if (existsSync(target_file)) fail(`post already exists: ${target_file}`);
 

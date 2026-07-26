@@ -68,7 +68,9 @@ if (Array.isArray(crumbs) && crumbs.length > 0) {
         : segment_to_label(segment);
 
     crumb_items.push({
-      href: virtual_parent_paths.has(current_path) ? null : with_base(current_path),
+      href: virtual_parent_paths.has(current_path)
+        ? null
+        : with_base(current_path),
       label,
     });
   });

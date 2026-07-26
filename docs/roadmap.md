@@ -13,7 +13,7 @@ Tracks, not phases — content ships on its own clock; the heal runs beside it a
 
 ## Track B — CSS heal (velocity, not shame)
 
-Context: 7,566 lines / 19 files, written pre-lessons, read by post-lessons taste. The *mechanism* is already right — `data-site-theme` / `data-site-shell` / `data-site-fx` on the site root (`side_menu.js:117`). The accretion is in discipline, not architecture.
+Context: 7,566 lines / 19 files, written pre-lessons, read by post-lessons taste. The _mechanism_ is already right — `data-site-theme` / `data-site-shell` / `data-site-fx` on the site root (`side_menu.js:117`). The accretion is in discipline, not architecture.
 
 **The one rule: themes set tokens; components read tokens; a component file that mentions a theme name is a bug.** (Cross-cutting concern expressed once, not at N call sites.)
 
@@ -32,7 +32,7 @@ Governing rule: capability claims need measurement, not vibes.
 2. [ ] Honor `prefers-reduced-motion` globally (accessibility + perf in one media query).
 3. [ ] `IntersectionObserver` pauses effects that aren't on screen.
 4. [ ] **Measure**: Lighthouse 4× CPU throttle minimum, ideally a real cheap Android, against the current build.
-5. [ ] Canvas/WASM overlay: **DEFERRED pending #4.** Prediction on record (2026-07-01, Kodo): static site + fx tiers passes; a full-viewport canvas repaints on the main thread and runs *hotter* on low-end phones than compositor-thread CSS transforms/opacity; WASM accelerates compute and text effects are paint-bound. Canvas stays legitimate for **bounded set-pieces only** — the rubedo WebGL constellation is already the correct shape. If measurement disagrees, the prediction loses and this reopens.
+5. [ ] Canvas/WASM overlay: **DEFERRED pending #4.** Prediction on record (2026-07-01, Kodo): static site + fx tiers passes; a full-viewport canvas repaints on the main thread and runs _hotter_ on low-end phones than compositor-thread CSS transforms/opacity; WASM accelerates compute and text effects are paint-bound. Canvas stays legitimate for **bounded set-pieces only** — the rubedo WebGL constellation is already the correct shape. If measurement disagrees, the prediction loses and this reopens.
 
 ## Track D — Docs & hygiene
 

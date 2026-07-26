@@ -106,7 +106,11 @@
   height: 1.45rem;
   border-radius: 999rem;
   background:
-    radial-gradient(circle, color-mix(in oklch, white 48%, transparent) 0 18%, transparent 19%),
+    radial-gradient(
+      circle,
+      color-mix(in oklch, white 48%, transparent) 0 18%,
+      transparent 19%
+    ),
     radial-gradient(circle, var(--site_style_accent) 0 58%, transparent 59%);
   box-shadow:
     0 0 0.45rem color-mix(in oklch, var(--site_style_accent) 46%, transparent),
@@ -126,7 +130,12 @@
     color-mix(in oklch, var(--site_style_accent) 78%, transparent) 0deg 8deg,
     transparent 8deg 22deg
   );
-  mask-image: radial-gradient(circle, transparent 0 46%, black 47% 72%, transparent 73%);
+  mask-image: radial-gradient(
+    circle,
+    transparent 0 46%,
+    black 47% 72%,
+    transparent 73%
+  );
 }
 
 .sol__side_menu_trigger_label {
@@ -180,7 +189,8 @@
   transform: translateX(0);
   transition:
     opacity calc(200ms * var(--site_fx_motion_mult, 1)) ease,
-    transform calc(220ms * var(--site_fx_motion_mult, 1)) cubic-bezier(0.16, 1, 0.3, 1),
+    transform calc(220ms * var(--site_fx_motion_mult, 1))
+      cubic-bezier(0.16, 1, 0.3, 1),
     visibility calc(200ms * var(--site_fx_motion_mult, 1)) ease;
 }
 
@@ -203,7 +213,11 @@
 #sol_side_menu_panel_header p {
   @apply lowercase;
 
-  color: color-mix(in oklch, var(--site_style_accent) 66%, var(--ui_text_muted));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 66%,
+    var(--ui_text_muted)
+  );
 }
 
 #sol_side_menu_navbar {
@@ -236,7 +250,11 @@
 
 .sol__side_menu_nav_button[data-active="true"] {
   border-color: color-mix(in oklch, var(--site_style_accent) 58%, transparent);
-  color: color-mix(in oklch, var(--site_style_accent) 68%, var(--ui_text_primary));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 68%,
+    var(--ui_text_primary)
+  );
   background: color-mix(in oklch, var(--site_style_accent) 12%, transparent);
 }
 
@@ -256,7 +274,11 @@
 }
 
 .sol__side_menu_note {
-  color: color-mix(in oklch, var(--ui_text_secondary) 84%, var(--ui_text_primary));
+  color: color-mix(
+    in oklch,
+    var(--ui_text_secondary) 84%,
+    var(--ui_text_primary)
+  );
 }
 
 .sol__side_menu_group {
@@ -280,7 +302,11 @@
   color: color-mix(in oklch, var(--ui_text_primary) 88%, white);
   border-width: var(--site_border_width_hairline);
   border-color: color-mix(in oklch, var(--site_style_accent) 24%, transparent);
-  background-color: color-mix(in oklch, var(--ui_surface_soft) 62%, transparent);
+  background-color: color-mix(
+    in oklch,
+    var(--ui_surface_soft) 62%,
+    transparent
+  );
 }
 
 #sol_side_menu_trigger:focus-visible,

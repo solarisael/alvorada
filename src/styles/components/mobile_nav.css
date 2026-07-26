@@ -50,6 +50,16 @@
   --mobile_home_shell_active_glow_mix: 82%;
   --mobile_home_shell_active_glow_strong_mix: 86%;
   --mobile_home_core_active_border_mix: 44%;
+  --mobile_cinza_sun_tint: color-mix(
+    in oklch,
+    white 90%,
+    var(--site_style_accent)
+  );
+  --mobile_cinza_sun_neon_opacity: 0.94;
+  --mobile_cinza_sun_halo_opacity: 0.88;
+  --mobile_cinza_sun_highlight_opacity: 0.9;
+  --mobile_cinza_sun_saturation: 1.28;
+  --mobile_cinza_sun_contrast: 1.22;
 
   @apply hidden;
 }
@@ -92,8 +102,12 @@
     box-shadow: var(--mobile_dock_shadow);
     backdrop-filter: blur(var(--mobile_dock_blur));
     transition:
-      border-color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease,
-      box-shadow calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
+      border-color
+        calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+        ease,
+      box-shadow
+        calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+        ease;
   }
 
   #sol_mobile_nav_shell {
@@ -165,8 +179,6 @@
     opacity: 0;
     transition: opacity var(--mobile_link_transition_fast) ease;
   }
-
-
 
   .sol__mobile_nav_label {
     @apply font-medium;
@@ -267,10 +279,10 @@
     );
   }
 
-  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active .sol__mobile_home_orbit {
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active
+    .sol__mobile_home_orbit {
     opacity: 0.46;
   }
-
 
   .sol__mobile_nav_right .sol__mobile_nav_label {
     font-size: var(--mobile_link_label_right_size);
@@ -393,7 +405,6 @@
       );
   }
 
-
   .sol__mobile_nav_link.sol__is_route_active .sol__mobile_nav_label {
     color: color-mix(
       in oklch,
@@ -408,7 +419,8 @@
       );
   }
 
-  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active .sol__mobile_home_avatar_shell {
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active
+    .sol__mobile_home_avatar_shell {
     box-shadow:
       0 0 0 var(--site_border_width_hairline)
         color-mix(
@@ -432,7 +444,8 @@
       inset 0 1px 0 rgb(255 255 255 / 0.2);
   }
 
-  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active .sol__mobile_home_avatar_core {
+  .sol__mobile_nav_link.sol__is_home_link.sol__is_route_active
+    .sol__mobile_home_avatar_core {
     border-color: color-mix(
       in oklch,
       var(--mobile_neon_color) var(--mobile_home_core_active_border_mix),
@@ -468,12 +481,6 @@
   --mobile_home_shell_active_ring_mix: 34%;
   --mobile_home_shell_active_glow_mix: 72%;
   --mobile_home_shell_active_glow_strong_mix: 78%;
-  --mobile_cinza_sun_tint: color-mix(in oklch, white 90%, var(--site_style_accent));
-  --mobile_cinza_sun_neon_opacity: 0.94;
-  --mobile_cinza_sun_halo_opacity: 0.88;
-  --mobile_cinza_sun_highlight_opacity: 0.9;
-  --mobile_cinza_sun_saturation: 1.28;
-  --mobile_cinza_sun_contrast: 1.22;
 }
 
 :root[data-site-theme="solarisael"] .sol__mobile_home_avatar_shell {
@@ -526,8 +533,16 @@
   height: 105%;
   border-radius: 50%;
   border: var(--site_border_width_standard) solid transparent;
-  border-top-color: color-mix(in oklch, white 94%, var(--mobile_cinza_sun_tint));
-  border-right-color: color-mix(in oklch, white 74%, var(--mobile_cinza_sun_tint));
+  border-top-color: color-mix(
+    in oklch,
+    white 94%,
+    var(--mobile_cinza_sun_tint)
+  );
+  border-right-color: color-mix(
+    in oklch,
+    white 74%,
+    var(--mobile_cinza_sun_tint)
+  );
   opacity: calc(
     var(--mobile_cinza_sun_highlight_opacity) *
       var(--mobile_cinza_sun_neon_opacity)
@@ -538,7 +553,8 @@
       0 0 8px color-mix(in oklch, var(--mobile_cinza_sun_tint) 72%, transparent)
     )
     drop-shadow(
-      0 0 16px color-mix(in oklch, var(--mobile_cinza_sun_tint) 44%, transparent)
+      0 0 16px
+        color-mix(in oklch, var(--mobile_cinza_sun_tint) 44%, transparent)
     );
   mix-blend-mode: screen;
   animation: mobile_cinza_highlight_rotate 18s linear infinite;

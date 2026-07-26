@@ -49,12 +49,14 @@ function fallback_entry_size(entry, expanded) {
   if (expanded && !entry.can_expand) return fallback_entry_size(entry, false);
   if (expanded) {
     return (
-      (is_mobile_view() ? entry.expanded_size_mobile : entry.expanded_size) ?? 160
+      (is_mobile_view() ? entry.expanded_size_mobile : entry.expanded_size) ??
+      160
     );
   }
 
   return (
-    (is_mobile_view() ? entry.collapsed_size_mobile : entry.collapsed_size) ?? 160
+    (is_mobile_view() ? entry.collapsed_size_mobile : entry.collapsed_size) ??
+    160
   );
 }
 
@@ -231,7 +233,8 @@ export function create_archive_controller({ root, full_index, contract }) {
 
   function get_scroll_margin() {
     return (
-      scroll_pane.getBoundingClientRect().top + (globalThis.window?.scrollY ?? 0)
+      scroll_pane.getBoundingClientRect().top +
+      (globalThis.window?.scrollY ?? 0)
     );
   }
 
@@ -349,9 +352,7 @@ export function create_archive_controller({ root, full_index, contract }) {
   function sync_filter_controls() {
     if (!filter_rail) return;
 
-    for (const button of filter_rail.querySelectorAll(
-      "[data-filter-state]",
-    )) {
+    for (const button of filter_rail.querySelectorAll("[data-filter-state]")) {
       const is_active = active_states.has(button.dataset.filterState);
       button.dataset.active = is_active ? "true" : "false";
       button.setAttribute("aria-pressed", is_active ? "true" : "false");
@@ -361,7 +362,8 @@ export function create_archive_controller({ root, full_index, contract }) {
       "[data-filter-container]",
     )) {
       const group = button.closest(contract.filter_group_selector);
-      const state_buttons = group?.querySelectorAll("[data-filter-state]") ?? [];
+      const state_buttons =
+        group?.querySelectorAll("[data-filter-state]") ?? [];
       let all_active = state_buttons.length > 0;
       for (const state_button of state_buttons) {
         if (!active_states.has(state_button.dataset.filterState)) {
@@ -377,13 +379,12 @@ export function create_archive_controller({ root, full_index, contract }) {
 
   function on_filter_click(event) {
     const event_target = event.target;
-    const container_button = event_target?.closest?.(
-      "[data-filter-container]",
-    );
+    const container_button = event_target?.closest?.("[data-filter-container]");
     if (container_button) {
       const group = container_button.closest(contract.filter_group_selector);
       const container_states = [];
-      for (const button of group?.querySelectorAll("[data-filter-state]") ?? []) {
+      for (const button of group?.querySelectorAll("[data-filter-state]") ??
+        []) {
         container_states.push(button.dataset.filterState);
       }
 

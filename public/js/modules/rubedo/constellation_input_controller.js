@@ -71,8 +71,7 @@ const bind_constellation_input_controller = async ({
     keyboard_node_id = selected_node.node_id;
     if (controls.keyboard_status instanceof HTMLElement) {
       const chapter_label = selected_node.label ?? selected_node.chapter_id;
-      controls.keyboard_status.textContent =
-        `Selected chapter ${chapter_label}, ${selected_node.thread_key} thread.`;
+      controls.keyboard_status.textContent = `Selected chapter ${chapter_label}, ${selected_node.thread_key} thread.`;
     }
 
     return true;
@@ -97,8 +96,7 @@ const bind_constellation_input_controller = async ({
 
       const delta_x = candidate_node.x - current_node.x;
       const delta_y = candidate_node.y - current_node.y;
-      const forward_distance =
-        delta_x * direction_x + delta_y * direction_y;
+      const forward_distance = delta_x * direction_x + delta_y * direction_y;
       if (forward_distance <= 0) {
         continue;
       }
@@ -157,8 +155,10 @@ const bind_constellation_input_controller = async ({
     const inertia_active =
       !reduced_motion() &&
       (inertia_frame_id !== 0 ||
-        Math.abs(velocity_x) >= RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px ||
-        Math.abs(velocity_y) >= RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px);
+        Math.abs(velocity_x) >=
+          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px ||
+        Math.abs(velocity_y) >=
+          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px);
     const interaction_active =
       is_dragging ||
       pinch_state !== null ||
@@ -180,7 +180,10 @@ const bind_constellation_input_controller = async ({
     }
 
     if (controls.zoom_badge instanceof HTMLElement) {
-      controls.zoom_badge.classList.toggle("sol__is_active", wheel_intent_active);
+      controls.zoom_badge.classList.toggle(
+        "sol__is_active",
+        wheel_intent_active,
+      );
     }
   };
 
@@ -197,7 +200,6 @@ const bind_constellation_input_controller = async ({
     }
   };
 
-
   const position_hover_preview = (event) => {
     const hover_preview_node = get_hover_preview_node();
 
@@ -209,10 +211,12 @@ const bind_constellation_input_controller = async ({
     const preview_width = hover_preview_node.offsetWidth || 280;
     const preview_height = hover_preview_node.offsetHeight || 180;
     const raw_left =
-      event.clientX - bounds.left +
+      event.clientX -
+      bounds.left +
       RUBEDO_CONSTELLATION_INTERACTION.hover_preview_offset_x;
     const raw_top =
-      event.clientY - bounds.top +
+      event.clientY -
+      bounds.top +
       RUBEDO_CONSTELLATION_INTERACTION.hover_preview_offset_y;
     const max_left = Math.max(
       RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
@@ -329,24 +333,31 @@ const bind_constellation_input_controller = async ({
 
       const overscroll = compute_overscroll(view_state, canvas, world_bounds);
       const outside_soft_zone =
-        overscroll.left > RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
-        overscroll.right > RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
-        overscroll.top > RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y ||
-        overscroll.bottom > RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y;
+        overscroll.left >
+          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
+        overscroll.right >
+          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
+        overscroll.top >
+          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y ||
+        overscroll.bottom >
+          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y;
 
       velocity_x *= RUBEDO_CONSTELLATION_INTERACTION.inertia_damping;
       velocity_y *= RUBEDO_CONSTELLATION_INTERACTION.inertia_damping;
 
       if (outside_soft_zone) {
-        velocity_x *= RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
-        velocity_y *= RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
+        velocity_x *=
+          RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
+        velocity_y *=
+          RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
       }
 
       persist_view();
       render_now();
 
       if (
-        Math.abs(velocity_x) < RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px &&
+        Math.abs(velocity_x) <
+          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px &&
         Math.abs(velocity_y) < RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px
       ) {
         inertia_frame_id = 0;
@@ -361,7 +372,12 @@ const bind_constellation_input_controller = async ({
   };
 
   const zoom_at_screen_point = (screen_x, screen_y, scale_multiplier) => {
-    const cursor_world = screen_to_world(screen_x, screen_y, view_state, canvas);
+    const cursor_world = screen_to_world(
+      screen_x,
+      screen_y,
+      view_state,
+      canvas,
+    );
     const nearest = find_nearest_world_node(
       payload,
       cursor_world.x,
@@ -746,7 +762,6 @@ const bind_constellation_input_controller = async ({
     });
   }
 
-
   const activate_keyboard_node = () => {
     const selected_node = payload_map.get(keyboard_node_id);
     if (selected_node?.is_clickable) {
@@ -755,7 +770,11 @@ const bind_constellation_input_controller = async ({
   };
 
   canvas.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+    if (
+      event.key === "Enter" ||
+      event.key === " " ||
+      event.key === "Spacebar"
+    ) {
       event.preventDefault();
       bump_interaction();
       activate_keyboard_node();

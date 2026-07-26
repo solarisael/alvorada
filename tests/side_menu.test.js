@@ -86,11 +86,7 @@ describe("side_menu option safety", () => {
       get_safe_option("solarisael", site_theme_options, SITE_THEME_DEFAULT),
     ).toBe("solarisael");
     expect(
-      get_safe_option(
-        "cosmic_overlay",
-        site_theme_options,
-        SITE_THEME_DEFAULT,
-      ),
+      get_safe_option("cosmic_overlay", site_theme_options, SITE_THEME_DEFAULT),
     ).toBe(SITE_THEME_DEFAULT);
   });
 
@@ -160,9 +156,9 @@ describe("side_menu option safety", () => {
       "user_text=large; user_measure=wide",
     );
 
-    expect(user_text_options.includes(resolved_user_settings.saved_text_class)).toBe(
-      true,
-    );
+    expect(
+      user_text_options.includes(resolved_user_settings.saved_text_class),
+    ).toBe(true);
     expect(resolved_user_settings.saved_text_class).toBe("large");
     expect(
       user_measure_options.includes(resolved_user_settings.saved_measure_class),
@@ -176,7 +172,9 @@ describe("side_menu option safety", () => {
     );
 
     expect(resolved_user_settings.saved_text_class).toBe(USER_TEXT_DEFAULT);
-    expect(resolved_user_settings.saved_measure_class).toBe(USER_MEASURE_DEFAULT);
+    expect(resolved_user_settings.saved_measure_class).toBe(
+      USER_MEASURE_DEFAULT,
+    );
   });
 
   test("resolve_saved_menu_state accepts valid open and panel cookies", () => {
@@ -188,7 +186,9 @@ describe("side_menu option safety", () => {
     );
 
     expect(open_state.saved_menu_open).toBe(true);
-    expect(site_menu_panel_options.includes(open_state.saved_menu_panel)).toBe(true);
+    expect(site_menu_panel_options.includes(open_state.saved_menu_panel)).toBe(
+      true,
+    );
     expect(open_state.saved_menu_panel).toBe("user");
     expect(closed_state.saved_menu_open).toBe(false);
     expect(closed_state.saved_menu_panel).toBe("account");
@@ -220,7 +220,13 @@ describe("side_menu root state", () => {
       removeAttribute: () => {},
     };
 
-    apply_site_style_state(fake_root, "minimal_astral", "medium", "balanced", "90");
+    apply_site_style_state(
+      fake_root,
+      "minimal_astral",
+      "medium",
+      "balanced",
+      "90",
+    );
 
     expect(attributes["data-site-theme"]).toBe("minimal_astral");
     expect(attributes["data-site-shell"]).toBe("medium");

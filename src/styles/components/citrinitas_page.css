@@ -128,7 +128,11 @@ container[data-phase="citrinitas"] {
 }
 
 .sol__citrinitas_card_count {
-  color: color-mix(in oklch, var(--site_style_accent) 56%, var(--citrinitas_ink_soft));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 56%,
+    var(--citrinitas_ink_soft)
+  );
   letter-spacing: 0.08em;
   text-transform: lowercase;
 }
@@ -209,7 +213,11 @@ container[data-phase="citrinitas"] {
 
 .sol__citrinitas_chapter_index {
   grid-column: 1;
-  color: color-mix(in oklch, var(--site_style_accent) 58%, var(--citrinitas_ink_soft));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 58%,
+    var(--citrinitas_ink_soft)
+  );
   font-variant-numeric: tabular-nums;
 }
 
@@ -273,7 +281,11 @@ container[data-phase="citrinitas"] {
 .sol__citrinitas_nav_prev,
 .sol__citrinitas_nav_up,
 .sol__citrinitas_nav_next {
-  color: color-mix(in oklch, var(--site_style_accent) 56%, var(--citrinitas_ink_soft));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 56%,
+    var(--citrinitas_ink_soft)
+  );
   letter-spacing: 0.06em;
   text-transform: lowercase;
   text-decoration: none;
@@ -282,7 +294,11 @@ container[data-phase="citrinitas"] {
 .sol__citrinitas_nav_prev:hover,
 .sol__citrinitas_nav_up:hover,
 .sol__citrinitas_nav_next:hover {
-  color: color-mix(in oklch, var(--site_style_accent) 74%, var(--citrinitas_ink));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 74%,
+    var(--citrinitas_ink)
+  );
 }
 
 .sol__citrinitas_nav_next {

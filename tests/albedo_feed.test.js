@@ -29,9 +29,7 @@ describe("albedo feed helpers", () => {
     const active_states = new Set(["calm"]);
 
     expect(entry_matches_states(["still"], new Set())).toBe(true);
-    expect(toggle_container_states(active_states, ["calm", "hope"])).toBe(
-      true,
-    );
+    expect(toggle_container_states(active_states, ["calm", "hope"])).toBe(true);
     expect([...active_states].sort()).toEqual(["calm", "hope"]);
 
     expect(toggle_container_states(active_states, ["calm", "hope"])).toBe(

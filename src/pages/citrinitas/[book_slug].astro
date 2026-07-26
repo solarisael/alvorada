@@ -18,9 +18,7 @@ const display_title = book?.title ?? book_slug;
 const cover_src = book?.cover ? with_base(book.cover) : null;
 const chapters = (book?.chapters ?? []).map((chapter) => ({
   ...chapter,
-  href: with_base(
-    citrinitas_chapter_path(book_slug, chapter.chapter_slug),
-  ),
+  href: with_base(citrinitas_chapter_path(book_slug, chapter.chapter_slug)),
 }));
 ---
 
@@ -34,20 +32,24 @@ const chapters = (book?.chapters ?? []).map((chapter) => ({
 >
   <citrinitas data-shape="booklet_page" class="sol__citrinitas_booklet">
     <div class="sol__citrinitas_booklet_header">
-      {cover_src && (
-        <img
-          class="sol__citrinitas_booklet_cover"
-          src={cover_src}
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-      )}
+      {
+        cover_src && (
+          <img
+            class="sol__citrinitas_booklet_cover"
+            src={cover_src}
+            alt=""
+            loading="eager"
+            decoding="async"
+          />
+        )
+      }
       <div class="sol__citrinitas_booklet_meta">
         <h1 class="sol__citrinitas_booklet_title">{display_title}</h1>
-        {book?.synopsis && (
-          <p class="sol__citrinitas_booklet_synopsis">{book.synopsis}</p>
-        )}
+        {
+          book?.synopsis && (
+            <p class="sol__citrinitas_booklet_synopsis">{book.synopsis}</p>
+          )
+        }
       </div>
     </div>
 
@@ -58,11 +60,16 @@ const chapters = (book?.chapters ?? []).map((chapter) => ({
         <ol class="sol__citrinitas_chapter_list">
           {chapters.map((chapter, index) => (
             <li class="sol__citrinitas_chapter_row">
-              <ContentLink href={chapter.href} class="sol__citrinitas_chapter_link">
+              <ContentLink
+                href={chapter.href}
+                class="sol__citrinitas_chapter_link"
+              >
                 <span class="sol__citrinitas_chapter_index sol__text_kicker">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span class="sol__citrinitas_chapter_title">{chapter.title}</span>
+                <span class="sol__citrinitas_chapter_title">
+                  {chapter.title}
+                </span>
                 {chapter.excerpt && (
                   <span class="sol__citrinitas_chapter_excerpt">
                     {chapter.excerpt}

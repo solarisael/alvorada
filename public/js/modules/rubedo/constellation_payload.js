@@ -70,7 +70,11 @@ const collect_map_thread_keys = (chapters) => {
 const build_side_lane_x_map = (side_thread_keys) => {
   const side_lane_x_map = new Map();
 
-  for (let side_index = 0; side_index < side_thread_keys.length; side_index += 1) {
+  for (
+    let side_index = 0;
+    side_index < side_thread_keys.length;
+    side_index += 1
+  ) {
     const thread_key = side_thread_keys[side_index];
     const lane_rank = Math.floor(side_index / 2) + 1;
     const lane_direction = side_index % 2 === 0 ? -1 : 1;
@@ -135,7 +139,8 @@ const build_real_nodes = (row_entries, side_lane_x_map) => {
       const lane_x =
         thread_key === "cinza"
           ? RUBEDO_CONSTELLATION_LAYOUT.center_x
-          : side_lane_x_map.get(thread_key) ?? RUBEDO_CONSTELLATION_LAYOUT.center_x;
+          : (side_lane_x_map.get(thread_key) ??
+            RUBEDO_CONSTELLATION_LAYOUT.center_x);
       const lane_y =
         thread_key === "cinza"
           ? row_entry.row_y
@@ -161,7 +166,11 @@ const build_real_nodes = (row_entries, side_lane_x_map) => {
 const build_trunk_edges = (row_anchor_nodes) => {
   const trunk_edges = [];
 
-  for (let row_index = 0; row_index < row_anchor_nodes.length - 1; row_index += 1) {
+  for (
+    let row_index = 0;
+    row_index < row_anchor_nodes.length - 1;
+    row_index += 1
+  ) {
     const anchor_node = row_anchor_nodes[row_index];
     const next_anchor_node = row_anchor_nodes[row_index + 1];
 
@@ -195,7 +204,11 @@ const build_canonical_edges_by_thread = (side_thread_keys, real_nodes) => {
 
     const edges = [];
 
-    for (let node_index = 0; node_index < thread_nodes.length - 1; node_index += 1) {
+    for (
+      let node_index = 0;
+      node_index < thread_nodes.length - 1;
+      node_index += 1
+    ) {
       const thread_node = thread_nodes[node_index];
       const next_node = thread_nodes[node_index + 1];
 
@@ -244,7 +257,10 @@ const build_row_connector_edges = (real_nodes, row_anchor_nodes) => {
   return row_connector_edges;
 };
 
-const build_canonical_edge_key_set = (trunk_edges, canonical_edges_by_thread) => {
+const build_canonical_edge_key_set = (
+  trunk_edges,
+  canonical_edges_by_thread,
+) => {
   const canonical_edge_key_set = new Set();
 
   for (const edge_entry of trunk_edges) {
@@ -286,7 +302,9 @@ const build_branch_edges = ({
     const row_entry = row_entries[row_index];
 
     for (const branch_edge of row_entry.chapter.branch_edges ?? []) {
-      const target_row_index = chapter_index_map.get(branch_edge?.to_chapter_id);
+      const target_row_index = chapter_index_map.get(
+        branch_edge?.to_chapter_id,
+      );
 
       if (typeof target_row_index !== "number") {
         continue;

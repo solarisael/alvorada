@@ -25,7 +25,8 @@ const rehype_base_path = (base_path = "/") => {
             continue;
           }
 
-          const is_site_root_relative = raw_value.startsWith("/") && !raw_value.startsWith("//");
+          const is_site_root_relative =
+            raw_value.startsWith("/") && !raw_value.startsWith("//");
           const already_prefixed =
             !normalized_base ||
             raw_value === normalized_base ||

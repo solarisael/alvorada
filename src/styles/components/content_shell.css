@@ -136,7 +136,8 @@
     transparent
   );
   --content_layer_shadow_stack:
-    inset 0 0 0 var(--site_border_width_hairline) var(--content_layer_edge_stroke),
+    inset 0 0 0 var(--site_border_width_hairline)
+      var(--content_layer_edge_stroke),
     0 24px 42px -34px rgb(0 0 0 / 0.92);
 
   border-color: color-mix(
@@ -149,8 +150,12 @@
   box-shadow: var(--content_layer_shadow_stack);
   backdrop-filter: blur(var(--site_style_blur)) saturate(1.04);
   transition:
-    border-color calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease,
-    box-shadow calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1)) ease;
+    border-color
+      calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+      ease,
+    box-shadow
+      calc(var(--page_color_shift_ms, 320ms) * var(--site_fx_motion_mult, 1))
+      ease;
 }
 
 .sol__content_layer_surface {
@@ -226,7 +231,8 @@
 
 :root[data-site-theme="solarisael"] #sol_content {
   --content_layer_shadow_stack:
-    inset 0 0 0 var(--site_border_width_hairline) var(--content_layer_edge_stroke),
+    inset 0 0 0 var(--site_border_width_hairline)
+      var(--content_layer_edge_stroke),
     inset 0 0 0 var(--site_border_width_standard)
       color-mix(
         in oklch,
@@ -507,24 +513,18 @@
 /* Sigils anchor to the line's vertical center so they overlay the bar at its midpoint.
    Horizontal: center axis. Vertical: line top + line height / 2 (so sigil center == line center). */
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top {
-  left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x)
-  );
+  left: calc(var(--site_center_axis_x) + var(--site_center_axis_nudge_x));
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
   transform: translate(-50%, -50%);
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_bottom {
-  left: calc(
-    var(--site_center_axis_x) + var(--site_center_axis_nudge_x)
-  );
+  left: calc(var(--site_center_axis_x) + var(--site_center_axis_nudge_x));
   width: var(--cinza_reliquary_sigil_size);
   height: var(--cinza_reliquary_sigil_size);
   transform: translate(-50%, 50%);
 }
-
-
 
 /* Border-grown ornament language: the frame interrupts the rule instead of
    floating inside a rounded panel. */
@@ -543,9 +543,15 @@
     ),
     0.98
   );
-  filter: brightness(var(--sol_ornament_luminance)) saturate(1.28) contrast(1.08)
-    drop-shadow(0 0 18px color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
-    drop-shadow(0 0 36px color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.28)
+    contrast(1.08)
+    drop-shadow(
+      0 0 18px color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent)
+    )
+    drop-shadow(
+      0 0 36px
+        color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent)
+    );
 }
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_sigil_top,
@@ -563,7 +569,6 @@
   color: var(--sol_ornament_gold);
   opacity: 0.82;
 }
-
 
 :root[data-site-theme="solarisael"] .sol__content_ornament_line_top {
   top: calc(var(--cinza_reliquary_line_block_size) * -0.5);
@@ -607,15 +612,27 @@
 :root[data-site-theme="solarisael"] .sol__reading_frame_ornament {
   color: var(--sol_ornament_gold);
   opacity: 0.92;
-  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32) contrast(1.08)
-    drop-shadow(0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
-    drop-shadow(0 0 1rem color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32)
+    contrast(1.08)
+    drop-shadow(
+      0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent)
+    )
+    drop-shadow(
+      0 0 1rem
+        color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent)
+    );
 }
 
 :root[data-site-theme="solarisael"] img.sol__reading_frame_ornament {
-  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32) contrast(1.08)
-    drop-shadow(0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent))
-    drop-shadow(0 0 1rem color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent));
+  filter: brightness(var(--sol_ornament_luminance)) saturate(1.32)
+    contrast(1.08)
+    drop-shadow(
+      0 0 0.45rem color-mix(in oklch, var(--sol_ornament_gold) 42%, transparent)
+    )
+    drop-shadow(
+      0 0 1rem
+        color-mix(in oklch, var(--sol_ornament_secondary) 24%, transparent)
+    );
 }
 
 :root[data-site-theme="solarisael"] .sol__reading_frame_crest_bottom,
@@ -791,7 +808,6 @@
 .sol__reading_layer_body {
   @apply relative z-10;
 }
-
 
 @media (max-width: 768px) {
   #sol_page_main {

@@ -4,8 +4,14 @@
 // stacking/intensity/blacklist system, since ix payload is a single
 // trigger/action/payload triplet, not a composable effect stack.
 
-import { IX_BASE_CLASS, parse_ix_descriptor } from "../../public/vendor/fx/js/contract.js";
-import { escape_html, marker_candidate_from_child } from "./marker_tree_utils.js";
+import {
+  IX_BASE_CLASS,
+  parse_ix_descriptor,
+} from "../../public/vendor/fx/js/contract.js";
+import {
+  escape_html,
+  marker_candidate_from_child,
+} from "./marker_tree_utils.js";
 
 const escape_attribute = (raw_value) => escape_html(raw_value);
 
@@ -22,7 +28,11 @@ const emit_ix_sanitization_warning = (raw_descriptor, warn, warning_cache) => {
   );
 };
 
-const build_ix_span_html = (descriptor, text_content, { door_href = null } = {}) => {
+const build_ix_span_html = (
+  descriptor,
+  text_content,
+  { door_href = null } = {},
+) => {
   const attribute_value = `${descriptor.trigger}:${descriptor.action}:${descriptor.payload}`;
   const door_attribute = door_href
     ? ` data-ix-href="${escape_attribute(door_href)}"`
@@ -57,7 +67,9 @@ const parse_ix_marker_descriptor = (raw_descriptor) => {
     return null;
   }
 
-  const { payload, door_href } = split_payload_and_door_href(descriptor.payload);
+  const { payload, door_href } = split_payload_and_door_href(
+    descriptor.payload,
+  );
 
   return { ...descriptor, payload, door_href };
 };
@@ -78,7 +90,10 @@ const parse_open_marker_only = (raw_text) => {
     return null;
   }
 
-  return { raw_descriptor: match[1], descriptor: parse_ix_marker_descriptor(match[1]) };
+  return {
+    raw_descriptor: match[1],
+    descriptor: parse_ix_marker_descriptor(match[1]),
+  };
 };
 
 const is_close_marker_only = (raw_text) => {
@@ -102,7 +117,10 @@ const split_ix_markers = (raw_text = "", options = {}) => {
     const inner_text = marker_match[2];
 
     if (match_start > cursor) {
-      result_nodes.push({ type: "text", value: raw_text.slice(cursor, match_start) });
+      result_nodes.push({
+        type: "text",
+        value: raw_text.slice(cursor, match_start),
+      });
     }
 
     const descriptor = parse_ix_marker_descriptor(raw_descriptor);
@@ -113,7 +131,9 @@ const split_ix_markers = (raw_text = "", options = {}) => {
     } else {
       result_nodes.push({
         type: "html",
-        value: build_ix_span_html(descriptor, inner_text, { door_href: descriptor.door_href }),
+        value: build_ix_span_html(descriptor, inner_text, {
+          door_href: descriptor.door_href,
+        }),
       });
     }
 
@@ -130,7 +150,6 @@ const split_ix_markers = (raw_text = "", options = {}) => {
 
   return result_nodes;
 };
-
 
 const transform_ix_markers_in_tree = (tree_node, options = {}) => {
   if (!tree_node || !Array.isArray(tree_node.children)) {
@@ -158,7 +177,11 @@ const transform_ix_markers_in_tree = (tree_node, options = {}) => {
 
     if (open_marker) {
       if (!open_marker.descriptor) {
-        emit_ix_sanitization_warning(open_marker.raw_descriptor, options.warn, warning_cache);
+        emit_ix_sanitization_warning(
+          open_marker.raw_descriptor,
+          options.warn,
+          warning_cache,
+        );
         next_children.push(child_node);
         continue;
       }

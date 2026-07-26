@@ -13,7 +13,11 @@ import {
   rubedo_book_map,
   rubedo_book_slugs,
 } from "../../../data/rubedo/book_timeline_runtime.js";
-import { build_crumbs, content_link_attrs, with_base } from "../../../utils/routes.js";
+import {
+  build_crumbs,
+  content_link_attrs,
+  with_base,
+} from "../../../utils/routes.js";
 
 const default_thread_key = "cinza";
 
@@ -35,7 +39,6 @@ export const getStaticPaths = () => {
 const { chapter, book_entry } = Astro.props;
 const { book_slug, chapter_slug } = Astro.params;
 const display_title = chapter?.title ?? chapter_slug;
-
 
 // Chapters arrive pre-sorted by timeline_position from the runtime — index
 // straight into them for the prev/next pager, no re-sort.
@@ -97,7 +100,6 @@ const crumbs = build_crumbs([
   crumbs={crumbs}
 >
   <ChapterIntro chapter={chapter} />
-
 
   {
     /*

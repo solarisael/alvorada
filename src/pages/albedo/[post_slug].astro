@@ -34,10 +34,7 @@ const display_title = entry.data.title ?? entry.data.slug;
       </h1>
       <div class="sol__albedo_detail_meta">
         <AlbedoPill state={primary_state} />
-        <time
-          class="sol__albedo_entry_date"
-          datetime={entry.data.published_at}
-        >
+        <time class="sol__albedo_entry_date" datetime={entry.data.published_at}>
           {entry.data.published_at}
         </time>
       </div>

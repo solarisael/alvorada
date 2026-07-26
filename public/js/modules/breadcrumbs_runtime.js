@@ -16,7 +16,6 @@ const phase_color_by_name = {
 };
 const phase_names = new Set(Object.keys(phase_color_by_name));
 
-
 /**
  * @param {string} pathname_value
  */
@@ -73,7 +72,6 @@ const apply_constant_crumb_state = (pathname_value) => {
 
 apply_constant_crumb_state(window.location.pathname);
 
-
 if (!window_any.__breadcrumb_htmx_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {
     const htmx_event = /** @type {CustomEvent} */ (event);
@@ -84,7 +82,9 @@ if (!window_any.__breadcrumb_htmx_after_swap_bound) {
     }
 
     last_applied_pathname = null;
-    apply_constant_crumb_state(derive_request_pathname(event) ?? window.location.pathname);
+    apply_constant_crumb_state(
+      derive_request_pathname(event) ?? window.location.pathname,
+    );
   });
 
   window_any.__breadcrumb_htmx_after_swap_bound = true;

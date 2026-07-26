@@ -60,23 +60,36 @@ const next_href = next
     </div>
 
     <nav class="sol__citrinitas_chapter_nav" aria-label="booklet navigation">
-      {prev_href ? (
-        <ContentLink href={prev_href} class="sol__citrinitas_nav_prev sol__text_kicker">
-          ← {prev.title}
-        </ContentLink>
-      ) : (
-        <span />
-      )}
-      <ContentLink href={booklet_href} class="sol__citrinitas_nav_up sol__text_kicker">
+      {
+        prev_href ? (
+          <ContentLink
+            href={prev_href}
+            class="sol__citrinitas_nav_prev sol__text_kicker"
+          >
+            ← {prev.title}
+          </ContentLink>
+        ) : (
+          <span />
+        )
+      }
+      <ContentLink
+        href={booklet_href}
+        class="sol__citrinitas_nav_up sol__text_kicker"
+      >
         all pieces
       </ContentLink>
-      {next_href ? (
-        <ContentLink href={next_href} class="sol__citrinitas_nav_next sol__text_kicker">
-          {next.title} →
-        </ContentLink>
-      ) : (
-        <span />
-      )}
+      {
+        next_href ? (
+          <ContentLink
+            href={next_href}
+            class="sol__citrinitas_nav_next sol__text_kicker"
+          >
+            {next.title} →
+          </ContentLink>
+        ) : (
+          <span />
+        )
+      }
     </nav>
   </citrinitas>
 </IndexLayout>

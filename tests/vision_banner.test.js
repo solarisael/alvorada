@@ -158,7 +158,9 @@ describe("vision banner image source hydration", () => {
     expect(banner.classList.contains("sol__vision_banner_webgl_ready")).toBe(
       true,
     );
-    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(true);
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
+      true,
+    );
     expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
       false,
     );
@@ -203,9 +205,9 @@ describe("vision banner image source hydration", () => {
     expect(constructed_images).toHaveLength(1);
     expect(texture_calls).toHaveLength(2);
     expect(texture_sources[1]).toBe(constructed_images[0]);
-    expect(second_banner.classList.contains("sol__vision_banner_webgl_ready")).toBe(
-      true,
-    );
+    expect(
+      second_banner.classList.contains("sol__vision_banner_webgl_ready"),
+    ).toBe(true);
   });
   test("re-uploads the texture when the picture source changes", () => {
     const responsive_banner = document.createElement("section");

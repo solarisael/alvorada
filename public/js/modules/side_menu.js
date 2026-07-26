@@ -57,7 +57,9 @@ const parse_cookie_map = (cookie_header = "") => {
       continue;
     }
 
-    cookie_map[cookie_key] = decodeURIComponent(raw_value_parts.join("=").trim());
+    cookie_map[cookie_key] = decodeURIComponent(
+      raw_value_parts.join("=").trim(),
+    );
   }
 
   return cookie_map;
@@ -222,7 +224,10 @@ const resolve_saved_user_settings = (cookie_header = null) => {
 };
 
 const resolve_saved_menu_state = (cookie_header = null) => {
-  const raw_open_value = read_cookie_value(SITE_MENU_OPEN_COOKIE_NAME, cookie_header);
+  const raw_open_value = read_cookie_value(
+    SITE_MENU_OPEN_COOKIE_NAME,
+    cookie_header,
+  );
   const saved_menu_open =
     raw_open_value === "true"
       ? true
@@ -271,16 +276,25 @@ const set_menu_state = (menu_node, is_open, panel_name) => {
     panel_node.inert = !is_open;
   }
 
-  for (const toggle_node of menu_node.querySelectorAll("[data-side-menu-toggle]")) {
+  for (const toggle_node of menu_node.querySelectorAll(
+    "[data-side-menu-toggle]",
+  )) {
     if (!(toggle_node instanceof HTMLButtonElement)) {
       continue;
     }
 
-    const toggle_panel = toggle_node.dataset.sidePanel ?? SITE_MENU_PANEL_DEFAULT;
+    const toggle_panel =
+      toggle_node.dataset.sidePanel ?? SITE_MENU_PANEL_DEFAULT;
     const is_active_panel = toggle_panel === safe_panel_name;
     toggle_node.dataset.active = is_active_panel ? "true" : "false";
-    toggle_node.setAttribute("aria-pressed", is_active_panel ? "true" : "false");
-    toggle_node.setAttribute("aria-expanded", is_active_panel ? "true" : "false");
+    toggle_node.setAttribute(
+      "aria-pressed",
+      is_active_panel ? "true" : "false",
+    );
+    toggle_node.setAttribute(
+      "aria-expanded",
+      is_active_panel ? "true" : "false",
+    );
   }
 
   for (const page_node of menu_node.querySelectorAll("[data-side-menu-page]")) {
@@ -310,12 +324,20 @@ const sync_side_menu_controls = (
     return;
   }
 
-  const theme_select_node = menu_node.querySelector("[data-site-theme-control]");
-  const shell_select_node = menu_node.querySelector("[data-site-shell-control]");
+  const theme_select_node = menu_node.querySelector(
+    "[data-site-theme-control]",
+  );
+  const shell_select_node = menu_node.querySelector(
+    "[data-site-shell-control]",
+  );
   const fx_select_node = menu_node.querySelector("[data-site-fx-control]");
-  const scale_select_node = menu_node.querySelector("[data-site-scale-control]");
+  const scale_select_node = menu_node.querySelector(
+    "[data-site-scale-control]",
+  );
   const text_select_node = menu_node.querySelector("[data-user-text-control]");
-  const measure_select_node = menu_node.querySelector("[data-user-measure-control]");
+  const measure_select_node = menu_node.querySelector(
+    "[data-user-measure-control]",
+  );
 
   if (theme_select_node instanceof HTMLSelectElement) {
     theme_select_node.value = theme_name;
@@ -355,7 +377,8 @@ const apply_saved_preferences = () => {
     saved_fx_class,
     saved_scale_class,
   } = resolve_saved_style();
-  const { saved_text_class, saved_measure_class } = resolve_saved_user_settings();
+  const { saved_text_class, saved_measure_class } =
+    resolve_saved_user_settings();
   const { saved_menu_open, saved_menu_panel } = resolve_saved_menu_state();
 
   apply_site_style_state(
@@ -399,12 +422,20 @@ const bind_side_menu_controls = () => {
 
   menu_node.dataset.sideMenuInit = "true";
 
-  const theme_select_node = menu_node.querySelector("[data-site-theme-control]");
-  const shell_select_node = menu_node.querySelector("[data-site-shell-control]");
+  const theme_select_node = menu_node.querySelector(
+    "[data-site-theme-control]",
+  );
+  const shell_select_node = menu_node.querySelector(
+    "[data-site-shell-control]",
+  );
   const fx_select_node = menu_node.querySelector("[data-site-fx-control]");
-  const scale_select_node = menu_node.querySelector("[data-site-scale-control]");
+  const scale_select_node = menu_node.querySelector(
+    "[data-site-scale-control]",
+  );
   const text_select_node = menu_node.querySelector("[data-user-text-control]");
-  const measure_select_node = menu_node.querySelector("[data-user-measure-control]");
+  const measure_select_node = menu_node.querySelector(
+    "[data-user-measure-control]",
+  );
   const close_node = menu_node.querySelector("[data-side-menu-close]");
   const trigger_node = menu_node.querySelector("[data-side-menu-trigger]");
   const reset_node = menu_node.querySelector("[data-side-menu-reset]");
@@ -425,7 +456,9 @@ const bind_side_menu_controls = () => {
       SITE_SHELL_DEFAULT,
     );
     const selected_fx_name = get_safe_option(
-      fx_select_node instanceof HTMLSelectElement ? fx_select_node.value : SITE_FX_DEFAULT,
+      fx_select_node instanceof HTMLSelectElement
+        ? fx_select_node.value
+        : SITE_FX_DEFAULT,
       site_fx_options,
       SITE_FX_DEFAULT,
     );
@@ -508,7 +541,9 @@ const bind_side_menu_controls = () => {
     });
   }
 
-  for (const toggle_node of menu_node.querySelectorAll("[data-side-menu-toggle]")) {
+  for (const toggle_node of menu_node.querySelectorAll(
+    "[data-side-menu-toggle]",
+  )) {
     if (!(toggle_node instanceof HTMLButtonElement)) {
       continue;
     }
@@ -529,10 +564,7 @@ const bind_side_menu_controls = () => {
   }
 
   menu_node.addEventListener("keydown", (event) => {
-    if (
-      event.key !== "Escape" ||
-      menu_node.dataset.sideMenuOpen !== "true"
-    ) {
+    if (event.key !== "Escape" || menu_node.dataset.sideMenuOpen !== "true") {
       return;
     }
 

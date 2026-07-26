@@ -28,7 +28,10 @@ const { phase_cards = [] } = Astro.props;
       const class_name = `sol__phase_card_link sol__phase_card_${phase_card.visual_phase_slug ?? phase_card.phase_slug}`;
 
       return phase_card.disabled ? (
-        <article class={`${class_name} sol__phase_card_disabled`} aria-disabled="true">
+        <article
+          class={`${class_name} sol__phase_card_disabled`}
+          aria-disabled="true"
+        >
           {card_body}
         </article>
       ) : (

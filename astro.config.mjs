@@ -25,7 +25,8 @@ const OBSIDIAN_VAULT_ROOT = resolve_obsidian_vault_root();
 const SITE = process.env.SOLARISAEL_SITE ?? "https://solarisael.github.io";
 const BASE = process.env.SOLARISAEL_BASE ?? "/solarisael";
 
-const normalize_path = (path_value = "") => String(path_value).replaceAll("\\", "/");
+const normalize_path = (path_value = "") =>
+  String(path_value).replaceAll("\\", "/");
 
 const obsidian_rubedo_hot_reload = () => {
   const vault_root = normalize_path(OBSIDIAN_VAULT_ROOT).replace(/\/+$/, "");

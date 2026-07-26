@@ -6,8 +6,10 @@ if (!globalThis.window) {
 }
 
 const { init_archive } = await import("../src/scripts/archive_controller.js");
-const { init_albedo_archive } = await import("../src/scripts/albedo_archive.js");
-const { init_nigredo_archive } = await import("../src/scripts/nigredo_archive.js");
+const { init_albedo_archive } =
+  await import("../src/scripts/albedo_archive.js");
+const { init_nigredo_archive } =
+  await import("../src/scripts/nigredo_archive.js");
 
 const NODE_DISPOSAL_API_SYMBOL = Symbol.for("solarisael.node_disposal");
 const contract = Object.freeze({
@@ -188,12 +190,12 @@ describe("archive controller lifecycle", () => {
     expect(root.querySelector("[data-test-count]").textContent).toBe("1 / 2");
 
     const expand_button = root.querySelector(
-      '[data-test-list] [data-test-expand]',
+      "[data-test-list] [data-test-expand]",
     );
     expand_button.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    expect(root.querySelector("[data-test-list] [data-test-preview]").hidden).toBe(
-      true,
-    );
+    expect(
+      root.querySelector("[data-test-list] [data-test-preview]").hidden,
+    ).toBe(true);
     expect(root.querySelector("[data-test-list] [data-test-full]").hidden).toBe(
       false,
     );
@@ -232,9 +234,8 @@ describe("archive controller lifecycle", () => {
     expect(init_archive(contract)).toBeNull();
     expect(root[contract.bound_property]).toBeUndefined();
 
-    document.getElementById(contract.index_id).textContent = JSON.stringify(
-      entries,
-    );
+    document.getElementById(contract.index_id).textContent =
+      JSON.stringify(entries);
     const controller = init_archive(contract);
     expect(controller).toBeTruthy();
 

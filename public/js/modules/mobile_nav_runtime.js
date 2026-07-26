@@ -8,7 +8,6 @@ import {
 const window_any = /** @type {any} */ (window);
 let last_applied_pathname = null;
 
-
 /**
  * @param {string | null} [pathname_override=null]
  */
@@ -37,7 +36,8 @@ const apply_mobile_route_active_state = (pathname_override = null) => {
     );
     const is_exact_match = current_pathname === target_pathname;
     const is_home_shortcut = pill_node.dataset.phase === "home";
-    const is_active = !is_home_shortcut &&
+    const is_active =
+      !is_home_shortcut &&
       is_section_path_active(current_pathname, target_pathname);
 
     pill_node.classList.toggle("sol__is_route_active", is_active);
@@ -77,7 +77,6 @@ if (!window_any.__mobile_nav_route_listener_bound) {
 
   window_any.__mobile_nav_route_listener_bound = true;
 }
-
 
 if (!window_any.__mobile_nav_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", (event) => {

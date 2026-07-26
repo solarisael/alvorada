@@ -27,7 +27,8 @@ function nigredo_body_to_measure_text(body = "") {
   return body_to_measure_text(body);
 }
 function derive_nigredo_preview(data, body = "") {
-  const source_text = nigredo_body_to_preview_source(body) || data.excerpt || "";
+  const source_text =
+    nigredo_body_to_preview_source(body) || data.excerpt || "";
 
   return truncate_preview(source_text, NIGREDO_PREVIEW_CHAR_LIMIT);
 }
@@ -51,7 +52,8 @@ function derive_nigredo_entry_view({ body = "", data, href, index = 0 }) {
   const primary_container =
     NIGREDO_STATE_TO_CONTAINER[primary_state] ?? "cinder";
   const title = data.title ?? null;
-  const preview_source = nigredo_body_to_preview_source(body) || data.excerpt || "";
+  const preview_source =
+    nigredo_body_to_preview_source(body) || data.excerpt || "";
   const excerpt = derive_nigredo_excerpt(data);
   const preview = derive_nigredo_preview(data, body);
   const size_estimates = estimate_nigredo_entry_sizes({

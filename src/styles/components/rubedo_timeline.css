@@ -1,7 +1,6 @@
 @reference "tailwindcss";
 @reference "../utils.css";
 
-
 .sol__rubedo_timeline_header {
   @apply mb-4;
 }
@@ -84,7 +83,6 @@
 .sol__rubedo_timeline_hover_preview p {
   @apply text-sm;
 }
-
 
 /* ============================================================
    RUBEDO INDEX — book cards (citrinitas-shaped, rubedo red accent)
@@ -178,7 +176,11 @@ container[data-phase="rubedo"] {
 }
 
 .sol__rubedo_book_count {
-  color: color-mix(in oklch, var(--site_style_accent) 56%, var(--rubedo_ink_soft));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 56%,
+    var(--rubedo_ink_soft)
+  );
   letter-spacing: 0.08em;
   text-transform: lowercase;
 }
@@ -193,7 +195,11 @@ container[data-phase="rubedo"] {
 }
 
 .sol__rubedo_book_action {
-  color: color-mix(in oklch, var(--site_style_accent) 58%, var(--rubedo_ink_soft));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 58%,
+    var(--rubedo_ink_soft)
+  );
   letter-spacing: 0.06em;
   text-transform: lowercase;
   text-decoration: none;

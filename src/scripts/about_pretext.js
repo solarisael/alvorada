@@ -1,7 +1,4 @@
-import {
-  layoutNextLine,
-  prepareWithSegments,
-} from "@chenglou/pretext";
+import { layoutNextLine, prepareWithSegments } from "@chenglou/pretext";
 
 let alpha_rows = [];
 let alpha_width = 0;
@@ -100,7 +97,8 @@ const blocked_interval = (root_rect, image_rect, line_top, line_height) => {
 const slot_for_line = (side, root_rect, image_rect, y, line_height) => {
   const page_inset = 12;
   const blocked = blocked_interval(root_rect, image_rect, y, line_height);
-  if (!blocked) return { left: page_inset, right: root_rect.width - page_inset };
+  if (!blocked)
+    return { left: page_inset, right: root_rect.width - page_inset };
   return side === "left"
     ? {
         left: page_inset,
@@ -112,14 +110,7 @@ const slot_for_line = (side, root_rect, image_rect, y, line_height) => {
       };
 };
 
-const render_block = (
-  layer,
-  card,
-  side,
-  start_y,
-  root_rect,
-  image_rect,
-) => {
+const render_block = (layer, card, side, start_y, root_rect, image_rect) => {
   if (card.classList.contains("dossier-card--profile")) {
     let y = start_y;
     let slot = slot_for_line(side, root_rect, image_rect, y, 18);
@@ -174,7 +165,9 @@ const render_block = (
   const styles = getComputedStyle(sample ?? card);
   const line_height = Math.max(15, Number.parseFloat(styles.lineHeight) || 20);
   const font = `${styles.fontStyle} ${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`;
-  const prepared = prepareWithSegments(source, font, { whiteSpace: "pre-wrap" });
+  const prepared = prepareWithSegments(source, font, {
+    whiteSpace: "pre-wrap",
+  });
   let cursor = { segmentIndex: 0, graphemeIndex: 0 };
   let y = start_y;
   let heading_rendered = false;
@@ -281,7 +274,9 @@ function schedule_compose() {
 
 if (typeof document !== "undefined") {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", schedule_compose, { once: true });
+    document.addEventListener("DOMContentLoaded", schedule_compose, {
+      once: true,
+    });
   } else {
     schedule_compose();
   }

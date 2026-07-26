@@ -27,7 +27,9 @@ const booklets = citrinitas_gallery.map((booklet) => ({
 
     {
       booklets.length === 0 ? (
-        <p class="sol__citrinitas_empty">No booklets yet. The garden is young.</p>
+        <p class="sol__citrinitas_empty">
+          No booklets yet. The garden is young.
+        </p>
       ) : (
         <citrinitas data-shape="masonry" class="sol__citrinitas_masonry">
           {booklets.map((booklet) => (
@@ -49,7 +51,9 @@ const booklets = citrinitas_gallery.map((booklet) => ({
                 <div class="sol__citrinitas_card_body">
                   <h2 class="sol__citrinitas_card_title">{booklet.title}</h2>
                   {booklet.synopsis && (
-                    <p class="sol__citrinitas_card_synopsis">{booklet.synopsis}</p>
+                    <p class="sol__citrinitas_card_synopsis">
+                      {booklet.synopsis}
+                    </p>
                   )}
                   <span class="sol__citrinitas_card_count sol__text_kicker">
                     {booklet.chapter_count}{" "}

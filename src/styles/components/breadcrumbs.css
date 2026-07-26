@@ -35,22 +35,22 @@
     background: linear-gradient(
       to right,
       color-mix(
-        in oklch,
-        var(--crumb_theme_color) var(--crumb_divider_start_mix),
-        transparent
-      )
+          in oklch,
+          var(--crumb_theme_color) var(--crumb_divider_start_mix),
+          transparent
+        )
         0%,
       color-mix(
-        in oklch,
-        var(--crumb_theme_color) var(--crumb_divider_mid_mix),
-        transparent
-      )
+          in oklch,
+          var(--crumb_theme_color) var(--crumb_divider_mid_mix),
+          transparent
+        )
         22%,
       color-mix(
-        in oklch,
-        var(--crumb_theme_color) var(--crumb_divider_tail_mix),
-        transparent
-      )
+          in oklch,
+          var(--crumb_theme_color) var(--crumb_divider_tail_mix),
+          transparent
+        )
         58%,
       transparent 100%
     );

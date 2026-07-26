@@ -169,4 +169,3 @@ codex {
 vessel[data-shape="page_main"] {
   @apply flex grow flex-col gap-1;
 }
-

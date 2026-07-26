@@ -28,13 +28,13 @@ A numeric value is visual intensity. Where motion and speed are useful, the seco
 
 **Example — compact status readout:**
 
-{{fx:stat_screen:1.1}}VITALITY  82%  //  FOCUS  64%  //  GUARD  READY{{/fx}}
+{{fx:stat_screen:1.1}}VITALITY 82% // FOCUS 64% // GUARD READY{{/fx}}
 
 ### `game_screen` — game screen panel
 
 **Example — paused encounter screen:**
 
-{{fx:game_screen:1.05}}ROUND 03  ·  WIND WISP  ·  PAUSED{{/fx}}
+{{fx:game_screen:1.05}}ROUND 03 · WIND WISP · PAUSED{{/fx}}
 
 ### `quest_log` — quest log panel
 

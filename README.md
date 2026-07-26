@@ -4,17 +4,17 @@ A personal website — **Solarisael rendered in browser, full Sol, no pretenses.
 
 Eventually hosts **Absurd Faith** at `/rubedo/`. The Codex is the reading mechanic for the book.
 
-*sun + aris (lion / war / altar) + aleph (breath / threshold) + el (god) — the being placed within the divine architecture.*
+_sun + aris (lion / war / altar) + aleph (breath / threshold) + el (god) — the being placed within the divine architecture._
 
 ## The five alchemical sections
 
-| Route | Section | Content |
-| --- | --- | --- |
-| `/nigredo` | Nigredo | Unhinged / drunk / dark quick-thought posts. Raw dumping ground. The thought before it learns to behave. |
-| `/albedo` | Albedo | The reflected-cleaned version. Tasteful, thought-out essays. "Nigredo when you wake up and you're not as sad." |
+| Route         | Section    | Content                                                                                                           |
+| ------------- | ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| `/nigredo`    | Nigredo    | Unhinged / drunk / dark quick-thought posts. Raw dumping ground. The thought before it learns to behave.          |
+| `/albedo`     | Albedo     | The reflected-cleaned version. Tasteful, thought-out essays. "Nigredo when you wake up and you're not as sad."    |
 | `/citrinitas` | Citrinitas | Archives of things that landed. Poems, photos, records, moments. The collection of what Sol is actually proud of. |
-| `/rubedo` | Rubedo | Long-running works with chapters and continuity. Home of *Absurd Faith*. The ceremonial completion stage. |
-| `/codex` | Codex | In-site wiki. LitRPG-style floating system-prompt. Permission-based unlocks (planned). |
+| `/rubedo`     | Rubedo     | Long-running works with chapters and continuity. Home of _Absurd Faith_. The ceremonial completion stage.         |
+| `/codex`      | Codex      | In-site wiki. LitRPG-style floating system-prompt. Permission-based unlocks (planned).                            |
 
 ## Stack
 

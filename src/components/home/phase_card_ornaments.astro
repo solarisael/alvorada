@@ -3,7 +3,9 @@ import { with_base } from "../../utils/routes.js";
 
 const { ornament } = Astro.props;
 const content_sigil_top = with_base("ornaments/reliquary/sigil_concentric.svg");
-const content_sigil_bottom = with_base("ornaments/reliquary/divider_center.svg");
+const content_sigil_bottom = with_base(
+  "ornaments/reliquary/divider_center.svg",
+);
 
 const ornament_items = [
   { role: "corner_tl", src: ornament.corner_tl },
@@ -29,7 +31,7 @@ const ornament_items = [
 
 <ornament data-shape="phase_card_ornaments" class="sol__phase_card_ornaments">
   {
-    ornament_items.map((ornament_item) => (
+    ornament_items.map((ornament_item) =>
       ornament_item.symbol ? (
         <svg
           class={`sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
@@ -37,7 +39,7 @@ const ornament_items = [
           viewBox={ornament_item.view_box}
           aria-hidden="true"
         >
-          <use href={`${ornament_item.src}#${ornament_item.symbol}`}></use>
+          <use href={`${ornament_item.src}#${ornament_item.symbol}`} />
         </svg>
       ) : (
         <img
@@ -48,7 +50,7 @@ const ornament_items = [
           loading="eager"
           decoding="async"
         />
-      )
-    ))
+      ),
+    )
   }
 </ornament>

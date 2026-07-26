@@ -97,14 +97,16 @@ const crumbs = is_category_page
     ]);
 ---
 
-<IndexLayout page_title={is_category_page ? category_display_title : display_title} phase="codex" crumbs={crumbs}>
+<IndexLayout
+  page_title={is_category_page ? category_display_title : display_title}
+  phase="codex"
+  crumbs={crumbs}
+>
   {
     is_category_page ? (
       <codex data-shape="category_page">
         <PageHero title={category_display_title}>
-          <p>
-            Entries in the {category_display_title.toLowerCase()} category.
-          </p>
+          <p>Entries in the {category_display_title.toLowerCase()} category.</p>
         </PageHero>
         <PageSection title="Entries">
           <LinkList items={category_entry_links} />

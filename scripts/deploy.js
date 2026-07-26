@@ -33,7 +33,11 @@ const TARGETS = {
     upload: async (key, batch) => {
       const form = new FormData();
       for (const f of batch) {
-        form.append(f.remote, new Blob([await Bun.file(f.abs).arrayBuffer()]), f.name);
+        form.append(
+          f.remote,
+          new Blob([await Bun.file(f.abs).arrayBuffer()]),
+          f.name,
+        );
       }
       const res = await fetch("https://neocities.org/api/upload", {
         method: "POST",
@@ -42,7 +46,9 @@ const TARGETS = {
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok || body.result !== "success") {
-        throw new Error(`neocities upload failed (${res.status}): ${JSON.stringify(body)}`);
+        throw new Error(
+          `neocities upload failed (${res.status}): ${JSON.stringify(body)}`,
+        );
       }
     },
   },
@@ -61,7 +67,11 @@ const TARGETS = {
         const form = new FormData();
         form.append("pathname", dir === "/" ? "/" : dir);
         for (const f of files) {
-          form.append("files", new Blob([await Bun.file(f.abs).arrayBuffer()]), f.name);
+          form.append(
+            "files",
+            new Blob([await Bun.file(f.abs).arrayBuffer()]),
+            f.name,
+          );
         }
         const res = await fetch("https://nekoweb.org/api/files/upload", {
           method: "POST",
@@ -69,7 +79,9 @@ const TARGETS = {
           body: form,
         });
         if (!res.ok) {
-          throw new Error(`nekoweb upload failed for ${dir} (${res.status}): ${await res.text()}`);
+          throw new Error(
+            `nekoweb upload failed for ${dir} (${res.status}): ${await res.text()}`,
+          );
         }
       }
     },
@@ -100,7 +112,9 @@ const deploy = async (name, dry_run) => {
   const target = TARGETS[name];
   const key = process.env[target.key_env];
   if (!key && !dry_run) {
-    throw new Error(`${target.key_env} not set — get a key and export it, or use --dry-run`);
+    throw new Error(
+      `${target.key_env} not set — get a key and export it, or use --dry-run`,
+    );
   }
 
   build_for(target);
@@ -110,7 +124,9 @@ const deploy = async (name, dry_run) => {
     remote: relative(DIST, abs).replaceAll("\\", "/"),
     name: abs.split(/[\\/]/).pop(),
   }));
-  const total_kb = Math.round(files.reduce((s, f) => s + statSync(f.abs).size, 0) / 1024);
+  const total_kb = Math.round(
+    files.reduce((s, f) => s + statSync(f.abs).size, 0) / 1024,
+  );
   console.log(`[${name}] ${files.length} files, ${total_kb} KB`);
 
   if (dry_run) {
@@ -133,7 +149,9 @@ const deploy = async (name, dry_run) => {
         await new Promise((r) => setTimeout(r, 1500 * attempt));
       }
     }
-    console.log(`  uploaded ${Math.min(i + BATCH, files.length)}/${files.length}`);
+    console.log(
+      `  uploaded ${Math.min(i + BATCH, files.length)}/${files.length}`,
+    );
   }
   console.log(`[${name}] deployed -> ${target.site}`);
 };
@@ -142,7 +160,9 @@ const args = process.argv.slice(2);
 const dry_run = args.includes("--dry-run");
 const which = args.find((a) => !a.startsWith("--"));
 if (!which || (which !== "all" && !TARGETS[which])) {
-  console.error("usage: bun scripts/deploy.js <neocities|nekoweb|all> [--dry-run]");
+  console.error(
+    "usage: bun scripts/deploy.js <neocities|nekoweb|all> [--dry-run]",
+  );
   process.exit(1);
 }
 for (const name of which === "all" ? Object.keys(TARGETS) : [which]) {

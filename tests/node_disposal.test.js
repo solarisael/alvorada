@@ -32,11 +32,7 @@ describe("node disposal lifecycle", () => {
       disposal_count += 1;
     });
 
-    dispatch_htmx_event(
-      "htmx:beforeCleanupElement",
-      { elt: root },
-      root,
-    );
+    dispatch_htmx_event("htmx:beforeCleanupElement", { elt: root }, root);
     root.remove();
     dispatch_htmx_event("htmx:afterSwap", { target: document.body });
 

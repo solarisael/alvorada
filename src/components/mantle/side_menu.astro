@@ -169,7 +169,6 @@ const user_measure_options = [
       aria-labelledby="sol_side_menu_tab_site"
       aria-hidden="false"
     >
-
       <h2>Site settings</h2>
       <p class="sol__side_menu_note">
         Tune the shell without moving the page out from under your eyes.
@@ -249,7 +248,9 @@ const user_measure_options = [
         <select id="sol_side_menu_measure" data-user-measure-control>
           {
             user_measure_options.map((measure_option) => (
-              <option value={measure_option.value}>{measure_option.label}</option>
+              <option value={measure_option.value}>
+                {measure_option.label}
+              </option>
             ))
           }
         </select>

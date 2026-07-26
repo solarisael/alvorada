@@ -40,9 +40,9 @@ const book_fixture = {
 
 describe("rubedo constellation payload", () => {
   test("returns a uniform empty payload for invalid book data", () => {
-    expect(build_constellation_payload_from_json(null, "/solarisael", null)).toEqual(
-      empty_constellation_payload,
-    );
+    expect(
+      build_constellation_payload_from_json(null, "/solarisael", null),
+    ).toEqual(empty_constellation_payload);
   });
 
   test("builds visible nodes, links, and edges from timeline JSON", () => {
@@ -82,9 +82,7 @@ describe("rubedo constellation payload", () => {
 describe("rubedo constellation helpers", () => {
   test("derives base path from data endpoint href", () => {
     expect(
-      base_path_from_data_href(
-        "/solarisael/rubedo/data/absurd-faith.json",
-      ),
+      base_path_from_data_href("/solarisael/rubedo/data/absurd-faith.json"),
     ).toBe("/solarisael");
   });
 

@@ -59,8 +59,7 @@ const RUBEDO_CONSTELLATION_THREADS = Object.freeze({
 });
 
 const RUBEDO_CONSTELLATION_WORLD_BOUNDS = Object.freeze({
-  padding_ratio_x:
-    0.42 * RUBEDO_CONSTELLATION_VIEW.horizontal_range_multiplier,
+  padding_ratio_x: 0.42 * RUBEDO_CONSTELLATION_VIEW.horizontal_range_multiplier,
   padding_min_x: 18 * RUBEDO_CONSTELLATION_VIEW.horizontal_range_multiplier,
   padding_max_x: 96 * RUBEDO_CONSTELLATION_VIEW.horizontal_range_multiplier,
   padding_ratio_y: 0.28 * RUBEDO_CONSTELLATION_VIEW.vertical_range_multiplier,

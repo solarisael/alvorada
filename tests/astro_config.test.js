@@ -20,7 +20,9 @@ const import_config_with_vault_root = async (vault_root) => {
   process.env.SOLARISAEL_OBSIDIAN_ROOT = vault_root;
   config_import_counter += 1;
 
-  return import(`../astro.config.mjs?rubedo_hot_reload_test=${config_import_counter}`);
+  return import(
+    `../astro.config.mjs?rubedo_hot_reload_test=${config_import_counter}`
+  );
 };
 
 afterEach(() => {
@@ -80,19 +82,15 @@ describe("obsidian_rubedo_hot_reload", () => {
       path.join(tmpdir(), "solarisael-vault-"),
     );
     const vault_root = temporary_vault_root.replaceAll("\\", "/");
-    const { obsidian_rubedo_hot_reload } = await import_config_with_vault_root(
-      vault_root,
-    );
+    const { obsidian_rubedo_hot_reload } =
+      await import_config_with_vault_root(vault_root);
     const plugin = obsidian_rubedo_hot_reload();
     const { server, watched_roots, invalidated_modules, websocket_messages } =
       create_vite_server_fake();
 
     plugin.configureServer(server);
 
-    expect(watched_roots).toEqual([
-      `${vault_root}/zzzz_rubedo`,
-      vault_root,
-    ]);
+    expect(watched_roots).toEqual([`${vault_root}/zzzz_rubedo`, vault_root]);
 
     const ignored_non_rubedo_result = plugin.handleHotUpdate({
       file: `${vault_root}/nigredo/scene.md`,
@@ -137,10 +135,8 @@ describe("obsidian_rubedo_hot_reload", () => {
       path.join(tmpdir(), "solarisael-vault-"),
     );
     const vault_root = temporary_vault_root.replaceAll("\\", "/");
-    const {
-      OBSIDIAN_VAULT_ROOT,
-      default: astro_config,
-    } = await import_config_with_vault_root(vault_root);
+    const { OBSIDIAN_VAULT_ROOT, default: astro_config } =
+      await import_config_with_vault_root(vault_root);
 
     expect(OBSIDIAN_VAULT_ROOT).toBe(vault_root.replaceAll("/", path.sep));
     expect(astro_config.vite.resolve.alias["@vault"]).toBe(

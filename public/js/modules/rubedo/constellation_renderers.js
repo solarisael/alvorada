@@ -396,7 +396,9 @@ const create_webgl_renderer = (canvas, payload, view_state) => {
     draw_lines(payload.edges.connectors || [], [154, 158, 168], 0.22);
 
     for (const edge of payload.edges.canonical || []) {
-      const rgb = RUBEDO_CONSTELLATION_THREADS.rgb[edge.thread_key] || [214, 217, 226];
+      const rgb = RUBEDO_CONSTELLATION_THREADS.rgb[edge.thread_key] || [
+        214, 217, 226,
+      ];
       draw_lines([edge], rgb, 0.42);
     }
 
@@ -585,7 +587,9 @@ const create_canvas2d_renderer = (canvas, payload, view_state) => {
     }
 
     for (const edge of payload.edges.canonical || []) {
-      const rgb = RUBEDO_CONSTELLATION_THREADS.rgb[edge.thread_key] || [214, 217, 226];
+      const rgb = RUBEDO_CONSTELLATION_THREADS.rgb[edge.thread_key] || [
+        214, 217, 226,
+      ];
       draw_line(edge, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.46)`, 1.06);
     }
 

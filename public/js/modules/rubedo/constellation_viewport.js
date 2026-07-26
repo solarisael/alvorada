@@ -41,8 +41,7 @@ const slider_to_zoom = (slider_value) => {
 
   return (
     RUBEDO_CONSTELLATION_VIEW.min_zoom *
-    (RUBEDO_CONSTELLATION_VIEW.max_zoom /
-      RUBEDO_CONSTELLATION_VIEW.min_zoom) **
+    (RUBEDO_CONSTELLATION_VIEW.max_zoom / RUBEDO_CONSTELLATION_VIEW.min_zoom) **
       normalized
   );
 };
@@ -57,8 +56,7 @@ const zoom_to_slider = (zoom_value) => {
   return (
     Math.log(normalized_zoom / RUBEDO_CONSTELLATION_VIEW.min_zoom) /
     Math.log(
-      RUBEDO_CONSTELLATION_VIEW.max_zoom /
-        RUBEDO_CONSTELLATION_VIEW.min_zoom,
+      RUBEDO_CONSTELLATION_VIEW.max_zoom / RUBEDO_CONSTELLATION_VIEW.min_zoom,
     )
   );
 };
@@ -156,7 +154,8 @@ const apply_soft_bounds = (
 
     if (allow_pullback) {
       view_state.center_x +=
-        (midpoint_x - effective_center_x) * RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
+        (midpoint_x - effective_center_x) *
+        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
     }
   } else if (allow_pullback && effective_center_x < limits.min_x) {
     view_state.center_x += Math.min(
@@ -177,7 +176,8 @@ const apply_soft_bounds = (
 
     if (allow_pullback) {
       view_state.center_y +=
-        (midpoint_y - effective_center_y) * RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
+        (midpoint_y - effective_center_y) *
+        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
     }
   } else if (allow_pullback && effective_center_y < limits.min_y) {
     view_state.center_y += Math.min(

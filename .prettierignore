@@ -6,3 +6,6 @@ dist/
 .astro/
 .vite/
 bun.lock
+public/js/vendor/
+public/vendor/fx/
+AGENTS.md

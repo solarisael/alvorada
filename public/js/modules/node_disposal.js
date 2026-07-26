@@ -97,7 +97,10 @@ const sweep_disconnected_roots = () => {
  * @returns {() => void} unregister function
  */
 export const register_node_disposal = (root_node, cleanup_callback) => {
-  if (!is_disposable_root(root_node) || typeof cleanup_callback !== "function") {
+  if (
+    !is_disposable_root(root_node) ||
+    typeof cleanup_callback !== "function"
+  ) {
     return () => {};
   }
 
@@ -184,7 +187,6 @@ export const install_node_disposal_lifecycle = (
   installed_documents.add(document_node);
   return true;
 };
-
 
 const node_disposal_api = Object.freeze({
   dispose_removed_root,

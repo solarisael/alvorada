@@ -143,7 +143,11 @@ container[data-phase="albedo"] {
 }
 
 .sol__albedo_filter_clear:hover {
-  color: color-mix(in oklch, var(--site_style_accent) 70%, oklch(65% 0.012 247));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 70%,
+    oklch(65% 0.012 247)
+  );
 }
 
 /* Inner field: grouped pill container */
@@ -207,13 +211,18 @@ container[data-phase="albedo"] {
 .sol__albedo_filter_group_label:hover,
 .sol__albedo_filter_group_label:focus-visible {
   border-color: color-mix(in oklch, var(--site_style_accent) 48%, transparent);
-  color: color-mix(in oklch, var(--site_style_accent) 78%, oklch(74% 0.012 247));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 78%,
+    oklch(74% 0.012 247)
+  );
 }
 
 .sol__albedo_filter_group_label[data-active="true"] {
   border-color: color-mix(in oklch, var(--site_style_accent) 68%, transparent);
   box-shadow:
-    0 0 0 var(--site_border_width_hairline) color-mix(in oklch, var(--site_style_accent) 46%, transparent),
+    0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--site_style_accent) 46%, transparent),
     0 0 8px color-mix(in oklch, var(--site_style_accent) 22%, transparent);
   filter: saturate(1.1) brightness(1.02);
 }
@@ -279,7 +288,11 @@ container[data-phase="albedo"] {
 }
 
 .sol__albedo_archive_filter_summary {
-  color: color-mix(in oklch, var(--site_style_accent) 50%, oklch(50% 0.016 260));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 50%,
+    oklch(50% 0.016 260)
+  );
   font-size: 0.62rem;
   letter-spacing: 0.06em;
 }
@@ -398,7 +411,8 @@ container[data-phase="albedo"] {
   border-color: color-mix(in oklch, var(--site_style_accent) 56%, transparent);
   box-shadow:
     0 22px 32px -18px rgb(0 0 0 / calc(var(--albedo_shadow_strength) + 0.14)),
-    0 0 0 var(--site_border_width_hairline) color-mix(in oklch, var(--site_style_accent) 34%, transparent),
+    0 0 0 var(--site_border_width_hairline)
+      color-mix(in oklch, var(--site_style_accent) 34%, transparent),
     inset 0 1px 0 color-mix(in oklch, white 12%, transparent);
 }
 
@@ -754,7 +768,11 @@ container[data-phase="albedo"] {
   padding: 0;
   border: none;
   background: none;
-  color: color-mix(in oklch, var(--site_style_accent) 58%, oklch(54% 0.012 247));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 58%,
+    oklch(54% 0.012 247)
+  );
   letter-spacing: 0.08em;
   text-transform: lowercase;
   text-decoration: none;
@@ -762,7 +780,11 @@ container[data-phase="albedo"] {
 
 .sol__albedo_entry_expand:hover,
 .sol__albedo_entry_open:hover {
-  color: color-mix(in oklch, var(--site_style_accent) 76%, oklch(76% 0.012 247));
+  color: color-mix(
+    in oklch,
+    var(--site_style_accent) 76%,
+    oklch(76% 0.012 247)
+  );
 }
 
 /* ============================================================

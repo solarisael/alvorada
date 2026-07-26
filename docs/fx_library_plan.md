@@ -27,6 +27,7 @@ public/vendor/fx/
 ```
 
 Rules that made it this shape — keep them:
+
 - **Modules are side-effect-free** except `js/index.js`, the only file that
   binds listeners (DOM-ready + `htmx:afterSwap`, re-import-safe via window
   guards).
@@ -54,6 +55,7 @@ Don't restructure while tuning — organization is done; only values move.
 ## Act 2 — interaction layer (BUILT today, verified live in browser + tests)
 
 The vision (Sol's words): **one popup engine under everything.**
+
 - Hover a nav pill → small ornate card previewing where the door leads. ✅
   wired on both desktop and mobile navbars via `src/data/site_nav.js`
   per-route `description` field.
@@ -71,6 +73,7 @@ The vision (Sol's words): **one popup engine under everything.**
   hand-annotating every button) — NOT done, still open.
 
 What's actually in place:
+
 - `contract.js`: `IX_BASE_CLASS`, `IX_TRIGGER_NAMES` (`hover`/`click`),
   `IX_ACTION_NAMES` (`preview`/`reveal`/`fetch`), `parse_ix_descriptor`,
   `build_ix_attribute_value`.
@@ -86,7 +89,7 @@ What's actually in place:
   already-warm cache. Live examples: `/codex/labs/test-interactions`,
   "Fetch" sections — one pulls `/nigredo`'s real `.sol__page_hero` lead
   paragraph, two more pull real codex entries (`obsidian/codex/characters/
-  cinza.md` / `obsidian/codex/relics/lantern.md`, minimal fixtures made
+cinza.md` / `obsidian/codex/relics/lantern.md`, minimal fixtures made
   today) proving the pipeline handles a fetch response with an image and
   one without, same code path.
 - `interactions.css`: plain-but-tunable chrome, ornament/color law obeyed
@@ -102,6 +105,7 @@ What's actually in place:
   final pass/fail report if this file's coverage looks thin later.
 
 Still open, not started:
+
 - Prose word-meaning popups in actual site content (engine ready, no copy
   wired yet).
 - Button chrome default-profile prototyping.
@@ -137,5 +141,5 @@ Still open, not started:
 - Navbar today: flush to top, sun hangs via `--desktop_nav_sun_drop` (1.1rem),
   `--desktop_nav_rail_radius` — Sol may keep tuning these.
 - A Squall ships when prose word-meaning popups exist (its two `**marker for
-  interaction**` are diegesis, waiting on real `{{ix:...}}` usage, not just
+interaction**` are diegesis, waiting on real `{{ix:...}}` usage, not just
   the engine existing).

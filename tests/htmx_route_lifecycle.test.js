@@ -12,9 +12,8 @@ const {
   is_section_path_active,
   normalize_pathname,
 } = await import("../public/js/modules/htmx_route_lifecycle.js");
-const { announce_and_focus_route } = await import(
-  "../public/js/modules/route_accessibility.js"
-);
+const { announce_and_focus_route } =
+  await import("../public/js/modules/route_accessibility.js");
 
 const htmx_event = (detail) =>
   new CustomEvent("htmx:beforeRequest", { detail });

@@ -1,11 +1,18 @@
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
 const PORT = 4322;
 const HOST = "127.0.0.1";
 const BASE_PATH = "/solarisael/";
-const TMP_ROOT = process.env.OPENCODE_TMP ?? "C:/Users/ADMINI~1/AppData/Local/Temp/opencode";
+const TMP_ROOT =
+  process.env.OPENCODE_TMP ?? "C:/Users/ADMINI~1/AppData/Local/Temp/opencode";
 const STATE_DIR = path.join(TMP_ROOT, "solarisael-dev-server");
 const PID_FILE = path.join(STATE_DIR, "server.pid");
 const OUT_LOG = path.join(STATE_DIR, "server.out.log");
@@ -47,7 +54,18 @@ function start() {
 
   delete_task();
   const start_time = new Date(Date.now() + 60_000).toTimeString().slice(0, 5);
-  run_checked("schtasks", ["/Create", "/TN", TASK_NAME, "/SC", "ONCE", "/ST", start_time, "/TR", LAUNCHER, "/F"]);
+  run_checked("schtasks", [
+    "/Create",
+    "/TN",
+    TASK_NAME,
+    "/SC",
+    "ONCE",
+    "/ST",
+    start_time,
+    "/TR",
+    LAUNCHER,
+    "/F",
+  ]);
   run_checked("schtasks", ["/Run", "/TN", TASK_NAME]);
 
   console.log(`started task=${TASK_NAME}`);
@@ -85,7 +103,13 @@ async function status() {
   const pid = port_owner_pid() ?? read_pid();
   const running = Boolean(pid && is_running(pid));
   const healthy = running ? await is_healthy() : false;
-  console.log(JSON.stringify({ running, healthy, pid, url: URL, log: OUT_LOG, err: ERR_LOG }, null, 2));
+  console.log(
+    JSON.stringify(
+      { running, healthy, pid, url: URL, log: OUT_LOG, err: ERR_LOG },
+      null,
+      2,
+    ),
+  );
 }
 
 async function check() {
@@ -102,7 +126,9 @@ async function check() {
   stop();
   await wait_for_port_free();
 
-  console.log(JSON.stringify({ start_ms, running, healthy, port_free: true }, null, 2));
+  console.log(
+    JSON.stringify({ start_ms, running, healthy, port_free: true }, null, 2),
+  );
 }
 
 async function wait_for_health() {
@@ -139,17 +165,23 @@ function stop_if_running() {
 }
 
 function port_owner_pid() {
-  const result = spawnSync("powershell", [
-    "-NoProfile",
-    "-Command",
-    `$c=Get-NetTCPConnection -LocalAddress ${HOST} -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue; if ($c) { $c.OwningProcess }`,
-  ], { encoding: "utf8" });
+  const result = spawnSync(
+    "powershell",
+    [
+      "-NoProfile",
+      "-Command",
+      `$c=Get-NetTCPConnection -LocalAddress ${HOST} -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue; if ($c) { $c.OwningProcess }`,
+    ],
+    { encoding: "utf8" },
+  );
   const pid = Number(result.stdout.trim().split(/\s+/)[0]);
   return Number.isInteger(pid) && pid > 0 ? pid : null;
 }
 
 function delete_task() {
-  spawnSync("schtasks", ["/Delete", "/TN", TASK_NAME, "/F"], { encoding: "utf8" });
+  spawnSync("schtasks", ["/Delete", "/TN", TASK_NAME, "/F"], {
+    encoding: "utf8",
+  });
 }
 
 function run_checked(command, args) {

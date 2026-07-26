@@ -311,7 +311,6 @@ Historical session log moved out of `progress.md` to keep active context concise
 - Build passed after each major checkpoint (`bun run build`).
 - CSS hard gates passed (`bun run css:hard-gates:check`).
 
-
 ## 2026-05-12 — Rubedo scenes architecture note (added by Kodo)
 
 The `src/data/rubedo/scenes/absurd-faith/*` markdown scene system referenced in earlier sections of this archive has been collapsed back into `src/data/rubedo/book_timeline_runtime.js`. The runtime JS now holds chapter/scene data directly. No data was lost — only the file-level organization changed. This note clarifies the discrepancy for future readers of the archive.

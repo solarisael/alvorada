@@ -18,8 +18,16 @@ export const NIGREDO_CONTAINERS = [
     label: "kindling",
     gloss: "the ache that catches",
     states: [
-      { key: "saudade", label: "saudade", gloss: "the presence of an absence (pt)" },
-      { key: "hiraeth", label: "hiraeth", gloss: "longing for a home that may never have been (cy)" },
+      {
+        key: "saudade",
+        label: "saudade",
+        gloss: "the presence of an absence (pt)",
+      },
+      {
+        key: "hiraeth",
+        label: "hiraeth",
+        gloss: "longing for a home that may never have been (cy)",
+      },
       { key: "loneliness", label: "loneliness", gloss: "" },
     ],
   },
@@ -28,7 +36,11 @@ export const NIGREDO_CONTAINERS = [
     label: "blaze",
     gloss: "open violent flame",
     states: [
-      { key: "charon", label: "charon", gloss: "the burning heat of wrath (he)" },
+      {
+        key: "charon",
+        label: "charon",
+        gloss: "the burning heat of wrath (he)",
+      },
       { key: "rage", label: "rage", gloss: "" },
       { key: "spite", label: "spite", gloss: "" },
     ],
@@ -49,7 +61,11 @@ export const NIGREDO_CONTAINERS = [
     gloss: "what rises, the can''t-see dread",
     states: [
       { key: "angst", label: "Angst", gloss: "existential dread (de)" },
-      { key: "unheimlich", label: "unheimlich", gloss: "the uncanny; dread of the familiar-gone-wrong (de)" },
+      {
+        key: "unheimlich",
+        label: "unheimlich",
+        gloss: "the uncanny; dread of the familiar-gone-wrong (de)",
+      },
       { key: "panic", label: "panic", gloss: "" },
     ],
   },
@@ -68,9 +84,17 @@ export const NIGREDO_CONTAINERS = [
     label: "cinder",
     gloss: "burnt-quiet, the dawn-edge into albedo",
     states: [
-      { key: "acedia", label: "acedia", gloss: "the noonday torpor; not caring that you don''t care (la)" },
+      {
+        key: "acedia",
+        label: "acedia",
+        gloss: "the noonday torpor; not caring that you don''t care (la)",
+      },
       { key: "exhaustion", label: "exhaustion", gloss: "" },
-      { key: "mono-no-aware", label: "mono no aware", gloss: "gentle sorrow at the passing of things (ja)" },
+      {
+        key: "mono-no-aware",
+        label: "mono no aware",
+        gloss: "gentle sorrow at the passing of things (ja)",
+      },
     ],
   },
 ];

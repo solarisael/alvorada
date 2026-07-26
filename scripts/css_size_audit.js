@@ -18,10 +18,7 @@ const scope_arg = args.find((value) => value.startsWith("--scope="));
 const scope = scope_arg ? scope_arg.slice("--scope=".length) : "priority-a";
 
 const file_scope_map = {
-  "priority-a": [
-    "src/styles/components/side_menu.css",
-    "src/styles/index.css",
-  ],
+  "priority-a": ["src/styles/components/side_menu.css", "src/styles/index.css"],
   all: ["src/styles/**/*.css"],
 };
 

@@ -248,7 +248,10 @@ body {
   margin-bottom: var(--space_heading_bottom);
 }
 
-.sol__reading_layer_body > #sol_breadcrumbs ~ :not(script) :where(h1:first-of-type) {
+.sol__reading_layer_body
+  > #sol_breadcrumbs
+  ~ :not(script)
+  :where(h1:first-of-type) {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
@@ -347,7 +350,12 @@ container[data-phase="codex"] {
     [data-reading-container="true"]
   )
   .sol__text_fx_cadence_oracular {
-  font-family: var(--font_ritual, "Cinzel Decorative", "Times New Roman", serif);
+  font-family: var(
+    --font_ritual,
+    "Cinzel Decorative",
+    "Times New Roman",
+    serif
+  );
   font-style: normal;
   font-weight: 600;
   letter-spacing: 0.08em;

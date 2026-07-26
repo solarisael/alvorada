@@ -1,7 +1,9 @@
 const CITRINITAS_ROUTE_ROOT = "/citrinitas";
 
 const citrinitas_booklet_path = (book_slug = "") => {
-  const normalized_slug = String(book_slug).trim().replace(/^\/+|\/+$/g, "");
+  const normalized_slug = String(book_slug)
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
   return normalized_slug
     ? `${CITRINITAS_ROUTE_ROOT}/${normalized_slug}`
     : CITRINITAS_ROUTE_ROOT;
