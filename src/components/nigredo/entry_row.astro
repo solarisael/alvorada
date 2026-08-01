@@ -43,39 +43,44 @@ const EntryContent = entry.Content;
       ></span>
       <span class="sol__nigredo_entry_layer sol__nigredo_entry_layer_frame"
       ></span>
-      <ornament
-        data-shape="nigredo_entry_ornament"
-        class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament"
+      <div
+        class="sol__nigredo_entry_layer sol__nigredo_entry_layer_ornament sol__ornament_layer sol__ornament_layer_fill"
+        aria-hidden="true"
       >
-        <img
-          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tl"
-          src={ornament_srcs.corner_tl}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <img
-          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tr"
-          src={ornament_srcs.corner_tr}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <img
-          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_bl"
-          src={ornament_srcs.corner_bl}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <img
-          class="sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_br"
-          src={ornament_srcs.corner_br}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-      </ornament>
+        <ornament
+          data-shape="nigredo_entry_ornament"
+          class="sol__ornament_holder"
+        >
+          <img
+            class="sol__ornament_item sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tl"
+            src={ornament_srcs.corner_tl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            class="sol__ornament_item sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_tr"
+            src={ornament_srcs.corner_tr}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            class="sol__ornament_item sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_bl"
+            src={ornament_srcs.corner_bl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            class="sol__ornament_item sol__nigredo_entry_ornament sol__nigredo_entry_ornament_corner_br"
+            src={ornament_srcs.corner_br}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </ornament>
+      </div>
 
       <div class="sol__nigredo_entry_layer_body">
         <header class="sol__nigredo_entry_header">

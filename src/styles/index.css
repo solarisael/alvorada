@@ -89,11 +89,8 @@ Ownership Matrix
       var(--cinza_reliquary_offset_left_mult)
   );
   --cinza_reliquary_rail_right: calc(
-    100% -
-      (
-        var(--cinza_reliquary_rail_inline_offset) *
-          var(--cinza_reliquary_offset_right_mult)
-      )
+    var(--cinza_reliquary_rail_inline_offset) *
+      var(--cinza_reliquary_offset_right_mult)
   );
 
   /* Size */

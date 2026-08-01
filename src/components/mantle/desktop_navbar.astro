@@ -20,10 +20,19 @@ const home_href = with_base("/");
     preload="mouseover"
   >
     <div class="sol__nav_rail_layer sol__nav_rail_layer_cursor_glow"></div>
-    <ornament data-shape="desktop_nav_traces" aria-hidden="true">
-      <div class="sol__nav_rail_layer sol__nav_rail_layer_outer_trace"></div>
-      <div class="sol__nav_rail_layer sol__nav_rail_layer_inner_trace"></div>
-    </ornament>
+    <div
+      class="sol__nav_trace_layer sol__ornament_layer sol__ornament_layer_fill"
+      aria-hidden="true"
+    >
+      <ornament data-shape="desktop_nav_traces" class="sol__ornament_holder">
+        <div
+          class="sol__ornament_item sol__nav_rail_layer sol__nav_rail_layer_outer_trace"
+        ></div>
+        <div
+          class="sol__ornament_item sol__nav_rail_layer sol__nav_rail_layer_inner_trace"
+        ></div>
+      </ornament>
+    </div>
     <NavOrnament
       kind="side_left"
       class_name="sol__nav_ornament sol__nav_ornament_side sol__nav_ornament_left"
@@ -33,7 +42,7 @@ const home_href = with_base("/");
       class_name="sol__nav_ornament sol__nav_ornament_side sol__nav_ornament_right"
     />
 
-    <div class="sol__nav_links">
+    <div class="sol__nav_links sol__nav_links_start">
       {
         DESKTOP_NAV_LEFT.map((nav_item) =>
           nav_item.disabled ? (
@@ -84,7 +93,7 @@ const home_href = with_base("/");
       </div>
     </a>
 
-    <div class="sol__nav_links">
+    <div class="sol__nav_links sol__nav_links_end">
       {
         DESKTOP_NAV_RIGHT.map((nav_item) =>
           nav_item.disabled ? (

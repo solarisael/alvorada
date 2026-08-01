@@ -510,8 +510,6 @@ container[data-phase="nigredo"] {
 }
 
 .sol__nigredo_entry_ornament {
-  @apply absolute;
-
   display: block;
   object-fit: contain;
 }

@@ -29,28 +29,32 @@ const ornament_items = [
 ];
 ---
 
-<ornament data-shape="phase_card_ornaments" class="sol__phase_card_ornaments">
-  {
-    ornament_items.map((ornament_item) =>
-      ornament_item.symbol ? (
-        <svg
-          class={`sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
-          data-ornament-role={ornament_item.role}
-          viewBox={ornament_item.view_box}
-          aria-hidden="true"
-        >
-          <use href={`${ornament_item.src}#${ornament_item.symbol}`} />
-        </svg>
-      ) : (
-        <img
-          class={`sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
-          data-ornament-role={ornament_item.role}
-          src={ornament_item.src}
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-      ),
-    )
-  }
-</ornament>
+<div
+  class="sol__phase_card_ornaments sol__ornament_layer sol__ornament_layer_fill"
+  aria-hidden="true"
+>
+  <ornament data-shape="phase_card_ornaments" class="sol__ornament_holder">
+    {
+      ornament_items.map((ornament_item) =>
+        ornament_item.symbol ? (
+          <svg
+            class={`sol__ornament_item sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
+            data-ornament-role={ornament_item.role}
+            viewBox={ornament_item.view_box}
+          >
+            <use href={`${ornament_item.src}#${ornament_item.symbol}`} />
+          </svg>
+        ) : (
+          <img
+            class={`sol__ornament_item sol__phase_card_ornament sol__phase_card_ornament_${ornament_item.role}`}
+            data-ornament-role={ornament_item.role}
+            src={ornament_item.src}
+            alt=""
+            loading="eager"
+            decoding="async"
+          />
+        ),
+      )
+    }
+  </ornament>
+</div>

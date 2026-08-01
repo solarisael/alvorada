@@ -94,6 +94,9 @@
   --desktop_nav_ornament_center_width: 300%;
   --desktop_nav_ornament_center_height: 300%;
   --desktop_nav_ornament_center_opacity: 0.86;
+  --desktop_nav_ornament_center_focus_offset_y: calc(
+    var(--desktop_nav_ornament_center_height) * 0.13
+  );
   --desktop_nav_ornament_color: var(--sol_ornament_color);
   --desktop_nav_ornament_side_color: var(--sol_ornament_color);
   --desktop_nav_ornament_right_scale: 0.92;
@@ -241,8 +244,6 @@
 }
 
 .sol__nav_ornament {
-  @apply pointer-events-none absolute;
-
   display: block;
   color: var(--desktop_nav_ornament_color);
   transition: color
@@ -251,7 +252,8 @@
 }
 
 .sol__nav_ornament_svg {
-  display: block;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -265,7 +267,7 @@
 
 #sol_nav_user_bar > .sol__nav_ornament_side {
   z-index: 12;
-  top: 50%;
+  top: calc(50% - (var(--desktop_nav_ornament_side_height) * 0.5));
   width: var(--desktop_nav_ornament_side_width);
   height: var(--desktop_nav_ornament_side_height);
   opacity: var(--desktop_nav_ornament_side_opacity);
@@ -276,12 +278,11 @@
 
 .sol__nav_ornament_left {
   left: calc(-1 * var(--desktop_nav_ornament_side_overhang));
-  transform: translateY(-50%);
 }
 
 .sol__nav_ornament_right {
   right: calc(-1 * var(--desktop_nav_ornament_side_overhang));
-  transform: translateY(-50%) scale(var(--desktop_nav_ornament_right_scale));
+  transform: scale(var(--desktop_nav_ornament_right_scale));
   transform-origin: center center;
 }
 
@@ -336,9 +337,16 @@
 }
 
 .sol__nav_links {
-  @apply relative z-30 flex items-center;
+  @apply relative z-30 flex min-w-0 flex-1 items-center;
   gap: var(--desktop_nav_link_gap);
-  @apply min-w-0;
+}
+
+.sol__nav_links_start {
+  justify-content: flex-start;
+}
+
+.sol__nav_links_end {
+  justify-content: flex-end;
 }
 
 #sol_middle_guy {
@@ -508,8 +516,11 @@
 
 #sol_icon_user .sol__nav_ornament_center {
   z-index: 8;
-  left: 50%;
-  top: 50%;
+  left: calc(50% - (var(--desktop_nav_ornament_center_width) * 0.5));
+  top: calc(
+    50% - (var(--desktop_nav_ornament_center_height) * 0.5) +
+      var(--desktop_nav_ornament_center_focus_offset_y)
+  );
   width: var(--desktop_nav_ornament_center_width);
   height: var(--desktop_nav_ornament_center_height);
   opacity: var(--desktop_nav_ornament_center_opacity);
@@ -519,7 +530,7 @@
         color-mix(in oklch, var(--desktop_nav_ornament_color) 42%, transparent)
     );
   mix-blend-mode: screen;
-  transform: translate(-50%, -50%) scaleY(-1);
+  transform: scaleY(-1);
 }
 
 .sol__icon_user_layer_orbit {

@@ -11,25 +11,31 @@ if (!ornament) {
 }
 ---
 
-<ornament data-shape="nav_ornament" class={class_name} data-nav-ornament={kind}>
-  {
-    image_url ? (
-      <img
-        class="sol__nav_ornament_svg sol__nav_ornament_image"
-        src={image_url}
-        alt=""
-      />
-    ) : (
-      <svg
-        class="sol__nav_ornament_svg"
-        viewBox={ornament.viewBox}
-        width={ornament.width}
-        focusable="false"
-        height={ornament.height}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <path fill="currentColor" fill-rule="evenodd" d={ornament.path} />
-      </svg>
-    )
-  }
-</ornament>
+<span
+  class={`${class_name} sol__ornament_layer`}
+  data-nav-ornament={kind}
+  aria-hidden="true"
+>
+  <ornament data-shape="nav_ornament" class="sol__ornament_holder">
+    {
+      image_url ? (
+        <img
+          class="sol__ornament_item sol__nav_ornament_svg sol__nav_ornament_image"
+          src={image_url}
+          alt=""
+        />
+      ) : (
+        <svg
+          class="sol__ornament_item sol__nav_ornament_svg"
+          viewBox={ornament.viewBox}
+          width={ornament.width}
+          focusable="false"
+          height={ornament.height}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path fill="currentColor" fill-rule="evenodd" d={ornament.path} />
+        </svg>
+      )
+    }
+  </ornament>
+</span>
