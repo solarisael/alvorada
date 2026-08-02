@@ -90,7 +90,6 @@
 
 #sol_home_gate_body {
   max-width: 58rem;
-  text-align: start;
 }
 
 #sol_home_gate_body p {
@@ -101,20 +100,6 @@
     var(--ui_text_secondary) 88%,
     var(--ui_text_primary)
   );
-}
-
-.sol__home_intro_lead {
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
-  line-height: 1.45;
-}
-
-#sol_home_gate_body.sol__home_gate_body_hearth {
-  text-align: center;
-}
-
-#sol_home_gate_body.sol__home_gate_body_hearth .sol__home_intro_lead {
-  font-size: inherit;
-  line-height: inherit;
 }
 
 #sol_home_gate_body .sol__home_intro_aside {

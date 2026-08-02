@@ -6,10 +6,6 @@ if (!globalThis.window) {
 }
 
 const disposal_callbacks = new Map();
-const deleted_buffers = [];
-const deleted_textures = [];
-const deleted_programs = [];
-const cancelled_frames = [];
 globalThis[Symbol.for("solarisael.node_disposal")] = {
   register_node_disposal(root, callback) {
     disposal_callbacks.set(root, callback);
@@ -20,73 +16,118 @@ globalThis[Symbol.for("solarisael.node_disposal")] = {
   },
 };
 
-const texture_calls = [];
-const texture_sources = [];
-const frame_callbacks = [];
-const observer_targets = [];
-const resize_observers = [];
-const constructed_images = [];
+const active_listeners = [];
+const native_add_event_listener = EventTarget.prototype.addEventListener;
+const native_remove_event_listener = EventTarget.prototype.removeEventListener;
+EventTarget.prototype.addEventListener = function (type, callback, options) {
+  active_listeners.push({ target: this, type, callback });
+  return native_add_event_listener.call(this, type, callback, options);
+};
+EventTarget.prototype.removeEventListener = function (type, callback, options) {
+  const listener_index = active_listeners.findIndex(
+    (listener) =>
+      listener.target === this &&
+      listener.type === type &&
+      listener.callback === callback,
+  );
+  if (listener_index >= 0) active_listeners.splice(listener_index, 1);
+  return native_remove_event_listener.call(this, type, callback, options);
+};
+const track_target_listeners = (target) => {
+  const add_event_listener = target.addEventListener.bind(target);
+  const remove_event_listener = target.removeEventListener.bind(target);
+  target.addEventListener = (type, callback, options) => {
+    active_listeners.push({ target, type, callback });
+    return add_event_listener(type, callback, options);
+  };
+  target.removeEventListener = (type, callback, options) => {
+    const listener_index = active_listeners.findIndex(
+      (listener) =>
+        listener.target === target &&
+        listener.type === type &&
+        listener.callback === callback,
+    );
+    if (listener_index >= 0) active_listeners.splice(listener_index, 1);
+    return remove_event_listener(type, callback, options);
+  };
+};
+track_target_listeners(window);
+track_target_listeners(document);
 
-const fake_gl = {
-  ARRAY_BUFFER: 0x8892,
-  STATIC_DRAW: 0x88e4,
-  FLOAT: 0x1406,
-  TRIANGLES: 0x0004,
-  COLOR_BUFFER_BIT: 0x4000,
-  COMPILE_STATUS: 0x8b81,
-  LINK_STATUS: 0x8b82,
-  VERTEX_SHADER: 0x8b31,
-  FRAGMENT_SHADER: 0x8b30,
-  TEXTURE_2D: 0x0de1,
-  TEXTURE_MIN_FILTER: 0x2801,
-  TEXTURE_MAG_FILTER: 0x2800,
-  TEXTURE_WRAP_S: 0x2802,
-  TEXTURE_WRAP_T: 0x2803,
-  LINEAR: 0x2601,
-  CLAMP_TO_EDGE: 0x812f,
-  UNPACK_FLIP_Y_WEBGL: 0x9240,
-  createShader: () => ({}),
-  shaderSource: () => {},
-  compileShader: () => {},
-  getShaderParameter: () => true,
-  deleteShader: () => {},
-  createProgram: () => {
-    const program = {};
-    return program;
-  },
-  attachShader: () => {},
-  linkProgram: () => {},
-  getProgramParameter: () => true,
-  deleteProgram: (program) => deleted_programs.push(program),
-  createBuffer: () => ({}),
-  deleteBuffer: (buffer) => deleted_buffers.push(buffer),
-  bindBuffer: () => {},
-  bufferData: () => {},
-  getAttribLocation: () => 0,
-  enableVertexAttribArray: () => {},
-  bindTexture: () => {},
-  vertexAttribPointer: () => {},
-  createTexture: () => {
-    const texture = {};
-    texture_calls.push(true);
-    return texture;
-  },
-  deleteTexture: (texture) => deleted_textures.push(texture),
-  texParameteri: () => {},
-  pixelStorei: () => {},
-  texImage2D: (...args) => texture_sources.push(args.at(-1)),
-  viewport: () => {},
-  clearColor: () => {},
-  clear: () => {},
-  useProgram: () => {},
-  getUniformLocation: () => ({}),
-  uniform2f: () => {},
-  uniform1f: () => {},
-  drawArrays: () => {},
+const listener_count = (target, type) =>
+  active_listeners.filter(
+    (listener) => listener.target === target && listener.type === type,
+  ).length;
+
+let reduced_motion = false;
+let visibility_state = "visible";
+window.matchMedia = () => ({ matches: reduced_motion });
+Object.defineProperty(document, "visibilityState", {
+  configurable: true,
+  get: () => visibility_state,
+});
+
+let next_frame_id = 1;
+const pending_frames = new Map();
+const cancelled_frames = [];
+globalThis.requestAnimationFrame = (callback) => {
+  const frame_id = next_frame_id++;
+  pending_frames.set(frame_id, callback);
+  return frame_id;
+};
+globalThis.cancelAnimationFrame = (frame_id) => {
+  cancelled_frames.push(frame_id);
+  pending_frames.delete(frame_id);
 };
 
-class CachedImage {
+const resize_observers = [];
+class FakeResizeObserver {
+  constructor(callback) {
+    this.callback = callback;
+    this.targets = [];
+    this.disconnect_calls = 0;
+    resize_observers.push(this);
+  }
+
+  observe(target) {
+    this.targets.push(target);
+  }
+
+  disconnect() {
+    this.disconnect_calls += 1;
+  }
+}
+
+globalThis.ResizeObserver = FakeResizeObserver;
+
+const intersection_observers = [];
+class FakeIntersectionObserver {
+  constructor(callback) {
+    this.callback = callback;
+    this.targets = [];
+    this.disconnect_calls = 0;
+    intersection_observers.push(this);
+  }
+
+  observe(target) {
+    this.targets.push(target);
+  }
+
+  disconnect() {
+    this.disconnect_calls += 1;
+  }
+
+  set_intersecting(target, is_intersecting) {
+    this.callback([{ target, isIntersecting: is_intersecting }]);
+  }
+}
+
+globalThis.IntersectionObserver = FakeIntersectionObserver;
+
+const constructed_images = [];
+class DeferredImage extends EventTarget {
   constructor() {
+    super();
     constructed_images.push(this);
   }
 
@@ -96,226 +137,728 @@ class CachedImage {
 
   set src(value) {
     this._src = value;
-    this.complete = true;
-    this.naturalWidth = 640;
-    this.naturalHeight = 240;
-    // Deliberately do not fire onload: this models a cache-complete image whose
-    // load event was already delivered before hydration attached its callback.
   }
+
   get src() {
     return this._src;
   }
-}
 
-class FakeResizeObserver {
-  constructor(callback) {
-    resize_observers.push(this);
-    this.callback = callback;
-    this.observe = (target) => observer_targets.push(target);
-    this.disconnect = () => {
-      this.disconnected = true;
-    };
+  get currentSrc() {
+    return this._src;
+  }
+
+  finish(width = 640, height = 240) {
+    this.complete = true;
+    this.naturalWidth = width;
+    this.naturalHeight = height;
+    this.dispatchEvent(new Event("load"));
   }
 }
 
-globalThis.Image = CachedImage;
-globalThis.ResizeObserver = FakeResizeObserver;
-globalThis.requestAnimationFrame = (callback) => {
-  frame_callbacks.push(callback);
-  return frame_callbacks.length;
-};
-globalThis.cancelAnimationFrame = (frame) => cancelled_frames.push(frame);
-window.matchMedia = () => ({ matches: false });
-HTMLCanvasElement.prototype.getContext = () => fake_gl;
+globalThis.Image = DeferredImage;
 
-const banner = document.createElement("section");
-banner.dataset.solVisionBanner = "";
-const canvas = document.createElement("canvas");
-canvas.dataset.solVisionBannerCanvas = "";
-canvas.getBoundingClientRect = () => ({ width: 640, height: 240 });
-const fallback = document.createElement("img");
-fallback.className = "sol__vision_banner_image";
-fallback.src = "/images/banner.webp";
-Object.defineProperties(fallback, {
-  complete: { configurable: true, value: true },
-  naturalWidth: { configurable: true, value: 640 },
-  naturalHeight: { configurable: true, value: 240 },
-  currentSrc: { configurable: true, value: "/images/banner.webp" },
-});
-banner.append(canvas, fallback);
-document.body.append(banner);
+class FakeNode {
+  constructor(value = 0) {
+    this.value = value;
+    this.x = this;
+    this.y = this;
+    this.rgb = this;
+    this.a = this;
+  }
+
+  add() {
+    return this;
+  }
+
+  div() {
+    return this;
+  }
+
+  greaterThan() {
+    return this;
+  }
+
+  mul() {
+    return this;
+  }
+
+  oneMinus() {
+    return this;
+  }
+
+  sub() {
+    return this;
+  }
+}
+
+class FakeVector2 {
+  constructor(x, y) {
+    this.set(x, y);
+  }
+
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+}
+
+const textures = [];
+class FakeTexture {
+  constructor(image) {
+    this.image = image;
+    this.needs_update_count = 0;
+    this.dispose_calls = 0;
+    textures.push(this);
+  }
+
+  set needsUpdate(value) {
+    if (value === true) this.needs_update_count += 1;
+  }
+
+  dispose() {
+    this.dispose_calls += 1;
+  }
+}
+
+const materials = [];
+class FakeMaterial {
+  constructor() {
+    this.dispose_calls = 0;
+    materials.push(this);
+  }
+
+  dispose() {
+    this.dispose_calls += 1;
+  }
+}
+
+const geometries = [];
+class FakeGeometry {
+  constructor() {
+    this.dispose_calls = 0;
+    geometries.push(this);
+  }
+
+  dispose() {
+    this.dispose_calls += 1;
+  }
+}
+
+const scenes = [];
+class FakeScene {
+  constructor() {
+    this.added = [];
+    this.removed = [];
+    scenes.push(this);
+  }
+
+  add(node) {
+    this.added.push(node);
+  }
+
+  remove(node) {
+    this.removed.push(node);
+  }
+}
+
+let renderer_plans = [];
+const renderers = [];
+class FakeRenderer {
+  constructor(options) {
+    this.options = options;
+    this.plan = renderer_plans.shift() ?? {};
+    this.dispose_calls = 0;
+    this.render_calls = 0;
+    const backend =
+      this.plan.backend ?? (options.forceWebGL ? "webgl2" : "webgpu");
+    this.backend = {
+      isWebGPUBackend: backend === "webgpu",
+      isWebGLBackend: backend === "webgl2",
+    };
+    renderers.push(this);
+  }
+
+  async init() {
+    if (this.plan.init_gate) await this.plan.init_gate.promise;
+    if (this.plan.init_error) throw this.plan.init_error;
+  }
+
+  setClearColor() {}
+
+  setPixelRatio(value) {
+    this.pixel_ratio = value;
+  }
+
+  setSize(width, height) {
+    this.size = { width, height };
+  }
+
+  render() {
+    this.render_calls += 1;
+    if (this.plan.render_error) throw this.plan.render_error;
+  }
+
+  dispose() {
+    this.dispose_calls += 1;
+  }
+}
+
+const node = () => new FakeNode();
+const fake_tsl = {
+  abs: node,
+  cos: node,
+  exp: node,
+  float: node,
+  length: node,
+  max: node,
+  min: node,
+  mix: node,
+  pow: node,
+  select: node,
+  sin: node,
+  smoothstep: node,
+  texture: node,
+  uniform: (value) => new FakeNode(value),
+  uv: node,
+  vec2: node,
+  vec3: node,
+};
+const fake_three = {
+  WebGPURenderer: FakeRenderer,
+  Vector2: FakeVector2,
+  Texture: FakeTexture,
+  SRGBColorSpace: "srgb",
+  LinearFilter: "linear",
+  ClampToEdgeWrapping: "clamp",
+  MeshBasicNodeMaterial: FakeMaterial,
+  PlaneGeometry: FakeGeometry,
+  Mesh: class FakeMesh {
+    constructor(geometry, material) {
+      this.geometry = geometry;
+      this.material = material;
+    }
+  },
+  Scene: FakeScene,
+  OrthographicCamera: class FakeOrthographicCamera {},
+};
+
+let module_loads = 0;
+globalThis[Symbol.for("solarisael.three_webgpu")] = {
+  async load_modules() {
+    module_loads += 1;
+    return { three: fake_three, tsl: fake_tsl };
+  },
+};
+
+const settle_async = async () => {
+  for (let turn = 0; turn < 12; turn += 1) await Promise.resolve();
+};
+
+const run_next_frame = async (time) => {
+  const next_frame = pending_frames.entries().next().value;
+  if (!next_frame) throw new Error("Expected a pending animation frame");
+  const [frame_id, callback] = next_frame;
+  pending_frames.delete(frame_id);
+  await callback(time);
+  await settle_async();
+  return frame_id;
+};
+
+const deferred = () => {
+  let resolve;
+  const promise = new Promise((resolve_promise) => {
+    resolve = resolve_promise;
+  });
+  return { promise, resolve };
+};
+
+const reset_metrics = () => {
+  constructed_images.length = 0;
+  resize_observers.length = 0;
+  intersection_observers.length = 0;
+  textures.length = 0;
+  materials.length = 0;
+  geometries.length = 0;
+  scenes.length = 0;
+  renderers.length = 0;
+  renderer_plans = [];
+  module_loads = 0;
+  pending_frames.clear();
+  cancelled_frames.length = 0;
+  next_frame_id = 1;
+  reduced_motion = false;
+  visibility_state = "visible";
+};
+
+const create_banner = ({
+  complete = true,
+  picture = false,
+  source = "/images/banner.webp",
+} = {}) => {
+  const banner = document.createElement("section");
+  banner.dataset.solVisionBanner = "";
+  banner.getBoundingClientRect = () => ({
+    width: 640,
+    height: 240,
+    top: 0,
+    right: 640,
+    bottom: 240,
+    left: 0,
+  });
+
+  const canvas = document.createElement("canvas");
+  canvas.dataset.solVisionBannerCanvas = "";
+  canvas.getBoundingClientRect = () => ({ width: 640, height: 240 });
+
+  const image = document.createElement("img");
+  image.className = "sol__vision_banner_image";
+  image.src = source;
+  Object.defineProperties(image, {
+    complete: { configurable: true, value: complete },
+    naturalWidth: { configurable: true, value: complete ? 640 : 0 },
+    naturalHeight: { configurable: true, value: complete ? 240 : 0 },
+    currentSrc: { configurable: true, value: source },
+  });
+  track_target_listeners(image);
+
+  let source_node = null;
+  if (picture) {
+    const picture_node = document.createElement("picture");
+    source_node = document.createElement("source");
+    source_node.type = "image/webp";
+    source_node.srcset = source;
+    track_target_listeners(source_node);
+    picture_node.append(source_node, image);
+    banner.append(canvas, picture_node);
+  } else {
+    banner.append(canvas, image);
+  }
+  document.body.append(banner);
+  return { banner, canvas, image, source_node };
+};
+
+const dispose_banner = (banner) => {
+  const dispose = disposal_callbacks.get(banner);
+  banner.remove();
+  dispose?.();
+  return dispose;
+};
+
 const { hydrate_vision_banners } =
   await import("../src/scripts/vision_banner.js");
-hydrate_vision_banners(banner);
 
-describe("vision banner image source hydration", () => {
-  test("reuses a complete DOM image without waiting for onload", () => {
-    expect(texture_calls).toHaveLength(1);
-    expect(frame_callbacks).toHaveLength(1);
-    expect(observer_targets).toHaveLength(1);
+describe("vision banner GPU hydration", () => {
+  test("hydrates a complete responsive image WebGPU-first and reveals only after the first successful frame", async () => {
+    reset_metrics();
+    const { banner, image } = create_banner();
+
+    hydrate_vision_banners(banner);
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(module_loads).toBe(1);
     expect(constructed_images).toHaveLength(0);
-    expect(texture_sources[0]).toBe(fallback);
-    expect(banner.classList.contains("sol__vision_banner_webgl_ready")).toBe(
-      true,
-    );
+    expect(renderers).toHaveLength(1);
+    expect(renderers[0].options.forceWebGL).toBe(false);
+    expect(textures).toHaveLength(1);
+    expect(textures[0].image).toBe(image);
+    expect(pending_frames.size).toBe(1);
     expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
       true,
+    );
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      false,
     );
     expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
       false,
     );
+    expect(banner.hasAttribute("data-sol-vision-renderer")).toBe(false);
 
-    frame_callbacks[0](0);
+    await run_next_frame(16);
 
+    expect(renderers[0].render_calls).toBe(1);
     expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
       false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      true,
     );
     expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
       true,
     );
+    expect(banner.dataset.solVisionRenderer).toBe("webgpu");
+    expect([...banner.classList].sort()).toEqual(
+      [
+        "sol__vision_banner_gpu_ready",
+        "sol__vision_banner_visual_ready",
+      ].sort(),
+    );
 
     hydrate_vision_banners(banner);
     hydrate_vision_banners(banner);
+    await settle_async();
+    expect(module_loads).toBe(1);
+    expect(renderers).toHaveLength(1);
+    expect(textures).toHaveLength(1);
+    expect(intersection_observers).toHaveLength(1);
 
-    expect(texture_calls).toHaveLength(1);
-    expect(frame_callbacks).toHaveLength(2);
-    expect(observer_targets).toHaveLength(1);
+    dispose_banner(banner);
   });
 
-  test("uses the Image loader only when the DOM fallback is incomplete", () => {
-    const second_banner = document.createElement("section");
-    second_banner.dataset.solVisionBanner = "";
-    const second_canvas = document.createElement("canvas");
-    second_canvas.dataset.solVisionBannerCanvas = "";
-    second_canvas.getBoundingClientRect = () => ({ width: 640, height: 240 });
-    const second_fallback = document.createElement("img");
-    second_fallback.className = "sol__vision_banner_image";
-    second_fallback.src = "/images/incomplete.webp";
-    Object.defineProperties(second_fallback, {
-      complete: { configurable: true, value: false },
-      naturalWidth: { configurable: true, value: 0 },
-      naturalHeight: { configurable: true, value: 0 },
-      currentSrc: { configurable: true, value: "/images/incomplete.webp" },
-    });
-    second_banner.append(second_canvas, second_fallback);
-    document.body.append(second_banner);
+  test("caps continuous GPU rendering at 60 frames per second", async () => {
+    reset_metrics();
+    const { banner } = create_banner();
 
-    hydrate_vision_banners(second_banner);
+    hydrate_vision_banners(banner);
+    await settle_async();
+    await run_next_frame(0);
+    expect(renderers[0].render_calls).toBe(1);
+
+    for (const frame_time of [4, 8, 12]) await run_next_frame(frame_time);
+    expect(renderers[0].render_calls).toBe(1);
+
+    await run_next_frame(17);
+    expect(renderers[0].render_calls).toBe(2);
+
+    dispose_banner(banner);
+  });
+
+  test("waits for an incomplete fallback image and hydrates from its loader", async () => {
+    reset_metrics();
+    const { banner } = create_banner({
+      complete: false,
+      source: "/images/incomplete.webp",
+    });
+
+    hydrate_vision_banners(banner);
+    await settle_async();
 
     expect(constructed_images).toHaveLength(1);
-    expect(texture_calls).toHaveLength(2);
-    expect(texture_sources[1]).toBe(constructed_images[0]);
+    expect(module_loads).toBe(0);
+    expect(renderers).toHaveLength(0);
+    expect(textures).toHaveLength(0);
+    expect(pending_frames.size).toBe(0);
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
+      true,
+    );
+
+    constructed_images[0].finish();
+    await settle_async();
+
+    expect(module_loads).toBe(1);
+    expect(textures).toHaveLength(1);
+    expect(textures[0].image).toBe(constructed_images[0]);
+    expect(pending_frames.size).toBe(1);
+
+    await run_next_frame(8);
+    expect(banner.dataset.solVisionRenderer).toBe("webgpu");
+    dispose_banner(banner);
+  });
+
+  test("refreshes one texture when a responsive picture source changes and ignores duplicate load delivery", async () => {
+    reset_metrics();
+    const { banner, image, source_node } = create_banner({
+      picture: true,
+      source: "/images/banner-mobile.webp",
+    });
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+    await run_next_frame(0);
+
+    const texture = textures[0];
+    expect(texture.needs_update_count).toBe(1);
+
+    Object.defineProperties(image, {
+      currentSrc: {
+        configurable: true,
+        value: "/images/banner-desktop.webp",
+      },
+      naturalWidth: { configurable: true, value: 1672 },
+      naturalHeight: { configurable: true, value: 628 },
+    });
+    source_node.dispatchEvent(new Event("load"));
+
+    expect(textures).toHaveLength(1);
+    expect(texture.image).toBe(image);
+    expect(texture.needs_update_count).toBe(2);
+    expect(pending_frames.size).toBe(1);
+
+    image.dispatchEvent(new Event("load"));
+    expect(texture.needs_update_count).toBe(2);
+    expect(renderers).toHaveLength(1);
+
+    dispose_banner(banner);
+  });
+
+  test("falls back to WebGL2 when WebGPU initialization fails and reports the actual backend", async () => {
+    reset_metrics();
+    renderer_plans = [
+      { backend: "webgpu", init_error: new Error("WebGPU unavailable") },
+      { backend: "webgl2" },
+    ];
+    const { banner } = create_banner();
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(renderers).toHaveLength(2);
+    expect(renderers.map((renderer) => renderer.options.forceWebGL)).toEqual([
+      false,
+      true,
+    ]);
+    expect(renderers[0].dispose_calls).toBe(1);
+    expect(renderers[1].dispose_calls).toBe(0);
+    expect(banner.hasAttribute("data-sol-vision-renderer")).toBe(false);
+
+    await run_next_frame(12);
+
+    expect(banner.dataset.solVisionRenderer).toBe("webgl2");
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      true,
+    );
+    expect([...banner.classList].sort()).toEqual(
+      [
+        "sol__vision_banner_gpu_ready",
+        "sol__vision_banner_visual_ready",
+      ].sort(),
+    );
+
+    dispose_banner(banner);
+    expect(renderers[1].dispose_calls).toBe(1);
+  });
+
+  test("keeps the fallback image visible when neither GPU backend can initialize", async () => {
+    reset_metrics();
+    renderer_plans = [
+      { init_error: new Error("WebGPU unavailable") },
+      { init_error: new Error("WebGL2 unavailable") },
+    ];
+    const { banner, image } = create_banner();
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(renderers).toHaveLength(2);
+    expect(renderers.every((renderer) => renderer.dispose_calls === 1)).toBe(
+      true,
+    );
+    expect(image.isConnected).toBe(true);
+    expect(image.classList.contains("sol__vision_banner_image")).toBe(true);
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
+      false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
+      false,
+    );
+    expect(banner.hasAttribute("data-sol-vision-renderer")).toBe(false);
+    expect(pending_frames.size).toBe(0);
+    expect(disposal_callbacks.has(banner)).toBe(false);
+
+    banner.remove();
+  });
+
+  test("does not reveal a banner whose first GPU frame fails", async () => {
+    reset_metrics();
+    renderer_plans = [{ render_error: new Error("device lost") }];
+    const { banner, image } = create_banner();
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+    await run_next_frame(4);
+
+    expect(image.isConnected).toBe(true);
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
+      false,
+    );
+    expect(banner.hasAttribute("data-sol-vision-renderer")).toBe(false);
+    expect(renderers[0].dispose_calls).toBe(1);
+    expect(textures[0].dispose_calls).toBe(1);
+    expect(materials[0].dispose_calls).toBe(1);
+    expect(geometries[0].dispose_calls).toBe(1);
+    expect(pending_frames.size).toBe(0);
+
+    banner.remove();
+  });
+
+  test("renders one stable frame for reduced motion and only redraws when invalidated", async () => {
+    reset_metrics();
+    reduced_motion = true;
+    const { banner } = create_banner();
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+    await run_next_frame(100);
+
+    expect(renderers[0].render_calls).toBe(1);
+    expect(pending_frames.size).toBe(0);
+
+    const runtime_resize = resize_observers.find((observer) =>
+      observer.targets.includes(banner),
+    );
+    runtime_resize.callback();
+    runtime_resize.callback();
+    expect(pending_frames.size).toBe(1);
+
+    await run_next_frame(900);
+    expect(renderers[0].render_calls).toBe(2);
+    expect(pending_frames.size).toBe(0);
+
+    dispose_banner(banner);
+  });
+
+  test("suspends hidden banners, resumes one loop, and removes observers and listeners on disposal", async () => {
+    reset_metrics();
+    const { banner, image } = create_banner();
+    const resize_listener_baseline = listener_count(window, "resize");
+    const visibility_listener_baseline = listener_count(
+      document,
+      "visibilitychange",
+    );
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(listener_count(window, "resize")).toBe(resize_listener_baseline + 2);
+    expect(listener_count(document, "visibilitychange")).toBe(
+      visibility_listener_baseline + 1,
+    );
+    expect(listener_count(image, "load")).toBe(1);
+    expect(listener_count(image, "error")).toBe(1);
+
+    const visibility_observer = intersection_observers[0];
+    const first_frame_id = pending_frames.keys().next().value;
+    visibility_observer.set_intersecting(banner, false);
+    expect(cancelled_frames).toContain(first_frame_id);
+    expect(pending_frames.size).toBe(0);
+
+    visibility_observer.set_intersecting(banner, true);
+    visibility_observer.set_intersecting(banner, true);
+    expect(pending_frames.size).toBe(1);
+
+    await run_next_frame(100);
+    expect(pending_frames.size).toBe(1);
+
+    visibility_state = "hidden";
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(pending_frames.size).toBe(0);
+
+    visibility_state = "visible";
+    document.dispatchEvent(new Event("visibilitychange"));
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(pending_frames.size).toBe(1);
+
+    const owned_resize_observers = [...resize_observers];
+    const dispose = disposal_callbacks.get(banner);
+    dispose_banner(banner);
+    dispose();
+
+    expect(visibility_observer.disconnect_calls).toBe(1);
     expect(
-      second_banner.classList.contains("sol__vision_banner_webgl_ready"),
+      owned_resize_observers.every(
+        (observer) => observer.disconnect_calls === 1,
+      ),
     ).toBe(true);
-  });
-  test("re-uploads the texture when the picture source changes", () => {
-    const responsive_banner = document.createElement("section");
-    responsive_banner.dataset.solVisionBanner = "";
-    const responsive_canvas = document.createElement("canvas");
-    responsive_canvas.dataset.solVisionBannerCanvas = "";
-    responsive_canvas.getBoundingClientRect = () => ({
-      width: 640,
-      height: 240,
-    });
-    const responsive_picture = document.createElement("picture");
-    const responsive_source = document.createElement("source");
-    responsive_source.type = "image/webp";
-    responsive_source.srcset = "/images/banner-mobile.webp";
-    const responsive_image = document.createElement("img");
-    responsive_image.className = "sol__vision_banner_image";
-    responsive_image.src = "/images/banner-mobile.webp";
-    Object.defineProperties(responsive_image, {
-      complete: { configurable: true, value: true },
-      naturalWidth: { configurable: true, value: 640 },
-      naturalHeight: { configurable: true, value: 240 },
-      currentSrc: {
-        configurable: true,
-        value: "/images/banner-mobile.webp",
-      },
-    });
-    responsive_picture.append(responsive_source, responsive_image);
-    responsive_banner.append(responsive_canvas, responsive_picture);
-    document.body.append(responsive_banner);
-
-    const previous_texture_source_count = texture_sources.length;
-    hydrate_vision_banners(responsive_banner);
-    expect(texture_sources.at(-1)).toBe(responsive_image);
-
-    Object.defineProperty(responsive_image, "currentSrc", {
-      configurable: true,
-      value: "/images/banner-desktop.webp",
-    });
-    Object.defineProperty(responsive_image, "naturalWidth", {
-      configurable: true,
-      value: 1672,
-    });
-    Object.defineProperty(responsive_image, "naturalHeight", {
-      configurable: true,
-      value: 628,
-    });
-    responsive_source.dispatchEvent(new Event("load"));
-
-    expect(texture_sources).toHaveLength(previous_texture_source_count + 2);
-    expect(texture_sources.at(-1)).toBe(responsive_image);
-
-    responsive_image.dispatchEvent(new Event("load"));
-    expect(texture_sources).toHaveLength(previous_texture_source_count + 2);
+    expect(listener_count(window, "resize")).toBe(resize_listener_baseline);
+    expect(listener_count(document, "visibilitychange")).toBe(
+      visibility_listener_baseline,
+    );
+    expect(listener_count(image, "load")).toBe(0);
+    expect(listener_count(image, "error")).toBe(0);
+    expect(pending_frames.size).toBe(0);
   });
 
-  test("disposes a detached banner exactly once and blocks async restart", () => {
-    const disposable_banner = document.createElement("section");
-    disposable_banner.dataset.solVisionBanner = "";
-    const disposable_canvas = document.createElement("canvas");
-    disposable_canvas.dataset.solVisionBannerCanvas = "";
-    disposable_canvas.getBoundingClientRect = () => ({
-      width: 640,
-      height: 240,
-    });
-    const disposable_picture = document.createElement("picture");
-    const disposable_source = document.createElement("source");
-    disposable_source.srcset = "/images/disposable.webp";
-    const disposable_image = document.createElement("img");
-    disposable_image.className = "sol__vision_banner_image";
-    disposable_image.src = "/images/disposable.webp";
-    Object.defineProperties(disposable_image, {
-      complete: { configurable: true, value: true },
-      naturalWidth: { configurable: true, value: 640 },
-      naturalHeight: { configurable: true, value: 240 },
-      currentSrc: {
-        configurable: true,
-        value: "/images/disposable.webp",
-      },
-    });
-    disposable_picture.append(disposable_source, disposable_image);
-    disposable_banner.append(disposable_canvas, disposable_picture);
-    document.body.append(disposable_banner);
+  test("disposes every GPU node exactly once, cancels animation, and blocks late restart", async () => {
+    reset_metrics();
+    const { banner, image, source_node } = create_banner({ picture: true });
 
-    hydrate_vision_banners(disposable_banner);
-    const dispose_banner = disposal_callbacks.get(disposable_banner);
-    const frame_id = frame_callbacks.length;
-    const observer = resize_observers.at(-1);
-    const texture_source_count = texture_sources.length;
-    expect(dispose_banner).toEqual(expect.any(Function));
+    hydrate_vision_banners(banner);
+    await settle_async();
 
-    disposable_banner.remove();
-    dispose_banner();
-    dispose_banner();
+    const scheduled_frame = pending_frames.keys().next().value;
+    const dispose = disposal_callbacks.get(banner);
+    expect(dispose).toEqual(expect.any(Function));
 
-    expect(cancelled_frames).toContain(frame_id);
-    expect(observer.disconnected).toBe(true);
-    expect(deleted_buffers).toHaveLength(1);
-    expect(deleted_textures).toHaveLength(1);
-    expect(deleted_programs).toHaveLength(1);
-    expect(disposal_callbacks.has(disposable_banner)).toBe(false);
+    banner.remove();
+    dispose();
+    dispose();
 
-    const frame_count = frame_callbacks.length;
-    frame_callbacks[frame_id - 1](1);
-    disposable_image.dispatchEvent(new Event("load"));
-    disposable_source.dispatchEvent(new Event("load"));
-    hydrate_vision_banners(disposable_banner);
+    expect(cancelled_frames).toContain(scheduled_frame);
+    expect(textures[0].dispose_calls).toBe(1);
+    expect(materials[0].dispose_calls).toBe(1);
+    expect(geometries[0].dispose_calls).toBe(1);
+    expect(renderers[0].dispose_calls).toBe(1);
+    expect(scenes[0].removed).toHaveLength(1);
+    expect(disposal_callbacks.has(banner)).toBe(false);
 
-    expect(frame_callbacks).toHaveLength(frame_count);
-    expect(texture_sources).toHaveLength(texture_source_count);
+    const texture_updates = textures[0].needs_update_count;
+    image.dispatchEvent(new Event("load"));
+    source_node.dispatchEvent(new Event("load"));
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(textures[0].needs_update_count).toBe(texture_updates);
+    expect(renderers).toHaveLength(1);
+    expect(pending_frames.size).toBe(0);
+  });
+
+  test("abandons an initialization that finishes after its banner was disposed", async () => {
+    reset_metrics();
+    const init_gate = deferred();
+    renderer_plans = [{ init_gate }];
+    const { banner, image } = create_banner();
+
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(renderers).toHaveLength(1);
+    expect(textures).toHaveLength(0);
+    const dispose = disposal_callbacks.get(banner);
+    banner.remove();
+    dispose();
+
+    init_gate.resolve();
+    await settle_async();
+    image.dispatchEvent(new Event("load"));
+    hydrate_vision_banners(banner);
+    await settle_async();
+
+    expect(renderers[0].dispose_calls).toBe(1);
+    expect(textures).toHaveLength(0);
+    expect(pending_frames.size).toBe(0);
+    expect(banner.classList.contains("sol__vision_banner_hydrating")).toBe(
+      false,
+    );
+    expect(banner.classList.contains("sol__vision_banner_gpu_ready")).toBe(
+      false,
+    );
+    expect(banner.hasAttribute("data-sol-vision-renderer")).toBe(false);
+    expect(disposal_callbacks.has(banner)).toBe(false);
+  });
+
+  test("hydrates banners inserted by the HTMX after-swap lifecycle", async () => {
+    reset_metrics();
+    const { banner } = create_banner();
+
+    document.dispatchEvent(
+      new CustomEvent("htmx:afterSwap", { detail: { target: banner } }),
+    );
+    await settle_async();
+
+    expect(renderers).toHaveLength(1);
+    expect(pending_frames.size).toBe(1);
+    await run_next_frame(0);
+    expect(banner.classList.contains("sol__vision_banner_visual_ready")).toBe(
+      true,
+    );
+
+    dispose_banner(banner);
   });
 });

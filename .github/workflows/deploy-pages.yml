@@ -31,6 +31,9 @@ jobs:
 
       - name: Install dependencies
         run: bun install
+
+      - name: Verify staged Obsidian content
+        run: bun run content:check
       - name: Run tests
         run: bun test
 

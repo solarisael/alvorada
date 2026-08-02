@@ -12,6 +12,8 @@
     "dev:status": "bun scripts/dev_server.js status",
     "dev:check": "bun scripts/dev_server.js check",
     "build": "astro build",
+    "content:sync": "bun scripts/sync_public_content.js",
+    "content:check": "bun scripts/sync_public_content.js --check",
     "preview": "astro preview",
     "test": "bun test",
     "new:post": "bun scripts/new_post.js",
@@ -35,7 +37,8 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "rehype-raw": "^7.0.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.10.6",

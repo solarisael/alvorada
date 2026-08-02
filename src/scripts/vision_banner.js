@@ -1,145 +1,14 @@
+import { create_gpu_effect_runtime } from "./gpu_effect_runtime.js";
 import { register_node_disposal } from "./node_disposal_bridge.js";
+
 const BANNER_SELECTOR = "[data-sol-vision-banner]";
 const CANVAS_SELECTOR = "[data-sol-vision-banner-canvas]";
+const GPU_READY_CLASS = "sol__vision_banner_gpu_ready";
+const HYDRATING_CLASS = "sol__vision_banner_hydrating";
+const VISUAL_READY_CLASS = "sol__vision_banner_visual_ready";
+const RENDERER_ATTRIBUTE = "data-sol-vision-renderer";
 const active_banners = new WeakMap();
-
-const vertex_source = `#version 300 es
-in vec2 a_position;
-out vec2 v_uv;
-void main() {
-  v_uv = a_position * 0.5 + 0.5;
-  gl_Position = vec4(a_position, 0.0, 1.0);
-}`;
-
-const fragment_source = `#version 300 es
-precision highp float;
-uniform sampler2D u_image;
-uniform vec2 u_canvas_size;
-uniform vec2 u_image_size;
-uniform float u_time;
-uniform float u_motion;
-uniform float u_variant;
-in vec2 v_uv;
-out vec4 out_color;
-
-float hash(vec2 point) {
-  return fract(sin(dot(point, vec2(127.1, 311.7))) * 43758.5453123);
-}
-
-float noise(vec2 point) {
-  vec2 cell = floor(point);
-  vec2 local = fract(point);
-  local = local * local * (3.0 - 2.0 * local);
-  return mix(
-    mix(hash(cell), hash(cell + vec2(1.0, 0.0)), local.x),
-    mix(hash(cell + vec2(0.0, 1.0)), hash(cell + vec2(1.0)), local.x),
-    local.y
-  );
-}
-
-float fbm(vec2 point) {
-  float value = 0.0;
-  float amplitude = 0.52;
-  mat2 turn = mat2(0.82, -0.57, 0.57, 0.82);
-  for (int octave = 0; octave < 5; octave += 1) {
-    value += amplitude * noise(point);
-    point = turn * point * 2.03 + 13.17;
-    amplitude *= 0.5;
-  }
-  return value;
-}
-
-vec2 cover_uv(vec2 uv) {
-  float canvas_aspect = u_canvas_size.x / u_canvas_size.y;
-  float image_aspect = u_image_size.x / u_image_size.y;
-  vec2 scale = vec2(1.0);
-  if (canvas_aspect > image_aspect) {
-    scale.y = image_aspect / canvas_aspect;
-  } else {
-    scale.x = canvas_aspect / image_aspect;
-  }
-  return (uv - 0.5) * scale + 0.5;
-}
-
-void main() {
-  vec2 centered = v_uv - vec2(0.5, 0.48);
-  centered.x *= u_canvas_size.x / u_canvas_size.y * 0.62;
-
-  float time = u_time * 0.000035 * u_motion;
-  vec2 stain_space = centered * vec2(4.2, 5.0);
-  float broad = fbm(stain_space + vec2(time, -time * 0.63));
-  float detail = fbm(stain_space * 2.7 + broad * 2.1 - vec2(time * 1.7, 0.0));
-  float alpha;
-  if (u_variant > 0.5) {
-    float downward = 1.0 - v_uv.y;
-    float opening = pow(smoothstep(0.015, 0.92, downward), 0.68);
-    float half_width = mix(0.235, 0.6, opening);
-    float side_distance = abs(v_uv.x - 0.5) / half_width;
-    float stained_side = 0.93 + (broad - 0.5) * 0.16 + (detail - 0.5) * 0.07;
-    float side_alpha = 1.0 - smoothstep(stained_side - 0.095, stained_side + 0.095, side_distance);
-    float top_alpha = 1.0 - smoothstep(0.88, 0.985, v_uv.y + (broad - 0.5) * 0.035);
-    float bottom_edge = 0.045 + (broad - 0.5) * 0.055 + (detail - 0.5) * 0.025;
-    float bottom_alpha = smoothstep(bottom_edge - 0.045, bottom_edge + 0.075, v_uv.y);
-    alpha = side_alpha * top_alpha * bottom_alpha;
-  } else {
-    float distance_field = length(centered * vec2(0.92, 1.08));
-    float broken_edge = 0.405 + (broad - 0.5) * 0.085 + (detail - 0.5) * 0.036;
-    alpha = 1.0 - smoothstep(broken_edge - 0.068, broken_edge + 0.068, distance_field);
-    float clear_center = 1.0 - smoothstep(0.205, 0.295, distance_field);
-    alpha = max(alpha, clear_center);
-  }
-  float border_distance = min(min(v_uv.x, 1.0 - v_uv.x), min(v_uv.y, 1.0 - v_uv.y));
-  float border_cut = smoothstep(0.0, 0.052, border_distance);
-  alpha *= border_cut;
-  alpha = alpha < 0.003 ? 0.0 : alpha;
-
-  vec2 image_uv = cover_uv(v_uv);
-  vec4 color = texture(u_image, image_uv);
-  color.rgb *= vec3(0.83, 0.86, 0.9);
-  color.rgb = mix(color.rgb, color.rgb * vec3(0.86, 0.91, 0.96), broad * 0.22);
-  out_color = vec4(color.rgb * alpha, alpha);
-}`;
-
-const compile_shader = (gl, type, source) => {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-};
-
-const create_program = (gl) => {
-  const vertex = compile_shader(gl, gl.VERTEX_SHADER, vertex_source);
-  const fragment = compile_shader(gl, gl.FRAGMENT_SHADER, fragment_source);
-  if (!vertex || !fragment) return null;
-  const program = gl.createProgram();
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.linkProgram(program);
-  gl.deleteShader(vertex);
-  gl.deleteShader(fragment);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    gl.deleteProgram(program);
-    return null;
-  }
-  return program;
-};
-
-const resize_canvas = (canvas, gl) => {
-  const rect = canvas.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const width = Math.max(1, Math.round(rect.width * dpr));
-  const height = Math.max(1, Math.round(rect.height * dpr));
-  if (canvas.width !== width || canvas.height !== height) {
-    canvas.width = width;
-    canvas.height = height;
-  }
-  gl.viewport(0, 0, width, height);
-  return [width, height];
-};
+const hydrating_banners = new WeakSet();
 
 const sync_viewport_breakout = (banner) => {
   if (!banner.classList.contains("sol__vision_banner_page_top")) return;
@@ -159,7 +28,325 @@ const sync_viewport_breakout = (banner) => {
   }
 };
 
-const hydrating_banners = new WeakSet();
+const create_vision_banner_effect = ({
+  three,
+  tsl,
+  renderer,
+  image,
+  image_width,
+  image_height,
+  inverted_bowl,
+}) => {
+  const {
+    abs,
+    cos,
+    exp,
+    float,
+    length,
+    max,
+    min,
+    mix,
+    pow,
+    select,
+    sin,
+    smoothstep,
+    texture,
+    uniform,
+    uv,
+    vec2,
+    vec3,
+  } = tsl;
+
+  const time = uniform(0);
+  const canvas_size = uniform(new three.Vector2(1, 1));
+  const image_size = uniform(
+    new three.Vector2(image_width || 1, image_height || 1),
+  );
+  const variant = uniform(inverted_bowl ? 1 : 0);
+  const image_texture = new three.Texture(image);
+  image_texture.colorSpace = three.SRGBColorSpace;
+  image_texture.minFilter = three.LinearFilter;
+  image_texture.magFilter = three.LinearFilter;
+  image_texture.wrapS = three.ClampToEdgeWrapping;
+  image_texture.wrapT = three.ClampToEdgeWrapping;
+  image_texture.needsUpdate = true;
+
+  const banner_uv = uv();
+  const canvas_aspect = canvas_size.x.div(canvas_size.y);
+  const image_aspect = image_size.x.div(image_size.y);
+  const canvas_is_wider = canvas_aspect.greaterThan(image_aspect);
+  const cover_scale = vec2(
+    select(canvas_is_wider, float(1), canvas_aspect.div(image_aspect)),
+    select(canvas_is_wider, image_aspect.div(canvas_aspect), float(1)),
+  );
+  const image_uv = banner_uv.sub(0.5).mul(cover_scale).add(0.5);
+  const source_color = texture(image_texture, image_uv);
+  const base_color = source_color.rgb;
+
+  const centered = vec2(
+    banner_uv.x.sub(0.5).mul(canvas_aspect).mul(0.62),
+    banner_uv.y.sub(0.48),
+  );
+  const edge_broad = sin(centered.x.mul(12.7).add(centered.y.mul(7.1)))
+    .mul(0.5)
+    .add(0.5);
+  const edge_detail = sin(
+    centered.x
+      .mul(29.3)
+      .sub(centered.y.mul(18.1))
+      .add(cos(centered.y.mul(11.7)).mul(0.72)),
+  )
+    .mul(0.5)
+    .add(0.5);
+
+  const downward = banner_uv.y.oneMinus();
+  const opening = pow(smoothstep(0.015, 0.92, downward), 0.68);
+  const half_width = mix(0.235, 0.6, opening);
+  const side_distance = abs(banner_uv.x.sub(0.5)).div(half_width);
+  const stained_side = float(0.93)
+    .add(edge_broad.sub(0.5).mul(0.16))
+    .add(edge_detail.sub(0.5).mul(0.07));
+  const side_alpha = smoothstep(
+    stained_side.sub(0.18),
+    stained_side.add(0.16),
+    side_distance,
+  ).oneMinus();
+  const top_alpha = smoothstep(
+    0.78,
+    1.01,
+    banner_uv.y.add(edge_broad.sub(0.5).mul(0.035)),
+  ).oneMinus();
+  const bottom_edge = float(0.045)
+    .add(edge_broad.sub(0.5).mul(0.055))
+    .add(edge_detail.sub(0.5).mul(0.025));
+  const bottom_alpha = smoothstep(
+    bottom_edge.sub(0.12),
+    bottom_edge.add(0.11),
+    banner_uv.y,
+  );
+  const inverted_bowl_alpha = side_alpha.mul(top_alpha).mul(bottom_alpha);
+
+  const round_distance = length(centered.mul(vec2(0.92, 1.08)));
+  const broken_edge = float(0.405)
+    .add(edge_broad.sub(0.5).mul(0.085))
+    .add(edge_detail.sub(0.5).mul(0.036));
+  const round_outer = smoothstep(
+    broken_edge.sub(0.16),
+    broken_edge.add(0.12),
+    round_distance,
+  ).oneMinus();
+  const round_center = smoothstep(0.205, 0.295, round_distance).oneMinus();
+  const round_alpha = max(round_outer, round_center);
+  const border_distance = min(
+    min(banner_uv.x, banner_uv.x.oneMinus()),
+    min(banner_uv.y, banner_uv.y.oneMinus()),
+  );
+  const aperture_alpha = mix(round_alpha, inverted_bowl_alpha, variant).mul(
+    smoothstep(0, 0.052, border_distance),
+  );
+
+  const fog_space = vec2(
+    banner_uv.x.sub(0.5).mul(canvas_aspect),
+    banner_uv.y.sub(0.5),
+  );
+  const warp = vec2(
+    sin(fog_space.y.mul(7.7).add(time.mul(0.16)))
+      .mul(0.018)
+      .add(sin(fog_space.x.mul(4.3).sub(time.mul(0.11))).mul(0.01)),
+    cos(fog_space.x.mul(6.9).sub(time.mul(0.14)))
+      .mul(0.016)
+      .add(sin(fog_space.y.mul(4.7).add(time.mul(0.09))).mul(0.009)),
+  );
+  const warped_space = fog_space.add(warp);
+  const detail_space = warped_space.add(
+    vec2(time.mul(0.009), sin(time.mul(0.13)).mul(0.018)),
+  );
+  const billow_pattern = sin(
+    detail_space.x
+      .mul(14.3)
+      .add(sin(detail_space.y.mul(11.7).sub(time.mul(0.18))).mul(1.25)),
+  )
+    .mul(0.46)
+    .add(
+      cos(
+        detail_space.y
+          .mul(22.7)
+          .sub(time.mul(0.14))
+          .add(sin(detail_space.x.mul(9.1).add(time.mul(0.11))).mul(1.05)),
+      ).mul(0.34),
+    )
+    .add(
+      sin(detail_space.x.add(detail_space.y).mul(36.0).add(time.mul(0.22))).mul(
+        0.2,
+      ),
+    )
+    .mul(0.5)
+    .add(0.5);
+  const fog_detail = smoothstep(0.12, 0.88, billow_pattern);
+
+  const gaussian_lobe = (center_x, center_y, radius_x, radius_y, angle) => {
+    const offset = warped_space.sub(vec2(center_x, center_y));
+    const turn_cos = Math.cos(angle);
+    const turn_sin = Math.sin(angle);
+    const turned = vec2(
+      offset.x.mul(turn_cos).add(offset.y.mul(turn_sin)),
+      offset.y.mul(turn_cos).sub(offset.x.mul(turn_sin)),
+    );
+    const distance_squared = pow(turned.x.div(radius_x), 2).add(
+      pow(turned.y.div(radius_y), 2),
+    );
+    return exp(distance_squared.mul(-0.5));
+  };
+
+  const far_left = gaussian_lobe(
+    float(-0.42).add(sin(time.mul(0.14).add(0.4)).mul(0.1)),
+    float(0.19).add(cos(time.mul(0.12).add(1.1)).mul(0.045)),
+    0.46,
+    0.13,
+    -0.18,
+  );
+  const far_right = gaussian_lobe(
+    float(0.44).add(sin(time.mul(0.13).add(2.2)).mul(0.11)),
+    float(-0.14).add(cos(time.mul(0.15).add(0.2)).mul(0.055)),
+    0.42,
+    0.15,
+    0.24,
+  );
+  const middle_low = gaussian_lobe(
+    float(-0.08).add(cos(time.mul(0.18).add(0.7)).mul(0.13)),
+    float(-0.3).add(sin(time.mul(0.16).add(2.6)).mul(0.05)),
+    0.36,
+    0.105,
+    0.08,
+  );
+  const middle_high = gaussian_lobe(
+    float(0.16).add(sin(time.mul(0.2).add(3.4)).mul(0.12)),
+    float(0.28).add(cos(time.mul(0.17).add(1.6)).mul(0.05)),
+    0.31,
+    0.09,
+    -0.31,
+  );
+  const near_left = gaussian_lobe(
+    float(-0.54).add(sin(time.mul(0.22).add(1.9)).mul(0.13)),
+    float(-0.02).add(cos(time.mul(0.19).add(2.8)).mul(0.06)),
+    0.27,
+    0.07,
+    0.38,
+  );
+  const near_right = gaussian_lobe(
+    float(0.56).add(cos(time.mul(0.21).add(0.9)).mul(0.14)),
+    float(0.08).add(sin(time.mul(0.18).add(4.1)).mul(0.055)),
+    0.25,
+    0.065,
+    -0.42,
+  );
+
+  const lobe_density = far_left
+    .mul(0.62)
+    .add(far_right.mul(0.58))
+    .add(middle_low.mul(0.7))
+    .add(middle_high.mul(0.66))
+    .add(near_left.mul(0.56))
+    .add(near_right.mul(0.52));
+  const fog_density = mix(
+    0.12,
+    1,
+    smoothstep(0.22, 1.25, lobe_density.mul(mix(0.22, 1.05, fog_detail))),
+  );
+
+  const light_offset = vec2(
+    banner_uv.x.sub(0.78).mul(canvas_aspect).mul(0.55),
+    banner_uv.y.sub(0.72).mul(0.95),
+  );
+  const light_reach = smoothstep(0.1, 0.78, length(light_offset)).oneMinus();
+  const fog_transmittance = exp(fog_density.mul(-1.45));
+  const in_scatter = fog_transmittance
+    .oneMinus()
+    .mul(light_reach)
+    .mul(mix(0.38, 0.78, fog_detail));
+
+  const round_fog_outer = smoothstep(
+    broken_edge.add(0.08),
+    broken_edge.add(0.21),
+    round_distance,
+  ).oneMinus();
+  const bowl_fog_side = smoothstep(
+    stained_side.add(0.06),
+    stained_side.add(0.22),
+    side_distance,
+  ).oneMinus();
+  const bowl_fog_top = smoothstep(
+    0.94,
+    1.08,
+    banner_uv.y.add(edge_broad.sub(0.5).mul(0.025)),
+  ).oneMinus();
+  const bowl_fog_bottom = smoothstep(
+    bottom_edge.sub(0.14),
+    bottom_edge.add(0.045),
+    banner_uv.y,
+  );
+  const bowl_fog_outer = bowl_fog_side.mul(bowl_fog_top).mul(bowl_fog_bottom);
+  const fog_region = mix(round_fog_outer, bowl_fog_outer, variant).mul(
+    smoothstep(0, 0.025, border_distance),
+  );
+  const image_alpha = aperture_alpha.mul(source_color.a);
+  const fog_opacity = min(0.26, fog_density.mul(fog_region).mul(0.3));
+  const combined_alpha = image_alpha.add(
+    fog_opacity.mul(image_alpha.oneMinus()),
+  );
+
+  const fog_shadow = vec3(0.58, 0.57, 0.55);
+  const fog_light = vec3(0.8, 0.78, 0.75);
+  const neutral_fog = mix(fog_shadow, fog_light, fog_detail);
+  const illuminated_fog = mix(neutral_fog, vec3(0.98, 0.91, 0.78), in_scatter);
+  const fog_color = mix(
+    illuminated_fog,
+    base_color,
+    smoothstep(0, 1, image_alpha),
+  );
+
+  const material = new three.MeshBasicNodeMaterial();
+  material.colorNode = fog_color;
+  material.opacityNode = combined_alpha;
+  material.transparent = true;
+  material.premultipliedAlpha = true;
+  material.depthTest = false;
+  material.depthWrite = false;
+  material.toneMapped = false;
+
+  const geometry = new three.PlaneGeometry(2, 2);
+  const mesh = new three.Mesh(geometry, material);
+  const scene = new three.Scene();
+  const camera = new three.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  scene.add(mesh);
+  renderer.setClearColor(0x000000, 0);
+
+  let disposed = false;
+  return {
+    resize: ({ width, height }) => {
+      canvas_size.value.set(width, height);
+    },
+    set_image: (next_image, width, height) => {
+      if (disposed) return;
+      image_texture.image = next_image;
+      image_texture.needsUpdate = true;
+      image_size.value.set(width || 1, height || 1);
+    },
+    render: ({ elapsed_seconds }) => {
+      if (disposed) return;
+      time.value = elapsed_seconds;
+      renderer.render(scene, camera);
+    },
+    dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      scene.remove(mesh);
+      image_texture.dispose();
+      material.dispose();
+      geometry.dispose();
+    },
+  };
+};
 
 const hydrate_banner = (banner) => {
   if (
@@ -171,31 +358,23 @@ const hydrate_banner = (banner) => {
 
   const canvas = banner.querySelector(CANVAS_SELECTOR);
   if (!(canvas instanceof HTMLCanvasElement)) return;
-  const gl = canvas.getContext("webgl2", {
-    alpha: true,
-    premultipliedAlpha: true,
-  });
-  if (!gl) return;
 
   const state = {
     banner,
-    canvas,
-    gl,
-    program: null,
-    position: null,
-    texture: null,
+    breakout_observer: null,
+    disposed: false,
+    effect: null,
     image: null,
+    image_height: 0,
     image_source: "",
     image_width: 0,
-    image_height: 0,
-    frame: null,
-    breakoutObserver: null,
     initialized: false,
+    initializing: false,
+    runtime: null,
     visual_ready: false,
-    disposed: false,
   };
-  let unregister_node_disposal = () => {};
   const listener_cleanups = [];
+  let unregister_node_disposal = () => {};
 
   const is_alive = () => !state.disposed && banner.isConnected === true;
 
@@ -207,65 +386,37 @@ const hydrate_banner = (banner) => {
       try {
         cleanup_listener();
       } catch {
-        // Continue releasing the remaining WebGL resources.
+        // Continue releasing the remaining banner-owned lifecycle.
       }
     }
-    if (state.frame !== null && typeof cancelAnimationFrame === "function") {
-      cancelAnimationFrame(state.frame);
-      state.frame = null;
-    }
-    state.breakoutObserver?.disconnect();
-    state.breakoutObserver = null;
+    state.breakout_observer?.disconnect();
+    state.breakout_observer = null;
+    state.runtime?.dispose();
+    state.runtime = null;
+    state.effect = null;
 
     active_banners.delete(banner);
     hydrating_banners.delete(banner);
     banner.classList.remove(
-      "sol__vision_banner_hydrating",
-      "sol__vision_banner_webgl_ready",
-      "sol__vision_banner_visual_ready",
+      HYDRATING_CLASS,
+      GPU_READY_CLASS,
+      VISUAL_READY_CLASS,
     );
-
-    if (state.position && typeof gl.deleteBuffer === "function") {
-      gl.deleteBuffer(state.position);
-      state.position = null;
-    }
-    if (state.texture && typeof gl.deleteTexture === "function") {
-      gl.deleteTexture(state.texture);
-      state.texture = null;
-    }
-    if (state.program && typeof gl.deleteProgram === "function") {
-      gl.deleteProgram(state.program);
-      state.program = null;
-    }
+    banner.removeAttribute(RENDERER_ATTRIBUTE);
 
     unregister_node_disposal();
     unregister_node_disposal = () => {};
   };
 
+  banner.classList.remove(GPU_READY_CLASS, VISUAL_READY_CLASS);
+  banner.removeAttribute(RENDERER_ATTRIBUTE);
   hydrating_banners.add(banner);
+  banner.classList.add(HYDRATING_CLASS);
+
   try {
     const unregister = register_node_disposal(banner, dispose);
     unregister_node_disposal =
       typeof unregister === "function" ? unregister : () => {};
-
-    const program = create_program(gl);
-    if (!program) {
-      dispose();
-      return;
-    }
-    state.program = program;
-    banner.classList.add("sol__vision_banner_hydrating");
-
-    state.position = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, state.position);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW,
-    );
-    const position_location = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(position_location);
-    gl.vertexAttribPointer(position_location, 2, gl.FLOAT, false, 0, 0);
 
     const fallback_image = banner.querySelector(".sol__vision_banner_image");
     const dom_image =
@@ -304,141 +455,104 @@ const hydrate_banner = (banner) => {
           dom_image?.src ||
           "";
 
-    const upload_texture = (candidate) => {
-      if (!is_alive() || !candidate || candidate.naturalWidth <= 0)
-        return false;
-
-      const next_source = get_image_source(candidate);
-      if (state.texture && state.image_source === next_source) return false;
-      if (!state.texture) {
-        state.texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, state.texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      } else {
-        gl.bindTexture(gl.TEXTURE_2D, state.texture);
-      }
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        gl.RGBA,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        candidate,
-      );
-      state.image = candidate;
-      state.image_source = next_source;
-      state.image_width = candidate.naturalWidth;
-      state.image_height = candidate.naturalHeight;
-      return true;
-    };
-
-    const initialize = () => {
-      if (state.disposed) return;
-      if (banner.isConnected !== true) {
+    const initialize = async () => {
+      if (
+        state.disposed ||
+        state.initializing ||
+        state.initialized ||
+        !state.image
+      )
+        return;
+      if (!is_alive()) {
         dispose();
         return;
       }
-      if (state.initialized) return;
-      const loaded_image = get_loaded_image();
-      if (!loaded_image || !upload_texture(loaded_image)) return;
 
-      state.initialized = true;
-      hydrating_banners.delete(banner);
-      const reduced_motion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      active_banners.set(banner, state);
-      banner.classList.add("sol__vision_banner_webgl_ready");
-      sync_viewport_breakout(banner);
-
-      const handle_resize = () => {
-        if (!is_alive()) {
-          dispose();
+      state.initializing = true;
+      try {
+        const runtime = await create_gpu_effect_runtime({
+          owner: banner,
+          canvas,
+          dpr_cap: 2,
+          is_owner_alive: is_alive,
+          create_effect: ({ three, tsl, renderer }) => {
+            const effect = create_vision_banner_effect({
+              three,
+              tsl,
+              renderer,
+              image: state.image,
+              image_width: state.image_width,
+              image_height: state.image_height,
+              inverted_bowl: banner.dataset.visionVariant === "inverted-bowl",
+            });
+            state.effect = effect;
+            return effect;
+          },
+          on_first_frame: (backend) => {
+            if (!is_alive()) return;
+            state.visual_ready = true;
+            banner.setAttribute(RENDERER_ATTRIBUTE, backend);
+            banner.classList.add(GPU_READY_CLASS, VISUAL_READY_CLASS);
+            banner.classList.remove(HYDRATING_CLASS);
+          },
+          on_error: dispose,
+        });
+        if (!runtime || !is_alive()) {
+          runtime?.dispose();
           return;
         }
-        sync_viewport_breakout(banner);
-        refresh_texture();
-      };
-      const breakout_observer =
-        typeof ResizeObserver === "function"
-          ? new ResizeObserver(handle_resize)
-          : null;
-      state.breakoutObserver = breakout_observer;
-      breakout_observer?.observe(banner.parentElement ?? banner);
-      if (typeof window.addEventListener === "function") {
-        window.addEventListener("resize", handle_resize, { passive: true });
-        listener_cleanups.push(() =>
-          window.removeEventListener("resize", handle_resize),
-        );
+
+        state.runtime = runtime;
+        state.initialized = true;
+        active_banners.set(banner, state);
+        hydrating_banners.delete(banner);
+      } catch {
+        dispose();
+      } finally {
+        state.initializing = false;
       }
-
-      const draw = (time) => {
-        state.frame = null;
-        if (!is_alive()) {
-          dispose();
-          return;
-        }
-        const size = resize_canvas(canvas, gl);
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.useProgram(program);
-        gl.uniform2f(
-          gl.getUniformLocation(program, "u_canvas_size"),
-          size[0],
-          size[1],
-        );
-        gl.uniform2f(
-          gl.getUniformLocation(program, "u_image_size"),
-          state.image_width,
-          state.image_height,
-        );
-        gl.uniform1f(gl.getUniformLocation(program, "u_time"), time);
-        gl.uniform1f(
-          gl.getUniformLocation(program, "u_motion"),
-          reduced_motion ? 0 : 1,
-        );
-        gl.uniform1f(
-          gl.getUniformLocation(program, "u_variant"),
-          banner.dataset.visionVariant === "inverted-bowl" ? 1 : 0,
-        );
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-        if (!state.visual_ready) {
-          state.visual_ready = true;
-          banner.classList.add("sol__vision_banner_visual_ready");
-          banner.classList.remove("sol__vision_banner_hydrating");
-        }
-        if (is_alive()) state.frame = requestAnimationFrame(draw);
-      };
-      state.frame = requestAnimationFrame(draw);
     };
 
     const refresh_texture = (event_target = null) => {
       if (state.disposed) return;
-      if (banner.isConnected !== true) {
+      if (!is_alive()) {
         dispose();
         return;
       }
       const loaded_image = get_loaded_image(event_target);
       if (!loaded_image) return;
-      if (!state.initialized) {
-        initialize();
-        return;
-      }
-      upload_texture(loaded_image);
+
+      const next_source = get_image_source(loaded_image);
+      const next_width = loaded_image.naturalWidth;
+      const next_height = loaded_image.naturalHeight;
+      const changed =
+        state.image !== loaded_image ||
+        state.image_source !== next_source ||
+        state.image_width !== next_width ||
+        state.image_height !== next_height;
+      if (!changed) return;
+
+      state.image = loaded_image;
+      state.image_source = next_source;
+      state.image_width = next_width;
+      state.image_height = next_height;
+      state.effect?.set_image(loaded_image, next_width, next_height);
+      state.runtime?.invalidate();
+      if (!state.initialized && !state.initializing) void initialize();
     };
 
     const handle_image_error = (target) => {
       if (state.disposed) return;
-      if (banner.isConnected !== true) {
+      if (!is_alive()) {
         dispose();
         return;
       }
-      if (state.initialized || target !== image) return;
-      dispose();
+      if (
+        !state.initialized &&
+        !get_loaded_image(target) &&
+        (target === dom_image || (!dom_image && target === image))
+      )
+        dispose();
     };
 
     const listen_for_image = (target, event_name, callback) => {
@@ -470,12 +584,35 @@ const hydrate_banner = (banner) => {
       );
     }
 
-    if (image.complete) {
-      image.naturalWidth > 0 ? initialize() : handle_image_error(image);
+    const handle_banner_resize = () => {
+      if (!is_alive()) {
+        dispose();
+        return;
+      }
+      sync_viewport_breakout(banner);
+      refresh_texture(dom_image);
+    };
+    if (typeof ResizeObserver === "function") {
+      state.breakout_observer = new ResizeObserver(handle_banner_resize);
+      state.breakout_observer.observe(banner.parentElement ?? banner);
     }
-  } catch (error_value) {
+    if (typeof window.addEventListener === "function") {
+      window.addEventListener("resize", handle_banner_resize, {
+        passive: true,
+      });
+      listener_cleanups.push(() =>
+        window.removeEventListener("resize", handle_banner_resize),
+      );
+    }
+    sync_viewport_breakout(banner);
+
+    if (image.complete) {
+      image.naturalWidth > 0
+        ? refresh_texture(image)
+        : handle_image_error(image);
+    }
+  } catch {
     dispose();
-    throw error_value;
   }
 };
 

@@ -61,11 +61,11 @@
   transform: scale(1.025);
 }
 
-.sol__vision_banner_webgl_ready .sol__vision_banner_canvas {
+.sol__vision_banner_gpu_ready .sol__vision_banner_canvas {
   opacity: 1;
 }
 
-.sol__vision_banner_webgl_ready .sol__vision_banner_image {
+.sol__vision_banner_gpu_ready .sol__vision_banner_image {
   opacity: 0;
 }
 
@@ -233,7 +233,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sol__vision_banner_field {
+  .sol__vision_banner_field,
+  .sol__vision_banner_canvas {
     transition: none;
   }
 }

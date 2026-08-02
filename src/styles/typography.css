@@ -384,6 +384,15 @@ container[data-phase="codex"] {
 }
 
 /* CONSUMERS + UTILITIES */
+.sol__page_intro_typography {
+  text-align: center;
+}
+
+.sol__page_intro_typography > p {
+  font-size: var(--text_body);
+  line-height: var(--leading_body);
+}
+
 .sol__text_lead {
   font-size: var(--text_lead);
   line-height: var(--leading_relaxed);
