@@ -11,6 +11,7 @@ const ALBEDO_ARCHIVE_CONTRACT = Object.freeze({
   index_id: "sol_albedo_archive_index",
   bound_property: "__albedo_archive_bound",
   filter_rail_selector: "[data-albedo-filter-rail]",
+  filter_toggle_selector: "[data-albedo-filter-toggle]",
   filter_clear_selector: "[data-albedo-filter-clear]",
   filter_summary_selector: "[data-albedo-filter-summary]",
   count_selector: "[data-albedo-count]",

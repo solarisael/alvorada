@@ -100,8 +100,8 @@ const hide_popup = () => {
 // Below 769px there's no hover to speak of and a floating card near a
 // fingertip covers exactly what you tapped to see — position_popup_near
 // skips inline placement entirely there and lets the CSS media query
-// (interactions.css) own a fixed bottom sheet instead. Matches the site's
-// existing mobile/desktop split (mobile_nav.css / desktop_nav.css: 768px).
+// (interactions.css) own a fixed bottom sheet instead. This is the shared
+// mobile/desktop composition boundary.
 const IX_MOBILE_BREAKPOINT_QUERY = "(max-width: 768px)";
 
 const ix_is_mobile_viewport = () => {

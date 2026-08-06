@@ -21,7 +21,7 @@
   text-decoration: none;
 }
 
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"]) {
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"]) {
   position: relative;
   background-image: linear-gradient(
     90deg,
@@ -38,7 +38,7 @@
     text-shadow var(--ix_popup_transition);
 }
 
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"])::after {
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"])::after {
   content: "";
   position: absolute;
   inset-inline: 0;
@@ -59,16 +59,16 @@
   animation: ix_text_glint_drift 4.8s linear infinite;
 }
 
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"]):hover,
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"]):focus-visible {
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"]):hover,
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"]):focus-visible {
   background-size: 100% 0.16em;
   text-shadow: 0 0 10px
     color-mix(in oklch, var(--site_style_accent, currentColor) 30%, transparent);
   outline: none;
 }
 
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"]):hover::after,
-.sol__ix:not(.sol__nav_pill):not(.sol__mobile_nav_link):not(button):not([role="button"]):focus-visible::after {
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"]):hover::after,
+.sol__ix:not(.sol__nav_pill):not(button):not([role="button"]):focus-visible::after {
   opacity: 0.72;
 }
 

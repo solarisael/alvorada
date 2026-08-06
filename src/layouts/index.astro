@@ -11,6 +11,7 @@ import "../styles/components/rubedo_timeline.css";
 import "../styles/components/home_card_gate.css";
 import "../styles/components/nigredo_page.css";
 import "../styles/components/albedo_page.css";
+import "../styles/components/archive_filter.css";
 import "../styles/components/citrinitas_page.css";
 import "../styles/components/wikilink.css";
 import "../styles/components/pretext_justify.css";
@@ -18,7 +19,6 @@ import "../styles/components/vision_banner.css";
 import "../styles/components/about_page.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
-import MobileNavbar from "../components/mantle/mobile_navbar.astro";
 import Navbar from "../components/mantle/desktop_navbar.astro";
 import SideMenu from "../components/mantle/side_menu.astro";
 import Footer from "../components/mantle/footer.astro";
@@ -121,7 +121,7 @@ const resolved_body_classes = Array.from(
     >
     </p>
     <Navbar />
-    <MobileNavbar />
+    <SideMenu />
     <main id="sol_page_shell">
       {
         banner_title && (
@@ -167,7 +167,10 @@ const resolved_body_classes = Array.from(
                 class="sol__content_layer sol__content_layer_deco sol__ornament_layer sol__ornament_layer_fill"
                 aria-hidden="true"
               >
-                <ornament data-shape="content_deco" class="sol__ornament_holder">
+                <ornament
+                  data-shape="content_deco"
+                  class="sol__ornament_holder"
+                >
                   <div
                     class="sol__ornament_item sol__content_deco_piece sol__content_deco_rail sol__content_deco_rail_left"
                   >
@@ -217,7 +220,6 @@ const resolved_body_classes = Array.from(
               </div>
             </div>
           </div>
-          <SideMenu />
         </vessel>
       </container>
     </main>

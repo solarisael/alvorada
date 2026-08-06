@@ -29,5 +29,33 @@ export const SITE_NAV_ITEMS = [
   },
 ];
 
+export const WRITING_PHASE_NAV_ITEMS = [
+  {
+    label: "nigredo",
+    phase: "nigredo",
+    href: "nigredo",
+  },
+  {
+    label: "albedo",
+    phase: "albedo",
+    href: "albedo",
+  },
+  {
+    label: "citrinitas",
+    phase: "citrinitas",
+    href: "citrinitas",
+  },
+  {
+    label: "rubedo",
+    phase: "rubedo",
+    href: "rubedo",
+  },
+  {
+    label: "codex",
+    phase: "codex",
+    href: "codex",
+  },
+];
+
 export const DESKTOP_NAV_LEFT = SITE_NAV_ITEMS.slice(0, 2);
 export const DESKTOP_NAV_RIGHT = SITE_NAV_ITEMS.slice(2);

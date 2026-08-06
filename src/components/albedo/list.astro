@@ -26,10 +26,25 @@ const initial_entries = archive_index.slice(0, INITIAL_ENTRY_COUNT);
 
 <albedo data-shape="list" class="sol__albedo_archive" data-albedo-archive>
   <!-- Filter block: calm grouped state field -->
-  <div class="sol__albedo_filter_block" data-albedo-filter-rail>
+  <div
+    class="sol__albedo_filter_block"
+    data-albedo-filter-rail
+    data-archive-filter-rail
+    data-mobile-collapsed="true"
+  >
     <!-- Header row: label + clear -->
     <div class="sol__albedo_filter_header">
       <span class="sol__albedo_filter_title">states</span>
+      <button
+        class="sol__archive_filter_toggle"
+        data-albedo-filter-toggle
+        data-archive-filter-toggle
+        type="button"
+        aria-controls="sol_albedo_filter_field"
+        aria-expanded="false"
+      >
+        show filters
+      </button>
       <button
         class="sol__albedo_filter_clear sol__text_kicker"
         data-albedo-filter-clear
@@ -39,7 +54,11 @@ const initial_entries = archive_index.slice(0, INITIAL_ENTRY_COUNT);
     </div>
 
     <!-- Inner field: states grouped into light/water containers. -->
-    <div class="sol__albedo_filter_field">
+    <div
+      id="sol_albedo_filter_field"
+      class="sol__albedo_filter_field"
+      data-archive-filter-field
+    >
       <div class="sol__albedo_filter_groups">
         {
           ALBEDO_CONTAINERS.map((container) => (

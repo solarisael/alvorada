@@ -1,3 +1,10 @@
+import {
+  derive_request_pathname,
+  is_route_swap_target,
+  is_section_path_active,
+  normalize_pathname,
+} from "./htmx_route_lifecycle.js";
+
 const window_any = /** @type {any} */ (globalThis);
 
 const SITE_THEME_COOKIE_NAME = "site_theme";
@@ -5,7 +12,7 @@ const SITE_SHELL_COOKIE_NAME = "site_shell";
 const SITE_FX_COOKIE_NAME = "site_fx";
 const SITE_SCALE_COOKIE_NAME = "site_scale";
 const SITE_MENU_OPEN_COOKIE_NAME = "site_menu_open";
-const SITE_MENU_PANEL_COOKIE_NAME = "site_menu_panel";
+const SITE_MENU_VIEW_COOKIE_NAME = "site_menu_view";
 const USER_TEXT_COOKIE_NAME = "user_text";
 const USER_MEASURE_COOKIE_NAME = "user_measure";
 
@@ -17,7 +24,7 @@ const SITE_SHELL_DEFAULT = "medium";
 const SITE_FX_DEFAULT = "balanced";
 const SITE_SCALE_DEFAULT = "100";
 const SITE_MENU_OPEN_DEFAULT = false;
-const SITE_MENU_PANEL_DEFAULT = "site";
+const SITE_MENU_VIEW_DEFAULT = "root";
 const USER_TEXT_DEFAULT = "normal";
 const USER_MEASURE_DEFAULT = "comfort";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
@@ -26,9 +33,78 @@ const site_theme_options = ["solarisael"];
 const site_shell_options = ["subtle", "medium", "strong"];
 const site_fx_options = ["subtle", "balanced", "bold"];
 const site_scale_options = ["100", "90", "80"];
-const site_menu_panel_options = ["site", "user", "account"];
 const user_text_options = ["compact", "normal", "large"];
 const user_measure_options = ["focused", "comfort", "wide"];
+
+let last_applied_route_pathname = null;
+
+/**
+ * @param {string | null} [pathname_override=null]
+ */
+const apply_side_menu_route_state = (pathname_override = null) => {
+  const menu_node = document.querySelector("#sol_side_menu");
+  if (!(menu_node instanceof HTMLElement)) {
+    return;
+  }
+
+  const current_pathname = normalize_pathname(
+    pathname_override ?? window.location.pathname,
+  );
+  if (last_applied_route_pathname === current_pathname) {
+    return;
+  }
+
+  let active_route_node = null;
+  let active_route_length = -1;
+
+  for (const route_node of menu_node.querySelectorAll(
+    "[data-side-menu-route]",
+  )) {
+    if (!(route_node instanceof HTMLAnchorElement)) {
+      continue;
+    }
+
+    const target_pathname = normalize_pathname(
+      new URL(route_node.href, window.location.origin).pathname,
+    );
+    const is_exact_match = current_pathname === target_pathname;
+    const is_home_route = route_node.dataset.phase === "home";
+    const is_active = is_home_route
+      ? is_exact_match
+      : is_section_path_active(current_pathname, target_pathname);
+
+    route_node.dataset.routeActive = is_active ? "true" : "false";
+    if (is_exact_match) {
+      route_node.setAttribute("aria-current", "page");
+    } else if (is_active) {
+      route_node.setAttribute("aria-current", "location");
+    } else {
+      route_node.removeAttribute("aria-current");
+    }
+
+    if (is_active && target_pathname.length > active_route_length) {
+      active_route_node = route_node;
+      active_route_length = target_pathname.length;
+    }
+  }
+
+  const current_place_node = menu_node.querySelector(
+    "[data-side-menu-current]",
+  );
+  const current_place_shell = current_place_node?.closest(
+    ".sol__side_menu_current",
+  );
+  if (current_place_node instanceof HTMLElement) {
+    current_place_node.textContent =
+      active_route_node?.dataset.navLabel ?? "hearth";
+  }
+  if (current_place_shell instanceof HTMLElement) {
+    current_place_shell.dataset.phase =
+      active_route_node?.dataset.phase ?? "home";
+  }
+
+  last_applied_route_pathname = current_pathname;
+};
 
 const legacy_theme_alias_map = {
   ritual: "solarisael",
@@ -234,31 +310,71 @@ const resolve_saved_menu_state = (cookie_header = null) => {
       : raw_open_value === "false"
         ? false
         : SITE_MENU_OPEN_DEFAULT;
-  const saved_menu_panel = get_safe_option(
-    read_cookie_value(SITE_MENU_PANEL_COOKIE_NAME, cookie_header),
-    site_menu_panel_options,
-    SITE_MENU_PANEL_DEFAULT,
-  );
+  const saved_menu_view =
+    read_cookie_value(SITE_MENU_VIEW_COOKIE_NAME, cookie_header) ??
+    SITE_MENU_VIEW_DEFAULT;
 
   return {
     saved_menu_open,
-    saved_menu_panel,
+    saved_menu_view,
   };
 };
 
-const set_menu_state = (menu_node, is_open, panel_name) => {
+const set_menu_view_state = (menu_node, requested_view) => {
   if (!(menu_node instanceof HTMLElement)) {
-    return;
+    return SITE_MENU_VIEW_DEFAULT;
   }
 
-  const safe_panel_name = get_safe_option(
-    panel_name,
-    site_menu_panel_options,
-    SITE_MENU_PANEL_DEFAULT,
+  const view_nodes = Array.from(
+    menu_node.querySelectorAll("[data-side-menu-view-page]"),
+  ).filter((node) => node instanceof HTMLElement);
+  const available_views = view_nodes.map(
+    (node) => node.dataset.sideMenuViewPage,
   );
+  const safe_view = get_safe_option(
+    requested_view,
+    available_views,
+    available_views.includes(SITE_MENU_VIEW_DEFAULT)
+      ? SITE_MENU_VIEW_DEFAULT
+      : available_views[0],
+  );
+  const active_index = Math.max(available_views.indexOf(safe_view), 0);
 
+  menu_node.dataset.sideMenuView = safe_view;
+
+  view_nodes.forEach((view_node, index) => {
+    const is_active = index === active_index;
+    view_node.dataset.viewPosition =
+      index < active_index
+        ? "before"
+        : index > active_index
+          ? "after"
+          : "active";
+    view_node.setAttribute("aria-hidden", is_active ? "false" : "true");
+    view_node.inert = !is_active;
+  });
+
+  for (const target_node of menu_node.querySelectorAll(
+    "[data-side-menu-view-target]",
+  )) {
+    const is_current_target =
+      target_node.dataset.sideMenuViewTarget === safe_view;
+    target_node.setAttribute(
+      "aria-expanded",
+      is_current_target ? "true" : "false",
+    );
+  }
+
+  return safe_view;
+};
+
+const set_menu_state = (menu_node, is_open, view_name) => {
+  if (!(menu_node instanceof HTMLElement)) {
+    return SITE_MENU_VIEW_DEFAULT;
+  }
+
+  const safe_view = set_menu_view_state(menu_node, view_name);
   menu_node.dataset.sideMenuOpen = is_open ? "true" : "false";
-  menu_node.dataset.sideMenuPanel = safe_panel_name;
 
   const trigger_node = menu_node.querySelector("[data-side-menu-trigger]");
   const panel_node = menu_node.querySelector("[data-side-menu-panel-shell]");
@@ -276,36 +392,7 @@ const set_menu_state = (menu_node, is_open, panel_name) => {
     panel_node.inert = !is_open;
   }
 
-  for (const toggle_node of menu_node.querySelectorAll(
-    "[data-side-menu-toggle]",
-  )) {
-    if (!(toggle_node instanceof HTMLButtonElement)) {
-      continue;
-    }
-
-    const toggle_panel =
-      toggle_node.dataset.sidePanel ?? SITE_MENU_PANEL_DEFAULT;
-    const is_active_panel = toggle_panel === safe_panel_name;
-    toggle_node.dataset.active = is_active_panel ? "true" : "false";
-    toggle_node.setAttribute(
-      "aria-pressed",
-      is_active_panel ? "true" : "false",
-    );
-    toggle_node.setAttribute(
-      "aria-expanded",
-      is_active_panel ? "true" : "false",
-    );
-  }
-
-  for (const page_node of menu_node.querySelectorAll("[data-side-menu-page]")) {
-    if (!(page_node instanceof HTMLElement)) {
-      continue;
-    }
-
-    const is_active_page = page_node.dataset.sideMenuPage === safe_panel_name;
-    page_node.hidden = !is_active_page;
-    page_node.setAttribute("aria-hidden", is_active_page ? "false" : "true");
-  }
+  return safe_view;
 };
 
 const sync_side_menu_controls = (
@@ -316,7 +403,7 @@ const sync_side_menu_controls = (
   text_name,
   measure_name,
   menu_open,
-  menu_panel,
+  menu_view,
 ) => {
   const menu_node = document.querySelector("#sol_side_menu");
 
@@ -363,7 +450,7 @@ const sync_side_menu_controls = (
     measure_select_node.value = measure_name;
   }
 
-  set_menu_state(menu_node, menu_open, menu_panel);
+  set_menu_state(menu_node, menu_open, menu_view);
 };
 
 const apply_saved_preferences = () => {
@@ -379,7 +466,7 @@ const apply_saved_preferences = () => {
   } = resolve_saved_style();
   const { saved_text_class, saved_measure_class } =
     resolve_saved_user_settings();
-  const { saved_menu_open, saved_menu_panel } = resolve_saved_menu_state();
+  const { saved_menu_open, saved_menu_view } = resolve_saved_menu_state();
 
   apply_site_style_state(
     document.documentElement,
@@ -401,7 +488,7 @@ const apply_saved_preferences = () => {
     saved_text_class,
     saved_measure_class,
     saved_menu_open,
-    saved_menu_panel,
+    saved_menu_view,
   );
 };
 
@@ -508,16 +595,16 @@ const bind_side_menu_controls = () => {
     write_cookie_value(USER_MEASURE_COOKIE_NAME, selected_measure_name);
   };
 
-  const commit_menu_state = (is_open, panel_name) => {
-    set_menu_state(menu_node, is_open, panel_name);
+  const commit_menu_state = (is_open, view_name) => {
+    const safe_view = set_menu_state(menu_node, is_open, view_name);
     write_cookie_value(SITE_MENU_OPEN_COOKIE_NAME, is_open ? "true" : "false");
-    write_cookie_value(SITE_MENU_PANEL_COOKIE_NAME, panel_name);
+    write_cookie_value(SITE_MENU_VIEW_COOKIE_NAME, safe_view);
   };
 
   const close_menu = () => {
     commit_menu_state(
       false,
-      menu_node.dataset.sideMenuPanel ?? SITE_MENU_PANEL_DEFAULT,
+      menu_node.dataset.sideMenuView ?? SITE_MENU_VIEW_DEFAULT,
     );
     if (trigger_node instanceof HTMLButtonElement) {
       trigger_node.focus();
@@ -529,7 +616,7 @@ const bind_side_menu_controls = () => {
       const next_open_state = menu_node.dataset.sideMenuOpen !== "true";
       commit_menu_state(
         next_open_state,
-        menu_node.dataset.sideMenuPanel ?? SITE_MENU_PANEL_DEFAULT,
+        menu_node.dataset.sideMenuView ?? SITE_MENU_VIEW_DEFAULT,
       );
       if (next_open_state && close_node instanceof HTMLButtonElement) {
         window.setTimeout(() => {
@@ -541,21 +628,44 @@ const bind_side_menu_controls = () => {
     });
   }
 
-  for (const toggle_node of menu_node.querySelectorAll(
-    "[data-side-menu-toggle]",
+  for (const target_node of menu_node.querySelectorAll(
+    "[data-side-menu-view-target]",
   )) {
-    if (!(toggle_node instanceof HTMLButtonElement)) {
+    if (!(target_node instanceof HTMLButtonElement)) {
       continue;
     }
 
-    toggle_node.addEventListener("click", () => {
-      const next_panel = get_safe_option(
-        toggle_node.dataset.sidePanel,
-        site_menu_panel_options,
-        SITE_MENU_PANEL_DEFAULT,
-      );
+    target_node.addEventListener("click", () => {
+      const next_view = target_node.dataset.sideMenuViewTarget;
+      const safe_view = set_menu_view_state(menu_node, next_view);
+      write_cookie_value(SITE_MENU_VIEW_COOKIE_NAME, safe_view);
 
-      commit_menu_state(true, next_panel);
+      const active_view = menu_node.querySelector(
+        `[data-side-menu-view-page="${safe_view}"]`,
+      );
+      const focus_target = active_view?.querySelector(
+        "[data-side-menu-view-focus]",
+      );
+      window.setTimeout(() => {
+        if (focus_target instanceof HTMLElement) {
+          focus_target.focus();
+        }
+      }, 0);
+    });
+  }
+
+  for (const route_node of menu_node.querySelectorAll(
+    "[data-side-menu-route]",
+  )) {
+    if (!(route_node instanceof HTMLAnchorElement)) {
+      continue;
+    }
+
+    route_node.addEventListener("click", () => {
+      commit_menu_state(
+        false,
+        menu_node.dataset.sideMenuView ?? SITE_MENU_VIEW_DEFAULT,
+      );
     });
   }
 
@@ -569,6 +679,20 @@ const bind_side_menu_controls = () => {
     }
 
     event.preventDefault();
+    if (menu_node.dataset.sideMenuView !== SITE_MENU_VIEW_DEFAULT) {
+      const safe_view = set_menu_view_state(menu_node, SITE_MENU_VIEW_DEFAULT);
+      write_cookie_value(SITE_MENU_VIEW_COOKIE_NAME, safe_view);
+      const focus_target = menu_node.querySelector(
+        `[data-side-menu-view-page="${safe_view}"] [data-side-menu-view-focus]`,
+      );
+      window.setTimeout(() => {
+        if (focus_target instanceof HTMLElement) {
+          focus_target.focus();
+        }
+      }, 0);
+      return;
+    }
+
     close_menu();
   });
 
@@ -629,7 +753,7 @@ const bind_side_menu_controls = () => {
         USER_TEXT_DEFAULT,
         USER_MEASURE_DEFAULT,
         true,
-        "account",
+        "settings",
       );
     });
   }
@@ -638,6 +762,8 @@ const bind_side_menu_controls = () => {
 const init_side_menu = () => {
   apply_saved_preferences();
   bind_side_menu_controls();
+  last_applied_route_pathname = null;
+  apply_side_menu_route_state();
 };
 
 if (
@@ -659,12 +785,30 @@ if (
   typeof document !== "undefined" &&
   !window_any.__side_menu_htmx_after_swap_bound
 ) {
-  document.body?.addEventListener("htmx:afterSwap", () => {
+  document.body?.addEventListener("htmx:afterSwap", (event) => {
     apply_saved_preferences();
     bind_side_menu_controls();
+
+    const htmx_event = /** @type {CustomEvent} */ (event);
+    if (!is_route_swap_target(htmx_event.detail?.target)) {
+      return;
+    }
+
+    last_applied_route_pathname = null;
+    apply_side_menu_route_state(
+      derive_request_pathname(event) ?? window.location.pathname,
+    );
   });
 
   window_any.__side_menu_htmx_after_swap_bound = true;
+}
+
+if (typeof window !== "undefined" && !window_any.__side_menu_popstate_bound) {
+  window.addEventListener("popstate", () => {
+    last_applied_route_pathname = null;
+    apply_side_menu_route_state();
+  });
+  window_any.__side_menu_popstate_bound = true;
 }
 
 export {
@@ -677,8 +821,8 @@ export {
   SITE_SCALE_DEFAULT,
   SITE_MENU_OPEN_COOKIE_NAME,
   SITE_MENU_OPEN_DEFAULT,
-  SITE_MENU_PANEL_COOKIE_NAME,
-  SITE_MENU_PANEL_DEFAULT,
+  SITE_MENU_VIEW_COOKIE_NAME,
+  SITE_MENU_VIEW_DEFAULT,
   SITE_SHELL_COOKIE_NAME,
   SITE_SHELL_DEFAULT,
   SITE_THEME_COOKIE_NAME,
@@ -693,6 +837,8 @@ export {
   get_safe_option,
   has_site_root,
   init_side_menu,
+  set_menu_view_state,
+  apply_side_menu_route_state,
   legacy_theme_alias_map,
   normalize_legacy_fx_value,
   normalize_legacy_theme_value,
@@ -704,7 +850,6 @@ export {
   resolve_saved_user_settings,
   site_fx_options,
   site_scale_options,
-  site_menu_panel_options,
   site_shell_options,
   site_theme_options,
   user_measure_options,

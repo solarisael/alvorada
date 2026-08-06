@@ -1,0 +1,68 @@
+@theme {
+  --default-font-family:
+    "Atkinson Hyperlegible Next", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  --default-mono-font-family: var(--font_mono);
+
+  --color-albedo: oklch(88% 0.025 247.839);
+  --color-nigredo: oklch(55.1% 0.027 264.364);
+  --color-citrinitas: oklch(76% 0.12 58deg);
+  --color-rubedo: oklch(64% 0.19 26deg);
+  --color-codex: oklch(66% 0.06 290);
+}
+
+:root {
+  /* Phase identity */
+  --color-albedo: oklch(88% 0.025 247.839);
+  --color-nigredo: oklch(55.1% 0.027 264.364);
+  --color-citrinitas: oklch(76% 0.12 58deg);
+  --color-rubedo: oklch(64% 0.19 26deg);
+  --color-codex: oklch(66% 0.06 290);
+
+  /* Reliquary palette */
+  --ui_bg_root: oklch(8.5% 0.005 280);
+  --ui_bg_mantle: oklch(11.5% 0.003 280);
+  --ui_bg_crust: oklch(5% 0.003 280);
+  --ui_surface_soft: oklch(14% 0.003 280);
+  --ui_surface_raised: oklch(17% 0.004 280);
+  --ui_text_primary: oklch(89% 0.014 80);
+  --ui_text_secondary: oklch(75% 0.014 80);
+  --ui_text_muted: oklch(56% 0.012 80);
+  --ui_accent: oklch(73.5% 0.075 80);
+  --ui_accent_2: oklch(80% 0.07 80);
+
+  /* Thread identity */
+  --color-thread-cinza: oklch(94% 0.018 85);
+  --color-thread-suul: oklch(58% 0.18 148);
+  --color-thread-solarisael: oklch(74% 0.13 47);
+
+  /* Shared responsive geometry */
+  --layout_viewport_pad_x: 1rem;
+  --layout_compound_gap: 1rem;
+  --layout_body_grid_gap: 0.25rem;
+  --mobile_mantle_trigger_size: 3.5rem;
+  --mobile_mantle_edge: 0.75rem;
+  --mobile_mantle_clearance: calc(
+    var(--mobile_mantle_trigger_size) + var(--mobile_mantle_edge) + 0.75rem +
+      env(safe-area-inset-bottom, 0px)
+  );
+  --mobile_content_inset: 0.25rem;
+  --mobile_reading_inset: 0.75rem;
+  --mobile_reading_block_gap: 3rem;
+
+  /* Interaction primitives */
+  --control_target_min: 2.75rem;
+  --control_target_compact: 2.25rem;
+  --control_radius: 0.5rem;
+  --control_radius_pill: 999px;
+
+  /* Mobile type boundaries */
+  --text_display_mobile: clamp(2.25rem, 12vw, 3.5rem);
+}
+
+@media (min-width: 769px) {
+  :root {
+    --layout_viewport_pad_x: 1.25rem;
+  }
+}

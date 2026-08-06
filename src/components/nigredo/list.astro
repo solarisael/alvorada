@@ -25,10 +25,25 @@ const initial_entries = archive_index.slice(0, INITIAL_ENTRY_COUNT);
 
 <nigredo data-shape="list" class="sol__nigredo_archive" data-nigredo-archive>
   <!-- Filter block: party_roster outer vessel -->
-  <div class="sol__nigredo_filter_block" data-nigredo-filter-rail>
+  <div
+    class="sol__nigredo_filter_block"
+    data-nigredo-filter-rail
+    data-archive-filter-rail
+    data-mobile-collapsed="true"
+  >
     <!-- Header row: label + clear -->
     <div class="sol__nigredo_filter_header">
       <span class="sol__nigredo_filter_title">afflictions</span>
+      <button
+        class="sol__archive_filter_toggle"
+        data-nigredo-filter-toggle
+        data-archive-filter-toggle
+        type="button"
+        aria-controls="sol_nigredo_filter_field"
+        aria-expanded="false"
+      >
+        show filters
+      </button>
       <button
         class="sol__nigredo_filter_clear sol__text_kicker"
         data-nigredo-filter-clear
@@ -38,7 +53,11 @@ const initial_entries = archive_index.slice(0, INITIAL_ENTRY_COUNT);
     </div>
 
     <!-- Inner field: status_effects grouped into fire containers. -->
-    <div class="sol__nigredo_filter_field">
+    <div
+      id="sol_nigredo_filter_field"
+      class="sol__nigredo_filter_field"
+      data-archive-filter-field
+    >
       <div class="sol__nigredo_filter_groups">
         {
           NIGREDO_CONTAINERS.map((container) => (

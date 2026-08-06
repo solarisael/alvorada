@@ -209,6 +209,7 @@ function report_init_failure(contract, error_value) {
 
 export function create_archive_controller({ root, full_index, contract }) {
   const filter_rail = root.querySelector(contract.filter_rail_selector);
+  const filter_toggle = root.querySelector(contract.filter_toggle_selector);
   const clear_btn = root.querySelector(contract.filter_clear_selector);
   const filter_sum = root.querySelector(contract.filter_summary_selector);
   const count_label = root.querySelector(contract.count_selector);
@@ -376,6 +377,24 @@ export function create_archive_controller({ root, full_index, contract }) {
       button.setAttribute("aria-pressed", all_active ? "true" : "false");
     }
   }
+  function sync_filter_disclosure() {
+    if (!filter_rail || !filter_toggle) return;
+
+    const is_collapsed = filter_rail.dataset.mobileCollapsed !== "false";
+    filter_toggle.setAttribute(
+      "aria-expanded",
+      is_collapsed ? "false" : "true",
+    );
+    filter_toggle.textContent = is_collapsed ? "show filters" : "hide filters";
+  }
+
+  function on_filter_toggle_click() {
+    if (!filter_rail) return;
+
+    const is_collapsed = filter_rail.dataset.mobileCollapsed !== "false";
+    filter_rail.dataset.mobileCollapsed = is_collapsed ? "false" : "true";
+    sync_filter_disclosure();
+  }
 
   function on_filter_click(event) {
     const event_target = event.target;
@@ -450,6 +469,7 @@ export function create_archive_controller({ root, full_index, contract }) {
 
     filter_rail?.removeEventListener("click", on_filter_click);
     clear_btn?.removeEventListener("click", on_clear_click);
+    filter_toggle?.removeEventListener("click", on_filter_toggle_click);
     root.removeEventListener("click", on_root_click);
     globalThis.window?.removeEventListener("resize", on_resize);
 
@@ -473,6 +493,7 @@ export function create_archive_controller({ root, full_index, contract }) {
 
   filter_rail?.addEventListener("click", on_filter_click);
   clear_btn?.addEventListener("click", on_clear_click);
+  filter_toggle?.addEventListener("click", on_filter_toggle_click);
   root.addEventListener("click", on_root_click);
   globalThis.window?.addEventListener("resize", on_resize, { passive: true });
 
@@ -480,6 +501,7 @@ export function create_archive_controller({ root, full_index, contract }) {
     unregister_node_disposal = register_node_disposal(root, dispose);
     update_count();
     sync_filter_controls();
+    sync_filter_disclosure();
     make_virtualizer();
   } catch (error_value) {
     dispose();

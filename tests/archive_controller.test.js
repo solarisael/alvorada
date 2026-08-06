@@ -18,6 +18,7 @@ const contract = Object.freeze({
   index_id: "sol_test_archive_index",
   bound_property: "__test_archive_controller",
   filter_rail_selector: "[data-test-filter-rail]",
+  filter_toggle_selector: "[data-test-filter-toggle]",
   filter_clear_selector: "[data-test-filter-clear]",
   filter_summary_selector: "[data-test-filter-summary]",
   count_selector: "[data-test-count]",
@@ -98,7 +99,12 @@ function append_test_archive(index_text = JSON.stringify(entries)) {
   const root = document.createElement("section");
   root.dataset.testArchive = "";
   root.innerHTML = `
-    <div data-test-filter-rail>
+    <div data-test-filter-rail data-mobile-collapsed="true">
+      <button
+        type="button"
+        data-test-filter-toggle
+        aria-expanded="false"
+      >show filters</button>
       <div class="test_filter_group">
         <button type="button" data-filter-container="tone">tone</button>
         <button type="button" data-filter-state="calm">calm</button>
@@ -142,7 +148,12 @@ function append_phase_archive(phase, index_id) {
   const root = document.createElement("section");
   root.setAttribute(`data-${phase}-archive`, "");
   root.innerHTML = `
-    <div data-${phase}-filter-rail></div>
+    <div data-${phase}-filter-rail data-mobile-collapsed="true">
+      <button
+        type="button"
+        data-${phase}-filter-toggle
+        aria-expanded="false"
+      >show filters</button>
     <button type="button" data-${phase}-filter-clear hidden>clear</button>
     <span data-${phase}-filter-summary hidden></span>
     <span data-${phase}-count></span>
@@ -183,6 +194,14 @@ describe("archive controller lifecycle", () => {
     expect(controller).toBeTruthy();
     expect(root[contract.bound_property]).toBe(controller);
     expect(root.querySelector("[data-test-count]").textContent).toBe("2");
+    const filter_toggle = root.querySelector("[data-test-filter-toggle]");
+    expect(filter_toggle.getAttribute("aria-expanded")).toBe("false");
+    filter_toggle.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(
+      root.querySelector("[data-test-filter-rail]").dataset.mobileCollapsed,
+    ).toBe("false");
+    expect(filter_toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(filter_toggle.textContent).toBe("hide filters");
 
     root
       .querySelector('[data-filter-state="calm"]')

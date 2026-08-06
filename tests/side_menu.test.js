@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 import {
   COOKIE_MAX_AGE_SECONDS,
@@ -9,8 +10,8 @@ import {
   SITE_SCALE_DEFAULT,
   SITE_MENU_OPEN_COOKIE_NAME,
   SITE_MENU_OPEN_DEFAULT,
-  SITE_MENU_PANEL_COOKIE_NAME,
-  SITE_MENU_PANEL_DEFAULT,
+  SITE_MENU_VIEW_COOKIE_NAME,
+  SITE_MENU_VIEW_DEFAULT,
   SITE_SHELL_COOKIE_NAME,
   SITE_SHELL_DEFAULT,
   SITE_THEME_COOKIE_NAME,
@@ -33,12 +34,16 @@ import {
   resolve_saved_menu_state,
   resolve_saved_style,
   resolve_saved_user_settings,
-  site_menu_panel_options,
+  set_menu_view_state,
   site_scale_options,
   site_theme_options,
   user_measure_options,
   user_text_options,
 } from "../public/js/modules/side_menu.js";
+
+if (!globalThis.window) {
+  GlobalRegistrator.register({ url: "https://solarisael.local/current/" });
+}
 
 describe("side_menu cookie parsing", () => {
   test("parse_cookie_map returns expected values", () => {
@@ -58,8 +63,8 @@ describe("side_menu cookie parsing", () => {
   test("side menu and user preference cookie keys are stable", () => {
     expect(SITE_MENU_OPEN_COOKIE_NAME).toBe("site_menu_open");
     expect(SITE_MENU_OPEN_DEFAULT).toBe(false);
-    expect(SITE_MENU_PANEL_COOKIE_NAME).toBe("site_menu_panel");
-    expect(SITE_MENU_PANEL_DEFAULT).toBe("site");
+    expect(SITE_MENU_VIEW_COOKIE_NAME).toBe("site_menu_view");
+    expect(SITE_MENU_VIEW_DEFAULT).toBe("root");
     expect(USER_TEXT_COOKIE_NAME).toBe("user_text");
     expect(USER_TEXT_DEFAULT).toBe("normal");
     expect(USER_MEASURE_COOKIE_NAME).toBe("user_measure");
@@ -177,30 +182,71 @@ describe("side_menu option safety", () => {
     );
   });
 
-  test("resolve_saved_menu_state accepts valid open and panel cookies", () => {
+  test("resolve_saved_menu_state preserves a requested generic view", () => {
     const open_state = resolve_saved_menu_state(
-      "site_menu_open=true; site_menu_panel=user",
+      "site_menu_open=true; site_menu_view=settings",
     );
     const closed_state = resolve_saved_menu_state(
-      "site_menu_open=false; site_menu_panel=account",
+      "site_menu_open=false; site_menu_view=root",
     );
 
     expect(open_state.saved_menu_open).toBe(true);
-    expect(site_menu_panel_options.includes(open_state.saved_menu_panel)).toBe(
-      true,
-    );
-    expect(open_state.saved_menu_panel).toBe("user");
+    expect(open_state.saved_menu_view).toBe("settings");
     expect(closed_state.saved_menu_open).toBe(false);
-    expect(closed_state.saved_menu_panel).toBe("account");
+    expect(closed_state.saved_menu_view).toBe("root");
   });
 
-  test("resolve_saved_menu_state falls back on invalid menu cookies", () => {
+  test("resolve_saved_menu_state defers view availability to the rendered menu", () => {
     const resolved_menu_state = resolve_saved_menu_state(
-      "site_menu_open=maybe; site_menu_panel=preferences",
+      "site_menu_open=maybe; site_menu_view=future-pane",
     );
 
     expect(resolved_menu_state.saved_menu_open).toBe(SITE_MENU_OPEN_DEFAULT);
-    expect(resolved_menu_state.saved_menu_panel).toBe(SITE_MENU_PANEL_DEFAULT);
+    expect(resolved_menu_state.saved_menu_view).toBe("future-pane");
+  });
+});
+
+describe("side_menu generic view states", () => {
+  test("orders any rendered pane around the requested active view", () => {
+    document.body.replaceChildren();
+    const menu = document.createElement("div");
+    menu.innerHTML = `
+      <section data-side-menu-view-page="root"></section>
+      <section data-side-menu-view-page="settings"></section>
+      <section data-side-menu-view-page="future-pane"></section>
+      <button data-side-menu-view-target="root"></button>
+      <button data-side-menu-view-target="settings"></button>
+      <button data-side-menu-view-target="future-pane"></button>
+    `;
+    document.body.append(menu);
+
+    expect(set_menu_view_state(menu, "future-pane")).toBe("future-pane");
+    expect(menu.dataset.sideMenuView).toBe("future-pane");
+
+    const panes = [...menu.querySelectorAll("[data-side-menu-view-page]")];
+    expect(panes.map((pane) => pane.dataset.viewPosition)).toEqual([
+      "before",
+      "before",
+      "active",
+    ]);
+    expect(panes.map((pane) => pane.getAttribute("aria-hidden"))).toEqual([
+      "true",
+      "true",
+      "false",
+    ]);
+    expect(panes.map((pane) => pane.inert)).toEqual([true, true, false]);
+    expect(
+      menu
+        .querySelector('[data-side-menu-view-target="future-pane"]')
+        .getAttribute("aria-expanded"),
+    ).toBe("true");
+
+    expect(set_menu_view_state(menu, "missing")).toBe("root");
+    expect(panes.map((pane) => pane.dataset.viewPosition)).toEqual([
+      "active",
+      "after",
+      "after",
+    ]);
   });
 });
 

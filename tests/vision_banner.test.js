@@ -314,6 +314,8 @@ const fake_tsl = {
   max: node,
   min: node,
   mix: node,
+  mx_fractal_noise_float: node,
+  mx_noise_float: node,
   pow: node,
   select: node,
   sin: node,

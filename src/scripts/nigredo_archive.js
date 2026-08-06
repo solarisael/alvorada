@@ -11,6 +11,7 @@ const NIGREDO_ARCHIVE_CONTRACT = Object.freeze({
   index_id: "sol_nigredo_archive_index",
   bound_property: "__nigredo_archive_bound",
   filter_rail_selector: "[data-nigredo-filter-rail]",
+  filter_toggle_selector: "[data-nigredo-filter-toggle]",
   filter_clear_selector: "[data-nigredo-filter-clear]",
   filter_summary_selector: "[data-nigredo-filter-summary]",
   count_selector: "[data-nigredo-count]",
