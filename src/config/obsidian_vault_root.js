@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 export const OBSIDIAN_ROOT_ENV = "SOLARISAEL_OBSIDIAN_ROOT";
 export const DEFAULT_OBSIDIAN_VAULT_ROOT = "C:/Solarisael/Obsidian/obsidian";
 export const LOCAL_CONTENT_ROOT = fileURLToPath(
-  new URL("../content/", import.meta.url),
+  new URL("../../content/", import.meta.url),
 );
 
 const WINDOWS_ABSOLUTE_PATH = /^[A-Za-z]:[\\/]/;
@@ -24,10 +24,8 @@ const is_directory = (path_value) => {
 const normalize_root = (path_value) => path.normalize(path_value);
 
 /**
- * Resolve the content root used by both Astro's loaders and Vite's @vault
- * alias. An explicit environment override is authoritative and must point to
- * an existing absolute directory; the fallback is the external Windows vault
- * when present, otherwise the checked-in content directory.
+ * The content tools share this resolver. The checked-in copy keeps them usable
+ * when the external vault is unavailable.
  */
 export const resolve_obsidian_vault_root = ({
   env = process.env,

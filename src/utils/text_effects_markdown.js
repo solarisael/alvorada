@@ -998,10 +998,21 @@ const transform_text_fx_markers_in_tree = (tree_node, options = {}) => {
   }
 };
 
+// The bare marker-string API below (finders, descriptor parser, open/close
+// probes) is consumed by the Obsidian preview plugin build
+// (scripts/build_obsidian_fx_plugin.js) so the vault renders the exact same
+// grammar. Vendor README: the markdown transform belongs to the consuming
+// site — the plugin is a second consuming site.
 export {
   build_block_fx_open_html,
   build_text_fx_span_html,
+  find_matching_text_fx_close_marker,
+  marker_boundary_regex,
+  find_next_text_fx_open_marker,
+  is_close_marker_only,
   normalize_text_fx_name,
+  parse_marker_effect_descriptor,
+  parse_open_marker_only,
   split_text_fx_markers,
   text_fx_block_effect_names,
   text_fx_effect_names,

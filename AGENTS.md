@@ -8,6 +8,7 @@ Tiny pointer for agents working in `solarisael`.
 - Repo state and browser/runtime verification beat stale docs or old rule files.
 - Local docs are evidence, not canon, unless they match current code and Sol's present intent.
 - Historical context lives in `docs/history/`.
+- Lesson index for this repo: `docs/lessons_map.md` (pointer surface; postgres is authoritative).
 
 ## Hard local facts
 

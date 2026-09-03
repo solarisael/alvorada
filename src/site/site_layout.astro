@@ -1,0 +1,30 @@
+---
+import "./site.css";
+import Navigation from "./navigation/index.astro";
+import { with_base } from "./paths.js";
+
+const { page_title = "Solarisael", description = "" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{page_title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <a class="sol__skip_link" href="#content">Skip to content</a>
+    <header>
+      <a class="sol__wordmark" href={with_base("")}>Solarisael</a>
+      <Navigation />
+    </header>
+    <main id="content">
+      <slot />
+    </main>
+    <footer>
+      <p>Keep the hearth lit.</p>
+    </footer>
+  </body>
+</html>

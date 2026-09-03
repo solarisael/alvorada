@@ -1,0 +1,37 @@
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-void);
+  color: var(--fg-bone);
+  font-family: var(--ff-body);
+  line-height: var(--lh-body);
+}
+
+a {
+  color: var(--fg-gold);
+}
+
+:focus-visible {
+  outline: var(--line-focus) solid currentColor;
+  outline-offset: var(--gap-focus);
+}
+
+.sol__skip_link {
+  position: absolute;
+  left: var(--sp-4);
+  translate: 0 -200%;
+}
+
+.sol__skip_link:focus {
+  translate: 0 1rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}

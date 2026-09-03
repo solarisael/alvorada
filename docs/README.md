@@ -5,5 +5,6 @@ Living documentation for the solarisael website. Same spine as the solarisael-ho
 - `progress.md` — current true state. Read this first.
 - `roadmap.md` — the tracks: release gates, CSS heal, effects/perf, hygiene.
 - `history/YYYY-MM-DD.md` — dated session records; what happened and why.
+- `lessons_map.md` — curated House-lesson index for this repo; postgres holds the bodies.
 
-Root `progress.md` is the 2026-05-23 handoff snapshot, superseded by this folder; folding it in is a roadmap item.
+Root `progress.md` (the 2026-05-23 handoff snapshot) was deleted 2026-08-12; git history is the store.

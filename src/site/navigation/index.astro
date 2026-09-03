@@ -1,0 +1,116 @@
+---
+import { with_base } from "../paths.js";
+import "./navigation.css";
+
+const routes = [
+  ["Hearth", ""],
+  ["Writing", "writing"],
+  ["Work", "work"],
+  ["About", "about"],
+];
+
+const normalize_path = (path_value) => path_value.replace(/\/+$/, "") || "/";
+const current_path = normalize_path(Astro.url.pathname);
+const route_items = routes.map(([label, path], index) => {
+  const href = with_base(path);
+  return {
+    current: normalize_path(href) === current_path,
+    href,
+    index,
+    label,
+  };
+});
+const current_route =
+  route_items.find((route) => route.current) ?? route_items[0];
+---
+
+<button
+  type="button"
+  class="sol__navigation_summon"
+  aria-controls="sol_navigation"
+  aria-haspopup="dialog"
+  data-sol-navigation-summon
+>
+  <span aria-hidden="true" data-sol-navigation-key>Esc</span>
+  <span>Navigation</span>
+</button>
+
+<dialog id="sol_navigation" class="sol__navigation" data-sol-navigation>
+  <navigation-veil class="sol__navigation_veil" aria-hidden="true">
+    <canvas data-sol-navigation-canvas></canvas>
+  </navigation-veil>
+
+  <navigation-reliquary
+    class="sol__navigation_reliquary"
+    data-sol-navigation-reliquary
+  >
+    <navigation-surface class="sol__navigation_plate" aria-hidden="true"
+    ></navigation-surface>
+    <navigation-surface class="sol__navigation_membrane" aria-hidden="true"
+    ></navigation-surface>
+
+    <button
+      type="button"
+      class="sol__navigation_release"
+      aria-label="Close navigation"
+      data-sol-navigation-release
+    >
+      Release
+    </button>
+
+    <nav class="sol__navigation_rail" aria-label="Primary navigation">
+      <p class="sol__navigation_rail_label" aria-hidden="true">Paths</p>
+      <ul>
+        {
+          route_items.map((route) => (
+            <li>
+              <a
+                href={route.href}
+                aria-current={route.current ? "page" : undefined}
+                aria-label={route.label}
+                data-sol-navigation-option
+                data-route-index={route.index}
+                data-selected={
+                  route.index === current_route.index ? "true" : "false"
+                }
+                tabindex={route.index === current_route.index ? "0" : "-1"}
+              >
+                <navigation-possession aria-hidden="true" />
+                <span aria-hidden="true" data-sol-navigation-label>
+                  {route.label}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <section
+      class="sol__navigation_response"
+      aria-labelledby="sol_navigation_title"
+    >
+      <p class="sol__navigation_disclosure">
+        Navigation vision study. Route visions are not built yet.
+      </p>
+      <navigation-vision class="sol__navigation_vision" aria-hidden="true">
+      </navigation-vision>
+      <p class="sol__navigation_count" aria-hidden="true">
+        <span data-sol-navigation-count>
+          {String(current_route.index + 1).padStart(2, "0")}
+        </span>
+        <span>/</span>
+        <span>{String(route_items.length).padStart(2, "0")}</span>
+      </p>
+      <h2 id="sol_navigation_title" data-sol-navigation-title>
+        {current_route.label}
+      </h2>
+    </section>
+  </navigation-reliquary>
+</dialog>
+
+<script>
+  import { mount_navigation } from "./navigation.js";
+
+  mount_navigation();
+</script>

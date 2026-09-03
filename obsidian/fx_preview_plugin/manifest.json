@@ -1,0 +1,9 @@
+{
+  "id": "solarisael-fx",
+  "name": "Solarisael FX Preview",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Renders {{fx:...}} text-effect markers in reading view with solarisael-site parity. Source: C:/Projects/solarisael/obsidian/fx_preview_plugin — rebuild with `bun run obsidian:fx:build`.",
+  "author": "Sol + Kodo",
+  "isDesktopOnly": false
+}

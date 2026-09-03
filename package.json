@@ -16,32 +16,15 @@
     "content:check": "bun scripts/sync_public_content.js --check",
     "preview": "astro preview",
     "test": "bun test",
-    "new:post": "bun scripts/new_post.js",
-    "css:size:audit": "bun scripts/css_size_audit.js check --scope=priority-a",
-    "rubedo:scenes:check": "bun scripts/rubedo_scene_identity_audit.js check",
-    "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
-    "css:bg-stack:check": "bun scripts/css_background_stack_audit.js check",
-    "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check",
-    "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color",
-    "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color"
+    "obsidian:fx:build": "bun scripts/build_obsidian_fx_plugin.js"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.8",
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/virtual-core": "^3.16.0",
-    "astro": "^5.16.11",
-    "htmx.org": "^2.0.8",
-    "idiomorph": "^0.7.4",
-    "prettier": "^3.8.1",
+    "astro": "^7.3.1",
+    "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "rehype-raw": "^7.0.0",
-    "tailwindcss": "^4.1.18",
     "three": "^0.185.1"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "^20.10.6",
-    "vite": "^7.3.1"
+    "@happy-dom/global-registrator": "^20.13.2"
   }
 }

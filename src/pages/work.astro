@@ -1,15 +1,11 @@
 ---
-import IndexLayout from "../layouts/index.astro";
-import HomeGate from "../components/home/home_gate.astro";
+import { SiteLayout } from "../site/index.js";
 ---
 
-<IndexLayout page_title="Work" phase="work" banner_title="Work">
-  <HomeGate>
-    <Fragment slot="intro">
-      <p class="sol__home_intro_line">
-        Original tools, enormous systems, and the things I have built for people
-        beyond this room.
-      </p>
-    </Fragment>
-  </HomeGate>
-</IndexLayout>
+<SiteLayout page_title="Work">
+  <h1>Work</h1>
+  <p>
+    Original tools, enormous systems, and the things I have built for people
+    beyond this room.
+  </p>
+</SiteLayout>

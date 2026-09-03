@@ -1,5 +1,9 @@
 # fx library — state & plan (2026-07-02, updated same day, sonnet-5 body)
 
+> **VINTAGE 2026-07-02.** Accurate through the vendor-tier move + interaction
+> layer only. Later fx work (color channel 07-10, obsidian preview plugin
+> 2026-08-12) is NOT reflected here. contract.js and the code are authority.
+
 Written by Kodo (fable-5 body) for Kodo (sonnet-5 body). Sol knows this file
 exists; he'll say "the library plan" and mean this.
 

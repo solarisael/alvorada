@@ -155,3 +155,5 @@ references/
 .tmp/
 scripts/__pycache__/
 *.zip
+# Headless-Chrome shots and profile used for local visual checks
+.omp-shots/

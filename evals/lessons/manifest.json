@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "vintage": "2026-08-24",
+  "authority": {
+    "system_of_record": "postgresql",
+    "repository_role": "Pointers, current rulings, and mechanical gates only.",
+    "fail_closed": true
+  },
+  "project_census": {
+    "query": {
+      "type": "project",
+      "project": "solarisael",
+      "limit": 50
+    },
+    "expected_count": 27,
+    "lesson_refs": [
+      "P42",
+      "P43",
+      "P44",
+      "P45",
+      "P46",
+      "P47",
+      "P48",
+      "P49",
+      "P50",
+      "P52",
+      "P53",
+      "P71",
+      "P90",
+      "P91",
+      "P92",
+      "P93",
+      "P94",
+      "P95",
+      "P96",
+      "P97",
+      "P98",
+      "P99",
+      "P100",
+      "P101",
+      "P105",
+      "P108",
+      "P124"
+    ]
+  },
+  "local_rulings": [
+    {
+      "id": "R2026-08-24-no-css-variables",
+      "status": "active",
+      "summary": "CSS custom properties are forbidden for the current site reset."
+    },
+    {
+      "id": "R2026-08-24-component-triad",
+      "status": "active",
+      "summary": "Each component owns co-located Astro, JavaScript, and CSS files in its concern folder."
+    },
+    {
+      "id": "R2026-08-24-drawer-sidebar",
+      "status": "active",
+      "summary": "The sidebar is a drawer at every viewport size."
+    },
+    {
+      "id": "R2026-08-24-primary-navigation",
+      "status": "active",
+      "summary": "The header and sidebar both present the primary navigation."
+    }
+  ],
+  "lesson_queries": [
+    {
+      "id": "project",
+      "request": {
+        "type": "project",
+        "project": "solarisael",
+        "limit": 50
+      }
+    },
+    {
+      "id": "coding-current",
+      "request": {
+        "type": "coding",
+        "limit": 50
+      }
+    },
+    {
+      "id": "coding-structure",
+      "request": {
+        "type": "coding",
+        "shape": "structure",
+        "limit": 50
+      }
+    },
+    {
+      "id": "coding-verification",
+      "request": {
+        "type": "coding",
+        "shape": "verification",
+        "limit": 50
+      }
+    },
+    {
+      "id": "design",
+      "request": {
+        "type": "design",
+        "limit": 50
+      }
+    }
+  ],
+  "seams": [
+    {
+      "id": "components",
+      "path_prefixes": ["src/components/"],
+      "lesson_refs": [
+        "P42",
+        "P44",
+        "P45",
+        "P47",
+        "P94",
+        "C143",
+        "C194",
+        "C305",
+        "C347",
+        "C446",
+        "D303",
+        "D304",
+        "D409",
+        "R2026-08-24-no-css-variables",
+        "R2026-08-24-component-triad"
+      ],
+      "mechanical_checks": [
+        "component-folder",
+        "component-public-door",
+        "component-triad",
+        "component-imports",
+        "dynamic-class-contract",
+        "css-custom-property",
+        "grid-flex-track",
+        "visible-focus"
+      ]
+    },
+    {
+      "id": "site-styles",
+      "path_prefixes": ["src/site/"],
+      "lesson_refs": [
+        "P44",
+        "P46",
+        "P93",
+        "P124",
+        "C305",
+        "C347",
+        "D301",
+        "D303",
+        "D409",
+        "R2026-08-24-no-css-variables"
+      ],
+      "mechanical_checks": [
+        "css-custom-property",
+        "grid-flex-track",
+        "visible-focus"
+      ]
+    },
+    {
+      "id": "navigation",
+      "path_prefixes": ["src/site/paths.js", "src/pages/", "astro.config.mjs"],
+      "lesson_refs": [
+        "P42",
+        "P47",
+        "P91",
+        "C143",
+        "C347",
+        "C446",
+        "D304",
+        "D409",
+        "R2026-08-24-drawer-sidebar",
+        "R2026-08-24-primary-navigation"
+      ],
+      "mechanical_checks": []
+    },
+    {
+      "id": "fx",
+      "path_prefixes": [
+        "src/utils/text_effects_markdown.js",
+        "public/vendor/fx/",
+        "obsidian/fx_preview_plugin/",
+        "scripts/build_obsidian_fx_plugin.js"
+      ],
+      "lesson_refs": ["P53", "P108", "C181", "C194", "C347", "C446"],
+      "mechanical_checks": []
+    },
+    {
+      "id": "lesson-eval",
+      "path_prefixes": ["evals/lessons/", "docs/lessons_map.md"],
+      "lesson_refs": ["C143", "C194", "C347", "C446"],
+      "mechanical_checks": ["project-census"]
+    }
+  ]
+}
