@@ -1,5 +1,5 @@
 ---
-import { SiteLayout, with_base } from "../site/index.js";
+import { SiteLayout, with_base } from "../site/index.ts";
 
 const profile = [
   ["Name", "Solarisael"],
@@ -16,7 +16,7 @@ const traits = [
 ];
 
 const portrait_sizes = "(max-width: 900px) 100vw, 1041px";
-const portrait_srcset = (extension) =>
+const portrait_srcset = (extension: "avif" | "webp") =>
   [520, 780, 1041]
     .map(
       (width) =>

@@ -1,27 +1,28 @@
 ---
-import { with_base } from "../paths.js";
+import { with_base } from "../paths.ts";
 import "./navigation.css";
 
-const routes = [
-  ["Hearth", ""],
-  ["Writing", "writing"],
-  ["Work", "work"],
-  ["About", "about"],
+interface Route {
+  readonly label: string;
+  readonly path: string;
+}
+
+const routes: readonly [Route, ...Route[]] = [
+  { label: "Hearth", path: "" },
+  { label: "Writing", path: "writing" },
+  { label: "Work", path: "work" },
+  { label: "About", path: "about" },
 ];
 
-const normalize_path = (path_value) => path_value.replace(/\/+$/, "") || "/";
+const normalize_path = (path_value: string) =>
+  path_value.replace(/\/+$/, "") || "/";
 const current_path = normalize_path(Astro.url.pathname);
-const route_items = routes.map(([label, path], index) => {
+const route_items = routes.map(({ label, path }, index) => {
   const href = with_base(path);
-  return {
-    current: normalize_path(href) === current_path,
-    href,
-    index,
-    label,
-  };
+  return { current: normalize_path(href) === current_path, href, index, label };
 });
 const current_route =
-  route_items.find((route) => route.current) ?? route_items[0];
+  route_items.find((route) => route.current) ?? route_items[0]!;
 ---
 
 <button
@@ -110,7 +111,8 @@ const current_route =
 </dialog>
 
 <script>
-  import { mount_navigation } from "./navigation.js";
+  import { Effect } from "effect";
+  import { navigation_program } from "./navigation.ts";
 
-  mount_navigation();
+  Effect.runFork(navigation_program().pipe(Effect.tapError(Effect.logError)));
 </script>
