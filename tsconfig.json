@@ -2,11 +2,18 @@
   "extends": "astro/tsconfigs/strictest",
   "compilerOptions": {
     "verbatimModuleSyntax": true,
-    "types": ["bun"],
-    "paths": {
-      "@site/*": ["./src/site/*"]
-    }
+    "types": [
+      "bun"
+    ],
+    "ignoreDeprecations": "6.0"
   },
-  "include": [".astro/types.d.ts", "src/**/*", "tests/**/*"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }
