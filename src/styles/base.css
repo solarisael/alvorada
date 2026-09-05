@@ -22,7 +22,9 @@ body {
 @media (min-width: 769px) {
   body.sol__body_grid {
     display: grid;
-    grid-template-columns: [viewport-start] 1fr [composition-start] 16fr [composition-end] 1fr [viewport-end];
+    grid-template-columns:
+      [viewport-start] minmax(0, 1fr) [composition-start] minmax(0, 16fr)
+      [composition-end] minmax(0, 1fr) [viewport-end];
     align-content: start;
     column-gap: var(--layout_body_grid_gap);
     row-gap: var(--layout_body_grid_gap);
@@ -42,7 +44,10 @@ body.sol__body_grid container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: var(--layout_compound_gap);
+  justify-self: center;
+
   width: 100%;
+  max-inline-size: var(--layout_content_max);
 
   & > *:not(.sol__breakout) {
     grid-column: 1 / -1;

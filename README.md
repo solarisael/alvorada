@@ -87,6 +87,11 @@ Existing tests provide optional diagnostics through `bun test`.
 Use the production build and browser checks to verify behavior.
 Check navigation, history, keyboard controls, responsive layouts, and browser errors.
 
+## Layout
+
+The shared content frame uses `--layout_content_max` in `src/styles/tokens.css`.
+Artwork and prose keep separate width rules.
+
 ## Navigation
 
 The side menu provides navigation on desktop and mobile.

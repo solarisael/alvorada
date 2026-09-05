@@ -39,6 +39,7 @@
 
   /* Shared responsive geometry */
   --layout_viewport_pad_x: 1rem;
+  --layout_content_max: 90rem;
   --layout_compound_gap: 1rem;
   --layout_body_grid_gap: 0.25rem;
   --mobile_mantle_trigger_size: 3.5rem;
