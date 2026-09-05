@@ -1,12 +1,13 @@
 #!/usr/bin/env bun
 
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import {
   parse_tag_identity,
   validate_scene_identity_consistency,
 } from "../src/data/rubedo/scene_identity.js";
+import { OBSIDIAN_VAULT_ROOT } from "../src/config/obsidian_vault_root.js";
 
 const usage = `Usage:
   bun scripts/rubedo_scene_identity_audit.js check
@@ -20,36 +21,35 @@ if (mode !== "check") {
   process.exit(1);
 }
 
-const scene_root_directory = "src/data/rubedo/scenes";
+const scene_roots = [
+  "src/data/rubedo/scenes",
+  join(OBSIDIAN_VAULT_ROOT, "zzzz_rubedo"),
+];
 const markdown_file_paths = [];
 
 const collect_markdown_files = (directory_path) => {
-  const entries = readdirSync(directory_path);
+  if (!existsSync(directory_path)) {
+    return;
+  }
 
-  for (const entry_name of entries) {
-    const entry_path = join(directory_path, entry_name);
-    const entry_stats = statSync(entry_path);
-
-    if (entry_stats.isDirectory()) {
-      collect_markdown_files(entry_path);
-      continue;
+  const scenes = new Bun.Glob("**/*.md").scanSync({
+    cwd: directory_path,
+    absolute: true,
+    onlyFiles: true,
+  });
+  for (const scene of scenes) {
+    const scene_path = scene.replaceAll("\\", "/");
+    if (!scene_path.includes("/refs/")) {
+      markdown_file_paths.push(scene_path);
     }
-
-    if (!entry_name.endsWith(".md")) {
-      continue;
-    }
-
-    markdown_file_paths.push(entry_path.replaceAll("\\", "/"));
   }
 };
 
 const strip_yaml_scalar = (raw_value = "") => {
   const trimmed_value = String(raw_value).trim();
 
-  if (
-    (trimmed_value.startsWith('"') && trimmed_value.endsWith('"')) ||
-    (trimmed_value.startsWith("'") && trimmed_value.endsWith("'"))
-  ) {
+  const quote = trimmed_value[0];
+  if (`"'`.includes(quote) && trimmed_value.endsWith(quote)) {
     return trimmed_value.slice(1, -1);
   }
 
@@ -63,7 +63,7 @@ const extract_frontmatter = (source_text = "") => {
     return null;
   }
 
-  const frontmatter_source = frontmatter_match[1] ?? "";
+  const frontmatter_source = frontmatter_match[1];
   const frontmatter_lines = frontmatter_source.split(/\r?\n/);
   const frontmatter = {};
 
@@ -72,7 +72,7 @@ const extract_frontmatter = (source_text = "") => {
     line_index < frontmatter_lines.length;
     line_index += 1
   ) {
-    const line_value = frontmatter_lines[line_index] ?? "";
+    const line_value = frontmatter_lines[line_index];
     const key_value_match = line_value.match(/^([a-zA-Z0-9_]+):\s*(.*)$/);
 
     if (!key_value_match) {
@@ -80,7 +80,7 @@ const extract_frontmatter = (source_text = "") => {
     }
 
     const frontmatter_key = key_value_match[1];
-    const frontmatter_value = key_value_match[2] ?? "";
+    const frontmatter_value = key_value_match[2];
 
     if (frontmatter_key === "tags") {
       const tags = [];
@@ -90,7 +90,7 @@ const extract_frontmatter = (source_text = "") => {
         tag_line_index < frontmatter_lines.length;
         tag_line_index += 1
       ) {
-        const tag_line_value = frontmatter_lines[tag_line_index] ?? "";
+        const tag_line_value = frontmatter_lines[tag_line_index];
         const tag_item_match = tag_line_value.match(/^\s*-\s*(.+)$/);
 
         if (!tag_item_match) {
@@ -111,7 +111,14 @@ const extract_frontmatter = (source_text = "") => {
   return frontmatter;
 };
 
-collect_markdown_files(scene_root_directory);
+for (const root of scene_roots) {
+  collect_markdown_files(root);
+}
+
+if (markdown_file_paths.length === 0) {
+  console.error("[rubedo-scene-identity-audit] No scene files found.");
+  process.exit(1);
+}
 
 const violations = [];
 

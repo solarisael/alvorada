@@ -28,18 +28,21 @@ _sun + aris (lion / war / altar) + aleph (breath / threshold) + el (god) — the
 
 Hosting: **GitHub Pages** for now. Future: Nekoweb / Neocities / own domain when the Codex unlock system needs backend.
 
-## Conventions (locked 2026-05-12)
+## Conventions
 
-Markup uses **ritualistic custom elements** for structural shells — bare tags `<mantle>`, `<vessel>`, `<aether>`, `<bones>`, `<spell>`, `<nigredo>`, `<rubedo>`, `<albedo>`, `<citrinitas>`, `<codex>`, `<ornament>`. Functional native HTML kept for interactives, forms, media, headings, text formatting, lists, and tables. Landmark tags (`<nav>`, `<main>`, `<header>`, `<footer>`, `<article>`, `<section>`, `<aside>`) dropped in favor of ritualistic shells.
+Structural shells use custom elements such as `<mantle>`, `<vessel>`, and `<ornament>`.
+Use native landmarks, links, buttons, forms, lists, and tables for their HTML semantics.
 
-Every page wraps its content in ONE ritualistic outer element with `data-shape="X"`. Inner blocks use plain `<div>` with semantic classes.
+Name shell roles with `data-shape`.
+Use component classes for internal elements.
 
 - **IDs**: `#sol_foo_bar` (collision-safe namespace marker)
 - **Classes**: `.sol__foo_bar` (Sol's classes; Tailwind utilities and vendored classes unprefixed)
 - **Attribute roles**: `data-shape` (kind), `data-state` (runtime), `data-tone` (flavor)
 - **Snake_case** for all file/dir/id/class names
 
-Full rules live in `.opencode/rules/*.md`. Operational index in `AGENTS.md`.
+Use `AGENTS.md` for local conventions.
+The current source and browser checks take precedence over archived plans.
 
 ## Quick start
 
@@ -54,12 +57,39 @@ Build for production:
 bun run build
 ```
 
-## Validation
+## Verification
+
+Set `SOLARISAEL_OBSIDIAN_ROOT` to the absolute `src/content` path to verify the checked-in public snapshot.
+Run these checks:
 
 ```bash
-bun run build                       # 52 pages, expected clean (see docs/progress.md)
-bunx prettier --check .             # format check
-bun run css:hard-gates:check        # ornaments + bg-stack gates
-bun run rubedo:scenes:check         # rubedo scene identity (when applicable)
-bun test                            # when tests touched
+bun run code:quality
+bun run content:check
+bun run build
+bunx prettier --check .
+bun run css:hard-gates:check
+bun run rubedo:scenes:check
 ```
+
+The quality gate checks JavaScript, Astro, and Python source.
+It uses the installed TypeScript and Astro compilers, plus the Python standard library.
+Python 3.12 is the verified interpreter.
+
+Keep function CCN at 10 or below.
+The gate rejects function CCN above 15.
+Review each function between 11 and 15 as one atomic operation.
+
+Keep module averages at 4 or below, with at most one function above 10.
+Keep each module at 60 decision points or below.
+Use file and function length for review.
+
+Existing tests provide optional diagnostics through `bun test`.
+Use the production build and browser checks to verify behavior.
+Check navigation, history, keyboard controls, responsive layouts, and browser errors.
+
+## Navigation
+
+The side menu provides navigation on desktop and mobile.
+Route state and page announcements operate independently of the menu.
+History snapshots contain only the page shell.
+The site has no top navigation bar.

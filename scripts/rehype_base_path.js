@@ -1,41 +1,35 @@
-// Rewrites site-root-relative `href`/`src` attributes in rendered markdown
-// HTML to include the deployed base subpath.
-//
-// Why this exists: vault-authored content (codex entries, phase posts) has
-// no access to `with_base()` — that's a server-side Astro-component helper,
-// and markdown/raw-HTML content is rendered independently of it. An author
-// writing `href="/codex/characters/cinza"` or `<img src="/images/x.png">`
-// gets a broken link the moment the site deploys under a base subpath
-// (GitHub Pages: `/solarisael`) instead of root (Neocities/Nekoweb: `/`).
-// Bit us for real 2026-07-02 — a hand-authored codex-entry image and a
-// sandbox-page link both 404'd for exactly this reason.
-//
-// Root-hosted deploys (base === "/") are a no-op here by construction:
-// normalized_base ends up "", so nothing gets prepended.
+// Vault Markdown cannot call Astro's with_base helper.
+// Keep its links and media valid on subpath hosts.
+const attribute_with_base = (value, base) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+  if (!value.startsWith("/") || value.startsWith("//")) {
+    return value;
+  }
+  if (!base || value === base || value.startsWith(`${base}/`)) {
+    return value;
+  }
+  return `${base}${value}`;
+};
+
+const rewrite_properties = (properties, base) => {
+  for (const name of ["href", "src", "hx-get"]) {
+    const previous = properties[name];
+    const next = attribute_with_base(previous, base);
+    if (next !== previous) {
+      properties[name] = next;
+    }
+  }
+};
+
 const rehype_base_path = (base_path = "/") => {
   const normalized_base = String(base_path).replace(/\/+$/, "");
 
   return (tree) => {
     const visit_node = (node) => {
       if (node?.type === "element" && node.properties) {
-        for (const attribute_name of ["href", "src", "hx-get"]) {
-          const raw_value = node.properties[attribute_name];
-
-          if (typeof raw_value !== "string") {
-            continue;
-          }
-
-          const is_site_root_relative =
-            raw_value.startsWith("/") && !raw_value.startsWith("//");
-          const already_prefixed =
-            !normalized_base ||
-            raw_value === normalized_base ||
-            raw_value.startsWith(`${normalized_base}/`);
-
-          if (is_site_root_relative && !already_prefixed) {
-            node.properties[attribute_name] = `${normalized_base}${raw_value}`;
-          }
-        }
+        rewrite_properties(node.properties, normalized_base);
       }
 
       if (Array.isArray(node?.children)) {

@@ -28,6 +28,28 @@ const build_branch_label_text = (branch_edges = []) => {
   return labels.join(", ");
 };
 
+const preview_paragraph = (kind, text) => {
+  return text
+    ? `<p class="timeline-hover-${kind}">${escape_html(text)}</p>`
+    : "";
+};
+
+const preview_excerpt = (chapter, thread_key) => {
+  return (
+    chapter.scene_excerpts?.[thread_key] ??
+    chapter.scene_excerpts?.cinza ??
+    null
+  );
+};
+
+const process_preview_links = (preview_node) => {
+  const window_any = /** @type {any} */ (globalThis);
+  const htmx_api = window_any.htmx;
+  if (htmx_api?.process) {
+    htmx_api.process(preview_node);
+  }
+};
+
 const render_hover_preview_from_cache = ({
   node_entry,
   book_data,
@@ -47,18 +69,15 @@ const render_hover_preview_from_cache = ({
   }
 
   const chapter_href = `${base_path}/rubedo/${book_data.book_slug}/${chapter.chapter_slug}`;
-  const excerpt =
-    chapter.scene_excerpts?.[node_entry.thread_key] ??
-    chapter.scene_excerpts?.cinza ??
-    null;
+  const excerpt = preview_excerpt(chapter, node_entry.thread_key);
   const branch_labels = build_branch_label_text(chapter.branch_edges ?? []);
 
   preview_node.innerHTML = `
     <h3 class="timeline-hover-title">${escape_html(chapter.title ?? chapter.chapter_id)}</h3>
-    ${chapter.description ? `<p class="timeline-hover-description">${escape_html(chapter.description)}</p>` : ""}
-    ${chapter.snippet ? `<p class="timeline-hover-snippet">${escape_html(chapter.snippet)}</p>` : ""}
-    ${excerpt ? `<p class="timeline-hover-excerpt">${escape_html(excerpt)}</p>` : ""}
-    ${branch_labels ? `<p class="timeline-hover-branches">${escape_html(branch_labels)}</p>` : ""}
+    ${preview_paragraph("description", chapter.description)}
+    ${preview_paragraph("snippet", chapter.snippet)}
+    ${preview_paragraph("excerpt", excerpt)}
+    ${preview_paragraph("branches", branch_labels)}
     <p class="timeline-hover-action">
       <a
         href="${escape_html(chapter_href)}"
@@ -71,12 +90,7 @@ const render_hover_preview_from_cache = ({
     </p>
   `;
 
-  const window_any = /** @type {any} */ (globalThis);
-  const htmx_api = window_any.htmx;
-
-  if (htmx_api?.process) {
-    htmx_api.process(preview_node);
-  }
+  process_preview_links(preview_node);
 };
 
 export { build_branch_label_text, render_hover_preview_from_cache };

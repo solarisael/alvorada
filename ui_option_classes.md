@@ -14,36 +14,11 @@ When new optional class variants are introduced, add them here in the same chang
 - 2026-02-08: Added `verdigris` to `data-site-theme` options.
 - 2026-02-09: Replaced 4 theme options with 7 inspiration-aligned themes and dual alias naming.
 
-## Navbar Preset
+## Navigation
 
-- Purpose: controls baseline desktop navbar richness (glass blur/light intensity).
-- Apply on: `#desktop-nav` in `src/components/navbar.astro`.
-- Default: `navbar-preset-rich`.
-- Options:
-  - `navbar-preset-soft`
-  - `navbar-preset-rich`
-
-Quick switch:
-
-```html
-<nav id="desktop-nav" class="navbar-preset-rich ..."></nav>
-```
-
-## Route Active Tone
-
-- Purpose: controls active-link background tint/saturation and border intensity.
-- Apply on: `#desktop-nav` in `src/components/navbar.astro`.
-- Default: `route-active-tone-medium`.
-- Options:
-  - `route-active-tone-subtle`
-  - `route-active-tone-medium`
-  - `route-active-tone-strong`
-
-Quick switch:
-
-```html
-<nav id="desktop-nav" class="route-active-tone-medium ... ..."></nav>
-```
+The side menu supplies site navigation at every viewport width.
+Use `#sol_side_menu_trigger` to open the menu.
+The site has no top navbar or navbar preset classes.
 
 ## Page Transition Breath
 

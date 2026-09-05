@@ -8,6 +8,9 @@ if (!window_any.__rubedo_constellation_after_swap_bound) {
   document.body?.addEventListener("htmx:afterSwap", () => {
     init_rubedo_constellation();
   });
+  document.body?.addEventListener("htmx:historyRestore", () => {
+    init_rubedo_constellation();
+  });
 
   window_any.__rubedo_constellation_after_swap_bound = true;
 }

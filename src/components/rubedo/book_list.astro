@@ -2,6 +2,12 @@
 import ContentLink from "../page/content_link.astro";
 
 const { books = [], empty_text = "No works published yet." } = Astro.props;
+
+const book_actions = (book) =>
+  [
+    { label: "read", href: book.reader_href },
+    { label: "constellation", href: book.timeline_href },
+  ].filter((action) => action.href);
 ---
 
 {
@@ -26,22 +32,14 @@ const { books = [], empty_text = "No works published yet." } = Astro.props;
             </header>
 
             <footer class="sol__rubedo_book_actions">
-              {book.reader_href && (
+              {book_actions(book).map((action) => (
                 <ContentLink
-                  href={book.reader_href}
+                  href={action.href}
                   class="sol__rubedo_book_action sol__text_kicker"
                 >
-                  read
+                  {action.label}
                 </ContentLink>
-              )}
-              {book.timeline_href && (
-                <ContentLink
-                  href={book.timeline_href}
-                  class="sol__rubedo_book_action sol__text_kicker"
-                >
-                  constellation
-                </ContentLink>
-              )}
+              ))}
             </footer>
           </article>
         </rubedo>

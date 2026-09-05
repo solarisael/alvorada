@@ -21,8 +21,8 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-      - name: Bun tests
-        run: bun test
+      - name: Code quality budgets
+        run: bun run code:quality
 
       - name: Build Astro site
         run: bun run build
@@ -32,6 +32,3 @@ jobs:
 
       - name: CSS hard gates (ornaments + bg-stack)
         run: bun run css:hard-gates:check
-
-      - name: CSS tunables check
-        run: bun run css:tunables:check

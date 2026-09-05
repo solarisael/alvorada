@@ -55,17 +55,18 @@ const citrinitas_book_slugs = list_book_slugs(citrinitas_book_map);
 // chapter slug as the entry point. Slim and serializable; no chapter bodies.
 const citrinitas_gallery = citrinitas_book_slugs.map((book_slug) => {
   const book = citrinitas_book_map[book_slug];
-  const first_chapter = book.chapters[0] ?? null;
+  const first_chapter = book.chapters[0] ?? {};
+  const size = resolve_masonry_size(book.size);
 
   return {
     book_slug,
     title: book.title,
     synopsis: book.synopsis,
-    cover: book.cover ?? first_chapter?.cover ?? null,
-    size: resolve_masonry_size(book.size),
-    masonry: MASONRY_SIZES[resolve_masonry_size(book.size)],
+    cover: book.cover ?? first_chapter.cover ?? null,
+    size,
+    masonry: MASONRY_SIZES[size],
     chapter_count: book.chapters.length,
-    first_chapter_slug: first_chapter?.chapter_slug ?? null,
+    first_chapter_slug: first_chapter.chapter_slug ?? null,
   };
 });
 

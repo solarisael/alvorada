@@ -56,6 +56,3 @@ export const WRITING_PHASE_NAV_ITEMS = [
     href: "codex",
   },
 ];
-
-export const DESKTOP_NAV_LEFT = SITE_NAV_ITEMS.slice(0, 2);
-export const DESKTOP_NAV_RIGHT = SITE_NAV_ITEMS.slice(2);

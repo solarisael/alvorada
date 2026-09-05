@@ -9,18 +9,16 @@ import {
 } from "../data/rubedo/book_timeline_runtime.js";
 import { with_base } from "../utils/routes.js";
 
-// rubedo_book_map chapters arrive already sorted by timeline_position and
-// slug-stamped (chapter_slug baked in the runtime), so no re-sort or re-derive
-// here. rubedo_book_slugs is the sorted key list.
+// Book assembly owns sorting, titles, and chapter slugs.
 const book_links = rubedo_book_slugs.map((book_slug) => {
-  const book_entry = rubedo_book_map[book_slug] ?? null;
-  const chapters = book_entry?.chapters ?? [];
-  const first_chapter = chapters[0] ?? null;
+  const book_entry = rubedo_book_map[book_slug];
+  const chapters = book_entry.chapters;
+  const first_chapter = chapters[0];
 
   return {
     book_slug,
-    book_title: book_entry?.title ?? book_slug,
-    synopsis: book_entry?.synopsis ?? "",
+    book_title: book_entry.title,
+    synopsis: book_entry.synopsis,
     chapter_count: chapters.length,
     book_href: with_base(`/rubedo/${book_slug}`),
     reader_href: first_chapter

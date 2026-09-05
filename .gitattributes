@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# The public content manifest hashes exact file bytes.
+src/content/** -text

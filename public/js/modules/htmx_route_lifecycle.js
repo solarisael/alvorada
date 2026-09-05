@@ -16,13 +16,15 @@ export const is_route_swap_target = (target_node) =>
   target_node instanceof HTMLElement &&
   target_node.matches("container, #sol_content, #sol_page_shell");
 
+const request_path_from_detail = (detail) =>
+  detail?.pathInfo?.finalRequestPath ??
+  detail?.requestConfig?.path ??
+  detail?.path;
+
 export const derive_request_pathname = (event) => {
   const htmx_event = /** @type {CustomEvent} */ (event);
   const detail_any = /** @type {any} */ (htmx_event.detail);
-  const raw_request_path =
-    detail_any?.pathInfo?.finalRequestPath ??
-    detail_any?.requestConfig?.path ??
-    detail_any?.path;
+  const raw_request_path = request_path_from_detail(detail_any);
 
   if (typeof raw_request_path === "string") {
     return normalize_pathname(

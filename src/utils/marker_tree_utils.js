@@ -1,10 +1,4 @@
-// Shared plumbing for the `{{fx:...}}` / `{{ix:...}}` build-time markdown
-// marker transforms (text_effects_markdown.js, interaction_markdown.js).
-// Both walk an mdast tree looking for open/close marker pairs that may
-// land in the same text node or split across siblings; this is the part
-// of that walk with zero marker-specific logic (fx has block/inline
-// effect branching, ix doesn't — that divergence stays in each caller,
-// not forced into a shared shape it doesn't fit).
+// Both marker grammars use the same mdast candidates and sibling boundaries.
 
 const escape_html = (raw_value) => {
   return String(raw_value)
@@ -15,27 +9,62 @@ const escape_html = (raw_value) => {
     .replaceAll("'", "&#39;");
 };
 
-// A marker candidate is either a bare text node, or a paragraph whose only
-// child is a bare text node (markdown wraps a lone line in a paragraph).
-// Both shapes carry the same open/close marker scan; anything else (rich
-// inline content, multiple children) isn't a candidate for holding a
-// marker on its own.
+const is_text_node = (node) => {
+  return node?.type === "text" && typeof node.value === "string";
+};
+
+const paragraph_only_child = (node) => {
+  if (node?.type !== "paragraph") {
+    return null;
+  }
+  if (!Array.isArray(node.children)) {
+    return null;
+  }
+  if (node.children.length !== 1) {
+    return null;
+  }
+  return node.children[0];
+};
+
 const marker_candidate_from_child = (child_node) => {
-  if (child_node?.type === "text" && typeof child_node.value === "string") {
+  if (is_text_node(child_node)) {
     return { text: child_node.value, source_kind: "text" };
   }
-
-  if (
-    child_node?.type === "paragraph" &&
-    Array.isArray(child_node.children) &&
-    child_node.children.length === 1 &&
-    child_node.children[0]?.type === "text" &&
-    typeof child_node.children[0]?.value === "string"
-  ) {
-    return { text: child_node.children[0].value, source_kind: "paragraph" };
+  const paragraph_child = paragraph_only_child(child_node);
+  if (is_text_node(paragraph_child)) {
+    return { text: paragraph_child.value, source_kind: "paragraph" };
   }
-
   return null;
 };
 
-export { escape_html, marker_candidate_from_child };
+const find_sibling_close_marker = (children, start_index, is_close_marker) => {
+  for (let index = start_index + 1; index < children.length; index += 1) {
+    const candidate = marker_candidate_from_child(children[index]);
+    if (candidate && is_close_marker(candidate.text)) {
+      return index;
+    }
+  }
+  return -1;
+};
+
+const append_wrapped_children = (
+  output,
+  children,
+  start_index,
+  close_index,
+  opening_html,
+  closing_html,
+) => {
+  output.push({ type: "html", value: opening_html });
+  for (let index = start_index + 1; index < close_index; index += 1) {
+    output.push(children[index]);
+  }
+  output.push({ type: "html", value: closing_html });
+};
+
+export {
+  escape_html,
+  marker_candidate_from_child,
+  find_sibling_close_marker,
+  append_wrapped_children,
+};

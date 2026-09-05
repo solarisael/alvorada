@@ -137,6 +137,28 @@ const find_nearest_world_node = (payload, world_x, world_y) => {
   };
 };
 
+const axis_pullback = (center, minimum, maximum, max_step) => {
+  if (minimum > maximum) {
+    return (
+      ((minimum + maximum) * 0.5 - center) *
+      RUBEDO_CONSTELLATION_VIEW.edge_pull_strength
+    );
+  }
+  if (center < minimum) {
+    return Math.min(
+      max_step,
+      (minimum - center) * RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
+    );
+  }
+  if (center > maximum) {
+    return -Math.min(
+      max_step,
+      (center - maximum) * RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
+    );
+  }
+  return 0;
+};
+
 const apply_soft_bounds = (
   view_state,
   canvas,
@@ -149,49 +171,21 @@ const apply_soft_bounds = (
     view_state.center_y - view_state.pan_y / view_state.zoom;
   const limits = compute_bounds_limits(world_bounds, view_state.zoom, canvas);
 
-  if (limits.min_x > limits.max_x) {
-    const midpoint_x = (limits.min_x + limits.max_x) * 0.5;
-
-    if (allow_pullback) {
-      view_state.center_x +=
-        (midpoint_x - effective_center_x) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
-    }
-  } else if (allow_pullback && effective_center_x < limits.min_x) {
-    view_state.center_x += Math.min(
-      RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_x,
-      (limits.min_x - effective_center_x) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
-    );
-  } else if (allow_pullback && effective_center_x > limits.max_x) {
-    view_state.center_x -= Math.min(
-      RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_x,
-      (effective_center_x - limits.max_x) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
-    );
+  if (!allow_pullback) {
+    return;
   }
-
-  if (limits.min_y > limits.max_y) {
-    const midpoint_y = (limits.min_y + limits.max_y) * 0.5;
-
-    if (allow_pullback) {
-      view_state.center_y +=
-        (midpoint_y - effective_center_y) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength;
-    }
-  } else if (allow_pullback && effective_center_y < limits.min_y) {
-    view_state.center_y += Math.min(
-      RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_y,
-      (limits.min_y - effective_center_y) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
-    );
-  } else if (allow_pullback && effective_center_y > limits.max_y) {
-    view_state.center_y -= Math.min(
-      RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_y,
-      (effective_center_y - limits.max_y) *
-        RUBEDO_CONSTELLATION_VIEW.edge_pull_strength,
-    );
-  }
+  view_state.center_x += axis_pullback(
+    effective_center_x,
+    limits.min_x,
+    limits.max_x,
+    RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_x,
+  );
+  view_state.center_y += axis_pullback(
+    effective_center_y,
+    limits.min_y,
+    limits.max_y,
+    RUBEDO_CONSTELLATION_VIEW.edge_pull_max_step_y,
+  );
 };
 
 const compute_axis_resistance = (overscroll_world, axis) => {

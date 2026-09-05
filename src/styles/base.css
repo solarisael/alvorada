@@ -33,12 +33,6 @@ body {
   }
 }
 
-@media (min-width: 769px) {
-  body.sol__compound_body_grid #sol_desktop_nav {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
 #sol_page_shell {
   display: contents;
 }

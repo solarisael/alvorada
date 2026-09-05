@@ -21,14 +21,25 @@ const is_directory = (path_value) => {
   }
 };
 
-const normalize_root = (path_value) => path.normalize(path_value);
+const require_directory = (root, message) => {
+  if (!is_directory(root)) {
+    throw new Error(message);
+  }
+  return path.normalize(root);
+};
 
-/**
- * Resolve the content root used by both Astro's loaders and Vite's @vault
- * alias. An explicit environment override is authoritative and must point to
- * an existing absolute directory; the fallback is the external Windows vault
- * when present, otherwise the checked-in content directory.
- */
+const resolve_configured_root = (root) => {
+  if (!is_absolute_path(root)) {
+    throw new Error(
+      `[solarisael] ${OBSIDIAN_ROOT_ENV} must be an absolute directory path; received ${root}`,
+    );
+  }
+  return require_directory(
+    root,
+    `[solarisael] ${OBSIDIAN_ROOT_ENV} points to a missing directory: ${root}`,
+  );
+};
+
 export const resolve_obsidian_vault_root = ({
   env = process.env,
   platform = process.platform,
@@ -38,32 +49,17 @@ export const resolve_obsidian_vault_root = ({
   const configured_root = String(env?.[OBSIDIAN_ROOT_ENV] ?? "").trim();
 
   if (configured_root) {
-    if (!is_absolute_path(configured_root)) {
-      throw new Error(
-        `[solarisael] ${OBSIDIAN_ROOT_ENV} must be an absolute directory path; received ${configured_root}`,
-      );
-    }
-
-    if (!is_directory(configured_root)) {
-      throw new Error(
-        `[solarisael] ${OBSIDIAN_ROOT_ENV} points to a missing directory: ${configured_root}`,
-      );
-    }
-
-    return normalize_root(configured_root);
+    return resolve_configured_root(configured_root);
   }
 
   if (platform === "win32" && is_directory(default_root)) {
-    return normalize_root(default_root);
+    return path.normalize(default_root);
   }
 
-  if (!is_directory(local_root)) {
-    throw new Error(
-      `[solarisael] checked-in content directory is missing: ${local_root}`,
-    );
-  }
-
-  return normalize_root(local_root);
+  return require_directory(
+    local_root,
+    `[solarisael] checked-in content directory is missing: ${local_root}`,
+  );
 };
 
 export const OBSIDIAN_VAULT_ROOT = resolve_obsidian_vault_root();

@@ -1,204 +1,24 @@
 import {
-  Virtualizer,
-  observeWindowOffset,
-  observeWindowRect,
-  windowScroll,
-} from "@tanstack/virtual-core";
+  create_window_virtualizer,
+  render_window_entries,
+} from "./archive/window_virtualizer.js";
 import { register_node_disposal } from "./node_disposal_bridge.js";
-
-const OVERSCAN = 5;
-const MOBILE_QUERY = "(max-width: 639px)";
-
-export function filter_entries(entries, active_states) {
-  if (!active_states || active_states.size === 0) return entries;
-  return entries.filter((entry) =>
-    entry.states.some((state) => active_states.has(state)),
-  );
-}
-
-export function entry_matches_states(entry_states, active_states) {
-  if (!active_states || active_states.size === 0) return true;
-  return entry_states.some((state) => active_states.has(state));
-}
-
-export function toggle_container_states(active_states, container_states) {
-  let all_active = container_states.length > 0;
-  for (const state of container_states) {
-    if (!active_states.has(state)) {
-      all_active = false;
-      break;
-    }
-  }
-
-  for (const state of container_states) {
-    if (all_active) {
-      active_states.delete(state);
-    } else {
-      active_states.add(state);
-    }
-  }
-
-  return !all_active;
-}
-
-function is_mobile_view() {
-  return globalThis.window?.matchMedia?.(MOBILE_QUERY).matches ?? false;
-}
-
-function fallback_entry_size(entry, expanded) {
-  if (expanded && !entry.can_expand) return fallback_entry_size(entry, false);
-  if (expanded) {
-    return (
-      (is_mobile_view() ? entry.expanded_size_mobile : entry.expanded_size) ??
-      160
-    );
-  }
-
-  return (
-    (is_mobile_view() ? entry.collapsed_size_mobile : entry.collapsed_size) ??
-    160
-  );
-}
-
-function entry_size_key(entry, expanded) {
-  return `${entry.key ?? entry.index}:${expanded ? "expanded" : "collapsed"}:${
-    is_mobile_view() ? "mobile" : "desktop"
-  }`;
-}
-
-function get_entry_template(entry, contract) {
-  return document.querySelector(
-    `${contract.entry_template_selector}[data-index="${entry.index}"]`,
-  );
-}
-
-function set_entry_expanded(entry_node, expanded, contract) {
-  const preview = entry_node.querySelector(contract.preview_selector);
-  const full = entry_node.querySelector(contract.full_selector);
-  const button = entry_node.querySelector(contract.expand_selector);
-
-  entry_node.dataset.expanded = expanded ? "true" : "false";
-  if (preview) preview.hidden = expanded;
-  if (full) full.hidden = !expanded;
-  if (button) {
-    button.setAttribute("aria-expanded", expanded ? "true" : "false");
-    button.textContent = expanded ? "show less" : "read more";
-  }
-}
-
-function clone_entry_node(entry, expanded, contract) {
-  const node =
-    get_entry_template(entry, contract)?.content.firstElementChild?.cloneNode(
-      true,
-    ) ?? null;
-  if (!node) return null;
-
-  set_entry_expanded(node, expanded, contract);
-  node.style.position = "static";
-  node.style.top = "";
-  node.style.left = "";
-  node.style.width = "100%";
-  node.style.transform = "";
-  return node;
-}
-
-function create_measure_list(scroll_pane, contract) {
-  const measure_list = document.createElement("ol");
-  measure_list.className = contract.measure_list_class;
-  measure_list.setAttribute("aria-hidden", "true");
-  measure_list.inert = true;
-  scroll_pane.appendChild(measure_list);
-  return measure_list;
-}
-
-function create_entry_size_cache(measure_list, contract) {
-  const sizes = new Map();
-
-  return {
-    clear() {
-      sizes.clear();
-      measure_list.replaceChildren();
-    },
-
-    measure(entry, expanded) {
-      const key = entry_size_key(entry, expanded);
-      const cached = sizes.get(key);
-      if (cached) return cached;
-
-      const fallback = fallback_entry_size(entry, expanded);
-      const node = clone_entry_node(entry, expanded, contract);
-      if (!node) return fallback;
-
-      measure_list.appendChild(node);
-      const measured = Math.ceil(node.getBoundingClientRect().height);
-      node.remove();
-
-      const size = measured > 0 ? measured : fallback;
-      sizes.set(key, size);
-      return size;
-    },
-  };
-}
-
-function create_virtual_entry_pool(contract) {
-  const nodes = new Map();
-
-  return {
-    get(entry, expanded) {
-      let node = nodes.get(entry.key);
-      if (!node) {
-        node = clone_entry_node(entry, expanded, contract);
-        if (!node) return null;
-        nodes.set(entry.key, node);
-      }
-
-      set_entry_expanded(node, expanded, contract);
-      return node;
-    },
-
-    prune(active_keys) {
-      const active_key_set = new Set(active_keys);
-      for (const [key, node] of nodes) {
-        if (!active_key_set.has(key)) {
-          node.remove();
-          nodes.delete(key);
-        }
-      }
-    },
-
-    clear() {
-      this.prune([]);
-    },
-  };
-}
-
-function update_status({
-  count_label,
-  filter_sum,
-  clear_btn,
-  active_states,
-  visible_count,
-  total_count,
-}) {
-  if (count_label) {
-    count_label.textContent =
-      active_states.size > 0
-        ? `${visible_count} / ${total_count}`
-        : `${total_count}`;
-  }
-
-  if (filter_sum) {
-    if (active_states.size > 0) {
-      filter_sum.textContent = `— ${[...active_states].join(", ")}`;
-      filter_sum.hidden = false;
-    } else {
-      filter_sum.textContent = "";
-      filter_sum.hidden = true;
-    }
-  }
-
-  if (clear_btn) clear_btn.hidden = active_states.size === 0;
-}
+import {
+  create_entry_size_cache,
+  create_measure_list,
+  create_virtual_entry_pool,
+  set_entry_expanded,
+} from "./archive/entries.js";
+import {
+  create_filter_controls,
+  filter_entries,
+  update_status,
+} from "./archive/filters.js";
+export {
+  filter_entries,
+  entry_matches_states,
+  toggle_container_states,
+} from "./archive/filters.js";
 
 function report_init_failure(contract, error_value) {
   globalThis.console?.error?.(
@@ -266,34 +86,14 @@ export function create_archive_controller({ root, full_index, contract }) {
   function render_virtual_items() {
     if (!virtualizer || disposed) return;
 
-    const virtual_items = virtualizer.getVirtualItems();
-    inner_track.style.height = `${virtualizer.getTotalSize()}px`;
-
-    const active_keys = [];
-    for (const virtual_item of virtual_items) {
-      const entry = filtered[virtual_item.index];
-      if (!entry) continue;
-
-      active_keys.push(entry.key);
-      const node = pool.get(entry, entry_is_expanded(entry));
-      if (!node) continue;
-
-      node.dataset.virtualIndex = String(virtual_item.index);
-      node.setAttribute("aria-posinset", String(virtual_item.index + 1));
-      node.setAttribute("aria-setsize", String(filtered.length));
-      node.style.position = "absolute";
-      node.style.top = "0";
-      node.style.left = "0";
-      node.style.width = "100%";
-      node.style.transform = `translateY(${virtual_item.start - virtualizer.options.scrollMargin}px)`;
-
-      if (node.parentElement !== list_el) {
-        list_el.appendChild(node);
-        globalThis.htmx?.process?.(node);
-      }
-    }
-
-    pool.prune(active_keys);
+    render_window_entries(
+      virtualizer,
+      inner_track,
+      filtered,
+      pool,
+      entry_is_expanded,
+      list_el,
+    );
   }
 
   function cleanup_current_virtualizer() {
@@ -308,36 +108,12 @@ export function create_archive_controller({ root, full_index, contract }) {
     pool.clear();
     list_el.replaceChildren();
 
-    virtualizer = new Virtualizer({
-      count: filtered.length,
-      getScrollElement: () => globalThis.window,
-      estimateSize: (index) => {
-        const entry = filtered[index];
-        return entry ? entry_size(entry) : 160;
-      },
-      getItemKey: (index) => filtered[index]?.key ?? index,
-      observeElementRect: observeWindowRect,
-      observeElementOffset: observeWindowOffset,
-      scrollToFn: windowScroll,
-      scrollMargin: get_scroll_margin(),
-      overscan: OVERSCAN,
-      initialRect: {
-        width: globalThis.window?.innerWidth ?? 0,
-        height: globalThis.window?.innerHeight ?? 0,
-      },
-      onChange: render_virtual_items,
-    });
-
-    if (
-      typeof virtualizer._didMount !== "function" ||
-      typeof virtualizer._willUpdate !== "function"
-    ) {
-      throw new Error(
-        "@tanstack/virtual-core does not expose the lifecycle required by the archive controller",
-      );
-    }
-    // @tanstack/virtual-core 3.16 has no public mount/update lifecycle;
-    // these underscored hooks are its only observer lifecycle seam.
+    virtualizer = create_window_virtualizer(
+      filtered,
+      entry_size,
+      get_scroll_margin(),
+      render_virtual_items,
+    );
 
     cleanup_virtualizer = virtualizer._didMount();
     virtualizer._willUpdate();
@@ -350,89 +126,14 @@ export function create_archive_controller({ root, full_index, contract }) {
     make_virtualizer();
   }
 
-  function sync_filter_controls() {
-    if (!filter_rail) return;
-
-    for (const button of filter_rail.querySelectorAll("[data-filter-state]")) {
-      const is_active = active_states.has(button.dataset.filterState);
-      button.dataset.active = is_active ? "true" : "false";
-      button.setAttribute("aria-pressed", is_active ? "true" : "false");
-    }
-
-    for (const button of filter_rail.querySelectorAll(
-      "[data-filter-container]",
-    )) {
-      const group = button.closest(contract.filter_group_selector);
-      const state_buttons =
-        group?.querySelectorAll("[data-filter-state]") ?? [];
-      let all_active = state_buttons.length > 0;
-      for (const state_button of state_buttons) {
-        if (!active_states.has(state_button.dataset.filterState)) {
-          all_active = false;
-          break;
-        }
-      }
-
-      button.dataset.active = all_active ? "true" : "false";
-      button.setAttribute("aria-pressed", all_active ? "true" : "false");
-    }
-  }
-  function sync_filter_disclosure() {
-    if (!filter_rail || !filter_toggle) return;
-
-    const is_collapsed = filter_rail.dataset.mobileCollapsed !== "false";
-    filter_toggle.setAttribute(
-      "aria-expanded",
-      is_collapsed ? "false" : "true",
-    );
-    filter_toggle.textContent = is_collapsed ? "show filters" : "hide filters";
-  }
-
-  function on_filter_toggle_click() {
-    if (!filter_rail) return;
-
-    const is_collapsed = filter_rail.dataset.mobileCollapsed !== "false";
-    filter_rail.dataset.mobileCollapsed = is_collapsed ? "false" : "true";
-    sync_filter_disclosure();
-  }
-
-  function on_filter_click(event) {
-    const event_target = event.target;
-    const container_button = event_target?.closest?.("[data-filter-container]");
-    if (container_button) {
-      const group = container_button.closest(contract.filter_group_selector);
-      const container_states = [];
-      for (const button of group?.querySelectorAll("[data-filter-state]") ??
-        []) {
-        container_states.push(button.dataset.filterState);
-      }
-
-      toggle_container_states(active_states, container_states);
-      sync_filter_controls();
-      apply_filters();
-      return;
-    }
-
-    const button = event_target?.closest?.("[data-filter-state]");
-    if (!button) return;
-
-    const state = button.dataset.filterState;
-    if (active_states.has(state)) {
-      active_states.delete(state);
-    } else {
-      active_states.add(state);
-    }
-
-    sync_filter_controls();
-    apply_filters();
-  }
-
-  function on_clear_click() {
-    active_states.clear();
-    sync_filter_controls();
-    apply_filters();
-  }
-
+  const filters = create_filter_controls({
+    filter_rail,
+    filter_toggle,
+    clear_btn,
+    contract,
+    active_states,
+    apply_filters,
+  });
   function on_root_click(event) {
     const event_target = event.target;
     const button = event_target?.closest?.(contract.expand_selector);
@@ -467,9 +168,7 @@ export function create_archive_controller({ root, full_index, contract }) {
     if (disposed) return;
     disposed = true;
 
-    filter_rail?.removeEventListener("click", on_filter_click);
-    clear_btn?.removeEventListener("click", on_clear_click);
-    filter_toggle?.removeEventListener("click", on_filter_toggle_click);
+    filters.dispose();
     root.removeEventListener("click", on_root_click);
     globalThis.window?.removeEventListener("resize", on_resize);
 
@@ -491,17 +190,15 @@ export function create_archive_controller({ root, full_index, contract }) {
     unregister_node_disposal = () => {};
   }
 
-  filter_rail?.addEventListener("click", on_filter_click);
-  clear_btn?.addEventListener("click", on_clear_click);
-  filter_toggle?.addEventListener("click", on_filter_toggle_click);
+  filters.bind();
   root.addEventListener("click", on_root_click);
   globalThis.window?.addEventListener("resize", on_resize, { passive: true });
 
   try {
     unregister_node_disposal = register_node_disposal(root, dispose);
     update_count();
-    sync_filter_controls();
-    sync_filter_disclosure();
+    filters.sync_filter_controls();
+    filters.sync_filter_disclosure();
     make_virtualizer();
   } catch (error_value) {
     dispose();

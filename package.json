@@ -12,6 +12,7 @@
     "dev:status": "bun scripts/dev_server.js status",
     "dev:check": "bun scripts/dev_server.js check",
     "build": "astro build",
+    "code:quality": "bun scripts/code_quality_audit.js",
     "content:sync": "bun scripts/sync_public_content.js",
     "content:check": "bun scripts/sync_public_content.js --check",
     "preview": "astro preview",
@@ -21,9 +22,7 @@
     "rubedo:scenes:check": "bun scripts/rubedo_scene_identity_audit.js check",
     "css:ornaments:check": "bun scripts/css_ornaments_audit.js check",
     "css:bg-stack:check": "bun scripts/css_background_stack_audit.js check",
-    "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check",
-    "css:tunables:check": "bun scripts/css_tunables.js check src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color",
-    "css:tunables:sync": "bun scripts/css_tunables.js sync src/styles/components/mobile_nav.css --selector=#sol_mobile_nav --prefix=mobile_ --ignore=mobile_neon_color"
+    "css:hard-gates:check": "bun run css:ornaments:check && bun run css:bg-stack:check"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.8",

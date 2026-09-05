@@ -34,8 +34,8 @@ jobs:
 
       - name: Verify staged Obsidian content
         run: bun run content:check
-      - name: Run tests
-        run: bun test
+      - name: Code quality budgets
+        run: bun run code:quality
 
       - name: CSS hard gates
         run: bun run css:hard-gates:check

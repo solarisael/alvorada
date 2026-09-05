@@ -1,0 +1,20 @@
+const history_scope_key = "solarisael-history-scope";
+const history_scope = "page-shell-v1";
+
+export const prepare_route_history = () => {
+  try {
+    if (sessionStorage.getItem(history_scope_key) === history_scope) {
+      return;
+    }
+
+    // Old snapshots include the persistent menu and its serialized binding flags.
+    sessionStorage.removeItem("htmx-history-cache");
+    sessionStorage.setItem(history_scope_key, history_scope);
+  } catch (error) {
+    globalThis.htmx.config.historyCacheSize = 0;
+    console.warn(
+      "History caching is unavailable; routes use server responses.",
+      error,
+    );
+  }
+};

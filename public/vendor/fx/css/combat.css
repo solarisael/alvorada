@@ -12,7 +12,8 @@
   --combat_token_bracket_opacity: 0.74;
   --combat_token_bracket_tracking: -0.08em;
   --combat_token_bracket_weight: 640;
-  --text_fx_combat_feed_shadow: 0 0 calc(0.12em * var(--text_fx_combat_feed_strength))
+  --text_fx_combat_feed_shadow: 0 0
+    calc(0.12em * var(--text_fx_combat_feed_strength))
     color-mix(
       in oklch,
       var(--site_style_accent, currentColor)

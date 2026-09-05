@@ -26,12 +26,16 @@ const create_program = (gl, vertex_source, fragment_source) => {
   );
 
   if (!vertex_shader || !fragment_shader) {
+    gl.deleteShader(vertex_shader);
+    gl.deleteShader(fragment_shader);
     return null;
   }
 
   const program = gl.createProgram();
 
   if (!program) {
+    gl.deleteShader(vertex_shader);
+    gl.deleteShader(fragment_shader);
     return null;
   }
 

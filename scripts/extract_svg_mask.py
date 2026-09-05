@@ -48,18 +48,19 @@ comparison. White SVG fills are intentional: the host element owns color.
 from __future__ import annotations
 
 import argparse
+from operator import gt, lt
 from pathlib import Path
 
 from PIL import Image
 
 
 def parse_crop(value: str) -> tuple[int, int, int, int]:
-    parts = [part.strip() for part in value.split(",")]
+    parts = value.split(",")
     if len(parts) != 4:
         raise argparse.ArgumentTypeError("crop must be left,top,right,bottom")
 
     try:
-        left, top, right, bottom = (int(part) for part in parts)
+        left, top, right, bottom = map(int, parts)
     except ValueError as exc:
         raise argparse.ArgumentTypeError("crop values must be integers") from exc
 
@@ -69,53 +70,51 @@ def parse_crop(value: str) -> tuple[int, int, int, int]:
     return left, top, right, bottom
 
 
-def trace_mask(mask: list[list[bool]], width: int, height: int) -> list[list[tuple[int, int]]]:
-    edges: list[tuple[tuple[int, int], tuple[int, int]]] = []
+def exposed_pixel_edges(mask, x, y, width, height):
+    corners = ((x, y), (x + 1, y), (x + 1, y + 1), (x, y + 1))
+    neighbors = ((x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y))
+    for index, (neighbor_x, neighbor_y) in enumerate(neighbors):
+        inside = 0 <= neighbor_x < width and 0 <= neighbor_y < height
+        if not inside or not mask[neighbor_y][neighbor_x]:
+            yield corners[index], corners[(index + 1) % 4]
 
+
+def iter_mask_edges(mask, width, height):
     for y, row in enumerate(mask):
         for x, is_foreground in enumerate(row):
-            if not is_foreground:
-                continue
+            if is_foreground:
+                yield from exposed_pixel_edges(mask, x, y, width, height)
 
-            if y == 0 or not mask[y - 1][x]:
-                edges.append(((x, y), (x + 1, y)))
-            if x == width - 1 or not row[x + 1]:
-                edges.append(((x + 1, y), (x + 1, y + 1)))
-            if y == height - 1 or not mask[y + 1][x]:
-                edges.append(((x + 1, y + 1), (x, y + 1)))
-            if x == 0 or not row[x - 1]:
-                edges.append(((x, y + 1), (x, y)))
 
+def trace_edge_loop(by_start, guard_limit):
+    start = next(iter(by_start))
+    current = start
+    points = [start]
+    for _ in range(guard_limit):
+        ends = by_start.get(current)
+        if not ends:
+            break
+        current = ends.pop(0)
+        if not ends:
+            del by_start[points[-1]]
+        points.append(current)
+        if current == start:
+            break
+    return points
+
+
+def trace_mask(mask: list[list[bool]], width: int, height: int) -> list[list[tuple[int, int]]]:
+    edges = list(iter_mask_edges(mask, width, height))
     by_start: dict[tuple[int, int], list[tuple[int, int]]] = {}
     for start, end in edges:
         by_start.setdefault(start, []).append(end)
 
     loops: list[list[tuple[int, int]]] = []
     guard_limit = len(edges) + 8
-
     while by_start:
-        start = next(iter(by_start))
-        current = start
-        points = [start]
-
-        for _ in range(guard_limit):
-            ends = by_start.get(current)
-            if not ends:
-                break
-
-            next_point = ends.pop(0)
-            if not ends:
-                del by_start[current]
-
-            points.append(next_point)
-            current = next_point
-
-            if current == start:
-                break
-
-        if len(points) > 3 and points[-1] == start:
+        points = trace_edge_loop(by_start, guard_limit)
+        if len(points) > 3 and points[-1] == points[0]:
             loops.append(points[:-1])
-
     return loops
 
 
@@ -177,48 +176,31 @@ def build_mask(
     scale: int,
     pad: int,
 ) -> tuple[list[list[bool]], int, int, int, int, Image.Image]:
-    image = Image.open(source).convert("RGBA").crop(crop)
-
-    if foreground == "alpha":
-        channel = image.getchannel("A").resize(
-            (image.width * scale, image.height * scale),
-            Image.Resampling.LANCZOS,
-        )
-    else:
-        channel = image.convert("L").resize(
-            (image.width * scale, image.height * scale),
-            Image.Resampling.LANCZOS,
-        )
-
-    values = list(channel.getdata())
-    width, height = channel.size
-
-    if foreground in ("alpha", "light"):
-        mask = [[values[y * width + x] > threshold for x in range(width)] for y in range(height)]
-    else:
-        mask = [[values[y * width + x] < threshold for x in range(width)] for y in range(height)]
-    xs: list[int] = []
-    ys: list[int] = []
-    for y, row in enumerate(mask):
-        for x, is_foreground in enumerate(row):
-            if is_foreground:
-                xs.append(x)
-                ys.append(y)
-
-    if not xs:
+    with Image.open(source) as source_image:
+        image = source_image.convert("RGBA").crop(crop)
+    channel = image.getchannel("A") if foreground == "alpha" else image.convert("L")
+    channel = channel.resize(
+        (image.width * scale, image.height * scale), Image.Resampling.LANCZOS
+    )
+    compare = gt if foreground in ("alpha", "light") else lt
+    selected = channel.point(lambda value: 255 * compare(value, threshold))
+    bounds = selected.getbbox()
+    if bounds is None:
         raise ValueError("threshold produced an empty mask")
 
+    left, top, right, bottom = bounds
     scaled_pad = pad * scale
-    min_x = max(0, min(xs) - scaled_pad)
-    max_x = min(width - 1, max(xs) + scaled_pad)
-    min_y = max(0, min(ys) - scaled_pad)
-    max_y = min(height - 1, max(ys) + scaled_pad)
-
-    trimmed = [row[min_x : max_x + 1] for row in mask[min_y : max_y + 1]]
-    trimmed_width = max_x - min_x + 1
-    trimmed_height = max_y - min_y + 1
-
-    return trimmed, trimmed_width, trimmed_height, len(xs), len(ys), image
+    trimmed = selected.crop((
+        max(0, left - scaled_pad),
+        max(0, top - scaled_pad),
+        min(selected.width, right + scaled_pad),
+        min(selected.height, bottom + scaled_pad),
+    ))
+    width, height = trimmed.size
+    values = list(map(bool, trimmed.getdata()))
+    mask = [values[y * width : (y + 1) * width] for y in range(height)]
+    selected_pixels = selected.histogram()[255]
+    return mask, width, height, selected_pixels, selected_pixels, image
 
 
 def write_preview(

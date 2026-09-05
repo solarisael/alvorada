@@ -19,7 +19,6 @@ import "../styles/components/vision_banner.css";
 import "../styles/components/about_page.css";
 
 import Breadcrumbers from "../components/mantle/breadcrumbs.astro";
-import Navbar from "../components/mantle/desktop_navbar.astro";
 import SideMenu from "../components/mantle/side_menu.astro";
 import Footer from "../components/mantle/footer.astro";
 import Fog from "../components/aether/fog.astro";
@@ -120,9 +119,8 @@ const resolved_body_classes = Array.from(
       aria-atomic="true"
     >
     </p>
-    <Navbar />
     <SideMenu />
-    <main id="sol_page_shell">
+    <main id="sol_page_shell" hx-history-elt>
       {
         banner_title && (
           <VisionBanner

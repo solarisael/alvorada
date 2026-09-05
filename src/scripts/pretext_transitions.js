@@ -138,6 +138,46 @@ const animate_fragments = async (
   return active_generation.get(root) === generation;
 };
 
+const resolve_transition_effect = (effect_name) => {
+  const effect = PRETEXT_TRANSITION_EFFECTS[effect_name];
+  if (effect) return effect;
+  console.warn(
+    `Unknown pretext transition effect: ${effect_name}; falling back to dust.`,
+  );
+  return PRETEXT_TRANSITION_EFFECTS.dust;
+};
+
+const transition_timing = (options) => ({
+  out_ms: options.out_ms ?? 520,
+  in_ms: options.in_ms ?? 560,
+  stagger_ms: options.stagger_ms ?? 14,
+});
+
+const fragments_can_animate = (fragments) =>
+  fragments.every((fragment) => typeof fragment.animate === "function");
+
+const replace_pretext_content = (root, next_html, on_swap) => {
+  root.innerHTML = next_html;
+  reset_pretext_source(root);
+  if (typeof on_swap === "function") on_swap(root);
+  layout_pretext_root(root);
+};
+
+const begin_transition = (root) => {
+  const generation = (active_generation.get(root) ?? 0) + 1;
+  active_generation.set(root, generation);
+  root.classList.add("sol__pretext_transitioning");
+  return generation;
+};
+
+const transition_is_instant = (fragments) => {
+  const can_animate = fragments_can_animate(fragments);
+  return reduced_motion() || !can_animate || fragments.length === 0;
+};
+
+const has_animated_fragments = (fragments) =>
+  fragments.length > 0 && fragments_can_animate(fragments);
+
 export const transition_pretext_content = async (
   root,
   next_html,
@@ -145,31 +185,15 @@ export const transition_pretext_content = async (
 ) => {
   if (!(root instanceof HTMLElement)) return false;
 
-  const generation = (active_generation.get(root) ?? 0) + 1;
-  active_generation.set(root, generation);
-  root.classList.add("sol__pretext_transitioning");
+  const generation = begin_transition(root);
 
-  const effect_name = options.effect ?? "dust";
-  let effect = PRETEXT_TRANSITION_EFFECTS[effect_name];
-  if (!effect) {
-    console.warn(
-      `Unknown pretext transition effect: ${effect_name}; falling back to dust.`,
-    );
-    effect = PRETEXT_TRANSITION_EFFECTS.dust;
-  }
-
-  const out_ms = options.out_ms ?? 520;
-  const in_ms = options.in_ms ?? 560;
-  const stagger_ms = options.stagger_ms ?? 14;
+  const effect = resolve_transition_effect(options.effect ?? "dust");
+  const { out_ms, in_ms, stagger_ms } = transition_timing(options);
   const multiplier = motion_multiplier();
   const current_fragments = Array.from(
     root.querySelectorAll(".sol__pretext_fragment"),
   );
-  const can_animate = current_fragments.every(
-    (fragment) => typeof fragment.animate === "function",
-  );
-  const instant =
-    reduced_motion() || !can_animate || current_fragments.length === 0;
+  const instant = transition_is_instant(current_fragments);
 
   if (
     !instant &&
@@ -188,21 +212,12 @@ export const transition_pretext_content = async (
   }
   if (active_generation.get(root) !== generation) return false;
 
-  root.innerHTML = next_html;
-  reset_pretext_source(root);
-
-  if (typeof options.on_swap === "function") {
-    options.on_swap(root);
-  }
-
-  layout_pretext_root(root);
+  replace_pretext_content(root, next_html, options.on_swap);
 
   const next_fragments = Array.from(
     root.querySelectorAll(".sol__pretext_fragment"),
   );
-  const next_can_animate =
-    next_fragments.length > 0 &&
-    next_fragments.every((fragment) => typeof fragment.animate === "function");
+  const next_can_animate = has_animated_fragments(next_fragments);
   if (
     !instant &&
     next_can_animate &&

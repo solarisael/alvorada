@@ -7,5 +7,5 @@ dist/
 .vite/
 bun.lock
 public/js/vendor/
-public/vendor/fx/
 AGENTS.md
+src/content/

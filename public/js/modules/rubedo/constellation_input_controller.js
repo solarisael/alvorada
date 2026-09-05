@@ -2,19 +2,20 @@ import { clamp, screen_to_world } from "../webgl/math.js";
 import {
   RUBEDO_CONSTELLATION_INTERACTION,
   RUBEDO_CONSTELLATION_VIEW,
-  RUBEDO_CONSTELLATION_WORLD_BOUNDS,
 } from "./constellation_config.js";
 import { dispatch_map_navigation } from "./constellation_navigation.js";
-import { render_hover_preview_from_cache } from "./constellation_preview.js";
+import { create_keyboard_navigation } from "./input/keyboard.js";
+import { create_hover_preview } from "./input/hover.js";
+import { create_inertia } from "./input/inertia.js";
+import { bind_zoom_controls } from "./input/zoom_controls.js";
+import { create_input_lifetime } from "./input/lifetime.js";
 import {
   apply_soft_bounds,
-  compute_overscroll,
   compute_world_bounds,
   constrain_drag_delta,
   constellation_pointer_position,
   find_nearest_clickable_node,
   find_nearest_world_node,
-  slider_to_zoom,
   zoom_to_slider,
 } from "./constellation_viewport.js";
 
@@ -40,81 +41,19 @@ const bind_constellation_input_controller = async ({
   book_data,
   book_slug,
   base_path,
+  signal,
 }) => {
+  if (!root_node.isConnected || signal?.aborted) {
+    return null;
+  }
   const controls = query_timeline_controls(root_node);
-  const get_hover_preview_node = () => {
-    return root_node.querySelector("#sol_rubedo_timeline_hover_preview");
-  };
+
   const active_node_id = `${payload.active_chapter_id}:${payload.active_thread_key}`;
   const world_bounds = compute_world_bounds(payload);
   const payload_map = new Map();
-
   for (const node_entry of payload.nodes || []) {
     payload_map.set(node_entry.node_id, node_entry);
   }
-
-  const clickable_nodes = (payload.nodes || []).filter(
-    (node_entry) => node_entry.is_clickable,
-  );
-  let keyboard_node_id =
-    (payload_map.get(active_node_id)?.is_clickable
-      ? active_node_id
-      : clickable_nodes[0]?.node_id) ?? "";
-  let keyboard_focus_active = false;
-
-  const set_keyboard_node = (node_id) => {
-    const selected_node = payload_map.get(node_id);
-    if (!selected_node?.is_clickable) {
-      return false;
-    }
-
-    keyboard_node_id = selected_node.node_id;
-    if (controls.keyboard_status instanceof HTMLElement) {
-      const chapter_label = selected_node.label ?? selected_node.chapter_id;
-      controls.keyboard_status.textContent = `Selected chapter ${chapter_label}, ${selected_node.thread_key} thread.`;
-    }
-
-    return true;
-  };
-
-  const select_keyboard_node_in_direction = (direction_x, direction_y) => {
-    const current_node =
-      payload_map.get(keyboard_node_id) ??
-      payload_map.get(active_node_id) ??
-      clickable_nodes[0];
-    if (!current_node) {
-      return false;
-    }
-
-    let nearest_node = null;
-    let nearest_score = Number.POSITIVE_INFINITY;
-
-    for (const candidate_node of clickable_nodes) {
-      if (candidate_node.node_id === current_node.node_id) {
-        continue;
-      }
-
-      const delta_x = candidate_node.x - current_node.x;
-      const delta_y = candidate_node.y - current_node.y;
-      const forward_distance = delta_x * direction_x + delta_y * direction_y;
-      if (forward_distance <= 0) {
-        continue;
-      }
-
-      const cross_distance = Math.abs(
-        delta_x * direction_y - delta_y * direction_x,
-      );
-      const score = forward_distance + cross_distance * 4;
-      if (score < nearest_score) {
-        nearest_node = candidate_node;
-        nearest_score = score;
-      }
-    }
-
-    return nearest_node ? set_keyboard_node(nearest_node.node_id) : false;
-  };
-
-  set_keyboard_node(keyboard_node_id);
 
   let hover_node_id = "";
   let wheel_intent_active = false;
@@ -134,11 +73,38 @@ const bind_constellation_input_controller = async ({
   let suppress_click_until = 0;
   const pointers = new Map();
   let pinch_state = null;
-  let inertia_frame_id = 0;
-  let velocity_x = 0;
-  let velocity_y = 0;
-  let last_hover_preview_node_id = "";
+
   let last_interaction_ms = performance.now();
+  let resize_observer = null;
+
+  const { set_hover_preview } = create_hover_preview({
+    root_node,
+    canvas,
+    book_data,
+    book_slug,
+    base_path,
+  });
+  const inertia = create_inertia({
+    view_state,
+    canvas,
+    world_bounds,
+    reduced_motion: () => !lifetime.is_active() || reduced_motion(),
+    persist_view: () => persist_view(),
+    render_now: () => render_now(),
+    mark_interaction: () => {
+      last_interaction_ms = performance.now();
+    },
+  });
+  const { stop_inertia, run_inertia } = inertia;
+  const lifetime = create_input_lifetime(root_node, signal, () => {
+    stop_inertia();
+    window.clearTimeout(hover_intent_timer);
+    window.clearTimeout(inactivity_timer);
+    resize_observer?.disconnect();
+    pointers.clear();
+    set_hover_preview(null);
+  });
+  const { listen } = lifetime;
 
   const persist_view = () => {
     store[storage_key] = {
@@ -151,14 +117,11 @@ const bind_constellation_input_controller = async ({
   };
 
   const render_now = () => {
+    if (!lifetime.is_active()) {
+      return;
+    }
     const now_ms = performance.now();
-    const inertia_active =
-      !reduced_motion() &&
-      (inertia_frame_id !== 0 ||
-        Math.abs(velocity_x) >=
-          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px ||
-        Math.abs(velocity_y) >=
-          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px);
+    const inertia_active = !reduced_motion() && inertia.is_active();
     const interaction_active =
       is_dragging ||
       pinch_state !== null ||
@@ -172,7 +135,7 @@ const bind_constellation_input_controller = async ({
     apply_soft_bounds(view_state, canvas, world_bounds, allow_pullback);
     renderer.render(
       active_node_id,
-      keyboard_focus_active ? keyboard_node_id : hover_node_id,
+      keyboard.has_focus() ? keyboard.get_node_id() : hover_node_id,
     );
 
     if (controls.zoom_slider instanceof HTMLInputElement) {
@@ -187,104 +150,18 @@ const bind_constellation_input_controller = async ({
     }
   };
 
-  const set_keyboard_node_from_screen_point = (screen_x, screen_y) => {
-    const nearest = find_nearest_clickable_node(
-      payload,
-      canvas,
-      view_state,
-      screen_x,
-      screen_y,
-    );
-    if (nearest) {
-      set_keyboard_node(nearest.node_id);
-    }
-  };
-
-  const position_hover_preview = (event) => {
-    const hover_preview_node = get_hover_preview_node();
-
-    if (!(hover_preview_node instanceof HTMLElement)) {
-      return;
-    }
-
-    const bounds = canvas.getBoundingClientRect();
-    const preview_width = hover_preview_node.offsetWidth || 280;
-    const preview_height = hover_preview_node.offsetHeight || 180;
-    const raw_left =
-      event.clientX -
-      bounds.left +
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_offset_x;
-    const raw_top =
-      event.clientY -
-      bounds.top +
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_offset_y;
-    const max_left = Math.max(
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-      bounds.width -
-        preview_width -
-        RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-    );
-    const max_top = Math.max(
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-      bounds.height -
-        preview_height -
-        RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-    );
-    const clamped_left = clamp(
-      raw_left,
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-      max_left,
-    );
-    const clamped_top = clamp(
-      raw_top,
-      RUBEDO_CONSTELLATION_INTERACTION.hover_preview_margin,
-      max_top,
-    );
-
-    hover_preview_node.style.left = `${clamped_left}px`;
-    hover_preview_node.style.top = `${clamped_top}px`;
-  };
-
-  const set_hover_preview = (hovered_node, pointer_event = null) => {
-    const hover_preview_node = get_hover_preview_node();
-
-    if (!(hover_preview_node instanceof HTMLElement)) {
-      return;
-    }
-
-    if (!hovered_node?.is_clickable) {
-      hover_preview_node.classList.remove("sol__is_visible");
-      last_hover_preview_node_id = "";
-
-      return;
-    }
-
-    hover_preview_node.classList.add("sol__is_visible");
-
-    if (pointer_event) {
-      position_hover_preview(pointer_event);
-    }
-
-    if (last_hover_preview_node_id === hovered_node.node_id) {
-      return;
-    }
-
-    last_hover_preview_node_id = hovered_node.node_id;
-    render_hover_preview_from_cache({
-      node_entry: hovered_node,
-      book_data,
-      book_slug,
-      base_path,
-      preview_node: hover_preview_node,
-    });
-  };
-
   const update_size = () => {
+    if (!lifetime.is_active()) {
+      return;
+    }
     renderer.resize();
     render_now();
   };
 
   const bump_interaction = () => {
+    if (!lifetime.is_active()) {
+      return;
+    }
     last_interaction_ms = performance.now();
     wheel_intent_active = true;
 
@@ -293,82 +170,15 @@ const bind_constellation_input_controller = async ({
     }
 
     inactivity_timer = window.setTimeout(() => {
+      if (!lifetime.is_active()) {
+        return;
+      }
       wheel_intent_active = false;
 
       if (controls.zoom_badge instanceof HTMLElement) {
         controls.zoom_badge.classList.remove("sol__is_active");
       }
     }, RUBEDO_CONSTELLATION_INTERACTION.inactivity_timeout_ms);
-  };
-
-  const stop_inertia = () => {
-    if (inertia_frame_id) {
-      window.cancelAnimationFrame(inertia_frame_id);
-      inertia_frame_id = 0;
-    }
-
-    velocity_x = 0;
-    velocity_y = 0;
-  };
-
-  const run_inertia = () => {
-    if (reduced_motion()) {
-      stop_inertia();
-      return;
-    }
-
-    if (inertia_frame_id) {
-      return;
-    }
-
-    const step = () => {
-      if (reduced_motion()) {
-        stop_inertia();
-        return;
-      }
-
-      last_interaction_ms = performance.now();
-      view_state.pan_x += velocity_x;
-      view_state.pan_y += velocity_y;
-
-      const overscroll = compute_overscroll(view_state, canvas, world_bounds);
-      const outside_soft_zone =
-        overscroll.left >
-          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
-        overscroll.right >
-          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_x ||
-        overscroll.top >
-          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y ||
-        overscroll.bottom >
-          RUBEDO_CONSTELLATION_WORLD_BOUNDS.edge_soft_overscroll_y;
-
-      velocity_x *= RUBEDO_CONSTELLATION_INTERACTION.inertia_damping;
-      velocity_y *= RUBEDO_CONSTELLATION_INTERACTION.inertia_damping;
-
-      if (outside_soft_zone) {
-        velocity_x *=
-          RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
-        velocity_y *=
-          RUBEDO_CONSTELLATION_INTERACTION.outside_velocity_damp_mult;
-      }
-
-      persist_view();
-      render_now();
-
-      if (
-        Math.abs(velocity_x) <
-          RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px &&
-        Math.abs(velocity_y) < RUBEDO_CONSTELLATION_INTERACTION.inertia_stop_px
-      ) {
-        inertia_frame_id = 0;
-
-        return;
-      }
-
-      inertia_frame_id = window.requestAnimationFrame(step);
-    };
-
-    inertia_frame_id = window.requestAnimationFrame(step);
   };
 
   const zoom_at_screen_point = (screen_x, screen_y, scale_multiplier) => {
@@ -421,8 +231,7 @@ const bind_constellation_input_controller = async ({
     if (!active_node) {
       return;
     }
-
-    set_keyboard_node(active_node.node_id);
+    keyboard.set_keyboard_node(active_node.node_id);
     view_state.zoom = 1;
     view_state.pan_x = 0;
     view_state.pan_y = 0;
@@ -433,29 +242,40 @@ const bind_constellation_input_controller = async ({
     render_now();
   };
 
-  await renderer.load_textures();
+  const keyboard = create_keyboard_navigation({
+    payload,
+    listen,
+    payload_map,
+    active_node_id,
+    controls,
+    canvas,
+    view_state,
+    bump_interaction,
+    zoom_at_screen_point,
+    center_active,
+    persist_view,
+    render_now,
+  });
+  try {
+    await renderer.load_textures(lifetime.signal);
+  } catch (error) {
+    lifetime.dispose();
+    throw error;
+  }
+  if (!lifetime.is_active()) {
+    return null;
+  }
   update_size();
 
-  const resize_observer = new ResizeObserver(update_size);
+  resize_observer = new ResizeObserver(update_size);
   resize_observer.observe(canvas.parentElement ?? root_node);
 
   canvas.style.touchAction = "none";
   root_node.dataset.canvasBound = "true";
 
-  canvas.addEventListener("focus", () => {
-    keyboard_focus_active = true;
-    if (!keyboard_node_id && clickable_nodes.length > 0) {
-      set_keyboard_node(clickable_nodes[0].node_id);
-    }
-    render_now();
-  });
+  keyboard.bind_focus();
 
-  canvas.addEventListener("blur", () => {
-    keyboard_focus_active = false;
-    render_now();
-  });
-
-  canvas.addEventListener("pointerenter", () => {
+  listen(canvas, "pointerenter", () => {
     if (hover_intent_timer) {
       window.clearTimeout(hover_intent_timer);
     }
@@ -465,7 +285,7 @@ const bind_constellation_input_controller = async ({
     }, RUBEDO_CONSTELLATION_INTERACTION.hover_intent_ms);
   });
 
-  canvas.addEventListener("pointerleave", () => {
+  listen(canvas, "pointerleave", () => {
     if (is_dragging) {
       if (drag_moved) {
         suppress_click_until = performance.now() + 180;
@@ -496,7 +316,8 @@ const bind_constellation_input_controller = async ({
     render_now();
   });
 
-  canvas.addEventListener(
+  listen(
+    canvas,
     "wheel",
     (event) => {
       if (!wheel_intent_active) {
@@ -513,19 +334,19 @@ const bind_constellation_input_controller = async ({
     { passive: false },
   );
 
-  canvas.addEventListener("mousedown", (event) => {
+  listen(canvas, "mousedown", (event) => {
     if (event.button === 1) {
       event.preventDefault();
     }
   });
 
-  canvas.addEventListener("auxclick", (event) => {
+  listen(canvas, "auxclick", (event) => {
     if (event.button === 1) {
       event.preventDefault();
     }
   });
 
-  canvas.addEventListener("pointerdown", (event) => {
+  listen(canvas, "pointerdown", (event) => {
     if (event.button !== 0 && event.button !== 1) {
       return;
     }
@@ -568,7 +389,45 @@ const bind_constellation_input_controller = async ({
     bump_interaction();
   });
 
-  canvas.addEventListener("pointermove", (event) => {
+  const move_drag = (pointer, event) => {
+    const raw_dx = pointer.x - last_pointer.x;
+    const raw_dy = pointer.y - last_pointer.y;
+    const { dx, dy } = constrain_drag_delta(
+      view_state,
+      canvas,
+      world_bounds,
+      raw_dx,
+      raw_dy,
+    );
+    inertia.set_velocity(dx, dy);
+    if (
+      !drag_moved &&
+      Math.hypot(pointer.x - drag_started_at.x, pointer.y - drag_started_at.y) >
+        RUBEDO_CONSTELLATION_INTERACTION.drag_threshold_px
+    ) {
+      drag_moved = true;
+    }
+    view_state.pan_x += dx;
+    view_state.pan_y += dy;
+    last_pointer = pointer;
+    const hovered_node = find_nearest_clickable_node(
+      payload,
+      canvas,
+      view_state,
+      pointer.x,
+      pointer.y,
+    );
+    if (hovered_node) {
+      keyboard.set_keyboard_node(hovered_node.node_id);
+    }
+    hover_node_id = drag_moved ? "" : hovered_node?.node_id || "";
+    set_hover_preview(drag_moved ? null : hovered_node, event);
+    bump_interaction();
+    persist_view();
+    render_now();
+  };
+
+  listen(canvas, "pointermove", (event) => {
     const pointer = constellation_pointer_position(canvas, event);
     pointers.set(event.pointerId, pointer);
 
@@ -604,51 +463,7 @@ const bind_constellation_input_controller = async ({
     }
 
     if (is_dragging && drag_pointer_id === event.pointerId) {
-      const raw_dx = pointer.x - last_pointer.x;
-      const raw_dy = pointer.y - last_pointer.y;
-      const constrained_delta = constrain_drag_delta(
-        view_state,
-        canvas,
-        world_bounds,
-        raw_dx,
-        raw_dy,
-      );
-      const dx = constrained_delta.dx;
-      const dy = constrained_delta.dy;
-
-      velocity_x = dx;
-      velocity_y = dy;
-
-      if (
-        !drag_moved &&
-        Math.hypot(
-          pointer.x - drag_started_at.x,
-          pointer.y - drag_started_at.y,
-        ) > RUBEDO_CONSTELLATION_INTERACTION.drag_threshold_px
-      ) {
-        drag_moved = true;
-      }
-
-      view_state.pan_x += dx;
-      view_state.pan_y += dy;
-      last_pointer = pointer;
-
-      const hovered_node = find_nearest_clickable_node(
-        payload,
-        canvas,
-        view_state,
-        pointer.x,
-        pointer.y,
-      );
-      if (hovered_node) {
-        set_keyboard_node(hovered_node.node_id);
-      }
-      hover_node_id = drag_moved ? "" : hovered_node?.node_id || "";
-      set_hover_preview(drag_moved ? null : hovered_node, event);
-
-      bump_interaction();
-      persist_view();
-      render_now();
+      move_drag(pointer, event);
 
       return;
     }
@@ -661,7 +476,7 @@ const bind_constellation_input_controller = async ({
       pointer.y,
     );
     if (hovered_node) {
-      set_keyboard_node(hovered_node.node_id);
+      keyboard.set_keyboard_node(hovered_node.node_id);
     }
 
     hover_node_id = hovered_node?.node_id || "";
@@ -690,10 +505,10 @@ const bind_constellation_input_controller = async ({
     }
   };
 
-  canvas.addEventListener("pointerup", release_pointer);
-  canvas.addEventListener("pointercancel", release_pointer);
+  listen(canvas, "pointerup", release_pointer);
+  listen(canvas, "pointercancel", release_pointer);
 
-  canvas.addEventListener("click", (event) => {
+  listen(canvas, "click", (event) => {
     if (performance.now() < suppress_click_until) {
       return;
     }
@@ -714,127 +529,22 @@ const bind_constellation_input_controller = async ({
     dispatch_map_navigation(nearest);
   });
 
-  if (controls.zoom_in_button instanceof HTMLElement) {
-    controls.zoom_in_button.addEventListener("click", () => {
-      bump_interaction();
-      zoom_at_screen_point(canvas.width * 0.5, canvas.height * 0.5, 1.16);
-    });
-  }
-
-  if (controls.zoom_out_button instanceof HTMLElement) {
-    controls.zoom_out_button.addEventListener("click", () => {
-      bump_interaction();
-      zoom_at_screen_point(canvas.width * 0.5, canvas.height * 0.5, 1 / 1.16);
-    });
-  }
-
-  if (controls.zoom_slider instanceof HTMLInputElement) {
-    controls.zoom_slider.min = "0";
-    controls.zoom_slider.max = "1";
-    controls.zoom_slider.step = "0.01";
-    controls.zoom_slider.value = String(zoom_to_slider(view_state.zoom));
-
-    controls.zoom_slider.addEventListener("input", () => {
-      const slider_value = Number(
-        controls.zoom_slider.value || zoom_to_slider(view_state.zoom),
-      );
-      const center_world = screen_to_world(
-        canvas.width * 0.5,
-        canvas.height * 0.5,
-        view_state,
-        canvas,
-      );
-
-      view_state.zoom = slider_to_zoom(slider_value);
-      view_state.center_x = center_world.x;
-      view_state.center_y = center_world.y;
-      bump_interaction();
-      apply_soft_bounds(view_state, canvas, world_bounds, false);
-      persist_view();
-      render_now();
-    });
-  }
-
-  if (controls.center_button instanceof HTMLElement) {
-    controls.center_button.addEventListener("click", () => {
-      bump_interaction();
-      center_active();
-    });
-  }
-
-  const activate_keyboard_node = () => {
-    const selected_node = payload_map.get(keyboard_node_id);
-    if (selected_node?.is_clickable) {
-      dispatch_map_navigation(selected_node);
-    }
-  };
-
-  canvas.addEventListener("keydown", (event) => {
-    if (
-      event.key === "Enter" ||
-      event.key === " " ||
-      event.key === "Spacebar"
-    ) {
-      event.preventDefault();
-      bump_interaction();
-      activate_keyboard_node();
-
-      return;
-    }
-
-    if (event.key === "+" || event.key === "=") {
-      event.preventDefault();
-      bump_interaction();
-      zoom_at_screen_point(canvas.width * 0.5, canvas.height * 0.5, 1.16);
-
-      return;
-    }
-
-    if (event.key === "-" || event.key === "_") {
-      event.preventDefault();
-      bump_interaction();
-      zoom_at_screen_point(canvas.width * 0.5, canvas.height * 0.5, 1 / 1.16);
-
-      return;
-    }
-
-    if (event.key === "0" || event.key.toLowerCase() === "c") {
-      event.preventDefault();
-      bump_interaction();
-      center_active();
-
-      return;
-    }
-
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      bump_interaction();
-      view_state.pan_x += RUBEDO_CONSTELLATION_INTERACTION.arrow_pan_nudge;
-      select_keyboard_node_in_direction(-1, 0);
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      bump_interaction();
-      view_state.pan_x -= RUBEDO_CONSTELLATION_INTERACTION.arrow_pan_nudge;
-      select_keyboard_node_in_direction(1, 0);
-    } else if (event.key === "ArrowUp") {
-      event.preventDefault();
-      bump_interaction();
-      view_state.pan_y += RUBEDO_CONSTELLATION_INTERACTION.arrow_pan_nudge;
-      select_keyboard_node_in_direction(0, -1);
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault();
-      bump_interaction();
-      view_state.pan_y -= RUBEDO_CONSTELLATION_INTERACTION.arrow_pan_nudge;
-      select_keyboard_node_in_direction(0, 1);
-    } else {
-      return;
-    }
-
-    persist_view();
-    render_now();
+  bind_zoom_controls({
+    controls,
+    listen,
+    canvas,
+    view_state,
+    world_bounds,
+    bump_interaction,
+    zoom_at_screen_point,
+    center_active,
+    persist_view,
+    render_now,
   });
+  keyboard.bind_keydown();
 
   render_now();
+  return lifetime.dispose;
 };
 
 export { bind_constellation_input_controller, query_timeline_controls };

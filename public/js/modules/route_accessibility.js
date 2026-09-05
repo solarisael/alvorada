@@ -3,6 +3,13 @@ import { is_route_swap_target } from "./htmx_route_lifecycle.js";
 const route_status_selector = "#sol_route_status";
 const route_focus_selector = "#sol_page_shell h1, #sol_main_reading_container";
 
+const route_heading_text = (focus_node) => {
+  if (!(focus_node instanceof HTMLElement) || !focus_node.matches("h1")) {
+    return "page";
+  }
+  return focus_node.textContent?.trim() || "page";
+};
+
 const announce_and_focus_route = () => {
   const focus_node = document.querySelector(route_focus_selector);
   const status_node = document.querySelector(route_status_selector);
@@ -13,11 +20,7 @@ const announce_and_focus_route = () => {
   }
 
   if (status_node instanceof HTMLElement) {
-    const heading_text =
-      focus_node instanceof HTMLElement && focus_node.matches("h1")
-        ? focus_node.textContent?.trim()
-        : "page";
-    status_node.textContent = `Loaded ${heading_text || "page"}.`;
+    status_node.textContent = `Loaded ${route_heading_text(focus_node)}.`;
   }
 };
 

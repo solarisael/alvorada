@@ -36,6 +36,10 @@ That's it — no bundler, no build step. `index.js` hydrates on DOM-ready and
 re-hydrates automatically on `htmx:afterSwap` if HTMX is present (harmless,
 inert if it isn't).
 
+Set `data-base-path` on the `<html>` element for subpath deployments.
+Preview requests and navigation links use this base path.
+Absolute external URLs and paths that already include the base stay unchanged.
+
 ## Applying effects
 
 **Text effects** — add a class or `data-text-fx` attribute to any inline
@@ -74,7 +78,7 @@ Variables block at the top of each `.css` file.
 ## Optional: build-time markdown transform
 
 If your site authors content in markdown and wants `{{fx:glow}}text{{/fx}}`
-inline markers instead of hand-written HTML, that lives in the *consuming*
+inline markers instead of hand-written HTML, that lives in the _consuming_
 site's build pipeline, not in this folder — it imports `js/contract.js` for
 the shared effect vocabulary so the two stay in lock-step. This library works
 standalone without it.

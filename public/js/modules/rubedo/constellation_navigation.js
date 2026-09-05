@@ -1,3 +1,16 @@
+const navigation_options = (link) => ({
+  target: link.hx_target || "#sol_content",
+  select: link.hx_select || "#sol_content",
+  swap: link.hx_swap || "morph swap:220ms settle:260ms",
+  pushURL: String(link.hx_push_url) === "true",
+});
+
+const navigate_document = (link) => {
+  if (link.href) {
+    window.location.href = link.href;
+  }
+};
+
 const dispatch_map_navigation = (node_entry) => {
   if (!node_entry?.link) {
     return;
@@ -7,19 +20,16 @@ const dispatch_map_navigation = (node_entry) => {
   const htmx_api = window_any.htmx;
 
   if (htmx_api?.ajax) {
-    htmx_api.ajax("GET", node_entry.link.hx_get || node_entry.link.href, {
-      target: node_entry.link.hx_target || "#sol_content",
-      select: node_entry.link.hx_select || "#sol_content",
-      swap: node_entry.link.hx_swap || "morph swap:220ms settle:260ms",
-      pushURL: String(node_entry.link.hx_push_url) === "true",
-    });
+    htmx_api.ajax(
+      "GET",
+      node_entry.link.hx_get || node_entry.link.href,
+      navigation_options(node_entry.link),
+    );
 
     return;
   }
 
-  if (node_entry.link.href) {
-    window.location.href = node_entry.link.href;
-  }
+  navigate_document(node_entry.link);
 };
 
 export { dispatch_map_navigation };

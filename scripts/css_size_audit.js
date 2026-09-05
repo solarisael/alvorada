@@ -19,22 +19,17 @@ const scope = scope_arg ? scope_arg.slice("--scope=".length) : "priority-a";
 
 const file_scope_map = {
   "priority-a": ["src/styles/components/side_menu.css", "src/styles/index.css"],
-  all: ["src/styles/**/*.css"],
 };
 
 const files_to_scan =
   scope === "all"
-    ? [
-        "src/styles/base.css",
-        "src/styles/index.css",
-        "src/styles/typography.css",
-        "src/styles/utils.css",
-        "src/styles/components/footer.css",
-        "src/styles/components/mobile_nav.css",
-        "src/styles/components/desktop_nav.css",
-        "src/styles/components/side_menu.css",
-      ]
-    : file_scope_map["priority-a"];
+    ? [...new Bun.Glob("src/styles/**/*.css").scanSync({ onlyFiles: true })]
+    : file_scope_map[scope];
+
+if (!files_to_scan) {
+  console.error(usage);
+  process.exit(1);
+}
 
 const css_property_px_forbidden_pattern =
   /^\s*(width|height|min-width|min-height|max-width|max-height|inset|top|right|bottom|left|outline-offset)\s*:\s*[^;]*\b\d*\.?\d+px\b/i;
@@ -71,13 +66,7 @@ const size_sensitive_variable_hints = [
 const violations = [];
 
 for (const file_path of files_to_scan) {
-  let source;
-
-  try {
-    source = readFileSync(file_path, "utf8");
-  } catch {
-    continue;
-  }
+  const source = readFileSync(file_path, "utf8");
 
   const source_lines = source.split(/\r?\n/);
 
